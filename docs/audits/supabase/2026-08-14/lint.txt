@@ -1,0 +1,8 @@
+Result: exit 0
+
+Application schema issues: 0
+
+Managed Supabase warning only:
+- storage.search_by_timestamp: dynamic SQL prevents plpgsql_check from proving that seven OUT variables are modified.
+
+This warning belongs to the Supabase-managed Storage schema and was present before the rebuild.

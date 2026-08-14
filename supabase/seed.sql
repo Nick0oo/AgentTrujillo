@@ -1,0 +1,2 @@
+-- Intentionally empty.
+-- Synthetic development fixtures belong in explicit, reviewable seed files.
