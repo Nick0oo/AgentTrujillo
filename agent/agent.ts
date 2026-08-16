@@ -1,5 +1,10 @@
 import { defineAgent } from "eve";
 
+import { loadRuntimeConfig } from "./lib/config/env";
+import { createPrimaryGoogleModel } from "./lib/model/google";
+
+const runtimeConfig = loadRuntimeConfig(process.env);
+
 export default defineAgent({
-  model: "anthropic/claude-sonnet-5",
+  model: createPrimaryGoogleModel(runtimeConfig),
 });
