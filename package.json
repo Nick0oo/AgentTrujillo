@@ -14,6 +14,8 @@
     "verify:eve-baseline": "node scripts/verify-eve-baseline.mjs",
     "verify:discovery": "node scripts/verify-eve-discovery.mjs",
     "verify:supabase-parity": "node scripts/verify-supabase-parity.mjs",
+    "generate:database-types": "node scripts/generate-database-types.mjs",
+    "verify:database-types": "node scripts/verify-database-types.mjs",
     "eval:runtime": "eve eval evals/runtime --strict --max-concurrency 1",
     "eval:runtime:json": "eve eval evals/runtime --strict --max-concurrency 1 --json",
     "test": "vitest run",
