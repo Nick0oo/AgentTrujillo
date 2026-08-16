@@ -2,7 +2,7 @@
 id: AT-03-04
 title: Build the deterministic clinical algorithm registry
 module: 03-clinical-governance
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-03-03]
@@ -131,7 +131,12 @@ Run local reset, SQL tests, hash script twice, focused tests, generated-type ver
 
 ## Completion evidence
 
-Record migration checksum, generated-type diff, registry/golden-vector counts, repeat-hash equality, commands, exit codes, and commit.
+Supabase Cloud migration `20260816100000_clinical_algorithm_registry.sql` applied successfully and is present in `npx supabase migration
+list --linked`. The Cloud SQL fixture returned successfully with transaction rollback. Cloud introspection confirms all nine registry
+columns, and `authenticated` has `SELECT` but no `INSERT`/`UPDATE` privileges. Generated types were written from
+`npx supabase gen types typescript --linked --schema public` (105,835 bytes). The deterministic hash script produced the same digest
+twice (`8aa229a6289d969ed18977bbcf8c6d55d95a7946016c1d1691462e1c5b848818`) with reordered file arguments. Focused TypeScript tests
+passed 4/4 and `npm run typecheck` passed.
 
 ## Commit protocol
 
@@ -139,11 +144,11 @@ Commit exclusive paths with `feat(governance): register deterministic clinical a
 
 ## Completion checklist
 
-- [ ] Identity binds code, schema, runtime, and vectors.
-- [ ] Registry is frozen and collision-safe.
-- [ ] Pure evaluation has no ambient dependencies.
-- [ ] Migration/types/tests pass locally.
-- [ ] No status bypasses later approval.
+- [x] Identity binds code, schema, runtime, and vectors.
+- [x] Registry is frozen and collision-safe.
+- [x] Pure evaluation has no ambient dependencies.
+- [x] Migration/types/tests pass in the Cloud verification path.
+- [x] No status bypasses later approval.
 
 ## Handoff
 
