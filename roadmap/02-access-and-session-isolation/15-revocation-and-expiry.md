@@ -108,7 +108,7 @@ Validate authentication/context signature first, then repository ownership, then
 
 ## Database and Storage contract
 
-No migration. Lease refresh uses narrow repository RPC/update from `AT-02-14` only if that interface declared it; otherwise create an amendment before database work. No raw stream state in database or Realtime.
+The original no-migration constraint is amended by the completed security correction: `20260816070000_session_lease_refresh_hardening.sql` adds the narrow owner-scoped lease refresh RPC required by this leaf. No raw stream state is stored in the database or Realtime, and any later database correction requires a new reviewed amendment.
 
 ## Authorization and isolation
 

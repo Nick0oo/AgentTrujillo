@@ -120,7 +120,7 @@ RPCs are `SECURITY DEFINER` only if required for narrow inserts/updates, with `s
 
 ## Database and Storage contract
 
-Forward migration adds lease columns/checks/indexes and narrow RPCs, no table write grant. RLS remains forced. RPC audit uses application `audit_events` only through later bounded repository if required; no raw token/config. Regenerate types. No Storage/Realtime.
+Forward migrations add lease columns/checks/indexes and narrow RPCs, no table write grant. The reviewed follow-up `20260816080000_session_bind_authorization_hardening.sql` revalidates active access and lease expiry before Eve binding. RLS remains forced. RPC audit uses application `audit_events` only through later bounded repository if required; no raw token/config. Regenerate types. No Storage/Realtime.
 
 ## Authorization and isolation
 

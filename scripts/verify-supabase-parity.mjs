@@ -16,14 +16,16 @@ export const EXPECTED_MIGRATIONS = [
   "20260816050000_authorized_child_scope_rpc.sql",
   "20260816060000_session_ownership_rpcs.sql",
   "20260816070000_session_lease_refresh_hardening.sql",
+  "20260816080000_session_bind_authorization_hardening.sql",
 ];
 
 export const EXPECTED_PARITY = {
-  migrationCount: 10,
+  migrationCount: 11,
   tableCount: 57,
   bucketCount: 5,
   rlsForcedCount: 57,
   checksum: "sha256:347b5d136f46a91fe4f792eb4e8a4910576e9b99462e08cebe2a4a92a686da01",
+  migrationChecksum: "sha256:d577710e2704b8597b29dcbeb48b03fb41d3a56549c5f67dec5ff8267cf93e10",
 };
 
 const VOLATILE_KEYS = new Set([
@@ -115,7 +117,7 @@ export function evaluateParity(actual, expected) {
     };
   }
 
-  const fields = ["migrationCount", "tableCount", "bucketCount", "rlsForcedCount", "checksum"];
+  const fields = ["migrationCount", "tableCount", "bucketCount", "rlsForcedCount", "checksum", "migrationChecksum"];
   const drift = fields.find((field) => actual?.[field] !== expected?.[field]);
   if (drift || (actual?.projection && expected?.projection && !sameProjection(actual.projection, expected.projection))) {
     return {
@@ -134,6 +136,7 @@ export function evaluateParity(actual, expected) {
     bucketCount: actual.bucketCount,
     rlsForcedCount: actual.rlsForcedCount,
     checksum: actual.checksum,
+    migrationChecksum: actual.migrationChecksum,
   };
 }
 
@@ -303,6 +306,7 @@ export function runLocalParity() {
     bucketCount: normalized.buckets?.length ?? 0,
     rlsForcedCount: normalized.rlsForcedCount ?? 0,
     checksum: checksumFor(normalized),
+    migrationChecksum: checksumFor(migrations),
     projection: normalized,
     cliVersion,
   };

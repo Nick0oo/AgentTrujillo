@@ -1,5 +1,5 @@
 begin;
-select plan(28);
+select plan(30);
 
 insert into auth.users (id, aud, role, email, encrypted_password, email_confirmed_at, raw_app_meta_data, raw_user_meta_data, created_at, updated_at)
 values
@@ -39,6 +39,11 @@ select ok((select count(*) = 0 from public.bind_owned_eve_session((select produc
 select ok((select eve_session_id = 'eve-fixture' and authorization_version = 'm:1:a:1' from public.agent_sessions where id = (select product_session_id from created_session)), 'binding remains immutable');
 select throws_ok($sql$update public.agent_sessions set authorization_version = 'm:2:a:1' where id = (select product_session_id from created_session)$sql$, '42501', null, 'authorization version is immutable');
 select throws_ok($sql$update public.agent_sessions set authorization_expires_at = now() + interval '5 minutes' where id = (select product_session_id from created_session)$sql$, '42501', null, 'authorization expiry is immutable');
+create temp table expiring_session as
+select * from public.create_owned_agent_session('00000000-0000-0000-0000-000000001011', '00000000-0000-0000-0000-000000001021', 'm:1:a:1', now() + interval '1 second', 'evaluation', 'gemini-3.6-flash', '{}');
+select ok((select count(*) = 1 from expiring_session), 'short-lived session is created for expiry coverage');
+select pg_sleep(2);
+select ok((select count(*) = 0 from public.bind_owned_eve_session((select product_session_id from expiring_session), '00000000-0000-0000-0000-000000001011', '00000000-0000-0000-0000-000000001021', 'm:1:a:1', 'eve-expired')), 'expired session cannot bind an Eve session');
 
 select set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-000000001002', true);
 select ok((select count(*) = 0 from public.agent_sessions where id = (select product_session_id from created_session)), 'co-guardian cannot read owner session');
