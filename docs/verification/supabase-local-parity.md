@@ -32,7 +32,11 @@ La proyección final se obtiene con `supabase db query --local` y se normalizan 
 
 ## Resultado de la ejecución local
 
-La captura final del módulo debe registrar el reset con las nueve migraciones, la suite SQL completa, lint y `db diff --local` sin cambios de esquema.
+Resultado final del módulo: reset local con las nueve migraciones; 8 archivos SQL y 188 assertions pasaron; lint terminó en código 0 con sólo la advertencia administrada `storage.search_by_timestamp`; `db diff --local` terminó sin cambios de esquema. La suite Node pasó 29 archivos, 196 tests y 1 skip explícito de integración opt-in; typecheck, tipos, Eve baseline, discovery y build pasaron.
+
+## Promoción Cloud
+
+Se verificó `CreciendoApp` (`yapjiinrjsrothzgzxsv`, `us-east-1`) antes de aplicar. El dry-run enumeró sólo las seis migraciones del módulo 02; el push forward-only las aplicó en orden. Postflight remoto: 9 migraciones, 57 tablas, 57 tablas con RLS forzado, 0 relaciones en `supabase_realtime`, ambos RPCs de ownership presentes y `anon` sin EXECUTE sobre create. El lint remoto conserva únicamente la advertencia administrada de Storage.
 
 Para completar AT-02-01, iniciar Docker Desktop y ejecutar:
 
