@@ -10,6 +10,7 @@ export interface SessionOwnershipRepository {
   bindEveSession(scope: AuthorizedChildScope, productSessionId: string, eveSessionId: string, requestId?: string): Promise<OwnedSessionRecord | AccessDenied>;
   findByProductId(scope: AuthorizedChildScope, id: string, requestId?: string): Promise<OwnedSessionRecord | AccessDenied>;
   findByEveSessionId(scope: AuthorizedChildScope, id: string, requestId?: string): Promise<OwnedSessionRecord | AccessDenied>;
+  refreshLease(scope: AuthorizedChildScope, productSessionId: string, requestId?: string): Promise<OwnedSessionRecord | AccessDenied>;
 }
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -104,6 +105,12 @@ export function createSessionOwnershipRepository(
     async findByEveSessionId(scope, id, requestId = "session") {
       if (!id || id.length > 200) return createAccessDenied(requestId);
       return find(scope, requestId, (query) => query.eq("eve_session_id", id));
+    },
+    async refreshLease(scope, productSessionId, requestId = "session") {
+      // AT-02-14 intentionally makes the authorization lease immutable. A fresh
+      // authorization may revalidate the lease, but cannot extend or rewrite it.
+      if (!UUID_PATTERN.test(productSessionId)) return createAccessDenied(requestId);
+      return find(scope, requestId, (query) => query.eq("id", productSessionId));
     },
   };
 
