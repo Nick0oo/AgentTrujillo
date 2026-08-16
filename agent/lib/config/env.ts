@@ -5,6 +5,7 @@ export const runtimeConfigFieldSchema = z.enum([
   "GOOGLE_GENERATIVE_AI_API_KEY",
   "SUPABASE_URL",
   "SUPABASE_PUBLISHABLE_KEY",
+  "SUPABASE_SERVICE_ROLE_KEY",
 ]);
 
 export type RuntimeConfigField = z.infer<typeof runtimeConfigFieldSchema>;
@@ -21,6 +22,11 @@ const runtimeInputSchema = z.object({
     .string()
     .min(20)
     .regex(/^\S+$/),
+  SUPABASE_SERVICE_ROLE_KEY: z
+    .string()
+    .min(20)
+    .regex(/^\S+$/)
+    .optional(),
 }).superRefine((input, context) => {
   const url = new URL(input.SUPABASE_URL);
   const localHost = new Set(["localhost", "127.0.0.1", "::1"]);
@@ -40,6 +46,7 @@ export type RuntimeConfig = Readonly<{
   googleApiKey: string;
   supabaseUrl: string;
   supabasePublishableKey: string;
+  supabaseServiceRoleKey?: string;
 }>;
 
 export class RuntimeConfigError extends Error {
@@ -75,6 +82,7 @@ export function loadRuntimeConfig(env: NodeJS.ProcessEnv): RuntimeConfig {
     GOOGLE_GENERATIVE_AI_API_KEY: env.GOOGLE_GENERATIVE_AI_API_KEY,
     SUPABASE_URL: env.SUPABASE_URL,
     SUPABASE_PUBLISHABLE_KEY: env.SUPABASE_PUBLISHABLE_KEY,
+    SUPABASE_SERVICE_ROLE_KEY: env.SUPABASE_SERVICE_ROLE_KEY,
   });
 
   if (!parsed.success) {
@@ -86,5 +94,8 @@ export function loadRuntimeConfig(env: NodeJS.ProcessEnv): RuntimeConfig {
     googleApiKey: parsed.data.GOOGLE_GENERATIVE_AI_API_KEY,
     supabaseUrl: parsed.data.SUPABASE_URL,
     supabasePublishableKey: parsed.data.SUPABASE_PUBLISHABLE_KEY,
+    ...(parsed.data.SUPABASE_SERVICE_ROLE_KEY
+      ? { supabaseServiceRoleKey: parsed.data.SUPABASE_SERVICE_ROLE_KEY }
+      : {}),
   });
 }

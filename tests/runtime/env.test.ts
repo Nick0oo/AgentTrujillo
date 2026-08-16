@@ -127,4 +127,23 @@ describe("runtime environment boundary", () => {
   it("rejects non-HTTPS non-loopback Supabase URLs", () => {
     expect(() => loadRuntimeConfig(env({ SUPABASE_URL: "http://supabase.internal" }))).toThrowError(RuntimeConfigError);
   });
+
+  it("accepts a service-role key only as an optional trusted-runtime value", () => {
+    const serviceRoleKey = "service-role-test-key-that-is-long-enough";
+    expect(loadRuntimeConfig(env({ SUPABASE_SERVICE_ROLE_KEY: serviceRoleKey })).supabaseServiceRoleKey).toBe(serviceRoleKey);
+    expect(loadRuntimeConfig(env()).supabaseServiceRoleKey).toBeUndefined();
+  });
+
+  it("rejects a malformed optional service-role key without exposing it", () => {
+    const error = (() => {
+      try {
+        loadRuntimeConfig(env({ SUPABASE_SERVICE_ROLE_KEY: "short" }));
+        throw new Error("expected failure");
+      } catch (caught) {
+        return caught as RuntimeConfigError;
+      }
+    })();
+    expect(error.invalidFields).toEqual(["SUPABASE_SERVICE_ROLE_KEY"]);
+    expect(JSON.stringify(error)).not.toContain("short");
+  });
 });
