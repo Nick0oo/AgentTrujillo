@@ -2,7 +2,7 @@
 id: AT-04-02
 title: Normalize Colombian Spanish and United States English safely
 module: 04-safety-and-emergency-boundary
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-04-01]
@@ -132,11 +132,11 @@ Commit exclusive paths with `feat(safety): normalize bilingual guardian messages
 
 ## Completion checklist
 
-- [ ] Original text and spans are preserved.
-- [ ] Normalization is deterministic and bounded.
-- [ ] Locale behavior is explicit.
-- [ ] Unknown/mixed text never reduces caution.
-- [ ] No translation/model/network exists.
+- [x] Original text and spans are preserved.
+- [x] Normalization is deterministic and bounded.
+- [x] Locale behavior is explicit.
+- [x] Unknown/mixed text never reduces caution.
+- [x] No translation/model/network exists.
 
 ## Handoff
 
