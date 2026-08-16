@@ -10,3 +10,5 @@ dist
 *.tsbuildinfo
 supabase/.temp/
 supabase/.branches/
+.worktrees/
+.superpowers/
