@@ -29,6 +29,7 @@
     "ai": "^7.0.34",
     "eve": "0.27.1",
     "jose": "6.2.9",
+    "json-canonicalize": "^1.2.0",
     "zod": "4.4.3"
   },
   "devDependencies": {
