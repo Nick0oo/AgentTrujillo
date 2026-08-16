@@ -26,3 +26,15 @@ Todas las filas usan únicamente UUIDs y contenido sintético. `allow` significa
 The current baseline intentionally lets a principal see its own `child_access` ledger row even when revoked/expired; the protected child/product rows remain hidden. Later session and authorization leaves tighten application ownership and denial-shape behavior without weakening this database proof.
 
 The SQL runner is [`supabase/tests/010_access_isolation.test.sql`](../../supabase/tests/010_access_isolation.test.sql). It declares 45 assertions, resets role/claims between principals, and rolls back all fixtures.
+
+## AT-02-04 session-owner extension
+
+The session-hardening runner is [`supabase/tests/020_session_scope_hardening.test.sql`](../../supabase/tests/020_session_scope_hardening.test.sql). It declares 32 assertions and proves:
+
+| Scope | Authorized owner | Co-guardian with child access | Anonymous | Enforcement |
+|---|---|---|---|---|
+| `agent_sessions` | allow for owner | zero rows | permission denied/zero rows | owner policy + immutable scope trigger |
+| `messages`, `tool_executions`, `conversation_summaries` | allow through owned session | zero rows | permission denied/zero rows | composite session scope FK + owner policy |
+| `safety_evaluations` | allow through owned session | zero rows | permission denied/zero rows | nullable composite session scope FK + owner policy |
+
+The same runner also covers orphan owner rejection, cross-child inserts, immutable owner/scope/channel/model/configuration, one-time Eve binding with legacy-session compatibility, and forced RLS. Both the baseline 45-assertion matrix and this 32-assertion extension run inside rollbackable synthetic transactions.

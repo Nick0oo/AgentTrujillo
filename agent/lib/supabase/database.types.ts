@@ -16,6 +16,7 @@ export type Database = {
           child_id: string
           completed_at: string | null
           created_at: string
+          eve_session_bound_at: string | null
           eve_session_id: string | null
           id: string
           initial_configuration: Json
@@ -32,6 +33,7 @@ export type Database = {
           child_id: string
           completed_at?: string | null
           created_at?: string
+          eve_session_bound_at?: string | null
           eve_session_id?: string | null
           id?: string
           initial_configuration?: Json
@@ -48,6 +50,7 @@ export type Database = {
           child_id?: string
           completed_at?: string | null
           created_at?: string
+          eve_session_bound_at?: string | null
           eve_session_id?: string | null
           id?: string
           initial_configuration?: Json
@@ -65,6 +68,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "children"
             referencedColumns: ["care_space_id", "id"]
+          },
+          {
+            foreignKeyName: "agent_sessions_owner_fk"
+            columns: ["owner_user_id"]
+            isOneToOne: false
+            referencedRelation: "guardian_profiles"
+            referencedColumns: ["user_id"]
           },
         ]
       }
@@ -784,11 +794,25 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "clinical_memory_items_source_message_scope_fk"
+            columns: ["source_message_id", "care_space_id", "child_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["id", "care_space_id", "child_id"]
+          },
+          {
             foreignKeyName: "clinical_memory_items_source_session_id_fkey"
             columns: ["source_session_id"]
             isOneToOne: false
             referencedRelation: "agent_sessions"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clinical_memory_items_source_session_scope_fk"
+            columns: ["source_session_id", "care_space_id", "child_id"]
+            isOneToOne: false
+            referencedRelation: "agent_sessions"
+            referencedColumns: ["id", "care_space_id", "child_id"]
           },
         ]
       }
@@ -1068,6 +1092,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "agent_sessions"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conversation_summaries_session_scope_fk"
+            columns: ["agent_session_id", "care_space_id", "child_id"]
+            isOneToOne: false
+            referencedRelation: "agent_sessions"
+            referencedColumns: ["id", "care_space_id", "child_id"]
           },
           {
             foreignKeyName: "conversation_summary_child_fk"
@@ -2219,6 +2250,13 @@ export type Database = {
             referencedRelation: "children"
             referencedColumns: ["care_space_id", "id"]
           },
+          {
+            foreignKeyName: "messages_session_scope_fk"
+            columns: ["agent_session_id", "care_space_id", "child_id"]
+            isOneToOne: false
+            referencedRelation: "agent_sessions"
+            referencedColumns: ["id", "care_space_id", "child_id"]
+          },
         ]
       }
       notification_deliveries: {
@@ -2576,6 +2614,13 @@ export type Database = {
             referencedRelation: "clinical_rule_packs"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "safety_evaluations_session_scope_fk"
+            columns: ["agent_session_id", "care_space_id", "child_id"]
+            isOneToOne: false
+            referencedRelation: "agent_sessions"
+            referencedColumns: ["id", "care_space_id", "child_id"]
+          },
         ]
       }
       screening_sessions: {
@@ -2714,6 +2759,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "messages"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tool_executions_session_scope_fk"
+            columns: ["agent_session_id", "care_space_id", "child_id"]
+            isOneToOne: false
+            referencedRelation: "agent_sessions"
+            referencedColumns: ["id", "care_space_id", "child_id"]
           },
         ]
       }
