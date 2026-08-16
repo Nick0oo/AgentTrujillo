@@ -762,44 +762,85 @@ export type Database = {
       }
       clinical_approvals: {
         Row: {
+          algorithm_id: string
+          algorithm_implementation_sha256: string
           approver_name: string
+          approver_role: string
+          approver_subject: string
           approver_user_id: string | null
           artifact_sha256: string
+          attestation_version: number
           created_at: string
           decided_at: string
           decision: string
           id: string
+          manifest_sha256: string
           notes: string | null
+          request_id: string
           rule_pack_id: string
+          source_set_sha256: string
+          withdrawal_of: string | null
         }
         Insert: {
+          algorithm_id: string
+          algorithm_implementation_sha256: string
           approver_name: string
+          approver_role: string
+          approver_subject: string
           approver_user_id?: string | null
           artifact_sha256: string
+          attestation_version?: number
           created_at?: string
           decided_at?: string
           decision: string
           id?: string
+          manifest_sha256: string
           notes?: string | null
+          request_id: string
           rule_pack_id: string
+          source_set_sha256: string
+          withdrawal_of?: string | null
         }
         Update: {
+          algorithm_id?: string
+          algorithm_implementation_sha256?: string
           approver_name?: string
+          approver_role?: string
+          approver_subject?: string
           approver_user_id?: string | null
           artifact_sha256?: string
+          attestation_version?: number
           created_at?: string
           decided_at?: string
           decision?: string
           id?: string
+          manifest_sha256?: string
           notes?: string | null
+          request_id?: string
           rule_pack_id?: string
+          source_set_sha256?: string
+          withdrawal_of?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "clinical_approvals_algorithm_id_fkey"
+            columns: ["algorithm_id"]
+            isOneToOne: false
+            referencedRelation: "clinical_algorithms"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "clinical_approvals_rule_pack_id_fkey"
             columns: ["rule_pack_id"]
             isOneToOne: false
             referencedRelation: "clinical_rule_packs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clinical_approvals_withdrawal_of_fkey"
+            columns: ["withdrawal_of"]
+            isOneToOne: false
+            referencedRelation: "clinical_approvals"
             referencedColumns: ["id"]
           },
         ]
