@@ -10,3 +10,4 @@ export type ClinicalReleasePlan = Readonly<{
 }>;
 export type ClinicalReleaseEvidence = Readonly<{ evalManifestSha256: Sha256Hex; sourceSetSha256: Sha256Hex; algorithmTestVectorSha256: Sha256Hex }>;
 export type ClinicalReleaseResult = Readonly<{ releaseId: string; status: ClinicalReleaseStatus; previewSha256: Sha256Hex; requestId: string }>;
+export type ClinicalReleaseRecord = Readonly<{ id: string; rulePackId: string; artifactSha256: Sha256Hex; domain: string; countryCode: string; locale: string; status: ClinicalReleaseStatus; approvalValid: boolean; artifactValid: boolean; algorithmValid: boolean; sourceValid: boolean }>;
