@@ -12,6 +12,7 @@
     "start": "eve start",
     "typecheck": "tsc",
     "verify:eve-baseline": "node scripts/verify-eve-baseline.mjs",
+    "verify:discovery": "node scripts/verify-eve-discovery.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:runtime": "vitest run tests/runtime"

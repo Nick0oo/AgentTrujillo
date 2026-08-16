@@ -1,0 +1,55 @@
+{
+  "status": "ready",
+  "diagnostics": {
+    "errors": 0,
+    "warnings": 0
+  },
+  "provider": "google.generative-ai",
+  "modelId": "gemini-3.6-flash",
+  "instructions": "instructions.md",
+  "skills": [
+    "clinical-safety",
+    "response-format",
+    "tool-policy"
+  ],
+  "authoredTools": [],
+  "subagents": [],
+  "schedules": [],
+  "channels": [
+    {
+      "name": "eve",
+      "kind": "http",
+      "method": "GET",
+      "urlPath": "/eve/v1/info"
+    },
+    {
+      "name": "eve",
+      "kind": "http",
+      "method": "GET",
+      "urlPath": "/eve/v1/session/:sessionId/stream"
+    },
+    {
+      "name": "eve",
+      "kind": "http",
+      "method": "POST",
+      "urlPath": "/eve/v1/session"
+    },
+    {
+      "name": "eve",
+      "kind": "http",
+      "method": "POST",
+      "urlPath": "/eve/v1/session/:sessionId"
+    },
+    {
+      "name": "eve",
+      "kind": "http",
+      "method": "POST",
+      "urlPath": "/eve/v1/session/:sessionId/cancel"
+    }
+  ],
+  "messaging": {
+    "create": "/eve/v1/session",
+    "continue": "/eve/v1/session/:sessionId",
+    "stream": "/eve/v1/session/:sessionId/stream"
+  }
+}
