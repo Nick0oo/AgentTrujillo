@@ -1,6 +1,6 @@
 # Matriz negativa de acceso y aislamiento
 
-Estado: matriz sintética local implementada; pendiente de ejecutar dos veces contra el stack local después de cada reset.
+Estado: matriz sintética local implementada y ejecutada contra el stack local después del reset del módulo 02.
 
 Todas las filas usan únicamente UUIDs y contenido sintético. `allow` significa que la consulta está permitida para el principal autorizado; `zero_rows` significa que la consulta no revela filas de otro niño/espacio; `permission_denied` significa que PostgreSQL rechaza la operación/RPC.
 

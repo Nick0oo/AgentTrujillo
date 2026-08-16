@@ -9,14 +9,20 @@ export const EXPECTED_MIGRATIONS = [
   "20260814000000_platform_foundation.sql",
   "20260814000100_pediatric_modules.sql",
   "20260814000200_agent_commerce_storage_security.sql",
+  "20260816010000_session_scope_hardening.sql",
+  "20260816020000_agent_command_idempotency.sql",
+  "20260816030000_vector_scope_hardening.sql",
+  "20260816040000_realtime_publication_hardening.sql",
+  "20260816050000_authorized_child_scope_rpc.sql",
+  "20260816060000_session_ownership_rpcs.sql",
 ];
 
 export const EXPECTED_PARITY = {
-  migrationCount: 3,
-  tableCount: 56,
+  migrationCount: 9,
+  tableCount: 57,
   bucketCount: 5,
-  rlsForcedCount: 56,
-  checksum: "sha256:a52af673f83b4915a974328d5391878b4a8db47621797f74830499827b4f6b95",
+  rlsForcedCount: 57,
+  checksum: "sha256:347b5d136f46a91fe4f792eb4e8a4910576e9b99462e08cebe2a4a92a686da01",
 };
 
 const VOLATILE_KEYS = new Set([
@@ -163,8 +169,7 @@ export function isAllowedManagedWarning(functionName, owner) {
 function cliCommand(args) {
   assertLocalOnlyArgs(args.slice(1));
   if (process.platform !== "win32") return { command: "npx", prefix: [] };
-  const npmCli = join(dirname(process.execPath), "node_modules", "npm", "bin", "npx-cli.js");
-  return { command: process.execPath, prefix: [npmCli] };
+  return { command: join(dirname(process.execPath), "npx.cmd"), prefix: [] };
 }
 
 function runLocalCommand(args, { timeout = 120_000, capture = true } = {}) {
@@ -176,6 +181,7 @@ function runLocalCommand(args, { timeout = 120_000, capture = true } = {}) {
     stdio: capture ? ["ignore", "pipe", "pipe"] : ["ignore", "ignore", "ignore"],
     timeout,
     windowsHide: true,
+    shell: process.platform === "win32",
   });
   return {
     args,

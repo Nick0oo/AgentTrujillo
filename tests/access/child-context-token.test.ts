@@ -87,7 +87,8 @@ describe("signed child context token", () => {
   it("denies tampering, sibling/user substitution, expiry, and wrong headers uniformly", async () => {
     const service = createChildContextTokenService(config);
     const token = await service.issue(scope, guardian, now);
-    const tampered = `${token.slice(0, -1)}${token.endsWith("a") ? "b" : "a"}`;
+    const tamperIndex = token.length - 10;
+    const tampered = `${token.slice(0, tamperIndex)}${token[tamperIndex] === "a" ? "b" : "a"}${token.slice(tamperIndex + 1)}`;
     const otherGuardian = { ...guardian, userId: "00000000-0000-4000-8000-000000000004" };
     const cases = [
       tampered,

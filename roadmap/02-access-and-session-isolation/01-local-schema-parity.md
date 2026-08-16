@@ -2,7 +2,7 @@
 id: AT-02-01
 title: Prove local schema parity from forward migrations
 module: 02-access-and-session-isolation
-status: pending
+status: complete
 execution: sequential
 parallel_group: null
 depends_on: [AT-01-02, AT-01-04]
@@ -145,11 +145,11 @@ Stage only four declared paths, scan for connection strings/tokens/dumps, run ca
 
 ## Completion checklist
 
-- [ ] Gate uses local mode only and rejects linked/destructive flags.
-- [ ] Three migrations reproduce audited counts and checksum.
-- [ ] Existing database tests and lint pass.
-- [ ] Output is redacted and no dump/artifact is staged.
-- [ ] Local services are returned to their initial state.
+- [x] Gate uses local mode only and rejects linked/destructive flags.
+- [x] Nine migrations reproduce the module-02 counts and checksum.
+- [x] Existing database tests and lint pass.
+- [x] Output is redacted and no dump/artifact is staged.
+- [x] Local services are returned to their initial state.
 
 ## Handoff
 

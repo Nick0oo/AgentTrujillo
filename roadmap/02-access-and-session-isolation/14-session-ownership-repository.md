@@ -2,7 +2,7 @@
 id: AT-02-14
 title: Bind product and Eve sessions to one owner scope
 module: 02-access-and-session-isolation
-status: pending
+status: complete
 execution: sequential
 parallel_group: null
 depends_on: [AT-02-13]
@@ -170,11 +170,11 @@ Stage only seven declared paths, verify baseline migrations unchanged and no tok
 
 ## Completion checklist
 
-- [ ] Product/Eve session binding is one-time and idempotent for same value.
-- [ ] Owner/care/child/version are immutable and checked everywhere.
-- [ ] Co-guardian/sibling/foreign/expired/revoked access is denied uniformly.
-- [ ] RPCs have fixed search path/minimal grants and no generic writes.
-- [ ] Reset, DB tests, lint, types, app tests, and build pass.
+- [x] Product/Eve session binding is one-time and idempotent for same value.
+- [x] Owner/care/child/version are immutable and checked everywhere.
+- [x] Co-guardian/sibling/foreign/expired/revoked access is denied uniformly.
+- [x] RPCs have fixed search path/minimal grants and no generic writes.
+- [x] Reset, DB tests, lint, types, app tests, and build pass.
 
 ## Handoff
 

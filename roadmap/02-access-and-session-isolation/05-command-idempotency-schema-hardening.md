@@ -2,7 +2,7 @@
 id: AT-02-05
 title: Add a fully scoped command idempotency ledger
 module: 02-access-and-session-isolation
-status: pending
+status: complete
 execution: sequential
 parallel_group: null
 depends_on: [AT-02-04]
@@ -143,11 +143,11 @@ Stage only four declared paths, verify baseline migrations unchanged and no raw 
 
 ## Completion checklist
 
-- [ ] Full scope and operation participate in uniqueness.
-- [ ] Request and confirmation fingerprints bind replay.
-- [ ] Cross-session/child/owner rows are impossible.
-- [ ] Table has forced RLS and no guardian grants/publication.
-- [ ] Reset, DB tests, lint, types, app tests, and build pass.
+- [x] Full scope and operation participate in uniqueness.
+- [x] Request and confirmation fingerprints bind replay.
+- [x] Cross-session/child/owner rows are impossible.
+- [x] Table has forced RLS and no guardian grants/publication.
+- [x] Reset, DB tests, lint, types, app tests, and build pass.
 
 ## Handoff
 

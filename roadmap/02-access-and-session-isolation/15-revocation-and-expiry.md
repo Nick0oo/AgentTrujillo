@@ -2,7 +2,7 @@
 id: AT-02-15
 title: Revalidate authorization leases and terminate revoked access
 module: 02-access-and-session-isolation
-status: pending
+status: complete
 execution: sequential
 parallel_group: null
 depends_on: [AT-02-14]
@@ -156,11 +156,11 @@ Stage only five declared paths, review for no timers/config from environment and
 
 ## Completion checklist
 
-- [ ] Every session operation performs fresh lease validation.
-- [ ] Scope/version/permissions can never widen or switch.
-- [ ] Streams abort within 15 seconds and discard later output.
-- [ ] Failure/cleanup races are deterministic and leak no reason.
-- [ ] Tests, typecheck, discovery, and build pass.
+- [x] Every session operation performs fresh lease validation.
+- [x] Scope/version/permissions can never widen or switch.
+- [x] Streams abort within 15 seconds and discard later output.
+- [x] Failure/cleanup races are deterministic and leak no reason.
+- [x] Tests, typecheck, discovery, and build pass.
 
 ## Handoff
 

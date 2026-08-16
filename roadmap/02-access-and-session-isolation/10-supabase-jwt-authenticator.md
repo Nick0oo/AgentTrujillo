@@ -2,7 +2,7 @@
 id: AT-02-10
 title: Verify Supabase guardian access tokens cryptographically
 module: 02-access-and-session-isolation
-status: pending
+status: complete
 execution: sequential
 parallel_group: null
 depends_on: [AT-02-08]
@@ -169,11 +169,11 @@ Stage only eight declared paths, review lock/env example and fixtures for keys/t
 
 ## Completion checklist
 
-- [ ] Signature and all mandatory claims/time bounds are verified.
-- [ ] Only asymmetric project-approved algorithms are accepted.
-- [ ] Identity projection excludes client metadata authority.
-- [ ] All failures are externally uniform and redacted.
-- [ ] Tests, typecheck, discovery, build, and preview gate pass.
+- [x] Signature and all mandatory claims/time bounds are verified.
+- [x] Only asymmetric project-approved algorithms are accepted.
+- [x] Identity projection excludes client metadata authority.
+- [x] All failures are externally uniform and redacted.
+- [x] Tests, typecheck, discovery, build, and preview gate pass.
 
 ## Handoff
 

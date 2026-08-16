@@ -9,13 +9,19 @@ const expectedMigrations = [
   "20260814000000_platform_foundation.sql",
   "20260814000100_pediatric_modules.sql",
   "20260814000200_agent_commerce_storage_security.sql",
+  "20260816010000_session_scope_hardening.sql",
+  "20260816020000_agent_command_idempotency.sql",
+  "20260816030000_vector_scope_hardening.sql",
+  "20260816040000_realtime_publication_hardening.sql",
+  "20260816050000_authorized_child_scope_rpc.sql",
+  "20260816060000_session_ownership_rpcs.sql",
 ];
 
 const expected = {
-  migrationCount: 3,
-  tableCount: 56,
+  migrationCount: 9,
+  tableCount: 57,
   bucketCount: 5,
-  rlsForcedCount: 56,
+  rlsForcedCount: 57,
   checksum: "sha256:baseline-placeholder",
 };
 
@@ -30,7 +36,7 @@ const expectedProjection = {
     { id: "clinical-attachments", public: false },
   ],
   extensions: [{ schema: "extensions", name: "vector", version: "0.8.0" }],
-  publications: [{ publication: "supabase_realtime", table: "messages" }],
+  publications: [],
   grants: [{ grantee: "anon", schema: "public", table: "care_spaces", privilege: "SELECT" }],
 };
 
@@ -75,7 +81,7 @@ describe("local Supabase parity gate", () => {
   });
 
   it("returns the reviewed parity result for expected counts and checksum", () => {
-    expect(parity.evaluateParity(expected, expected)).toEqual({ ok: true, migrationCount: 3, tableCount: 56, bucketCount: 5, rlsForcedCount: 56, checksum: expected.checksum });
+    expect(parity.evaluateParity(expected, expected)).toEqual({ ok: true, migrationCount: 9, tableCount: 57, bucketCount: 5, rlsForcedCount: 57, checksum: expected.checksum });
   });
 
   it("reports bounded schema drift for count, checksum, and migration mismatches", () => {

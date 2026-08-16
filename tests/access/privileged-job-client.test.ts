@@ -14,6 +14,9 @@ const config: RuntimeConfig = Object.freeze({
   supabaseUrl: "https://example.supabase.co",
   supabasePublishableKey: "sb_publishable-test-key-that-is-long-enough",
   supabaseServiceRoleKey: "service-role-test-key-that-is-long-enough",
+  supabaseJwtIssuer: "https://example.supabase.co/auth/v1",
+  supabaseJwtAudience: "authenticated",
+  supabaseJwtJwksUrl: "https://example.supabase.co/auth/v1/.well-known/jwks.json",
 });
 
 function scope(overrides: Partial<PrivilegedJobScope> = {}): PrivilegedJobScope {

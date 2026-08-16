@@ -2,7 +2,7 @@
 id: AT-02-13
 title: Issue and verify short-lived signed child context
 module: 02-access-and-session-isolation
-status: pending
+status: complete
 execution: sequential
 parallel_group: null
 depends_on: [AT-02-12]
@@ -167,11 +167,11 @@ Stage only six declared paths, verify `.env.example` contains names/comments onl
 
 ## Completion checklist
 
-- [ ] Token is fixed-algorithm, versioned, short-lived, and guardian-bound.
-- [ ] All authority fields originate from `AuthorizedChildScope`.
-- [ ] Rotation verifies previous key but signs only current.
-- [ ] Failures are uniform and no token/key is persisted/logged.
-- [ ] Tests, typecheck, discovery, build, and scans pass.
+- [x] Token is fixed-algorithm, versioned, short-lived, and guardian-bound.
+- [x] All authority fields originate from `AuthorizedChildScope`.
+- [x] Rotation verifies previous key but signs only current.
+- [x] Failures are uniform and no token/key is persisted/logged.
+- [x] Tests, typecheck, discovery, build, and scans pass.
 
 ## Handoff
 

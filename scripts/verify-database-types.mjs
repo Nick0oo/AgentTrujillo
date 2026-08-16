@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 import {
   TARGET_PATH,
   buildGenerateCommand,
@@ -52,7 +53,7 @@ export function verifyDatabaseTypes({ targetPath = TARGET_PATH, runCommand = run
   }
 }
 
-if (process.argv[1] && new URL(import.meta.url).pathname === `/${process.argv[1].replaceAll("\\", "/")}`) {
+if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   const result = verifyDatabaseTypes();
   process.stdout.write(`${JSON.stringify(result)}\n`);
   process.exitCode = result.ok ? 0 : 1;

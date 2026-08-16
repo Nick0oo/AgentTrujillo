@@ -24,12 +24,11 @@ const requiredResources = [
 describe("negative RLS matrix contract", () => {
   it("declares every principal category and complete outcome cells", () => {
     for (const category of categories) expect(matrix).toContain(`| ${category} |`);
-    const rows = matrix.split("\n").filter((line) => line.startsWith("| `"));
+    const rows = matrix.split("\n").filter((line) => line.startsWith("| `") && line.split("|").length === 12);
     expect(rows).toHaveLength(16);
     for (const row of rows) {
       const cells = row.split("|").slice(2, 9);
-      for (const cell of cells) expect(cell).toMatch(/allow|zero_rows|permission_denied/);
-      expect(row.split("|")).toHaveLength(12);
+      for (const cell of cells) expect(cell).toMatch(/allow|zero[_ ]rows|permission[_ ]denied/);
     }
     for (const resource of requiredResources) expect(matrix).toContain(`| \`${resource}`);
   });

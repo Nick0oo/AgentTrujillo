@@ -2,7 +2,7 @@
 id: AT-02-09
 title: Constrain the privileged Supabase job client
 module: 02-access-and-session-isolation
-status: pending
+status: complete
 execution: sequential
 parallel_group: null
 depends_on: [AT-02-08]
@@ -170,11 +170,11 @@ Stage only six declared paths, verify `.env.example` is value-free and no key/he
 
 ## Completion checklist
 
-- [ ] Privileged client exists only inside a scoped callback.
-- [ ] Scope/operation/TTL are strictly validated.
-- [ ] No singleton, tool/channel import, or secret exposure exists.
-- [ ] Repositories remain responsible for exact SQL predicates.
-- [ ] Tests, typecheck, discovery, build, and scans pass.
+- [x] Privileged client exists only inside a scoped callback.
+- [x] Scope/operation/TTL are strictly validated.
+- [x] No singleton, tool/channel import, or secret exposure exists.
+- [x] Repositories remain responsible for exact SQL predicates.
+- [x] Tests, typecheck, discovery, build, and scans pass.
 
 ## Handoff
 

@@ -2,7 +2,7 @@
 id: AT-02-11
 title: Define immutable authorized-child scope types
 module: 02-access-and-session-isolation
-status: pending
+status: complete
 execution: sequential
 parallel_group: null
 depends_on: [AT-02-10]
@@ -153,11 +153,11 @@ Stage only three declared paths, review public exports and cached diff, then com
 
 ## Completion checklist
 
-- [ ] Scope contains only trusted immutable authority fields.
-- [ ] TTL/version/permission/country/timezone are strict.
-- [ ] Permissions can narrow but never widen.
-- [ ] Universal denial is byte-identical across reasons.
-- [ ] Tests, typecheck, discovery, build, and import scans pass.
+- [x] Scope contains only trusted immutable authority fields.
+- [x] TTL/version/permission/country/timezone are strict.
+- [x] Permissions can narrow but never widen.
+- [x] Universal denial is byte-identical across reasons.
+- [x] Tests, typecheck, discovery, build, and import scans pass.
 
 ## Handoff
 

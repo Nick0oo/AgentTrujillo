@@ -79,7 +79,7 @@ select ok((select count(*) = 1 from public.clinical_memory_embeddings where id =
 select ok((select count(*) = 1 from public.conversation_summaries where id = '00000000-0000-0000-0000-000000000506'), 'authorized guardian sees summary');
 select ok((select count(*) = 1 from public.entitlements where id = '00000000-0000-0000-0000-000000000507'), 'authorized guardian sees entitlement');
 select ok((select count(*) = 1 from storage.objects where id = '00000000-0000-0000-0000-000000000508'), 'authorized guardian sees storage object through document scope');
-select ok((select count(*) = 1 from public.match_clinical_memory('00000000-0000-0000-0000-000000000301', format('[%s]', array_to_string(array_fill(0::real, array[768]), ','))::extensions.vector, 8, 0)), 'authorized guardian can execute scoped memory RPC');
+select ok((select count(*) = 1 from public.match_clinical_memory('00000000-0000-0000-0000-000000000101', '00000000-0000-0000-0000-000000000301', format('[%s]', array_to_string(array_fill(0::real, array[768]), ','))::extensions.vector, 8, 0)), 'authorized guardian can execute scoped memory RPC');
 set local role postgres;
 select set_config('request.jwt.claim.sub', '', true);
 
@@ -92,7 +92,7 @@ select ok((select count(*) = 0 from public.messages where id = '00000000-0000-00
 select ok((select count(*) = 0 from public.clinical_memory_items where id = '00000000-0000-0000-0000-000000000504'), 'same-space sibling memory is hidden');
 select ok((select count(*) = 0 from public.clinical_memory_embeddings where id = '00000000-0000-0000-0000-000000000505'), 'same-space sibling embedding is hidden');
 select ok((select count(*) = 0 from storage.objects where id = '00000000-0000-0000-0000-000000000508'), 'same-space sibling storage object is hidden');
-select ok((select count(*) = 0 from public.match_clinical_memory('00000000-0000-0000-0000-000000000301', format('[%s]', array_to_string(array_fill(0::real, array[768]), ','))::extensions.vector, 8, 0)), 'same-space sibling memory RPC returns zero');
+select ok((select count(*) = 0 from public.match_clinical_memory('00000000-0000-0000-0000-000000000101', '00000000-0000-0000-0000-000000000301', format('[%s]', array_to_string(array_fill(0::real, array[768]), ','))::extensions.vector, 8, 0)), 'same-space sibling memory RPC returns zero');
 set local role postgres;
 select set_config('request.jwt.claim.sub', '', true);
 
@@ -126,7 +126,7 @@ select set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-000000000202
 select ok((select count(*) = 0 from public.children where id = '00000000-0000-0000-0000-000000000302'), 'wrong permission hides child');
 select ok((select count(*) = 0 from public.documents where child_id = '00000000-0000-0000-0000-000000000302'), 'wrong permission hides documents');
 select ok((select count(*) = 0 from public.clinical_memory_items where child_id = '00000000-0000-0000-0000-000000000301'), 'wrong permission hides memory');
-select ok((select count(*) = 0 from public.match_clinical_memory('00000000-0000-0000-0000-000000000301', format('[%s]', array_to_string(array_fill(0::real, array[768]), ','))::extensions.vector, 8, 0)), 'wrong permission memory RPC returns zero');
+select ok((select count(*) = 0 from public.match_clinical_memory('00000000-0000-0000-0000-000000000101', '00000000-0000-0000-0000-000000000301', format('[%s]', array_to_string(array_fill(0::real, array[768]), ','))::extensions.vector, 8, 0)), 'wrong permission memory RPC returns zero');
 set local role postgres;
 select set_config('request.jwt.claim.sub', '', true);
 
@@ -134,7 +134,7 @@ set local role anon;
 select set_config('request.jwt.claim.sub', '', true);
 select throws_ok($matrix$select count(*) from public.care_spaces$matrix$, '42501', null, 'anonymous care-space read is denied');
 select throws_ok($matrix$select count(*) from public.children$matrix$, '42501', null, 'anonymous child read is denied');
-select throws_ok($matrix$select * from public.match_clinical_memory('00000000-0000-0000-0000-000000000301', format('[%s]', array_to_string(array_fill(0::real, array[768]), ','))::extensions.vector, 8, 0)$matrix$, '42501', null, 'anonymous memory RPC is denied');
+select throws_ok($matrix$select * from public.match_clinical_memory('00000000-0000-0000-0000-000000000101', '00000000-0000-0000-0000-000000000301', format('[%s]', array_to_string(array_fill(0::real, array[768]), ','))::extensions.vector, 8, 0)$matrix$, '42501', null, 'anonymous memory RPC is denied');
 select ok((select count(*) = 0 from storage.objects where id = '00000000-0000-0000-0000-000000000508'), 'anonymous storage read returns zero rows');
 set local role postgres;
 select set_config('request.jwt.claim.sub', '', true);
@@ -147,7 +147,7 @@ select throws_ok($matrix$delete from public.documents where id = '00000000-0000-
 set local role postgres;
 select set_config('request.jwt.claim.sub', '', true);
 
-select ok((select count(*) = 56 from pg_class c join pg_namespace n on n.oid = c.relnamespace where n.nspname = 'public' and c.relkind = 'r' and c.relrowsecurity and c.relforcerowsecurity), 'all public product tables force RLS');
+select ok((select count(*) = 57 from pg_class c join pg_namespace n on n.oid = c.relnamespace where n.nspname = 'public' and c.relkind = 'r' and c.relrowsecurity and c.relforcerowsecurity), 'all public product tables force RLS');
 select ok(not exists (select 1 from information_schema.role_table_grants where grantee = 'anon' and table_schema = 'public'), 'anonymous has no public product table grants');
 
 select * from finish();

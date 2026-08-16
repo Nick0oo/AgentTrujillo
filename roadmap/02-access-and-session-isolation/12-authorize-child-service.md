@@ -2,7 +2,7 @@
 id: AT-02-12
 title: Resolve child authorization atomically
 module: 02-access-and-session-isolation
-status: pending
+status: complete
 execution: sequential
 parallel_group: null
 depends_on: [AT-02-11]
@@ -162,11 +162,11 @@ Stage only six declared paths, verify no baseline edits/secrets/sensitive return
 
 ## Completion checklist
 
-- [ ] Authorization is one JWT-scoped atomic query.
-- [ ] Required permissions are server-selected and all required.
-- [ ] Scope TTL/version/country/timezone are authoritative and strict.
-- [ ] Every negative condition maps to identical denial.
-- [ ] Reset, DB tests, lint, types, app tests, and build pass.
+- [x] Authorization is one JWT-scoped atomic query.
+- [x] Required permissions are server-selected and all required.
+- [x] Scope TTL/version/country/timezone are authoritative and strict.
+- [x] Every negative condition maps to identical denial.
+- [x] Reset, DB tests, lint, types, app tests, and build pass.
 
 ## Handoff
 
