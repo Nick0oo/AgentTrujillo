@@ -2,7 +2,7 @@
 id: AT-03-07
 title: Bind Dr Trujillo approval to exact clinical package evidence
 module: 03-clinical-governance
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-03-03, AT-03-04, AT-03-08]
@@ -138,7 +138,10 @@ Run CLI dry-run on synthetic package, approve synthetic digest, attempt mutation
 
 ## Completion evidence
 
-Record migration checksum, synthetic manifest digest, approval matrix, SQL/type tests, approver-policy review, and commit. Real approval evidence stores IDs/digests only, not clinical source bodies.
+Supabase Cloud migration `20260816110000_clinical_approval_attestations.sql` applied and the synthetic SQL fixture passed with rollback.
+The migration binds algorithm/source/manifest hashes, verified subject/role, request replay identity, and additive withdrawal while blocking
+update/delete. The TypeScript policy tests passed 3/3; generated Cloud types and `npm run typecheck` passed. No real Dr. Trujillo
+identity or clinical package was approved; the CLI remains dry-run only and emits identifiers/digests without source bodies.
 
 ## Commit protocol
 
@@ -146,11 +149,11 @@ Commit exclusive paths with `feat(governance): enforce clinical approval attesta
 
 ## Completion checklist
 
-- [ ] Approval binds all relevant identities and hashes.
-- [ ] Dr. Trujillo identity is verified, not a name string.
-- [ ] Attestations are append-only and replay-safe.
-- [ ] Withdrawal is additive and immediately invalidates resolution.
-- [ ] Approval creates no professional workflow.
+- [x] Approval binds all relevant identities and hashes.
+- [x] Dr. Trujillo identity is verified, not a name string.
+- [x] Attestations are append-only and replay-safe.
+- [x] Withdrawal is additive and immediately invalidates resolution.
+- [x] Approval creates no professional workflow.
 
 ## Handoff
 
