@@ -63,3 +63,7 @@ The vector-hardening runner is [`supabase/tests/040_vector_scope_hardening.test.
 | count / threshold bounds | count clamped to `1..20` | invalid threshold zero rows | explicit two-dimensional predicates | old four-argument overload absent |
 
 The five-argument RPC filters both scope IDs before similarity and returns only memory ID, type, structured content, and similarity; embeddings, searchable text, and foreign scope identifiers are not returned.
+
+## AT-02-07 Realtime extension
+
+The publication-hardening runner is [`supabase/tests/050_realtime_publication_hardening.test.sql`](../../supabase/tests/050_realtime_publication_hardening.test.sql). It declares 10 assertions and proves that `supabase_realtime` remains available while its public product membership is empty. The four historical raw tables (`messages`, `medication_intakes`, `medication_reminders`, `entitlements`) are unpublished, no invalidation relation is introduced early, and forced RLS/anonymous-grant invariants remain unchanged. Module 12 owns any future opaque invalidation contract.
