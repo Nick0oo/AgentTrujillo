@@ -44,6 +44,22 @@ describe("session ownership repository", () => {
     expect(query.eq).toHaveBeenCalledWith("authorization_version", scope.authorizationVersion);
   });
 
+  it("refreshes the lease through the owner-scoped RPC and returns its new projection", async () => {
+    const client = fakeClient({ data: [{ ...row, authorization_expires_at: "2026-08-16T12:04:00.000Z" }], error: null });
+    const repository = createSessionOwnershipRepository(config, { createClient: () => client });
+    await expect(repository.refreshLease(scope, row.id, "refresh-request")).resolves.toMatchObject({
+      productSessionId: row.id,
+      authorizationExpiresAt: new Date("2026-08-16T12:04:00.000Z"),
+    });
+    expect((client as { rpc: ReturnType<typeof vi.fn> }).rpc).toHaveBeenCalledWith("refresh_owned_agent_session_lease", {
+      p_product_session_id: row.id,
+      p_care_space_id: scope.careSpaceId,
+      p_child_id: scope.childId,
+      p_authorization_version: scope.authorizationVersion,
+      p_authorization_expires_at: scope.expiresAt.toISOString(),
+    });
+  });
+
   it.each([
     ["RPC error", { data: null, error: new Error("db") }],
     ["zero rows", { data: [], error: null }],

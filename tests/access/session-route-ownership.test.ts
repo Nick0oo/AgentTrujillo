@@ -91,4 +91,56 @@ describe("session route ownership", () => {
     expect(new Set(SESSION_ROUTE_SCENARIOS.map((scenario) => scenario.operation))).toEqual(new Set(["create", "follow_up", "stream", "cancel", "resume", "inspect"]));
     expect(SESSION_ROUTE_SCENARIOS.every((scenario) => scenario.state === "authorized" ? scenario.expected === "allow" : scenario.expected === "deny")).toBe(true);
   });
+
+  it.each(SESSION_ROUTE_SCENARIOS)("executes $operation/$principal/$state as $expected", async (scenario) => {
+    const order: string[] = [];
+    const authorized = scenario.expected === "allow";
+    const repositoryDenied = !authorized && (scenario.state === "missing" || scenario.principal !== "owner");
+    const authenticator = { authenticateAuthorizationHeader: vi.fn(async () => { order.push("auth"); return guardian; }) };
+    const contextTokens = {
+      issue: vi.fn().mockResolvedValue("context"),
+      verify: vi.fn(async () => { order.push("context"); return context; }),
+    } as unknown as ChildContextTokenService;
+    const leaseValidator = {
+      validateForOperation: vi.fn(async () => { order.push("lease"); return authorized ? scope : createAccessDenied(`matrix-${scenario.operation}`); }),
+    } as unknown as AccessLeaseValidator;
+    const sessions: SessionOwnershipRepository = {
+      create: vi.fn(),
+      bindEveSession: vi.fn(),
+      findByProductId: vi.fn(async () => { order.push("repository"); return repositoryDenied ? createAccessDenied(`matrix-${scenario.operation}`) : session; }),
+      findByEveSessionId: vi.fn(),
+      refreshLease: vi.fn(),
+    };
+    const streamMonitor: StreamAccessMonitor = { monitor: vi.fn(async () => { order.push("monitor"); return () => undefined; }) };
+    const guard = createSessionRouteGuard({ authenticator, contextTokens, leaseValidator, sessions, streamMonitor });
+    const result = scenario.operation === "create"
+      ? await guard.authorizeCreate({ authorizationHeader: "Bearer fixture", childContextToken: "context", requestId: `matrix-${scenario.operation}` })
+      : await guard.authorizeExisting({
+        authorizationHeader: "Bearer fixture",
+        childContextToken: "context",
+        sessionId: scenario.state === "malformed" ? "not-a-uuid" : session.productSessionId,
+        operation: scenario.operation,
+        requestId: `matrix-${scenario.operation}`,
+        ...(scenario.operation === "stream" ? { stream: { abort: new AbortController() } } : {}),
+      });
+
+    const allowed = typeof result === "object" && result !== null && "guardian" in result;
+    expect(allowed).toBe(authorized);
+    if (!authorized) {
+      expect(result).toMatchObject({ status: 404 });
+      expect(JSON.stringify(result)).not.toContain(scope.childId);
+      expect(JSON.stringify(result)).not.toContain(session.productSessionId);
+    }
+    if (scenario.operation === "create") {
+      expect(order).toEqual(["auth", "context", "lease"]);
+    } else if (scenario.state === "malformed") {
+      expect(order).toEqual(["auth", "context"]);
+    } else if (repositoryDenied) {
+      expect(order).toEqual(["auth", "context", "repository"]);
+    } else if (authorized && scenario.operation === "stream") {
+      expect(order).toEqual(["auth", "context", "repository", "lease", "monitor"]);
+    } else {
+      expect(order).toEqual(["auth", "context", "repository", "lease"]);
+    }
+  });
 });

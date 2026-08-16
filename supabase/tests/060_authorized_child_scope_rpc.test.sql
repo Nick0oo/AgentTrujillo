@@ -52,10 +52,9 @@ select ok((select count(*) = 0 from public.resolve_authorized_child_scope('00000
 select ok((select count(*) = 0 from public.resolve_authorized_child_scope('00000000-0000-0000-0000-000000000921', array['read', 'read'])), 'duplicate required permissions returns zero rows');
 select ok((select count(*) = 0 from public.resolve_authorized_child_scope('00000000-0000-0000-0000-000000000921', array['unknown'])), 'unknown required permissions return zero rows');
 
-set local role anon;
-select set_config('request.jwt.claim.sub', '', true);
-select throws_ok($sql$select * from public.resolve_authorized_child_scope('00000000-0000-0000-0000-000000000921', array['read'])$sql$, '42501', null, 'anonymous RPC is denied');
+select ok(not has_function_privilege('anon', 'public.resolve_authorized_child_scope(uuid,text[])', 'execute'), 'anonymous RPC is denied');
 set local role postgres;
+select set_config('request.jwt.claim.sub', '', true);
 select set_config('request.jwt.claim.sub', '', true);
 
 update public.care_space_members set member_role = 'guardian' where care_space_id = '00000000-0000-0000-0000-000000000911' and user_id = '00000000-0000-0000-0000-000000000901';

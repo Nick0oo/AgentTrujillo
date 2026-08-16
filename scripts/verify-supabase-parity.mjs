@@ -15,10 +15,11 @@ export const EXPECTED_MIGRATIONS = [
   "20260816040000_realtime_publication_hardening.sql",
   "20260816050000_authorized_child_scope_rpc.sql",
   "20260816060000_session_ownership_rpcs.sql",
+  "20260816070000_session_lease_refresh_hardening.sql",
 ];
 
 export const EXPECTED_PARITY = {
-  migrationCount: 9,
+  migrationCount: 10,
   tableCount: 57,
   bucketCount: 5,
   rlsForcedCount: 57,

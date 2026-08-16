@@ -2,7 +2,7 @@
 id: AT-02-06
 title: Require care-space and child scope before vector similarity
 module: 02-access-and-session-isolation
-status: complete
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-02-05]

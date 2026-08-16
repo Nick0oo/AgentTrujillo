@@ -2,7 +2,7 @@
 id: AT-02-16
 title: Prove ownership on every session route transition
 module: 02-access-and-session-isolation
-status: complete
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-02-15]

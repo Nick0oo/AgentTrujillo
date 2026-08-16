@@ -15,14 +15,15 @@ const expectedMigrations = [
   "20260816040000_realtime_publication_hardening.sql",
   "20260816050000_authorized_child_scope_rpc.sql",
   "20260816060000_session_ownership_rpcs.sql",
+  "20260816070000_session_lease_refresh_hardening.sql",
 ];
 
 const expected = {
-  migrationCount: 9,
+  migrationCount: 10,
   tableCount: 57,
   bucketCount: 5,
   rlsForcedCount: 57,
-  checksum: "sha256:baseline-placeholder",
+  checksum: "sha256:347b5d136f46a91fe4f792eb4e8a4910576e9b99462e08cebe2a4a92a686da01",
 };
 
 const expectedProjection = {
@@ -81,7 +82,7 @@ describe("local Supabase parity gate", () => {
   });
 
   it("returns the reviewed parity result for expected counts and checksum", () => {
-    expect(parity.evaluateParity(expected, expected)).toEqual({ ok: true, migrationCount: 9, tableCount: 57, bucketCount: 5, rlsForcedCount: 57, checksum: expected.checksum });
+    expect(parity.evaluateParity(expected, expected)).toEqual({ ok: true, migrationCount: 10, tableCount: 57, bucketCount: 5, rlsForcedCount: 57, checksum: expected.checksum });
   });
 
   it("reports bounded schema drift for count, checksum, and migration mismatches", () => {

@@ -2,7 +2,7 @@
 id: AT-02-08
 title: Build a request-scoped guardian Supabase client
 module: 02-access-and-session-isolation
-status: complete
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-02-07]

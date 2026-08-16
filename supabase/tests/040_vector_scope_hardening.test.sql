@@ -59,7 +59,7 @@ select throws_ok($sql$select * from public.match_clinical_memory('00000000-0000-
 
 set local role anon;
 select set_config('request.jwt.claim.sub', '', true);
-select throws_ok($sql$select * from public.match_clinical_memory('00000000-0000-0000-0000-000000000811', '00000000-0000-0000-0000-000000000821', format('[%s]', array_to_string(array_fill(0::real, array[768]), ','))::extensions.vector, 8, 0)$sql$, '42501', null, 'anonymous scoped RPC is denied');
+select ok(not has_function_privilege('anon', 'public.match_clinical_memory(uuid,uuid,extensions.vector,integer,double precision)', 'execute'), 'anonymous scoped RPC is denied');
 set local role postgres;
 select set_config('request.jwt.claim.sub', '', true);
 

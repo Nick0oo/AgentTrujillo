@@ -2,7 +2,7 @@
 id: AT-02-03
 title: Establish the negative RLS Storage and RPC matrix
 module: 02-access-and-session-isolation
-status: complete
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-02-02]

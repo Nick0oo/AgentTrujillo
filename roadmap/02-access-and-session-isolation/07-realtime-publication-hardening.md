@@ -2,7 +2,7 @@
 id: AT-02-07
 title: Remove raw product rows from Supabase Realtime
 module: 02-access-and-session-isolation
-status: complete
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-02-06]

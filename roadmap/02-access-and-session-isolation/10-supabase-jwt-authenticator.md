@@ -2,7 +2,7 @@
 id: AT-02-10
 title: Verify Supabase guardian access tokens cryptographically
 module: 02-access-and-session-isolation
-status: complete
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-02-08]

@@ -4,7 +4,7 @@ Estado: paridad del módulo 02 capturada y reproducible con Docker Desktop.
 
 ## Baseline revisado
 
-- Migraciones activas exactas: las tres fundacionales más `20260816010000_session_scope_hardening.sql`, `20260816020000_agent_command_idempotency.sql`, `20260816030000_vector_scope_hardening.sql`, `20260816040000_realtime_publication_hardening.sql`, `20260816050000_authorized_child_scope_rpc.sql` y `20260816060000_session_ownership_rpcs.sql`.
+- Migraciones activas exactas: las tres fundacionales más `20260816010000_session_scope_hardening.sql`, `20260816020000_agent_command_idempotency.sql`, `20260816030000_vector_scope_hardening.sql`, `20260816040000_realtime_publication_hardening.sql`, `20260816050000_authorized_child_scope_rpc.sql`, `20260816060000_session_ownership_rpcs.sql` y `20260816070000_session_lease_refresh_hardening.sql`.
 - 57 tablas de producto públicas.
 - RLS habilitado y forzado en 57 tablas.
 - 5 buckets privados.
@@ -32,11 +32,11 @@ La proyección final se obtiene con `supabase db query --local` y se normalizan 
 
 ## Resultado de la ejecución local
 
-Resultado final del módulo: reset local con las nueve migraciones; 8 archivos SQL y 188 assertions pasaron; lint terminó en código 0 con sólo la advertencia administrada `storage.search_by_timestamp`; `db diff --local` terminó sin cambios de esquema. La suite Node pasó 29 archivos, 196 tests y 1 skip explícito de integración opt-in; typecheck, tipos, Eve baseline, discovery y build pasaron.
+Resultado final del módulo: reset local con las diez migraciones; 8 archivos SQL y 193 assertions pasaron; lint terminó en código 0 con sólo la advertencia administrada `storage.search_by_timestamp`; `db diff --local` terminó sin cambios de esquema. La suite Node pasó 29 archivos, 269 tests y 1 skip explícito de integración opt-in; typecheck y tipos pasaron.
 
 ## Promoción Cloud
 
-Se verificó `CreciendoApp` (`yapjiinrjsrothzgzxsv`, `us-east-1`) antes de aplicar. El dry-run enumeró sólo las seis migraciones del módulo 02; el push forward-only las aplicó en orden. Postflight remoto: 9 migraciones, 57 tablas, 57 tablas con RLS forzado, 0 relaciones en `supabase_realtime`, ambos RPCs de ownership presentes y `anon` sin EXECUTE sobre create. El lint remoto conserva únicamente la advertencia administrada de Storage.
+Se verificó `CreciendoApp` (`yapjiinrjsrothzgzxsv`, `us-east-1`) antes de aplicar. El dry-run enumeró la migración de refresh pendiente; el push forward-only la aplicó en orden. Postflight remoto: 10 migraciones, 57 tablas, 57 tablas con RLS forzado, 0 relaciones en `supabase_realtime`, los RPCs de ownership y refresh presentes y `anon` sin EXECUTE sobre create. El lint remoto conserva únicamente la advertencia administrada de Storage.
 
 Para completar AT-02-01, iniciar Docker Desktop y ejecutar:
 

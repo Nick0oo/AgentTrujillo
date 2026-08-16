@@ -3260,6 +3260,26 @@ export type Database = {
           structured_content: Json
         }[]
       }
+      refresh_owned_agent_session_lease: {
+        Args: {
+          p_authorization_expires_at: string
+          p_authorization_version: string
+          p_care_space_id: string
+          p_child_id: string
+          p_product_session_id: string
+        }
+        Returns: {
+          authorization_expires_at: string
+          authorization_version: string
+          care_space_id: string
+          child_id: string
+          eve_session_id: string
+          last_sequence: number
+          owner_user_id: string
+          product_session_id: string
+          status: string
+        }[]
+      }
       resolve_authorized_child_scope: {
         Args: { p_child_id: string; p_required_permissions: string[] }
         Returns: {

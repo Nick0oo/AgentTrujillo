@@ -2,7 +2,7 @@
 id: AT-02-02
 title: Generate and enforce Supabase database types
 module: 02-access-and-session-isolation
-status: complete
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-02-01]

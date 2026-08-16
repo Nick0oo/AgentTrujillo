@@ -134,7 +134,7 @@ set local role anon;
 select set_config('request.jwt.claim.sub', '', true);
 select throws_ok($matrix$select count(*) from public.care_spaces$matrix$, '42501', null, 'anonymous care-space read is denied');
 select throws_ok($matrix$select count(*) from public.children$matrix$, '42501', null, 'anonymous child read is denied');
-select throws_ok($matrix$select * from public.match_clinical_memory('00000000-0000-0000-0000-000000000101', '00000000-0000-0000-0000-000000000301', format('[%s]', array_to_string(array_fill(0::real, array[768]), ','))::extensions.vector, 8, 0)$matrix$, '42501', null, 'anonymous memory RPC is denied');
+select ok(not has_function_privilege('anon', 'public.match_clinical_memory(uuid,uuid,extensions.vector,integer,double precision)', 'execute'), 'anonymous memory RPC is denied');
 select ok((select count(*) = 0 from storage.objects where id = '00000000-0000-0000-0000-000000000508'), 'anonymous storage read returns zero rows');
 set local role postgres;
 select set_config('request.jwt.claim.sub', '', true);

@@ -50,7 +50,6 @@ function sameSessionRecord(left: OwnedSessionRecord, right: OwnedSessionRecord):
     && left.careSpaceId === right.careSpaceId
     && left.childId === right.childId
     && left.authorizationVersion === right.authorizationVersion
-    && left.authorizationExpiresAt.getTime() === right.authorizationExpiresAt.getTime()
     && left.status === right.status
     && left.lastSequence === right.lastSequence;
 }

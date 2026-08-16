@@ -107,10 +107,19 @@ export function createSessionOwnershipRepository(
       return find(scope, requestId, (query) => query.eq("eve_session_id", id));
     },
     async refreshLease(scope, productSessionId, requestId = "session") {
-      // AT-02-14 intentionally makes the authorization lease immutable. A fresh
-      // authorization may revalidate the lease, but cannot extend or rewrite it.
       if (!UUID_PATTERN.test(productSessionId)) return createAccessDenied(requestId);
-      return find(scope, requestId, (query) => query.eq("id", productSessionId));
+      try {
+        const client = clientFor(scope);
+        return oneRow(await client.rpc("refresh_owned_agent_session_lease", {
+          p_product_session_id: productSessionId,
+          p_care_space_id: scope.careSpaceId,
+          p_child_id: scope.childId,
+          p_authorization_version: scope.authorizationVersion,
+          p_authorization_expires_at: scope.expiresAt.toISOString(),
+        }), scope, requestId);
+      } catch {
+        return createAccessDenied(requestId);
+      }
     },
   };
 

@@ -2,7 +2,7 @@
 id: AT-02-13
 title: Issue and verify short-lived signed child context
 module: 02-access-and-session-isolation
-status: complete
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-02-12]

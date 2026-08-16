@@ -2,7 +2,7 @@
 id: AT-02-01
 title: Prove local schema parity from forward migrations
 module: 02-access-and-session-isolation
-status: complete
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-01-02, AT-01-04]

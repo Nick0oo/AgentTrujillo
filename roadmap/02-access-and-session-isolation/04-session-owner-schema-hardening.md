@@ -2,7 +2,7 @@
 id: AT-02-04
 title: Enforce immutable owner and composite session scope
 module: 02-access-and-session-isolation
-status: complete
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-02-03]
