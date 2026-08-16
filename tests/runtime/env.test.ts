@@ -6,11 +6,15 @@ import {
 } from "../../agent/lib/config/env";
 
 const validKey = "AIzaSyA-test-key-that-is-long-enough";
+const supabaseUrl = "https://example.supabase.co";
+const supabasePublishableKey = "sb_publishable-test-key-that-is-long-enough";
 
 function env(overrides: NodeJS.ProcessEnv = {}): NodeJS.ProcessEnv {
   return {
     APP_ENV: "test",
     GOOGLE_GENERATIVE_AI_API_KEY: validKey,
+    SUPABASE_URL: supabaseUrl,
+    SUPABASE_PUBLISHABLE_KEY: supabasePublishableKey,
     ...overrides,
   };
 }
@@ -23,6 +27,8 @@ describe("runtime environment boundary", () => {
 
       expect(config.appEnv).toBe(appEnv);
       expect(config.googleApiKey).toBe(validKey);
+      expect(config.supabaseUrl).toBe(supabaseUrl);
+      expect(config.supabasePublishableKey).toBe(supabasePublishableKey);
     },
   );
 
@@ -63,13 +69,13 @@ describe("runtime environment boundary", () => {
       env({ HOME: "/private/user", UNRELATED_SECRET: "do-not-copy" }),
     );
 
-    expect(config).toEqual({ appEnv: "test", googleApiKey: validKey });
+    expect(config).toEqual({ appEnv: "test", googleApiKey: validKey, supabaseUrl, supabasePublishableKey });
   });
 
   it("redacts values from invalid errors", () => {
     const error = (() => {
       try {
-        loadRuntimeConfig({ APP_ENV: "nope", GOOGLE_GENERATIVE_AI_API_KEY: validKey });
+        loadRuntimeConfig(env({ APP_ENV: "nope" }));
         throw new Error("expected failure");
       } catch (caught) {
         return caught as RuntimeConfigError;
@@ -86,7 +92,7 @@ describe("runtime environment boundary", () => {
   it("sorts and de-duplicates invalid field names", () => {
     const error = (() => {
       try {
-        loadRuntimeConfig({ APP_ENV: "nope", GOOGLE_GENERATIVE_AI_API_KEY: "" });
+        loadRuntimeConfig(env({ APP_ENV: "nope", GOOGLE_GENERATIVE_AI_API_KEY: "" }));
         throw new Error("expected failure");
       } catch (caught) {
         return caught as RuntimeConfigError;
@@ -103,5 +109,22 @@ describe("runtime environment boundary", () => {
     const config = loadRuntimeConfig(env());
 
     expect(Object.isFrozen(config)).toBe(true);
+  });
+
+  it.each([
+    ["missing", undefined],
+    ["blank", ""],
+    ["short", "short"],
+  ])("rejects a %s Supabase publishable key", (_label, key) => {
+    expect(() => loadRuntimeConfig(env({ SUPABASE_PUBLISHABLE_KEY: key }))).toThrowError(RuntimeConfigError);
+  });
+
+  it("allows loopback HTTP only in local environments", () => {
+    expect(loadRuntimeConfig(env({ APP_ENV: "test", SUPABASE_URL: "http://127.0.0.1:54321" })).supabaseUrl).toBe("http://127.0.0.1:54321");
+    expect(() => loadRuntimeConfig(env({ APP_ENV: "production", SUPABASE_URL: "http://127.0.0.1:54321" }))).toThrowError(RuntimeConfigError);
+  });
+
+  it("rejects non-HTTPS non-loopback Supabase URLs", () => {
+    expect(() => loadRuntimeConfig(env({ SUPABASE_URL: "http://supabase.internal" }))).toThrowError(RuntimeConfigError);
   });
 });

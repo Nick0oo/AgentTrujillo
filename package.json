@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@ai-sdk/google": "4.0.44",
+    "@supabase/supabase-js": "2.112.3",
     "@vercel/connect": "0.4.2",
     "ai": "^7.0.34",
     "eve": "0.27.1",
