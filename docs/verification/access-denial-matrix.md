@@ -64,6 +64,10 @@ The vector-hardening runner is [`supabase/tests/040_vector_scope_hardening.test.
 
 The five-argument RPC filters both scope IDs before similarity and returns only memory ID, type, structured content, and similarity; embeddings, searchable text, and foreign scope identifiers are not returned.
 
+## AT-02-12 authorized-child extension
+
+The atomic authorization RPC runner is [`supabase/tests/060_authorized_child_scope_rpc.test.sql`](../../supabase/tests/060_authorized_child_scope_rpc.test.sql). It declares 28 assertions over active, sibling, foreign, revoked, wrong-permission, malformed-required-permission, and anonymous cases. The RPC returns only scope identifiers, permissions, country/timezone, monotonic membership/access versions, and validity bounds; the application service maps every error, zero-row, multiple-row, expired, and malformed projection to the same `ACCESS_DENIED` object.
+
 ## AT-02-07 Realtime extension
 
 The publication-hardening runner is [`supabase/tests/050_realtime_publication_hardening.test.sql`](../../supabase/tests/050_realtime_publication_hardening.test.sql). It declares 10 assertions and proves that `supabase_realtime` remains available while its public product membership is empty. The four historical raw tables (`messages`, `medication_intakes`, `medication_reminders`, `entitlements`) are unpublished, no invalidation relation is introduced early, and forced RLS/anonymous-grant invariants remain unchanged. Module 12 owns any future opaque invalidation contract.

@@ -411,6 +411,7 @@ export type Database = {
       }
       care_space_members: {
         Row: {
+          authorization_version: number
           care_space_id: string
           created_at: string
           id: string
@@ -424,6 +425,7 @@ export type Database = {
           valid_until: string | null
         }
         Insert: {
+          authorization_version?: number
           care_space_id: string
           created_at?: string
           id?: string
@@ -437,6 +439,7 @@ export type Database = {
           valid_until?: string | null
         }
         Update: {
+          authorization_version?: number
           care_space_id?: string
           created_at?: string
           id?: string
@@ -501,6 +504,7 @@ export type Database = {
       }
       child_access: {
         Row: {
+          authorization_version: number
           care_space_id: string
           child_id: string
           created_at: string
@@ -515,6 +519,7 @@ export type Database = {
           valid_until: string | null
         }
         Insert: {
+          authorization_version?: number
           care_space_id: string
           child_id: string
           created_at?: string
@@ -529,6 +534,7 @@ export type Database = {
           valid_until?: string | null
         }
         Update: {
+          authorization_version?: number
           care_space_id?: string
           child_id?: string
           created_at?: string
@@ -3204,6 +3210,20 @@ export type Database = {
           memory_type: string
           similarity: number
           structured_content: Json
+        }[]
+      }
+      resolve_authorized_child_scope: {
+        Args: { p_child_id: string; p_required_permissions: string[] }
+        Returns: {
+          access_valid_until: string
+          access_version: number
+          care_space_id: string
+          child_id: string
+          country_of_care: string
+          membership_valid_until: string
+          membership_version: number
+          permissions: string[]
+          timezone: string
         }[]
       }
     }
