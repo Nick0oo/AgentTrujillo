@@ -33,7 +33,7 @@ forbidden_paths:
   - agent/**
   - supabase/**
   - .eve/**
-commit:
+commit: 76883f2
   message: "test(runtime): enforce Eve discovery surface"
 ---
 
@@ -158,11 +158,11 @@ Stage only four declared paths, run cached diff/secret/artifact checks, and comm
 
 ## Completion checklist
 
-- [ ] Parser handles Eve's banner and JSON deterministically.
-- [ ] Fixture contains no host paths or secrets.
-- [ ] Exact model, skills, tools, graph, schedules, and routes are enforced.
-- [ ] Diagnostics must be zero.
-- [ ] Repeated discovery, tests, typecheck, and build pass.
+- [x] Parser handles Eve's banner and JSON deterministically.
+- [x] Fixture contains no host paths or secrets.
+- [x] Exact model, skills, tools, graph, schedules, and routes are enforced.
+- [x] Diagnostics must be zero.
+- [x] Repeated discovery, tests, typecheck, and build pass.
 
 ## Handoff
 

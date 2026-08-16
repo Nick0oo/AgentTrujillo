@@ -31,7 +31,7 @@ forbidden_paths:
   - agent/tools/**
   - agent/channels/**
   - supabase/**
-commit:
+commit: 86f7e06
   message: "feat(agent): add runtime tool execution policy"
 ---
 
@@ -141,11 +141,11 @@ Stage only the skill package and test; run cached checks and commit exactly `fea
 
 ## Completion checklist
 
-- [ ] Effect and confirmation semantics are complete.
-- [ ] Authority-bearing fields are prohibited from model input.
-- [ ] Reauthorization and idempotency survive pause/replay.
-- [ ] Every approved future tool is mapped to an owning leaf.
-- [ ] Tests, discovery, build, and scans pass.
+- [x] Effect and confirmation semantics are complete.
+- [x] Authority-bearing fields are prohibited from model input.
+- [x] Reauthorization and idempotency survive pause/replay.
+- [x] Every approved future tool is mapped to an owning leaf.
+- [x] Tests, discovery, build, and scans pass.
 
 ## Handoff
 

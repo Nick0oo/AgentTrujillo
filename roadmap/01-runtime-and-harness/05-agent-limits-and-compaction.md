@@ -32,7 +32,7 @@ forbidden_paths:
   - agent/instructions.md
   - agent/tools/**
   - supabase/**
-commit:
+commit: f9239aa
   message: "feat(runtime): bound session usage and compaction"
 ---
 
@@ -150,11 +150,11 @@ Stage only three declared paths, run cached diff/secret/artifact checks, and com
 
 ## Completion checklist
 
-- [ ] All four runtime values have one source of truth.
-- [ ] Limits are finite, positive, and not configurable by a caller/model.
-- [ ] Compaction stays on the direct primary provider.
-- [ ] Tests, typecheck, info, build, and manifest inspection pass.
-- [ ] Generated artifacts are not staged.
+- [x] All four runtime values have one source of truth.
+- [x] Limits are finite, positive, and not configurable by a caller/model.
+- [x] Compaction stays on the direct primary provider.
+- [x] Tests, typecheck, info, build, and manifest inspection pass.
+- [x] Generated artifacts are not staged.
 
 ## Handoff
 

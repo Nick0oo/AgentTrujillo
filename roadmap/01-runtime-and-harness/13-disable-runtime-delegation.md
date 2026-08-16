@@ -31,7 +31,7 @@ forbidden_paths:
   - agent/tools/workflow.ts
   - agent/skills/**
   - supabase/**
-commit:
+commit: d3b4441
   message: "security(runtime): disable runtime delegation"
 ---
 
@@ -137,10 +137,10 @@ Stage only two declared files, run cached checks, and commit exactly `security(r
 
 ## Completion checklist
 
-- [ ] Root delegation sentinel is present.
-- [ ] No local or remote subagent is discovered.
-- [ ] Experimental Workflow tool is absent.
-- [ ] Tests, discovery, build, evals, and scans pass.
+- [x] Root delegation sentinel is present.
+- [x] No local or remote subagent is discovered.
+- [x] Experimental Workflow tool is absent.
+- [ ] Live evals pass; static contracts, discovery, build, and scans pass.
 
 ## Handoff
 

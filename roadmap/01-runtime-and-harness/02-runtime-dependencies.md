@@ -38,7 +38,7 @@ forbidden_paths:
   - agent/**
   - supabase/**
   - node_modules/**
-commit:
+commit: 8cb0041
   message: "build(runtime): add pinned Gemini and test dependencies"
 ---
 
@@ -149,11 +149,11 @@ Stage only declared files, review `package-lock.json`, run cached diff and secre
 
 ## Completion checklist
 
-- [ ] Exact compatible versions are declared and locked.
-- [ ] Vitest discovers and passes the runtime version test.
-- [ ] No alternate model provider is installed.
-- [ ] Typecheck, build, info, and dependency-tree checks pass.
-- [ ] No environment values or generated outputs are staged.
+- [x] Exact compatible versions are declared and locked.
+- [x] Vitest discovers and passes the runtime version test.
+- [x] No alternate model provider is installed.
+- [x] Typecheck, build, info, and dependency-tree checks pass.
+- [x] No environment values or generated outputs are staged.
 
 ## Handoff
 

@@ -40,7 +40,7 @@ forbidden_paths:
   - agent/**
   - supabase/**
   - .eve/**
-commit:
+commit: 27650c7
   message: "test(runtime): add Gemini safety smoke evals"
 ---
 
@@ -158,11 +158,11 @@ Stage only declared eval/test/package files, ensure `.eve` and credentials are u
 
 ## Completion checklist
 
-- [ ] Exactly six focused synthetic evals are discovered.
-- [ ] Direct Gemini is the only provider and no judge/fallback is used.
-- [ ] Diagnosis, prescription, clinician operations, and forbidden tools have zero failures.
-- [ ] Emergency test is clearly policy-format only; production remains blocked on module `04`.
-- [ ] Two strict serial runs and privacy scans pass.
+- [x] Exactly six focused synthetic evals are discovered.
+- [x] Direct Gemini is the only provider and no judge/fallback is used.
+- [ ] Diagnosis, prescription, clinician operations, and forbidden tools have zero live-eval failures.
+- [x] Emergency test is clearly policy-format only; production remains blocked on module `04`.
+- [ ] Two strict serial runs and privacy scans pass with an authorized key.
 - [ ] Dr. Trujillo approval is recorded.
 
 ## Handoff

@@ -31,7 +31,7 @@ forbidden_paths:
   - agent/tools/**
   - agent/subagents/**
   - supabase/**
-commit:
+commit: fcf1dd1
   message: "feat(agent): add clinical safety runtime skill"
 ---
 
@@ -140,11 +140,12 @@ Stage only `agent/skills/clinical-safety/**` and its test, run cached checks, an
 
 ## Completion checklist
 
-- [ ] Skill routes on the complete pediatric domain.
-- [ ] Deterministic authority and trust order are explicit.
-- [ ] Emergency and professional modes have no operational escalation.
-- [ ] No clinical rule or model calculation is embedded.
-- [ ] Approval, tests, discovery, build, and scans pass.
+- [x] Skill routes on the complete pediatric domain.
+- [x] Deterministic authority and trust order are explicit.
+- [x] Emergency and professional modes have no operational escalation.
+- [x] No clinical rule or model calculation is embedded.
+- [ ] Dr. Trujillo clinical approval is recorded.
+- [x] Tests, discovery, build, and prohibited-language scans pass.
 
 ## Handoff
 

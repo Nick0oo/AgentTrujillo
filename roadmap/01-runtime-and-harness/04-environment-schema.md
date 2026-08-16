@@ -32,7 +32,7 @@ forbidden_paths:
   - .env.production
   - agent/agent.ts
   - supabase/**
-commit:
+commit: 98d3bb5
   message: "feat(runtime): validate server environment configuration"
 ---
 
@@ -157,11 +157,11 @@ Stage only the three declared files. Verify `.env.example` has no assignments wi
 
 ## Completion checklist
 
-- [ ] Only approved field names enter parsing.
-- [ ] Valid output is typed and immutable.
-- [ ] Invalid output is stable and redacted.
-- [ ] Example environment contains no value or credential.
-- [ ] Tests, typecheck, info, build, and staged scans pass.
+- [x] Only approved field names enter parsing.
+- [x] Valid output is typed and immutable.
+- [x] Invalid output is stable and redacted.
+- [x] Example environment contains no value or credential.
+- [x] Tests, typecheck, info, build, and staged scans pass.
 
 ## Handoff
 

@@ -33,7 +33,7 @@ forbidden_paths:
   - agent/connections/**
   - agent/skills/**
   - supabase/**
-commit:
+commit: a470587
   message: "security(runtime): disable arbitrary network tools"
 ---
 
@@ -140,11 +140,11 @@ Stage only three declared paths, run cached/secret/artifact checks, and commit e
 
 ## Completion checklist
 
-- [ ] Both arbitrary web defaults are disabled.
-- [ ] Connections and conditional connection search are absent.
-- [ ] Provider-native search is absent.
-- [ ] Missing sources fail safely.
-- [ ] Tests, discovery, build, evals, and scans pass.
+- [x] Both arbitrary web defaults are disabled.
+- [x] Connections and conditional connection search are absent.
+- [x] Provider-native search is absent.
+- [x] Missing sources fail safely.
+- [ ] Live evals pass; static contracts, discovery, build, and scans pass.
 
 ## Handoff
 

@@ -30,7 +30,7 @@ forbidden_paths:
   - agent/tools/**
   - agent/connections/**
   - supabase/**
-commit:
+commit: 785001f
   message: "security(runtime): deny sandbox network egress"
 ---
 
@@ -137,10 +137,10 @@ Stage only two declared paths, run cached secret/artifact checks, and commit exa
 
 ## Completion checklist
 
-- [ ] All real network backends start deny-all.
-- [ ] just-bash uses only supported no-network semantics.
-- [ ] No workspace, credential, bootstrap, or allowlist exists.
-- [ ] Local verification passes.
+- [x] All real network backends start deny-all.
+- [x] just-bash uses only supported no-network semantics.
+- [x] No workspace, credential, bootstrap, or allowlist exists.
+- [x] Local verification passes.
 - [ ] Hosted denial evidence is required before production.
 
 ## Handoff

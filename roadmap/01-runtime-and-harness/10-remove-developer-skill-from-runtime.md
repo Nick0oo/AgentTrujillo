@@ -31,7 +31,7 @@ forbidden_paths:
   - agent/skills/tool-policy/**
   - agent/skills/response-format/**
   - agent/tools/**
-commit:
+commit: 4f29c15
   message: "chore(agent): remove developer skill from runtime"
 ---
 
@@ -134,10 +134,10 @@ Stage only the deletion and dedicated test, inspect cached diff, then commit exa
 
 ## Completion checklist
 
-- [ ] Scaffold runtime skill is deleted.
-- [ ] Installed documentation and root harness remain intact.
-- [ ] Final skill set contains exactly three product skills.
-- [ ] Discovery, build, tests, and adversarial eval pass.
+- [x] Scaffold runtime skill is deleted.
+- [x] Installed documentation and root harness remain intact.
+- [x] Final skill set contains exactly three product skills.
+- [ ] Live adversarial eval passes; static eval contract passes, but no authorized key is available.
 
 ## Handoff
 

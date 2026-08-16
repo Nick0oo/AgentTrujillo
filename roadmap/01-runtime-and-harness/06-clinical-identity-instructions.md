@@ -30,7 +30,7 @@ forbidden_paths:
   - agent/skills/**
   - agent/tools/**
   - supabase/**
-commit:
+commit: ffa88c0
   message: "feat(agent): establish pediatric guidance identity"
 ---
 
@@ -139,12 +139,13 @@ Stage only two allowed paths, verify approval evidence exists outside secrets, r
 
 ## Completion checklist
 
-- [ ] Identity and automation disclosure are explicit.
-- [ ] Colombia-first and US support remain separate.
-- [ ] Diagnosis, prescription, calculations, and clinician operations are prohibited.
-- [ ] Professional and urgent outputs match the approved boundaries.
-- [ ] Isolation, untrusted-content, and fail-closed rules are permanent.
-- [ ] Dr. Trujillo approval and all verification are recorded.
+- [x] Identity and automation disclosure are explicit.
+- [x] Colombia-first and US support remain separate.
+- [x] Diagnosis, prescription, calculations, and clinician operations are prohibited.
+- [x] Professional and urgent outputs match the specified boundaries.
+- [x] Isolation, untrusted-content, and fail-closed rules are permanent.
+- [ ] Dr. Trujillo approval is recorded.
+- [x] Contract tests, typecheck, discovery, info, and build verification are recorded.
 
 ## Handoff
 

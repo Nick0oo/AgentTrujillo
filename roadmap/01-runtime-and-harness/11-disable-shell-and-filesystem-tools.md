@@ -38,7 +38,7 @@ forbidden_paths:
   - agent/sandbox.ts
   - agent/skills/**
   - supabase/**
-commit:
+commit: 215d91b
   message: "security(runtime): disable shell and filesystem tools"
 ---
 
@@ -151,10 +151,10 @@ Stage only six declared files, run cached checks, and commit exactly `security(r
 
 ## Completion checklist
 
-- [ ] All five default slugs use sentinels.
-- [ ] None is advertised or executable.
-- [ ] No equivalent alias/import exists.
-- [ ] Tests, discovery, build, evals, and scans pass.
+- [x] All five default slugs use sentinels.
+- [x] None is advertised or executable.
+- [x] No equivalent alias/import exists.
+- [ ] Live evals pass; static contracts, discovery, build, and scans pass.
 
 ## Handoff
 

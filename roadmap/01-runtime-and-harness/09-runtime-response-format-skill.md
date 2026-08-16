@@ -31,7 +31,7 @@ forbidden_paths:
   - agent/tools/**
   - agent/channels/**
   - supabase/**
-commit:
+commit: 9b04b31
   message: "feat(agent): add pediatric response format skill"
 ---
 
@@ -150,12 +150,13 @@ Stage only the response skill package and test, run cached checks, and commit ex
 
 ## Completion checklist
 
-- [ ] Five response modes have non-overlapping rules.
-- [ ] Mobile-first language is concise and empathetic.
-- [ ] Professional review only recommends a pediatrician.
-- [ ] Emergency mode contains no additional action or advice.
-- [ ] No executable UI or clinical rule is embedded.
-- [ ] Approval, tests, discovery, build, and scans pass.
+- [x] Five response modes have non-overlapping rules.
+- [x] Mobile-first language is concise and empathetic.
+- [x] Professional review only recommends a pediatrician.
+- [x] Emergency mode contains no additional action or advice.
+- [x] No executable UI or clinical rule is embedded.
+- [ ] Dr. Trujillo approval is recorded.
+- [x] Tests, discovery, build, and prohibited-language scans pass.
 
 ## Handoff
 

@@ -32,7 +32,7 @@ forbidden_paths:
   - agent/tools/**
   - agent/instructions.md
   - supabase/**
-commit:
+commit: b49f1b3
   message: "security(observability): disable sensitive trace recording"
 ---
 
@@ -154,11 +154,11 @@ Stage only three declared paths, scan for PHI/secret examples and artifacts, and
 
 ## Completion checklist
 
-- [ ] Input and output recording are explicitly false.
-- [ ] No exporter or setup exists.
-- [ ] Safe context vocabulary excludes identity/content.
-- [ ] Synthetic marker and source scans pass.
-- [ ] Tests, typecheck, info, and build pass.
+- [x] Input and output recording are explicitly false.
+- [x] No exporter or setup exists.
+- [x] Safe context vocabulary excludes identity/content.
+- [x] Synthetic marker and source scans pass.
+- [x] Tests, typecheck, info, and build pass.
 
 ## Handoff
 

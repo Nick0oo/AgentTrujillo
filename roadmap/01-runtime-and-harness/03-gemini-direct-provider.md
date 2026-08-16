@@ -32,7 +32,7 @@ forbidden_paths:
   - agent/channels/**
   - agent/tools/**
   - supabase/**
-commit:
+commit: b519ae2
   message: "feat(runtime): use Gemini through the direct Google API"
 ---
 
@@ -149,11 +149,11 @@ Stage only the three declared paths, inspect that the only runtime provider is d
 
 ## Completion checklist
 
-- [ ] Stable provider-native model ID is pinned in code.
-- [ ] Direct `LanguageModel` reaches Eve.
-- [ ] Anthropic, Gateway, OpenRouter, latest, and preview routes are absent.
-- [ ] Missing configuration fails without secret disclosure.
-- [ ] Tests, typecheck, info, build, and scans pass.
+- [x] Stable provider-native model ID is pinned in code; user-approved model is gemini-3.6-flash.
+- [x] Direct `LanguageModel` reaches Eve.
+- [x] Anthropic, Gateway, OpenRouter, latest, and preview routes are absent.
+- [x] Missing configuration fails without secret disclosure.
+- [x] Tests, typecheck, info, build, and scans pass.
 
 ## Handoff
 

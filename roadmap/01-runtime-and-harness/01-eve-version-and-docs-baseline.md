@@ -34,7 +34,7 @@ forbidden_paths:
   - agent/**
   - supabase/**
   - node_modules/**
-commit:
+commit: 72cf8cf
   message: "build(runtime): pin Eve documentation baseline"
 ---
 
@@ -146,11 +146,11 @@ Stage only the four allowed paths, inspect lockfile changes, scan staged content
 
 ## Completion checklist
 
-- [ ] Eve is exactly pinned in declaration and lockfile.
-- [ ] Installed version and Node major assertions are explicit.
-- [ ] Bundled-doc reading order and upgrade protocol are recorded.
-- [ ] Typecheck, build, info, and diff checks pass.
-- [ ] No runtime or remote state changed.
+- [x] Eve is exactly pinned in declaration and lockfile.
+- [x] Installed version and Node major assertions are explicit.
+- [x] Bundled-doc reading order and upgrade protocol are recorded.
+- [x] Typecheck, build, info, and diff checks pass.
+- [x] No runtime or remote state changed.
 
 ## Handoff
 
