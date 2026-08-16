@@ -9,6 +9,94 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      agent_commands: {
+        Row: {
+          agent_session_id: string
+          attempt_count: number
+          care_space_id: string
+          child_id: string
+          claimed_at: string | null
+          confirmation_sha256: string | null
+          created_at: string
+          expires_at: string
+          id: string
+          idempotency_key: string
+          operation: string
+          owner_user_id: string
+          redacted_error: Json
+          redacted_result: Json
+          request_sha256: string
+          started_at: string | null
+          status: string
+          terminal_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          agent_session_id: string
+          attempt_count?: number
+          care_space_id: string
+          child_id: string
+          claimed_at?: string | null
+          confirmation_sha256?: string | null
+          created_at?: string
+          expires_at: string
+          id?: string
+          idempotency_key: string
+          operation: string
+          owner_user_id: string
+          redacted_error?: Json
+          redacted_result?: Json
+          request_sha256: string
+          started_at?: string | null
+          status?: string
+          terminal_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          agent_session_id?: string
+          attempt_count?: number
+          care_space_id?: string
+          child_id?: string
+          claimed_at?: string | null
+          confirmation_sha256?: string | null
+          created_at?: string
+          expires_at?: string
+          id?: string
+          idempotency_key?: string
+          operation?: string
+          owner_user_id?: string
+          redacted_error?: Json
+          redacted_result?: Json
+          request_sha256?: string
+          started_at?: string | null
+          status?: string
+          terminal_at?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agent_commands_child_fk"
+            columns: ["care_space_id", "child_id"]
+            isOneToOne: false
+            referencedRelation: "children"
+            referencedColumns: ["care_space_id", "id"]
+          },
+          {
+            foreignKeyName: "agent_commands_owner_fk"
+            columns: ["owner_user_id"]
+            isOneToOne: false
+            referencedRelation: "guardian_profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "agent_commands_session_scope_fk"
+            columns: ["agent_session_id", "care_space_id", "child_id"]
+            isOneToOne: false
+            referencedRelation: "agent_sessions"
+            referencedColumns: ["id", "care_space_id", "child_id"]
+          },
+        ]
+      }
       agent_sessions: {
         Row: {
           care_space_id: string
@@ -2686,6 +2774,7 @@ export type Database = {
           authorization_scope: Json
           care_space_id: string
           child_id: string
+          command_id: string | null
           completed_at: string | null
           confirmation_status: string
           created_at: string
@@ -2705,6 +2794,7 @@ export type Database = {
           authorization_scope: Json
           care_space_id: string
           child_id: string
+          command_id?: string | null
           completed_at?: string | null
           confirmation_status: string
           created_at?: string
@@ -2724,6 +2814,7 @@ export type Database = {
           authorization_scope?: Json
           care_space_id?: string
           child_id?: string
+          command_id?: string | null
           completed_at?: string | null
           confirmation_status?: string
           created_at?: string
@@ -2752,6 +2843,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "children"
             referencedColumns: ["care_space_id", "id"]
+          },
+          {
+            foreignKeyName: "tool_executions_command_scope_fk"
+            columns: ["command_id", "care_space_id", "child_id"]
+            isOneToOne: false
+            referencedRelation: "agent_commands"
+            referencedColumns: ["id", "care_space_id", "child_id"]
           },
           {
             foreignKeyName: "tool_executions_message_id_fkey"

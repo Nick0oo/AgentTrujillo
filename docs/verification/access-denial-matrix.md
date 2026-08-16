@@ -38,3 +38,16 @@ The session-hardening runner is [`supabase/tests/020_session_scope_hardening.tes
 | `safety_evaluations` | allow through owned session | zero rows | permission denied/zero rows | nullable composite session scope FK + owner policy |
 
 The same runner also covers orphan owner rejection, cross-child inserts, immutable owner/scope/channel/model/configuration, one-time Eve binding with legacy-session compatibility, and forced RLS. Both the baseline 45-assertion matrix and this 32-assertion extension run inside rollbackable synthetic transactions.
+
+## AT-02-05 command idempotency extension
+
+The command-ledger runner is [`supabase/tests/030_agent_command_idempotency.test.sql`](../../supabase/tests/030_agent_command_idempotency.test.sql). It declares 21 assertions and proves:
+
+| Resource / action | Same full key | Different operation/child/owner | Cross session scope | Client roles |
+|---|---|---|---|---|
+| `agent_commands` insert | `23505` conflict | allow when full scope differs | `23503` denied | no authenticated/anon grant or policy |
+| request/confirmation fingerprints | lowercase 64-hex only | changed identity denied | raw payload columns absent | service-role-only ledger |
+| status transitions | terminal state is final | invalid transition `42501` | terminal timestamp required | forced RLS, no Realtime publication |
+| `tool_executions.command_id` | one command parent | command scope must match | composite FK `23503` | existing execution idempotency retained |
+
+The migration adds one public product table, so the current forced-RLS/table baseline is now 57/57; historical module-01 evidence remains immutable and is not rewritten.
