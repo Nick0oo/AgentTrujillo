@@ -99,6 +99,8 @@ export type Database = {
       }
       agent_sessions: {
         Row: {
+          authorization_expires_at: string
+          authorization_version: string
           care_space_id: string
           channel: string
           child_id: string
@@ -116,6 +118,8 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          authorization_expires_at?: string
+          authorization_version?: string
           care_space_id: string
           channel: string
           child_id: string
@@ -133,6 +137,8 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          authorization_expires_at?: string
+          authorization_version?: string
           care_space_id?: string
           channel?: string
           child_id?: string
@@ -3197,6 +3203,48 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      bind_owned_eve_session: {
+        Args: {
+          p_authorization_version: string
+          p_care_space_id: string
+          p_child_id: string
+          p_eve_session_id: string
+          p_product_session_id: string
+        }
+        Returns: {
+          authorization_expires_at: string
+          authorization_version: string
+          care_space_id: string
+          child_id: string
+          eve_session_id: string
+          last_sequence: number
+          owner_user_id: string
+          product_session_id: string
+          status: string
+        }[]
+      }
+      create_owned_agent_session: {
+        Args: {
+          p_authorization_expires_at: string
+          p_authorization_version: string
+          p_care_space_id: string
+          p_channel: string
+          p_child_id: string
+          p_initial_configuration?: Json
+          p_initial_model: string
+        }
+        Returns: {
+          authorization_expires_at: string
+          authorization_version: string
+          care_space_id: string
+          child_id: string
+          eve_session_id: string
+          last_sequence: number
+          owner_user_id: string
+          product_session_id: string
+          status: string
+        }[]
+      }
       match_clinical_memory: {
         Args: {
           p_care_space_id: string

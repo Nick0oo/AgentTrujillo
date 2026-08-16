@@ -66,7 +66,11 @@ The five-argument RPC filters both scope IDs before similarity and returns only 
 
 ## AT-02-12 authorized-child extension
 
-The atomic authorization RPC runner is [`supabase/tests/060_authorized_child_scope_rpc.test.sql`](../../supabase/tests/060_authorized_child_scope_rpc.test.sql). It declares 28 assertions over active, sibling, foreign, revoked, wrong-permission, malformed-required-permission, and anonymous cases. The RPC returns only scope identifiers, permissions, country/timezone, monotonic membership/access versions, and validity bounds; the application service maps every error, zero-row, multiple-row, expired, and malformed projection to the same `ACCESS_DENIED` object.
+The atomic authorization RPC runner is [`supabase/tests/060_authorized_child_scope_rpc.test.sql`](../../supabase/tests/060_authorized_child_scope_rpc.test.sql). It declares 24 assertions over active, sibling, foreign, revoked, wrong-permission, malformed-required-permission, and anonymous cases. The RPC returns only scope identifiers, permissions, country/timezone, monotonic membership/access versions, and validity bounds; the application service maps every error, zero-row, multiple-row, expired, and malformed projection to the same `ACCESS_DENIED` object.
+
+## AT-02-14 session ownership extension
+
+The session ownership runner is [`supabase/tests/070_session_ownership_rpcs.test.sql`](../../supabase/tests/070_session_ownership_rpcs.test.sql). It covers derived owner/scope creation, four-minute lease persistence, one-time/idempotent Eve binding, rebinding denial, lease immutability, co-guardian isolation, exact RPC grants, no generic writes, and cross-child/space denial. Repository reads always include owner, care space, child, and authorization-version predicates; zero rows, malformed IDs, conflicts, and RPC errors map to identical `ACCESS_DENIED` results.
 
 ## AT-02-07 Realtime extension
 
