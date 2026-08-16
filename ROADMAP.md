@@ -27,7 +27,7 @@ These facts do not close pending behavioral gates. Local schema parity, generate
 
 - Documentation design: `completed` at commit `08ed71a`.
 - Documentation implementation plan: `completed` at commit `2ba542b`.
-- Atomic roadmap authoring: modules `01` through `05` completed; module `06` in progress on branch `codex/agent-roadmap-harness`.
+- Atomic roadmap authoring: modules `01` through `06` completed; module `07` in progress on branch `codex/agent-roadmap-harness`.
 - Product implementation: `pending`.
 - First future executable unit after documentation verification: `AT-01-01`.
 
@@ -40,8 +40,8 @@ These facts do not close pending behavioral gates. Local schema parity, generate
 | 03 | Clinical governance | completed | pending | Only approved, versioned, checksum-matching packages resolve | [Module 03](roadmap/03-clinical-governance/README.md) |
 | 04 | Safety and emergency boundary | completed | pending | Critical red flags bypass the LLM and emit approved emergency-only copy | [Module 04](roadmap/04-safety-and-emergency-boundary/README.md) |
 | 05 | Anthropometry and growth | completed | pending | Reproducible age, Z-score, percentile, and growth-series results | [Module 05](roadmap/05-anthropometry-and-growth/README.md) |
-| 06 | Immunization | in progress | pending | PAI and ACIP evaluations are separate, reproducible, and source-traceable | [Module 06](roadmap/06-immunization/README.md) |
-| 07 | Medication and adherence | pending | pending | Declared-dose validation is conservative and plans/intakes are idempotent | [Module 07](roadmap/07-medication-and-adherence/README.md) |
+| 06 | Immunization | completed | pending | PAI and ACIP evaluations are separate, reproducible, and source-traceable | [Module 06](roadmap/06-immunization/README.md) |
+| 07 | Medication and adherence | in progress | pending | Declared-dose validation is conservative and plans/intakes are idempotent | [Module 07](roadmap/07-medication-and-adherence/README.md) |
 | 08 | Nutrition and development | pending | pending | Guidance stays educational and EAD-3 remains professional-only | [Module 08](roadmap/08-nutrition-and-development/README.md) |
 | 09 | Clinical memory and documents | pending | pending | Retrieval and Storage remain private and child-scoped | [Module 09](roadmap/09-clinical-memory-and-documents/README.md) |
 | 10 | Eve tools and presenters | pending | pending | Every tool is typed, scoped, policy-gated, idempotent, and safely rendered | [Module 10](roadmap/10-eve-tools-and-presenters/README.md) |
