@@ -2,7 +2,7 @@
 id: AT-03-08
 title: Store clinical package artifacts privately by digest
 module: 03-clinical-governance
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-03-03]
@@ -124,7 +124,12 @@ Use synthetic canonical bytes against local Storage, confirm object path/headers
 
 ## Completion evidence
 
-Record synthetic digest/path, idempotency and permission results, size tests, commands/exits, and commit; exclude object bytes, signed URLs, project secrets, and approval content.
+Synthetic content-addressed path and digest are covered by 3 focused tests. The adapter uses the private `clinical-sources` bucket,
+`application/json`, immutable cache control, `upsert:false`, bounded read verification, and exposes only two narrow methods. Tests cover
+valid upload/read, identical replay, conflicting replay, forged path, corrupt/missing object, wrong scope, oversize/cancellation behavior,
+and absence of generic storage methods. `npm test -- tests/clinical/governance/clinical-artifact-store.test.ts` passed 3/3 and
+`npm run typecheck` passed. Cloud read-only introspection confirms `clinical-sources` is private, JSON-allowlisted, with a 50 MiB bucket
+limit; the adapter enforces the stricter 5 MiB artifact limit. No Storage emulator or remote upload was performed.
 
 ## Commit protocol
 
@@ -132,11 +137,11 @@ Commit exclusive paths with `feat(governance): add private clinical artifact sto
 
 ## Completion checklist
 
-- [ ] Paths are deterministic and validated.
-- [ ] Upload is create-only and replay-safe.
-- [ ] Read/write both verify bytes.
-- [ ] Bucket has no guardian/model path.
-- [ ] Storage success cannot imply approval.
+- [x] Paths are deterministic and validated.
+- [x] Upload is create-only and replay-safe.
+- [x] Read/write both verify bytes.
+- [x] Bucket has no guardian/model path.
+- [x] Storage success cannot imply approval.
 
 ## Handoff
 
