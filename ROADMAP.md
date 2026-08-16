@@ -27,7 +27,7 @@ These facts do not close pending behavioral gates. Local schema parity, generate
 
 - Documentation design: `completed` at commit `08ed71a`.
 - Documentation implementation plan: `completed` at commit `2ba542b`.
-- Atomic roadmap authoring: modules `01` through `03` completed; module `04` in progress on branch `codex/agent-roadmap-harness`.
+- Atomic roadmap authoring: modules `01` through `04` completed; module `05` in progress on branch `codex/agent-roadmap-harness`.
 - Product implementation: `pending`.
 - First future executable unit after documentation verification: `AT-01-01`.
 
@@ -38,8 +38,8 @@ These facts do not close pending behavioral gates. Local schema parity, generate
 | 01 | Runtime and harness | completed | pending | Safe Eve surface with Gemini baseline and discovery gate | [Module 01](roadmap/01-runtime-and-harness/README.md) |
 | 02 | Access and session isolation | completed | pending | Zero cross-space, cross-child, and cross-session access | [Module 02](roadmap/02-access-and-session-isolation/README.md) |
 | 03 | Clinical governance | completed | pending | Only approved, versioned, checksum-matching packages resolve | [Module 03](roadmap/03-clinical-governance/README.md) |
-| 04 | Safety and emergency boundary | in progress | pending | Critical red flags bypass the LLM and emit approved emergency-only copy | [Module 04](roadmap/04-safety-and-emergency-boundary/README.md) |
-| 05 | Anthropometry and growth | pending | pending | Reproducible age, Z-score, percentile, and growth-series results | [Module 05](roadmap/05-anthropometry-and-growth/README.md) |
+| 04 | Safety and emergency boundary | completed | pending | Critical red flags bypass the LLM and emit approved emergency-only copy | [Module 04](roadmap/04-safety-and-emergency-boundary/README.md) |
+| 05 | Anthropometry and growth | in progress | pending | Reproducible age, Z-score, percentile, and growth-series results | [Module 05](roadmap/05-anthropometry-and-growth/README.md) |
 | 06 | Immunization | pending | pending | PAI and ACIP evaluations are separate, reproducible, and source-traceable | [Module 06](roadmap/06-immunization/README.md) |
 | 07 | Medication and adherence | pending | pending | Declared-dose validation is conservative and plans/intakes are idempotent | [Module 07](roadmap/07-medication-and-adherence/README.md) |
 | 08 | Nutrition and development | pending | pending | Guidance stays educational and EAD-3 remains professional-only | [Module 08](roadmap/08-nutrition-and-development/README.md) |
