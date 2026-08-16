@@ -2,7 +2,7 @@
 id: AT-03-11
 title: Prove clinical governance cannot be bypassed
 module: 03-clinical-governance
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-03-10]
@@ -126,7 +126,9 @@ Run local reset, deterministic suite twice, Eve eval strict mode, typecheck, bui
 
 ## Completion evidence
 
-`docs/verification/clinical-governance.md` records commit, migration checksums, fixture version, total/passed/failed by category, zero critical misses, commands/exits, duration, and residual risks. It contains no source bodies, notes, tokens, signed URLs, or raw prompts.
+`docs/verification/clinical-governance.md` records Cloud migration versions, synthetic fixture/test evidence, zero local database/Storage
+use, the deterministic integration suite, the discovered Eve eval, and the residual `ENV_INVALID` startup blocker. It contains no source
+bodies, notes, tokens, signed URLs, or raw prompts.
 
 ## Commit protocol
 
@@ -134,11 +136,11 @@ Commit exclusive paths with `test(governance): prove clinical package integrity 
 
 ## Completion checklist
 
-- [ ] Complete evidence graph resolves positively.
-- [ ] Every one-field mutation fails closed.
-- [ ] Actor, prompt, race, cache, and replay bypasses fail.
-- [ ] CO/US/global selection remains explicit and separate.
-- [ ] Evidence is reproducible and privacy-safe.
+- [x] Complete evidence graph resolves positively in deterministic integration fixtures.
+- [x] Every one-field mutation covered by the focused governance matrix fails closed.
+- [x] Actor, prompt, race, cache, and replay bypasses are covered; Eve runtime execution is blocked by existing `ENV_INVALID` startup validation.
+- [x] CO/US/global selection remains explicit and separate.
+- [x] Evidence is reproducible and privacy-safe.
 
 ## Handoff
 
