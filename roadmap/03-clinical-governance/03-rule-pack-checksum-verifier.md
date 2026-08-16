@@ -2,7 +2,7 @@
 id: AT-03-03
 title: Verify rule-pack artifact checksums
 module: 03-clinical-governance
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-03-02]
@@ -123,7 +123,10 @@ Run the CLI on the golden artifact and a mutated copy; verify exit `0` then nonz
 
 ## Completion evidence
 
-Record golden digest, mutation cases, stream boundaries, CLI exit codes, focused test result, and commit hash without artifact content.
+Golden digest verification, one-byte mutation, uppercase/short/long/nonhex digest rejection, chunked stream verification, cancellation,
+exact boundary/oversize, invalid UTF-8, and empty input are covered by 5 focused tests. CLI stdin verification returned exit `0` for the
+golden fixture and exit `3` for a mutated fixture without printing artifact content. `npm test -- tests/clinical/governance/checksum.test.ts
+tests/clinical/governance/artifact-format.test.ts` passed 13/13 and `npm run typecheck` passed.
 
 ## Commit protocol
 
@@ -131,11 +134,11 @@ Commit only exclusive paths with `feat(governance): verify clinical artifact che
 
 ## Completion checklist
 
-- [ ] Digest is recomputed from bounded bytes.
-- [ ] Comparison is constant-time after validation.
-- [ ] Non-canonical artifacts fail.
-- [ ] Verified brand is unforgeable outside the module.
-- [ ] Failure never falls back to model knowledge.
+- [x] Digest is recomputed from bounded bytes.
+- [x] Comparison is constant-time after validation.
+- [x] Non-canonical artifacts fail.
+- [x] Verified brand is unforgeable outside the module.
+- [x] Failure never falls back to model knowledge.
 
 ## Handoff
 

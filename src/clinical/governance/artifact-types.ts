@@ -1,4 +1,4 @@
-import type { ClinicalDomain, CountryCode, Sha256Hex } from "./source-types";
+import type { ClinicalDomain, CountryCode, Sha256Hex } from "./source-types.ts";
 
 export type AlgorithmReference = Readonly<{
   key: string;

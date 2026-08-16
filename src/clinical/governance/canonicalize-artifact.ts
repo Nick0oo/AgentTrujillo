@@ -4,8 +4,8 @@ import {
   DEFAULT_ARTIFACT_LIMITS,
   rulePackArtifactV1Schema,
   type ParsedRulePackArtifactV1,
-} from "./artifact-schema";
-import type { ArtifactLimits, RulePackArtifactV1 } from "./artifact-types";
+} from "./artifact-schema.ts";
+import type { ArtifactLimits, RulePackArtifactV1 } from "./artifact-types.ts";
 
 export type ArtifactParseErrorCode =
   | "UNSUPPORTED_SCHEMA"

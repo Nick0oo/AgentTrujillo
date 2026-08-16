@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import type { RulePackArtifactV1 } from "./artifact-types";
+import type { RulePackArtifactV1 } from "./artifact-types.ts";
 
 const SHA256 = /^[0-9a-f]{64}$/;
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
