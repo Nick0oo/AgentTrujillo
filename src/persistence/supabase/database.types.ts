@@ -986,6 +986,95 @@ export type Database = {
           },
         ]
       }
+      clinical_package_releases: {
+        Row: {
+          action: string
+          activation_at: string
+          algorithm_id: string
+          approval_id: string
+          artifact_sha256: string
+          country_code: string
+          created_at: string
+          domain: string
+          evidence_sha256: string
+          id: string
+          locale: string
+          preview_sha256: string
+          previous_release_id: string | null
+          request_id: string
+          requester_subject: string
+          rule_pack_id: string
+          status: string
+        }
+        Insert: {
+          action: string
+          activation_at: string
+          algorithm_id: string
+          approval_id: string
+          artifact_sha256: string
+          country_code: string
+          created_at?: string
+          domain: string
+          evidence_sha256: string
+          id?: string
+          locale: string
+          preview_sha256: string
+          previous_release_id?: string | null
+          request_id: string
+          requester_subject: string
+          rule_pack_id: string
+          status: string
+        }
+        Update: {
+          action?: string
+          activation_at?: string
+          algorithm_id?: string
+          approval_id?: string
+          artifact_sha256?: string
+          country_code?: string
+          created_at?: string
+          domain?: string
+          evidence_sha256?: string
+          id?: string
+          locale?: string
+          preview_sha256?: string
+          previous_release_id?: string | null
+          request_id?: string
+          requester_subject?: string
+          rule_pack_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clinical_package_releases_algorithm_id_fkey"
+            columns: ["algorithm_id"]
+            isOneToOne: false
+            referencedRelation: "clinical_algorithms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clinical_package_releases_approval_id_fkey"
+            columns: ["approval_id"]
+            isOneToOne: false
+            referencedRelation: "clinical_approvals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clinical_package_releases_previous_release_id_fkey"
+            columns: ["previous_release_id"]
+            isOneToOne: false
+            referencedRelation: "clinical_package_releases"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clinical_package_releases_rule_pack_id_fkey"
+            columns: ["rule_pack_id"]
+            isOneToOne: false
+            referencedRelation: "clinical_rule_packs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       clinical_rule_pack_sources: {
         Row: {
           created_at: string
