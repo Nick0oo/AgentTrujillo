@@ -57,7 +57,7 @@ AT-02-16 -> AT-03-01 -> AT-03-02 -+-> AT-03-03 -> AT-03-08 -+
 AT-03-11 <- AT-03-10 <- AT-03-09 <- AT-03-06 <---------------------------------+
 ```
 
-`AT-03-03` and `AT-03-04` are the only approved parallel pair. Their paths do not overlap; both must finish before the approval and resolver chain proceeds.
+`AT-03-03` then `AT-03-04` run sequentially because both own `package.json`. The approval and resolver chain proceeds only after their checksum and algorithm-registry contracts are complete.
 
 ## Work-unit index
 

@@ -3,10 +3,10 @@ id: AT-03-03
 title: Verify rule-pack artifact checksums
 module: 03-clinical-governance
 status: pending
-execution: parallel
-parallel_group: AT-03-P1
+execution: sequential
+parallel_group: null
 depends_on: [AT-03-02]
-blocks: [AT-03-08]
+blocks: [AT-03-04, AT-03-08]
 worker:
   model: gpt-5.6-luna
   reasoning: max

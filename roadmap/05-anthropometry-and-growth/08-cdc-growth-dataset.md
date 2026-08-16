@@ -3,9 +3,9 @@ id: AT-05-08
 title: Package official CDC growth references with checksums
 module: 05-anthropometry-and-growth
 status: pending
-execution: parallel
-parallel_group: AT-05-P1
-depends_on: [AT-05-01, AT-03-11]
+execution: sequential
+parallel_group: null
+depends_on: [AT-05-07]
 blocks: [AT-05-09]
 worker:
   model: gpt-5.6-luna
@@ -55,7 +55,7 @@ US assessments at eligible ages identify CDC dataset/version/digest; WHO remains
 
 ## Prerequisites
 
-`AT-05-01`, `AT-03-11`; official CDC CSV/XLS artifacts and method documents captured/approved; exact interpolation/extended-BMI policy approved.
+`AT-05-07`; official CDC CSV/XLS artifacts and method documents captured/approved; exact interpolation/extended-BMI policy approved. Serial ordering gives each dataset importer exclusive ownership of the shared `package.json` path.
 
 ## Mandatory reading
 

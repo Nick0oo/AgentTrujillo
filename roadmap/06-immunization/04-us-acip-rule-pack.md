@@ -3,9 +3,9 @@ id: AT-06-04
 title: Package the current United States ACIP schedule
 module: 06-immunization
 status: pending
-execution: parallel
-parallel_group: AT-06-P1
-depends_on: [AT-06-02]
+execution: sequential
+parallel_group: null
+depends_on: [AT-06-03]
 blocks: [AT-06-08]
 worker:
   model: gpt-5.6-luna
@@ -54,7 +54,7 @@ US children evaluate only against the exact officially current released ACIP pac
 
 ## Prerequisites
 
-`AT-06-02`; fresh CDC current-status check; complete official artifacts captured by module `03`; independent Dr. Trujillo approval and US release gate.
+`AT-06-03`; fresh CDC current-status check; complete official artifacts captured by module `03`; independent Dr. Trujillo approval and US release gate. Serial ordering prevents collision on the shared `package.json` path while preserving separate country implementations.
 
 ## Mandatory reading
 

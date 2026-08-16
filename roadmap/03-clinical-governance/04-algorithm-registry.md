@@ -3,9 +3,9 @@ id: AT-03-04
 title: Build the deterministic clinical algorithm registry
 module: 03-clinical-governance
 status: pending
-execution: parallel
-parallel_group: AT-03-P1
-depends_on: [AT-03-02]
+execution: sequential
+parallel_group: null
+depends_on: [AT-03-03]
 blocks: [AT-03-07, AT-03-05]
 worker:
   model: gpt-5.6-luna
@@ -59,7 +59,7 @@ No guardian-facing behavior changes. Trusted startup registers compiled implemen
 
 ## Prerequisites
 
-`AT-03-02`; module `02` database parity/types; an agreed hashing manifest that excludes build timestamps and absolute paths.
+`AT-03-03`; module `02` database parity/types; an agreed hashing manifest that excludes build timestamps and absolute paths.
 
 ## Mandatory reading
 

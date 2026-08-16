@@ -3,10 +3,10 @@ id: AT-06-03
 title: Package the current Colombia PAI schedule
 module: 06-immunization
 status: pending
-execution: parallel
-parallel_group: AT-06-P1
+execution: sequential
+parallel_group: null
 depends_on: [AT-06-02]
-blocks: [AT-06-08]
+blocks: [AT-06-04, AT-06-08]
 worker:
   model: gpt-5.6-luna
   reasoning: max

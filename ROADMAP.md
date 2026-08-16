@@ -27,7 +27,7 @@ These facts do not close pending behavioral gates. Local schema parity, generate
 
 - Documentation design: `completed` at commit `08ed71a`.
 - Documentation implementation plan: `completed` at commit `2ba542b`.
-- Atomic roadmap authoring: modules `01` through `15` completed on branch `codex/agent-roadmap-harness`; cross-module verification is in progress.
+- Atomic roadmap authoring: modules `01` through `15` completed and cross-module verification passed; see [verification evidence](docs/verification/2026-08-16-agent-roadmap.md).
 - Product implementation: `pending`.
 - First future executable unit after documentation verification: `AT-01-01`.
 
@@ -55,9 +55,7 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-No product implementation unit is ready while the atomic roadmap documentation is being authored and verified.
-
-After the documentation gate completes, the initial ready candidate is:
+The documentation gate is complete. The initial product implementation candidate is:
 
 | ID | Work unit | Required before dispatch |
 |---|---|---|

@@ -34,7 +34,7 @@ AT-04-14 + AT-05-02 + AT-03-11 -> AT-06-01 -> AT-06-02 -+-> AT-06-03 -+
 AT-06-14 <- AT-06-13 <- AT-06-12 <- AT-06-11 <- AT-06-10 <- AT-06-09 <-------------------------------+
 ```
 
-PAI `03`, ACIP `04`, and evidence-draft policy `05` are parallel-safe after the shared registry. Rule engines are sequential because they share dose validity and dependency semantics.
+PAI `03` then ACIP `04` run sequentially because both own `package.json`; their country-specific packages remain independent. Evidence-draft policy `05` may run in parallel after the shared registry. Rule engines are sequential because they share dose validity and dependency semantics.
 
 ## Work-unit index
 

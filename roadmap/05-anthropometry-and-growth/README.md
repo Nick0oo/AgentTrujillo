@@ -57,7 +57,7 @@ AT-04-14 + AT-03-11 -> AT-05-01 -+-> AT-05-02 -> AT-05-03 -+
 AT-05-15 <- AT-05-13 <- AT-05-14 <---------------------------------------------------+
 ```
 
-WHO and CDC dataset leaves `07`/`08` are parallel-safe. Age and unit branches converge before capture validation. All later work is sequential because numerical/storage contracts are shared.
+WHO and CDC dataset leaves `07`/`08` run sequentially because both own `package.json`; their country-specific data and engines remain separate. Age and unit branches converge before capture validation. All later work is sequential because numerical/storage contracts are shared.
 
 ## Work-unit index
 

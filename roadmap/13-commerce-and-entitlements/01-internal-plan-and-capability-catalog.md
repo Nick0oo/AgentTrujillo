@@ -5,8 +5,8 @@ module: 13-commerce-and-entitlements
 status: pending
 execution: sequential
 parallel_group: null
-depends_on: [AT-03-11, AT-10-02]
-blocks: [AT-13-02, AT-13-06, AT-13-12]
+depends_on: [AT-03-11]
+blocks: [AT-10-02, AT-13-02, AT-13-06, AT-13-12]
 worker:
   model: gpt-5.6-luna
   reasoning: max
@@ -47,7 +47,7 @@ A care space receives consistent Free/Premium capabilities across supported purc
 
 ## Prerequisites
 
-AT-03-11, AT-10-02 plus current official Stripe, Apple, Google, store-policy, catalog, and schema documentation.
+AT-03-11 plus current official Stripe, Apple, Google, store-policy, catalog, and schema documentation. AT-10-02 consumes this provider-neutral catalog after it exists.
 
 ## Mandatory reading
 

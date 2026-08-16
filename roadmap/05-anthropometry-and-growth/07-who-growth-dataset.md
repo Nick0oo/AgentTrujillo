@@ -3,10 +3,10 @@ id: AT-05-07
 title: Package official WHO growth standards with checksums
 module: 05-anthropometry-and-growth
 status: pending
-execution: parallel
-parallel_group: AT-05-P1
+execution: sequential
+parallel_group: null
 depends_on: [AT-05-01, AT-03-11]
-blocks: [AT-05-09]
+blocks: [AT-05-08, AT-05-09]
 worker:
   model: gpt-5.6-luna
   reasoning: max
