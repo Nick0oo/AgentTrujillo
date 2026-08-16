@@ -2,7 +2,7 @@
 id: AT-03-02
 title: Define the canonical rule-pack artifact format
 module: 03-clinical-governance
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-03-01]
@@ -128,7 +128,11 @@ Canonicalize the same fixture twice in separate processes and compare bytes. Ins
 
 ## Completion evidence
 
-Capture fixture digest, byte-equivalence count, size/depth boundary results, dependency version, test exit code, and commit.
+Fixture digest: canonical output is stable for equivalent property/source orderings (byte-equivalence assertion passed); size/depth/node
+boundaries and duplicate-key rejection are covered by 8 focused tests. `json-canonicalize@1.2.0` is locked in `package-lock.json`.
+`npm test -- tests/clinical/governance/artifact-format.test.ts` passed 8/8, `npm run typecheck` passed, and `git diff --check` passed.
+The repository build remains blocked by the pre-existing `ENV_INVALID` environment validation when `npm run build` is invoked; no
+artifact implementation change was made to bypass that requirement.
 
 ## Commit protocol
 
@@ -136,11 +140,11 @@ Commit exclusive paths with `feat(governance): define canonical rule pack artifa
 
 ## Completion checklist
 
-- [ ] Envelope is strict and versioned.
-- [ ] Canonical bytes are reproducible.
-- [ ] Limits and duplicate-key rejection pass.
-- [ ] Artifact contains data only.
-- [ ] Database identity cannot override content identity.
+- [x] Envelope is strict and versioned.
+- [x] Canonical bytes are reproducible.
+- [x] Limits and duplicate-key rejection pass.
+- [x] Artifact contains data only.
+- [x] Database identity cannot override content identity.
 
 ## Handoff
 
