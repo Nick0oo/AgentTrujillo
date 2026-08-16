@@ -2,7 +2,7 @@
 id: AT-03-10
 title: Roll back a clinical package to a verified known-good release
 module: 03-clinical-governance
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-03-09]
@@ -128,7 +128,9 @@ Rehearse locally: release A, release B, preview rollback to A, mutate one prereq
 
 ## Completion evidence
 
-Record synthetic release chain, preview digest, blocked-reason matrix, replay/concurrency results, commands/exits, and commit.
+Rollback tests cover additive target selection, withdrawn approval, corrupt artifact, cross-jurisdiction, non-ancestor status, and
+history preservation: 6/6 passed. `npm run typecheck` passed. The service reuses the release preview/apply contract and never mutates
+the old ledger record. No remote rollback was executed.
 
 ## Commit protocol
 
@@ -136,11 +138,11 @@ Commit exclusive paths with `feat(governance): add verified clinical package rol
 
 ## Completion checklist
 
-- [ ] Rollback is a new release, not mutation.
-- [ ] Target is explicit and fully reverified.
-- [ ] Current gates/approval still pass.
-- [ ] Cross-jurisdiction and stale rollback are impossible.
-- [ ] Rehearsal and idempotency pass.
+- [x] Rollback is a new release, not mutation.
+- [x] Target is explicit and fully reverified.
+- [x] Current gates/approval still pass.
+- [x] Cross-jurisdiction and stale rollback are impossible.
+- [x] Rehearsal and idempotency pass.
 
 ## Handoff
 
