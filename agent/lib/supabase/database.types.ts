@@ -806,11 +806,11 @@ export type Database = {
             referencedColumns: ["care_space_id", "id"]
           },
           {
-            foreignKeyName: "clinical_memory_embeddings_memory_item_id_fkey"
-            columns: ["memory_item_id"]
+            foreignKeyName: "clinical_memory_embeddings_scope_fk"
+            columns: ["memory_item_id", "care_space_id", "child_id"]
             isOneToOne: false
             referencedRelation: "clinical_memory_items"
-            referencedColumns: ["id"]
+            referencedColumns: ["id", "care_space_id", "child_id"]
           },
         ]
       }
@@ -3193,6 +3193,7 @@ export type Database = {
     Functions: {
       match_clinical_memory: {
         Args: {
+          p_care_space_id: string
           p_child_id: string
           p_match_count?: number
           p_match_threshold?: number

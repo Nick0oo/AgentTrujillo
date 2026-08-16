@@ -51,3 +51,15 @@ The command-ledger runner is [`supabase/tests/030_agent_command_idempotency.test
 | `tool_executions.command_id` | one command parent | command scope must match | composite FK `23503` | existing execution idempotency retained |
 
 The migration adds one public product table, so the current forced-RLS/table baseline is now 57/57; historical module-01 evidence remains immutable and is not rewritten.
+
+## AT-02-06 vector-scope extension
+
+The vector-hardening runner is [`supabase/tests/040_vector_scope_hardening.test.sql`](../../supabase/tests/040_vector_scope_hardening.test.sql). It declares 15 assertions and proves:
+
+| Query | Authorized child | Sibling/no-access | Foreign space | Anonymous / legacy signature |
+|---|---|---|---|---|
+| `match_clinical_memory(care_space_id, child_id, ...)` | one scoped result | zero rows | zero rows | anonymous denied |
+| malformed embedding scope | n/a | `23503` | `23503` | composite FK |
+| count / threshold bounds | count clamped to `1..20` | invalid threshold zero rows | explicit two-dimensional predicates | old four-argument overload absent |
+
+The five-argument RPC filters both scope IDs before similarity and returns only memory ID, type, structured content, and similarity; embeddings, searchable text, and foreign scope identifiers are not returned.
