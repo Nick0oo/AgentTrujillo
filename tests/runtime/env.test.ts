@@ -154,4 +154,18 @@ describe("runtime environment boundary", () => {
     expect(error.invalidFields).toEqual(["SUPABASE_SERVICE_ROLE_KEY"]);
     expect(JSON.stringify(error)).not.toContain("short");
   });
+
+  it("validates child-context key pairs and distinct rotation KIDs", () => {
+    const current = "A".repeat(43);
+    const previous = "B".repeat(43);
+    const configured = loadRuntimeConfig(env({
+      CHILD_CONTEXT_SIGNING_KEY: current,
+      CHILD_CONTEXT_SIGNING_KID: "current",
+      CHILD_CONTEXT_PREVIOUS_SIGNING_KEY: previous,
+      CHILD_CONTEXT_PREVIOUS_SIGNING_KID: "previous",
+    }));
+    expect(configured.childContextSigningKid).toBe("current");
+    expect(() => loadRuntimeConfig(env({ CHILD_CONTEXT_SIGNING_KEY: current }))).toThrowError(RuntimeConfigError);
+    expect(() => loadRuntimeConfig(env({ CHILD_CONTEXT_SIGNING_KEY: current, CHILD_CONTEXT_SIGNING_KID: "same", CHILD_CONTEXT_PREVIOUS_SIGNING_KEY: previous, CHILD_CONTEXT_PREVIOUS_SIGNING_KID: "same" }))).toThrowError(RuntimeConfigError);
+  });
 });
