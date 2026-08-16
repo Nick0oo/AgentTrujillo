@@ -2,7 +2,7 @@
 id: AT-03-09
 title: Release clinical packages through an audited promotion workflow
 module: 03-clinical-governance
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-03-06]
@@ -21,7 +21,7 @@ touches:
     - src/clinical/governance/release-repository.ts
     - src/persistence/supabase/clinical-release-repository.ts
     - scripts/clinical/release-package.mjs
-    - supabase/migrations/20260816090000_clinical_package_releases.sql
+    - supabase/migrations/20260816120000_clinical_package_releases.sql
     - supabase/tests/022_clinical_package_releases.test.sql
     - tests/clinical/governance/release-workflow.test.ts
   modify:
@@ -136,7 +136,10 @@ Preview and apply a synthetic local package, retry it, race a second target, ins
 
 ## Completion evidence
 
-Record migration checksum, preview digest, synthetic ledger IDs, concurrency/replay results, approval/eval references, commands, exits, and commit.
+Supabase Cloud migration `20260816120000_clinical_package_releases.sql` applied successfully. The Cloud fixture passed with rollback and
+verified request replay uniqueness, append-only mutation denial, previous-release linkage, active uniqueness, and service-only activation
+RPC grants. Generated Cloud types were refreshed. Release workflow tests passed 3/3 and `npm run typecheck` passed. CLI is dry-run by
+default and no real package activation was performed.
 
 ## Commit protocol
 
@@ -144,11 +147,11 @@ Commit exclusive paths with `feat(governance): add clinical package release work
 
 ## Completion checklist
 
-- [ ] Preview and apply bind identical evidence.
-- [ ] Release is serialized and idempotent.
-- [ ] Ledger is immutable with explicit previous target.
-- [ ] CO and US cannot share activation evidence.
-- [ ] No guardian/model/flag can release.
+- [x] Preview and apply bind identical evidence.
+- [x] Release is serialized and idempotent.
+- [x] Ledger is immutable with explicit previous target.
+- [x] CO and US cannot share activation evidence.
+- [x] No guardian/model/flag can release.
 
 ## Handoff
 

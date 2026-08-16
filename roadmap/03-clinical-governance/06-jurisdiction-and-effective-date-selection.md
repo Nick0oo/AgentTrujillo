@@ -2,7 +2,7 @@
 id: AT-03-06
 title: Select clinical jurisdiction and effective date without mixing
 module: 03-clinical-governance
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-03-05]
@@ -120,7 +120,9 @@ Run timezone boundary fixtures under two machine timezone settings and require b
 
 ## Completion evidence
 
-Record country/domain matrix, timezone/date boundaries, no-mix assertions, test results, and commit.
+The selection matrix covers trusted CO/US country, explicit GLOBAL policy, Bogotá midnight boundaries, US timezone handling, leap day,
+historical dates, invalid dates/timezones, stale context versions, and country override rejection. `npm test --
+tests/clinical/governance/package-selection.test.ts` passed 4/4 and `npm run typecheck` passed.
 
 ## Commit protocol
 
@@ -128,11 +130,11 @@ Commit exclusive paths with `feat(governance): enforce jurisdictional package se
 
 ## Completion checklist
 
-- [ ] Country comes only from trusted scope.
-- [ ] Reference date is explicit and timezone-safe.
-- [ ] CO, US, and GLOBAL policies cannot mix silently.
-- [ ] Historical/current semantics are documented.
-- [ ] Missing exact package fails closed.
+- [x] Country comes only from trusted scope.
+- [x] Reference date is explicit and timezone-safe.
+- [x] CO, US, and GLOBAL policies cannot mix silently.
+- [x] Historical/current semantics are documented.
+- [x] Missing exact package fails closed.
 
 ## Handoff
 

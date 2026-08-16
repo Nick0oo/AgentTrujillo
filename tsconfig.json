@@ -3,11 +3,12 @@
     "target": "ES2022",
     "module": "esnext",
     "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
     "types": ["node"],
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "noEmit": true
   },
-  "include": ["agent/**/*.ts", "evals/**/*.ts", "tests/**/*.ts", "vitest.config.ts"]
+  "include": ["agent/**/*.ts", "src/**/*.ts", "evals/**/*.ts", "tests/**/*.ts", "vitest.config.ts"]
 }

@@ -28,8 +28,8 @@ These facts do not close pending behavioral gates. Local schema parity, generate
 - Documentation design: `completed` at commit `08ed71a`.
 - Documentation implementation plan: `completed` at commit `2ba542b`.
 - Atomic roadmap authoring: modules `01` through `15` completed and cross-module verification passed; see [verification evidence](docs/verification/2026-08-16-agent-roadmap.md).
-- Product implementation: module `02` completed; modules `03` through `15` remain `pending`.
-- First future executable unit after module-02 verification: `AT-03-01`.
+- Product implementation: modules `02` and `03` completed; module `03` leaves `AT-03-01` through `AT-03-11` are complete with Cloud evidence and residual repository-wide blockers documented.
+- Next active executable unit after module-03 verification: none; module `04` is the next roadmap module.
 
 ## Module ledger
 
@@ -37,7 +37,7 @@ These facts do not close pending behavioral gates. Local schema parity, generate
 |---|---|---:|---:|---|---|
 | 01 | Runtime and harness | completed | pending | Safe Eve surface with Gemini baseline and discovery gate | [Module 01](roadmap/01-runtime-and-harness/README.md) |
 | 02 | Access and session isolation | completed | completed | Zero cross-space, cross-child, and cross-session access | [Module 02](roadmap/02-access-and-session-isolation/README.md) |
-| 03 | Clinical governance | completed | pending | Only approved, versioned, checksum-matching packages resolve | [Module 03](roadmap/03-clinical-governance/README.md) |
+| 03 | Clinical governance | completed | completed | Only approved, versioned, checksum-matching packages resolve | [Module 03](roadmap/03-clinical-governance/README.md) |
 | 04 | Safety and emergency boundary | completed | pending | Critical red flags bypass the LLM and emit approved emergency-only copy | [Module 04](roadmap/04-safety-and-emergency-boundary/README.md) |
 | 05 | Anthropometry and growth | completed | pending | Reproducible age, Z-score, percentile, and growth-series results | [Module 05](roadmap/05-anthropometry-and-growth/README.md) |
 | 06 | Immunization | completed | pending | PAI and ACIP evaluations are separate, reproducible, and source-traceable | [Module 06](roadmap/06-immunization/README.md) |
@@ -59,7 +59,7 @@ The documentation gate is complete. The initial product implementation candidate
 
 | ID | Work unit | Required before dispatch |
 |---|---|---|
-| `AT-03-01` | Clinical package registry and checksums | Module-02 implementation and cloud verification |
+| — | No module-03 leaf remains | Module 03 exit evidence recorded in `docs/verification/clinical-governance.md` |
 
 The root agent recalculates readiness from leaf frontmatter before every dispatch.
 

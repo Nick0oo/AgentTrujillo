@@ -2,7 +2,7 @@
 id: AT-03-01
 title: Define the clinical source provenance contract
 module: 03-clinical-governance
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-02-16]
@@ -122,7 +122,7 @@ Run the focused test, inspect exported declarations, and compare mapping fields 
 
 ## Completion evidence
 
-Record test count, accepted/rejected fixture matrix, exact files, commit hash, and unresolved primary-authority policy questions in `docs/verification/clinical-governance.md` only when the module evidence task owns that file.
+Focused Vitest passed 22/22 cases in `tests/clinical/governance/source-contract.test.ts`; `npm run typecheck` exited 0. The accepted matrix covers synthetic Minsalud/PAI, CDC/ACIP, and WHO sources; rejection cases cover authority, host, URI, digest, license, date, jurisdiction, duplicate-version, and lifecycle failures. Commit: `cfc8801`. Full-suite baseline remains blocked by the pre-existing CRLF assertion in undeclared `agent/tools/bash.ts`; no module 03 path or database/Storage state was changed by that baseline failure.
 
 ## Commit protocol
 
@@ -130,11 +130,11 @@ Commit only the exclusive paths using `feat(governance): define clinical source 
 
 ## Completion checklist
 
-- [ ] Types and schemas compile.
-- [ ] Primary authority policy is explicit per domain/jurisdiction.
-- [ ] Provenance fields and lifecycle are deterministic.
-- [ ] Tests reject untrusted and mixed-jurisdiction evidence.
-- [ ] No runtime network or database mutation exists.
+- [x] Types and schemas compile.
+- [x] Primary authority policy is explicit per domain/jurisdiction.
+- [x] Provenance fields and lifecycle are deterministic.
+- [x] Tests reject untrusted and mixed-jurisdiction evidence.
+- [x] No runtime network or database mutation exists.
 
 ## Handoff
 

@@ -2,7 +2,7 @@
 id: AT-03-05
 title: Resolve only active approved clinical packages
 module: 03-clinical-governance
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-03-07, AT-03-08, AT-03-04]
@@ -124,7 +124,11 @@ Run focused tests against local Supabase and Storage emulator with synthetic art
 
 ## Completion evidence
 
-Record matrix counts, one synthetic success identity, failure-code counts, cache tests, command exits, and commit without artifact bodies or approval notes.
+The resolver matrix covers one positive immutable result plus withdrawn approval, retired release, source/hash mismatch, cross-country
+candidate, and success-only cache behavior. Focused tests passed 5/5 and `npm run typecheck` passed. Failures return only
+`RULE_UNAVAILABLE` with a non-sensitive reason; no failure is cached and the resolver receives a caller-provided privileged scope.
+The Supabase adapter is snapshot-only until the AT-03-09 release ledger exists; it never fabricates a release or falls back to package
+status alone.
 
 ## Commit protocol
 
@@ -132,11 +136,11 @@ Commit exclusive paths with `feat(governance): resolve approved clinical package
 
 ## Completion checklist
 
-- [ ] Exactly one complete candidate resolves.
-- [ ] All hashes and lifecycle records agree.
-- [ ] Exact algorithm and sources are bound.
-- [ ] Failure never broadens or serves stale content.
-- [ ] Result is branded, frozen, and auditable.
+- [x] Exactly one complete candidate resolves.
+- [x] All hashes and lifecycle records agree.
+- [x] Exact algorithm and sources are bound.
+- [x] Failure never broadens or serves stale content.
+- [x] Result is branded, frozen, and auditable.
 
 ## Handoff
 
