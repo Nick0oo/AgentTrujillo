@@ -69,7 +69,15 @@ describe("runtime environment boundary", () => {
       env({ HOME: "/private/user", UNRELATED_SECRET: "do-not-copy" }),
     );
 
-    expect(config).toEqual({ appEnv: "test", googleApiKey: validKey, supabaseUrl, supabasePublishableKey });
+    expect(config).toEqual({
+      appEnv: "test",
+      googleApiKey: validKey,
+      supabaseUrl,
+      supabasePublishableKey,
+      supabaseJwtIssuer: `${supabaseUrl}/auth/v1`,
+      supabaseJwtAudience: "authenticated",
+      supabaseJwtJwksUrl: `${supabaseUrl}/auth/v1/.well-known/jwks.json`,
+    });
   });
 
   it("redacts values from invalid errors", () => {

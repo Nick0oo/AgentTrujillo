@@ -28,6 +28,7 @@
     "@vercel/connect": "0.4.2",
     "ai": "^7.0.34",
     "eve": "0.27.1",
+    "jose": "6.2.9",
     "zod": "4.4.3"
   },
   "devDependencies": {

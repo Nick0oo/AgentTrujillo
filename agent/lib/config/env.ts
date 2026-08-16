@@ -6,6 +6,8 @@ export const runtimeConfigFieldSchema = z.enum([
   "SUPABASE_URL",
   "SUPABASE_PUBLISHABLE_KEY",
   "SUPABASE_SERVICE_ROLE_KEY",
+  "SUPABASE_JWT_ISSUER",
+  "SUPABASE_JWT_AUDIENCE",
 ]);
 
 export type RuntimeConfigField = z.infer<typeof runtimeConfigFieldSchema>;
@@ -27,6 +29,8 @@ const runtimeInputSchema = z.object({
     .min(20)
     .regex(/^\S+$/)
     .optional(),
+  SUPABASE_JWT_ISSUER: z.string().url().optional(),
+  SUPABASE_JWT_AUDIENCE: z.literal("authenticated").default("authenticated"),
 }).superRefine((input, context) => {
   const url = new URL(input.SUPABASE_URL);
   const localHost = new Set(["localhost", "127.0.0.1", "::1"]);
@@ -47,6 +51,9 @@ export type RuntimeConfig = Readonly<{
   supabaseUrl: string;
   supabasePublishableKey: string;
   supabaseServiceRoleKey?: string;
+  supabaseJwtIssuer: string;
+  supabaseJwtAudience: "authenticated";
+  supabaseJwtJwksUrl: string;
 }>;
 
 export class RuntimeConfigError extends Error {
@@ -83,11 +90,19 @@ export function loadRuntimeConfig(env: NodeJS.ProcessEnv): RuntimeConfig {
     SUPABASE_URL: env.SUPABASE_URL,
     SUPABASE_PUBLISHABLE_KEY: env.SUPABASE_PUBLISHABLE_KEY,
     SUPABASE_SERVICE_ROLE_KEY: env.SUPABASE_SERVICE_ROLE_KEY,
+    SUPABASE_JWT_ISSUER: env.SUPABASE_JWT_ISSUER,
+    SUPABASE_JWT_AUDIENCE: env.SUPABASE_JWT_AUDIENCE,
   });
 
   if (!parsed.success) {
     throw new RuntimeConfigError(invalidFieldsFrom(parsed.error));
   }
+
+  const derivedIssuer = `${parsed.data.SUPABASE_URL.replace(/\/$/, "")}/auth/v1`;
+  if (parsed.data.SUPABASE_JWT_ISSUER && parsed.data.SUPABASE_JWT_ISSUER !== derivedIssuer) {
+    throw new RuntimeConfigError(["SUPABASE_JWT_ISSUER"]);
+  }
+  const supabaseJwtIssuer = parsed.data.SUPABASE_JWT_ISSUER ?? derivedIssuer;
 
   return Object.freeze({
     appEnv: parsed.data.APP_ENV,
@@ -97,5 +112,8 @@ export function loadRuntimeConfig(env: NodeJS.ProcessEnv): RuntimeConfig {
     ...(parsed.data.SUPABASE_SERVICE_ROLE_KEY
       ? { supabaseServiceRoleKey: parsed.data.SUPABASE_SERVICE_ROLE_KEY }
       : {}),
+    supabaseJwtIssuer,
+    supabaseJwtAudience: parsed.data.SUPABASE_JWT_AUDIENCE,
+    supabaseJwtJwksUrl: `${supabaseJwtIssuer}/.well-known/jwks.json`,
   });
 }
