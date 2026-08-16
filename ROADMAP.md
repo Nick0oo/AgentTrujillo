@@ -27,7 +27,7 @@ These facts do not close pending behavioral gates. Local schema parity, generate
 
 - Documentation design: `completed` at commit `08ed71a`.
 - Documentation implementation plan: `completed` at commit `2ba542b`.
-- Atomic roadmap authoring: modules `01` through `09` completed; module `10` in progress on branch `codex/agent-roadmap-harness`.
+- Atomic roadmap authoring: modules `01` through `10` completed; module `11` in progress on branch `codex/agent-roadmap-harness`.
 - Product implementation: `pending`.
 - First future executable unit after documentation verification: `AT-01-01`.
 
@@ -44,8 +44,8 @@ These facts do not close pending behavioral gates. Local schema parity, generate
 | 07 | Medication and adherence | completed | pending | Declared-dose validation is conservative and plans/intakes are idempotent | [Module 07](roadmap/07-medication-and-adherence/README.md) |
 | 08 | Nutrition and development | completed | pending | Guidance stays educational and EAD-3 remains professional-only | [Module 08](roadmap/08-nutrition-and-development/README.md) |
 | 09 | Clinical memory and documents | completed | pending | Retrieval and Storage remain private and child-scoped | [Module 09](roadmap/09-clinical-memory-and-documents/README.md) |
-| 10 | Eve tools and presenters | in progress | pending | Every tool is typed, scoped, policy-gated, idempotent, and safely rendered | [Module 10](roadmap/10-eve-tools-and-presenters/README.md) |
-| 11 | Creciendo channel and streaming | pending | pending | Authenticated NDJSON resumes without leaks or duplicate effects | [Module 11](roadmap/11-creciendo-channel-and-streaming/README.md) |
+| 10 | Eve tools and presenters | completed | pending | Every tool is typed, scoped, policy-gated, idempotent, and safely rendered | [Module 10](roadmap/10-eve-tools-and-presenters/README.md) |
+| 11 | Creciendo channel and streaming | in progress | pending | Authenticated NDJSON resumes without leaks or duplicate effects | [Module 11](roadmap/11-creciendo-channel-and-streaming/README.md) |
 | 12 | Persistence, workflows, and Realtime | pending | pending | Replays converge and Realtime emits invalidations only | [Module 12](roadmap/12-persistence-workflows-and-realtime/README.md) |
 | 13 | Commerce and entitlements | pending | pending | Verified event ledger converges to provider-neutral entitlements | [Module 13](roadmap/13-commerce-and-entitlements/README.md) |
 | 14 | Model fallback, observability, and evals | pending | pending | Fallback parity and privacy gates have zero critical failures | [Module 14](roadmap/14-model-fallback-observability-and-evals/README.md) |
