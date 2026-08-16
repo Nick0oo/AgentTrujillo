@@ -11,9 +11,13 @@
     "dev": "eve dev",
     "start": "eve start",
     "typecheck": "tsc",
-    "verify:eve-baseline": "node scripts/verify-eve-baseline.mjs"
+    "verify:eve-baseline": "node scripts/verify-eve-baseline.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:runtime": "vitest run tests/runtime"
   },
   "dependencies": {
+    "@ai-sdk/google": "4.0.44",
     "@vercel/connect": "0.4.2",
     "ai": "^7.0.34",
     "eve": "0.27.1",
@@ -22,7 +26,8 @@
   "devDependencies": {
     "@types/node": "24.x",
     "supabase": "^2.114.0",
-    "typescript": "7.0.2"
+    "typescript": "7.0.2",
+    "vitest": "4.1.10"
   },
   "overrides": {
     "ai": "^7.0.34"
