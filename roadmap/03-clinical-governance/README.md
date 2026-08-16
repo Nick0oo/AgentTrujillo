@@ -77,9 +77,11 @@ AT-03-11 <- AT-03-10 <- AT-03-09 <- AT-03-06 <---------------------------------+
 
 ## Database migration ownership
 
-- `AT-03-04` owns `20260816070000_clinical_algorithm_registry.sql`.
-- `AT-03-07` owns `20260816080000_clinical_approval_attestations.sql`.
-- `AT-03-09` owns `20260816090000_clinical_package_releases.sql`.
+- `AT-03-04` owns `20260816100000_clinical_algorithm_registry.sql`.
+- `AT-03-07` owns `20260816110000_clinical_approval_attestations.sql`.
+- `AT-03-09` owns `20260816120000_clinical_package_releases.sql`.
+
+The original `20260816070000`–`20260816090000` slots are already occupied by the module 02 session-hardening migrations in Supabase Cloud. Module 03 uses the next forward-only versions to preserve the remote migration ledger.
 
 Applied 2026-08-14 migrations are read-only references. Each new migration regenerates types and reruns the full negative RLS suite.
 

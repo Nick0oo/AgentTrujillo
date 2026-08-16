@@ -19,6 +19,7 @@
 - Colombia and United States packages are separate. `GLOBAL` is allowed only through an explicit domain policy and is never a country fallback.
 - Database migrations are forward-only, append-only where stated, use fixed `search_path` for `SECURITY DEFINER`, preserve RLS, and never rewrite the three applied foundation migrations.
 - A root-owned compatibility amendment adds `src/**/*.ts` to `tsconfig.json` because the module 03 contracts use `src/` while the existing module 02 compiler include is `agent/**/*.ts`; no leaf worker may modify compiler scope.
+- The original module 03 migration timestamps collide with already-applied module 02 session migrations in Cloud; the forward-only amended names are `20260816100000_clinical_algorithm_registry.sql`, `20260816110000_clinical_approval_attestations.sql`, and `20260816120000_clinical_package_releases.sql`.
 - Each leaf ends with the exact commit message in its roadmap document and a staged-path, secret, forbidden-path, and `git diff --cached --check` review.
 
 ---
@@ -173,7 +174,7 @@ Stage only declared paths and commit `feat(governance): verify clinical artifact
 - Create: `src/clinical/governance/algorithm-types.ts`
 - Create: `src/clinical/governance/algorithm-registry.ts`
 - Create: `scripts/clinical/hash-algorithm.mjs`
-- Create: `supabase/migrations/20260816070000_clinical_algorithm_registry.sql`
+- Create: `supabase/migrations/20260816100000_clinical_algorithm_registry.sql`
 - Create: `supabase/tests/020_clinical_algorithm_registry.test.sql`
 - Test: `tests/clinical/governance/algorithm-registry.test.ts`
 - Modify: `src/persistence/supabase/database.types.ts`, `package.json`
@@ -251,7 +252,7 @@ Stage declared paths only and commit `feat(governance): add private clinical art
 - Create: `src/clinical/governance/approval-repository.ts`
 - Create: `src/persistence/supabase/clinical-approval-repository.ts`
 - Create: `scripts/clinical/record-approval.mjs`
-- Create: `supabase/migrations/20260816080000_clinical_approval_attestations.sql`
+- Create: `supabase/migrations/20260816110000_clinical_approval_attestations.sql`
 - Create: `supabase/tests/021_clinical_approval_attestations.test.sql`
 - Test: `tests/clinical/governance/approval-gate.test.ts`
 - Modify: `src/persistence/supabase/database.types.ts`, `package.json`
@@ -359,7 +360,7 @@ Commit `feat(governance): enforce jurisdictional package selection` after owners
 - Create: `src/clinical/governance/release-repository.ts`
 - Create: `src/persistence/supabase/clinical-release-repository.ts`
 - Create: `scripts/clinical/release-package.mjs`
-- Create: `supabase/migrations/20260816090000_clinical_package_releases.sql`
+- Create: `supabase/migrations/20260816120000_clinical_package_releases.sql`
 - Create: `supabase/tests/022_clinical_package_releases.test.sql`
 - Test: `tests/clinical/governance/release-workflow.test.ts`
 - Modify: `src/persistence/supabase/database.types.ts`, `package.json`

@@ -81,3 +81,7 @@ Repository adapters return typed records and never expose service-role clients t
 ## Completion gate
 
 All eleven leaf checklists are checked only after their declared evidence exists, all three migrations are applied and verified in Supabase Cloud, the module governance suite and eval pass, typecheck/build pass, the resolver is fail-closed, `ROADMAP.md` records commit/evidence/unblocked IDs, and the branch is ready for push and PR.
+
+## Cloud migration amendment
+
+The linked Supabase migration ledger already uses versions `20260816070000`, `20260816080000`, and `20260816090000` for module 02 session hardening. The module 03 migrations therefore use the next forward-only versions: `20260816100000_clinical_algorithm_registry.sql`, `20260816110000_clinical_approval_attestations.sql`, and `20260816120000_clinical_package_releases.sql`.

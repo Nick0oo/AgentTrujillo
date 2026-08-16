@@ -21,7 +21,7 @@ touches:
     - src/clinical/governance/release-repository.ts
     - src/persistence/supabase/clinical-release-repository.ts
     - scripts/clinical/release-package.mjs
-    - supabase/migrations/20260816090000_clinical_package_releases.sql
+    - supabase/migrations/20260816120000_clinical_package_releases.sql
     - supabase/tests/022_clinical_package_releases.test.sql
     - tests/clinical/governance/release-workflow.test.ts
   modify:

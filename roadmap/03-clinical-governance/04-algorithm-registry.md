@@ -19,7 +19,7 @@ touches:
     - src/clinical/governance/algorithm-types.ts
     - src/clinical/governance/algorithm-registry.ts
     - scripts/clinical/hash-algorithm.mjs
-    - supabase/migrations/20260816070000_clinical_algorithm_registry.sql
+    - supabase/migrations/20260816100000_clinical_algorithm_registry.sql
     - supabase/tests/020_clinical_algorithm_registry.test.sql
     - tests/clinical/governance/algorithm-registry.test.ts
   modify:
@@ -39,7 +39,7 @@ exclusive_paths:
   - package.json
 forbidden_paths:
   - .env
-  - supabase/migrations/20260814*.sql
+    - supabase/migrations/20260814*.sql
   - supabase/legacy-reference/**
 commit:
   message: "feat(governance): register deterministic clinical algorithms"

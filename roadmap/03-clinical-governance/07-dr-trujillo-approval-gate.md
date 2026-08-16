@@ -21,7 +21,7 @@ touches:
     - src/clinical/governance/approval-repository.ts
     - src/persistence/supabase/clinical-approval-repository.ts
     - scripts/clinical/record-approval.mjs
-    - supabase/migrations/20260816080000_clinical_approval_attestations.sql
+    - supabase/migrations/20260816110000_clinical_approval_attestations.sql
     - supabase/tests/021_clinical_approval_attestations.test.sql
     - tests/clinical/governance/approval-gate.test.ts
   modify:
