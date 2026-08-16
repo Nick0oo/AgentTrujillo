@@ -17,15 +17,16 @@ export const EXPECTED_MIGRATIONS = [
   "20260816060000_session_ownership_rpcs.sql",
   "20260816070000_session_lease_refresh_hardening.sql",
   "20260816080000_session_bind_authorization_hardening.sql",
+  "20260816090000_session_authorization_race_hardening.sql",
 ];
 
 export const EXPECTED_PARITY = {
-  migrationCount: 11,
+  migrationCount: 12,
   tableCount: 57,
   bucketCount: 5,
   rlsForcedCount: 57,
-  checksum: "sha256:347b5d136f46a91fe4f792eb4e8a4910576e9b99462e08cebe2a4a92a686da01",
-  migrationChecksum: "sha256:d577710e2704b8597b29dcbeb48b03fb41d3a56549c5f67dec5ff8267cf93e10",
+  checksum: "sha256:81d031fbbdd5c1851dd71317c4ed2d4f7ef4076573b3eecdae6cdc9d5783a550",
+  migrationChecksum: "sha256:4cf1f204a647e236b80a0c48877576f5d165d526ce8cca27ddc8fb216ca6fc97",
 };
 
 const VOLATILE_KEYS = new Set([
