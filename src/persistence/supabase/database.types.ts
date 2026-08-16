@@ -2811,42 +2811,66 @@ export type Database = {
       safety_evaluations: {
         Row: {
           agent_session_id: string | null
+          algorithm_key: string
+          algorithm_version: string
           approved_copy_key: string | null
           care_space_id: string
           child_id: string
+          copy_digest_sha256: string | null
           created_at: string
           decision: string
+          decision_sha256: string
           evaluated_at: string
+          evaluation_version: string
           id: string
+          input_fingerprint: string
+          latency_ms: number | null
           matched_rule_codes: string[]
+          owner_user_id: string
           request_id: string
           response_mode: string
           rule_pack_id: string
         }
         Insert: {
           agent_session_id?: string | null
+          algorithm_key?: string
+          algorithm_version?: string
           approved_copy_key?: string | null
           care_space_id: string
           child_id: string
+          copy_digest_sha256?: string | null
           created_at?: string
           decision: string
+          decision_sha256?: string
           evaluated_at?: string
+          evaluation_version?: string
           id?: string
+          input_fingerprint?: string
+          latency_ms?: number | null
           matched_rule_codes?: string[]
+          owner_user_id: string
           request_id: string
           response_mode: string
           rule_pack_id: string
         }
         Update: {
           agent_session_id?: string | null
+          algorithm_key?: string
+          algorithm_version?: string
           approved_copy_key?: string | null
           care_space_id?: string
           child_id?: string
+          copy_digest_sha256?: string | null
           created_at?: string
           decision?: string
+          decision_sha256?: string
           evaluated_at?: string
+          evaluation_version?: string
           id?: string
+          input_fingerprint?: string
+          latency_ms?: number | null
           matched_rule_codes?: string[]
+          owner_user_id?: string
           request_id?: string
           response_mode?: string
           rule_pack_id?: string
@@ -2865,6 +2889,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "children"
             referencedColumns: ["care_space_id", "id"]
+          },
+          {
+            foreignKeyName: "safety_evaluations_owner_fk"
+            columns: ["owner_user_id"]
+            isOneToOne: false
+            referencedRelation: "guardian_profiles"
+            referencedColumns: ["user_id"]
           },
           {
             foreignKeyName: "safety_evaluations_rule_pack_id_fkey"
@@ -3417,6 +3448,31 @@ export type Database = {
           memory_type: string
           similarity: number
           structured_content: Json
+        }[]
+      }
+      record_safety_evaluation: {
+        Args: {
+          p_agent_session_id: string
+          p_algorithm_key: string
+          p_algorithm_version: string
+          p_approved_copy_key: string
+          p_care_space_id: string
+          p_child_id: string
+          p_copy_digest_sha256: string
+          p_decision: string
+          p_decision_sha256: string
+          p_evaluation_version: string
+          p_input_fingerprint: string
+          p_latency_ms: number
+          p_matched_rule_codes: string[]
+          p_owner_user_id: string
+          p_request_id: string
+          p_response_mode: string
+          p_rule_pack_id: string
+        }
+        Returns: {
+          created: boolean
+          evaluation_id: string
         }[]
       }
       refresh_owned_agent_session_lease: {
