@@ -2,7 +2,7 @@
 id: AT-02-04
 title: Enforce immutable owner and composite session scope
 module: 02-access-and-session-isolation
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-02-03]
@@ -143,11 +143,11 @@ Stage only four declared paths, verify no applied migration changed, scan SQL/ge
 
 ## Completion checklist
 
-- [ ] Session owner/scope/binding are immutable.
-- [ ] Session child rows cannot mismatch care space or child.
-- [ ] Co-guardians cannot read each other's conversations.
-- [ ] All negative categories remain indistinguishable.
-- [ ] Reset, DB tests, lint, types, app tests, typecheck, and build pass.
+- [x] Session owner/scope/binding are immutable.
+- [x] Session child rows cannot mismatch care space or child.
+- [x] Co-guardians cannot read each other's conversations.
+- [x] All negative categories remain indistinguishable.
+- [x] Reset, DB tests, lint, types, app tests, typecheck, and build pass.
 
 ## Handoff
 

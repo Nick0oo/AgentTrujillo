@@ -10,6 +10,11 @@ import {
 const runtimeConfig = {
   appEnv: "test",
   googleApiKey: "synthetic-provider-key-0123456789",
+  supabaseUrl: "https://example.supabase.co",
+  supabasePublishableKey: "sb_publishable-test-key-that-is-long-enough",
+  supabaseJwtIssuer: "https://example.supabase.co/auth/v1",
+  supabaseJwtAudience: "authenticated" as const,
+  supabaseJwtJwksUrl: "https://example.supabase.co/auth/v1/.well-known/jwks.json",
 } as const;
 
 describe("direct Gemini provider", () => {

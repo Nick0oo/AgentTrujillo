@@ -2,7 +2,7 @@
 id: AT-02-16
 title: Prove ownership on every session route transition
 module: 02-access-and-session-isolation
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-02-15]
@@ -157,11 +157,11 @@ Stage only five declared paths, review for no channel/model imports or sensitive
 
 ## Completion checklist
 
-- [ ] All six operations share strict auth/context/owner/lease ordering.
-- [ ] Every negative scenario is represented per applicable operation.
-- [ ] Denials reveal no existence/reason and short-circuit all downstream work.
-- [ ] Stream monitor starts before attachment.
-- [ ] Full database/access/runtime/type/discovery/build gates pass.
+- [x] All six operations share strict auth/context/owner/lease ordering.
+- [x] Every negative scenario is represented per applicable operation.
+- [x] Denials reveal no existence/reason and short-circuit all downstream work.
+- [x] Stream monitor starts before attachment.
+- [x] Full database/access/runtime/type/discovery/build gates pass.
 
 ## Handoff
 

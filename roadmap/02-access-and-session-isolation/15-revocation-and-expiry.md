@@ -2,7 +2,7 @@
 id: AT-02-15
 title: Revalidate authorization leases and terminate revoked access
 module: 02-access-and-session-isolation
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-02-14]
@@ -12,7 +12,7 @@ worker:
   reasoning: max
 clinical_risk: low
 security_risk: critical
-database_change: false
+database_change: true
 requires_clinical_approval: false
 touches:
   create:
@@ -22,6 +22,7 @@ touches:
     - tests/access/stream-access-monitor.test.ts
   modify:
     - agent/lib/access/session-ownership-repository.ts
+    - supabase/migrations/20260816070000_session_lease_refresh_hardening.sql
   test:
     - tests/access/access-lease-validator.test.ts
     - tests/access/stream-access-monitor.test.ts
@@ -31,11 +32,11 @@ exclusive_paths:
   - tests/access/access-lease-validator.test.ts
   - tests/access/stream-access-monitor.test.ts
   - agent/lib/access/session-ownership-repository.ts
+  - supabase/migrations/20260816070000_session_lease_refresh_hardening.sql
 forbidden_paths:
   - .env
   - agent/channels/**
   - agent/tools/**
-  - supabase/migrations/**
 commit:
   message: "security(access): enforce authorization lease expiry"
 ---
@@ -107,7 +108,7 @@ Validate authentication/context signature first, then repository ownership, then
 
 ## Database and Storage contract
 
-No migration. Lease refresh uses narrow repository RPC/update from `AT-02-14` only if that interface declared it; otherwise create an amendment before database work. No raw stream state in database or Realtime.
+The original no-migration constraint is amended by the completed security correction: `20260816070000_session_lease_refresh_hardening.sql` adds the narrow owner-scoped lease refresh RPC required by this leaf. No raw stream state is stored in the database or Realtime, and any later database correction requires a new reviewed amendment.
 
 ## Authorization and isolation
 
@@ -156,11 +157,12 @@ Stage only five declared paths, review for no timers/config from environment and
 
 ## Completion checklist
 
-- [ ] Every session operation performs fresh lease validation.
-- [ ] Scope/version/permissions can never widen or switch.
-- [ ] Streams abort within 15 seconds and discard later output.
-- [ ] Failure/cleanup races are deterministic and leak no reason.
-- [ ] Tests, typecheck, discovery, and build pass.
+- [x] Every session operation performs fresh lease validation.
+- [x] Lease refresh uses a narrow owner-scoped RPC and never grants generic session writes.
+- [x] Scope/version/permissions can never widen or switch.
+- [x] Streams abort within 15 seconds and discard later output.
+- [x] Failure/cleanup races are deterministic and leak no reason.
+- [x] Tests, typecheck, discovery, and build pass.
 
 ## Handoff
 

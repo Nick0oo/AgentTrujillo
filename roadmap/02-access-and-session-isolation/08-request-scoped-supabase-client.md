@@ -2,7 +2,7 @@
 id: AT-02-08
 title: Build a request-scoped guardian Supabase client
 module: 02-access-and-session-isolation
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-02-07]
@@ -164,11 +164,11 @@ Stage only nine declared paths, review lock/env example for value-free configura
 
 ## Completion checklist
 
-- [ ] Exact typed Supabase dependency is pinned.
-- [ ] Each factory call owns one bearer token and no persistent session.
-- [ ] Service-role fallback and singleton state are impossible.
-- [ ] Config/errors/logs do not expose values.
-- [ ] Tests, typecheck, discovery, and build pass.
+- [x] Exact typed Supabase dependency is pinned.
+- [x] Each factory call owns one bearer token and no persistent session.
+- [x] Service-role fallback and singleton state are impossible.
+- [x] Config/errors/logs do not expose values.
+- [x] Tests, typecheck, discovery, and build pass.
 
 ## Handoff
 

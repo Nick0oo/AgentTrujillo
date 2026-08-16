@@ -13,6 +13,9 @@
     "typecheck": "tsc",
     "verify:eve-baseline": "node scripts/verify-eve-baseline.mjs",
     "verify:discovery": "node scripts/verify-eve-discovery.mjs",
+    "verify:supabase-parity": "node scripts/verify-supabase-parity.mjs",
+    "generate:database-types": "node scripts/generate-database-types.mjs",
+    "verify:database-types": "node scripts/verify-database-types.mjs",
     "eval:runtime": "eve eval evals/runtime --strict --max-concurrency 1",
     "eval:runtime:json": "eve eval evals/runtime --strict --max-concurrency 1 --json",
     "test": "vitest run",
@@ -21,9 +24,11 @@
   },
   "dependencies": {
     "@ai-sdk/google": "4.0.44",
+    "@supabase/supabase-js": "2.112.3",
     "@vercel/connect": "0.4.2",
     "ai": "^7.0.34",
     "eve": "0.27.1",
+    "jose": "6.2.9",
     "zod": "4.4.3"
   },
   "devDependencies": {

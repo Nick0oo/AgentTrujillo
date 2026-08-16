@@ -2,7 +2,7 @@
 id: AT-02-02
 title: Generate and enforce Supabase database types
 module: 02-access-and-session-isolation
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-02-01]
@@ -142,11 +142,11 @@ Stage only five declared paths, review generated type for source/header and abse
 
 ## Completion checklist
 
-- [ ] Types come only from local migrated schema.
-- [ ] Generation is atomic and failure-safe.
-- [ ] Verification catches byte drift.
-- [ ] Critical scope/RPC types compile.
-- [ ] Repeated generation, tests, typecheck, and build pass.
+- [x] Types come only from local migrated schema.
+- [x] Generation is atomic and failure-safe.
+- [x] Verification catches byte drift.
+- [x] Critical scope/RPC types compile.
+- [x] Repeated generation, tests, typecheck, and build pass.
 
 ## Handoff
 

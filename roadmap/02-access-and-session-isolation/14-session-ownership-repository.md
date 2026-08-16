@@ -2,7 +2,7 @@
 id: AT-02-14
 title: Bind product and Eve sessions to one owner scope
 module: 02-access-and-session-isolation
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-02-13]
@@ -120,7 +120,7 @@ RPCs are `SECURITY DEFINER` only if required for narrow inserts/updates, with `s
 
 ## Database and Storage contract
 
-Forward migration adds lease columns/checks/indexes and narrow RPCs, no table write grant. RLS remains forced. RPC audit uses application `audit_events` only through later bounded repository if required; no raw token/config. Regenerate types. No Storage/Realtime.
+Forward migrations add lease columns/checks/indexes and narrow RPCs, no table write grant. The reviewed follow-up `20260816080000_session_bind_authorization_hardening.sql` revalidates active access and lease expiry before Eve binding. RLS remains forced. RPC audit uses application `audit_events` only through later bounded repository if required; no raw token/config. Regenerate types. No Storage/Realtime.
 
 ## Authorization and isolation
 
@@ -170,11 +170,11 @@ Stage only seven declared paths, verify baseline migrations unchanged and no tok
 
 ## Completion checklist
 
-- [ ] Product/Eve session binding is one-time and idempotent for same value.
-- [ ] Owner/care/child/version are immutable and checked everywhere.
-- [ ] Co-guardian/sibling/foreign/expired/revoked access is denied uniformly.
-- [ ] RPCs have fixed search path/minimal grants and no generic writes.
-- [ ] Reset, DB tests, lint, types, app tests, and build pass.
+- [x] Product/Eve session binding is one-time and idempotent for same value.
+- [x] Owner/care/child/version are immutable and checked everywhere.
+- [x] Co-guardian/sibling/foreign/expired/revoked access is denied uniformly.
+- [x] RPCs have fixed search path/minimal grants and no generic writes.
+- [x] Reset, DB tests, lint, types, app tests, and build pass.
 
 ## Handoff
 

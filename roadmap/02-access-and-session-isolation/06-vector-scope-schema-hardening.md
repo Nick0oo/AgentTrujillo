@@ -2,7 +2,7 @@
 id: AT-02-06
 title: Require care-space and child scope before vector similarity
 module: 02-access-and-session-isolation
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-02-05]
@@ -153,11 +153,11 @@ Stage only four declared paths, verify no baseline/legacy edits or embedding fix
 
 ## Completion checklist
 
-- [ ] Both scope IDs are required and filtered before similarity.
-- [ ] Embedding-to-memory relation is composite-scope safe.
-- [ ] Old RPC is absent and unexecutable.
-- [ ] Every denial category returns zero rows.
-- [ ] Reset, DB tests, lint, types, app tests, and build pass.
+- [x] Both scope IDs are required and filtered before similarity.
+- [x] Embedding-to-memory relation is composite-scope safe.
+- [x] Old RPC is absent and unexecutable.
+- [x] Every denial category returns zero rows.
+- [x] Reset, DB tests, lint, types, app tests, and build pass.
 
 ## Handoff
 

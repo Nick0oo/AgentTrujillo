@@ -2,7 +2,7 @@
 id: AT-02-03
 title: Establish the negative RLS Storage and RPC matrix
 module: 02-access-and-session-isolation
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-02-02]
@@ -143,11 +143,11 @@ Stage only three declared paths, inspect SQL for no policy/migration statements 
 
 ## Completion checklist
 
-- [ ] All seven principal categories and required actions are represented.
-- [ ] Positive controls prevent false-negative tests.
-- [ ] Unauthorized reads return zero and writes/RPCs are denied.
-- [ ] Storage does not trust path alone.
-- [ ] Two clean local runs, lint, type verification, and contract tests pass.
+- [x] All seven principal categories and required actions are represented.
+- [x] Positive controls prevent false-negative tests.
+- [x] Unauthorized reads return zero and writes/RPCs are denied.
+- [x] Storage does not trust path alone.
+- [x] Two clean local runs, lint, type verification, and contract tests pass.
 
 ## Handoff
 

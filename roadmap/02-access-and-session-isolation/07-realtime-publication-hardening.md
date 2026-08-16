@@ -2,7 +2,7 @@
 id: AT-02-07
 title: Remove raw product rows from Supabase Realtime
 module: 02-access-and-session-isolation
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-02-06]
@@ -140,11 +140,11 @@ Stage only four declared paths, verify no baseline migration/type semantic drift
 
 ## Completion checklist
 
-- [ ] All four raw baseline tables are unpublished.
-- [ ] No other product table is published.
-- [ ] Publication service remains available for future invalidations.
-- [ ] No urgent/notification behavior was introduced.
-- [ ] Reset, DB tests, lint, types, app tests, and build pass.
+- [x] All four raw baseline tables are unpublished.
+- [x] No other product table is published.
+- [x] Publication service remains available for future invalidations.
+- [x] No urgent/notification behavior was introduced.
+- [x] Reset, DB tests, lint, types, app tests, and build pass.
 
 ## Handoff
 
