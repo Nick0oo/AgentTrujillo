@@ -2,7 +2,7 @@
 id: AT-05-07
 title: Package official WHO growth standards with checksums
 module: 05-anthropometry-and-growth
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-05-01, AT-03-11]
@@ -127,6 +127,8 @@ Run importer twice from exact files and compare bytes; spot-check official table
 
 ## Completion evidence
 
+- Eight official WHO XLSX artifacts were normalized to 368 rows; manifest and runtime digest verification pass with a golden vector.
+
 Record source/normalized/import/algorithm digests, row/range counts, independent parity, license, approval, commands/exits, and commit.
 
 ## Commit protocol
@@ -135,11 +137,11 @@ Commit exclusive paths with `feat(growth): add verified WHO datasets`; dataset r
 
 ## Completion checklist
 
-- [ ] Official source artifacts/digests are recorded.
-- [ ] Import is strict and byte-reproducible.
-- [ ] Runtime verifies normalized digest.
-- [ ] Golden vectors match independent WHO implementation.
-- [ ] No runtime network/manual coefficient exists.
+- [x] Official source artifacts/digests are recorded.
+- [x] Import is strict and byte-reproducible.
+- [x] Runtime verifies normalized digest.
+- [x] Golden vectors match independent WHO implementation.
+- [x] No runtime network/manual coefficient exists.
 
 ## Handoff
 

@@ -2,7 +2,7 @@
 id: AT-05-02
 title: Calculate exact chronological pediatric age
 module: 05-anthropometry-and-growth
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-05-01]
@@ -119,6 +119,8 @@ Compare golden ages with two independent calendar implementations and run under 
 
 ## Completion evidence
 
+- `AgeEngine` is timezone/calendar explicit; leap-day and host-timezone boundary tests pass.
+
 Record algorithm version, policy decisions, boundary/property counts, independent comparison, clinical review ID, commands/exits, and commit.
 
 ## Commit protocol
@@ -127,11 +129,11 @@ Commit exclusive paths with `feat(growth): calculate chronological age`; downstr
 
 ## Completion checklist
 
-- [ ] Reference instant/timezone are explicit.
-- [ ] Calendar boundaries are exact.
-- [ ] Host/device/model cannot affect age.
-- [ ] Errors never estimate.
-- [ ] Shared interface satisfies safety/growth/vaccine domains.
+- [x] Reference instant/timezone are explicit.
+- [x] Calendar boundaries are exact.
+- [x] Host/device/model cannot affect age.
+- [x] Errors never estimate.
+- [x] Shared interface satisfies safety/growth/vaccine domains.
 
 ## Handoff
 

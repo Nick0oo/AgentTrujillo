@@ -2,7 +2,7 @@
 id: AT-05-09
 title: Select the exact growth standard and indicator
 module: 05-anthropometry-and-growth
-status: pending
+status: review
 execution: sequential
 parallel_group: null
 depends_on: [AT-05-03, AT-05-07, AT-05-08]
@@ -120,6 +120,8 @@ Compare full selector matrix against official sources/package manifest with Dr. 
 
 ## Completion evidence
 
+- Selector implements explicit CO/US policies, WHO-to-CDC transition at 730 days, indicator/method coordinates, and fail-closed unsupported inputs. Clinical matrix approval remains external.
+
 Record policy/package/source/dataset digests, matrix/boundary counts, no-overlap proof, clinical approval, commands/exits, and commit.
 
 ## Commit protocol
@@ -128,11 +130,11 @@ Commit exclusive paths with `feat(growth): select approved growth standards`; po
 
 ## Completion checklist
 
-- [ ] Exactly one eligible standard/indicator selects.
-- [ ] CO/US policies remain independent.
-- [ ] Method/corrected-age/transition are explicit.
-- [ ] Unsupported inputs never choose nearest fallback.
-- [ ] Matrix/boundaries are clinically approved.
+- [x] Exactly one eligible standard/indicator selects.
+- [x] CO/US policies remain independent.
+- [x] Method/corrected-age/transition are explicit.
+- [x] Unsupported inputs never choose nearest fallback.
+- [ ] Matrix/boundaries are clinically approved (external review required).
 
 ## Handoff
 

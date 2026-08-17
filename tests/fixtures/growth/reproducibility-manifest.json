@@ -1,0 +1,41 @@
+{
+  "manifestVersion": "growth-reproducibility.v1",
+  "datasets": {
+    "WHO_2006": {
+      "normalizedDigest": "ae46179c20aa021b3dd7b6aa2758b8afc520c7cfa330eedaf67381bb58b84568",
+      "rowCount": 368
+    },
+    "CDC_2000": {
+      "normalizedDigest": "199a80e8628e97be7cb83188ad41e2e700938d21083ebeae4a3c5ea8bf0e1759",
+      "rowCount": 1748
+    },
+    "CDC_2022_EXTENDED_BMI": {
+      "normalizedDigest": "79f7619e34b453134645b41d395092ec8db7657914fd54b304f66a8de0db6357",
+      "rowCount": 438
+    }
+  },
+  "algorithms": [
+    "chronological-age.v1",
+    "corrected-age.v1",
+    "anthropometry-units.v1",
+    "lms-interpolation.v1",
+    "lms-zscore.v1",
+    "normal-cdf.v1",
+    "growth-assessment.v1"
+  ],
+  "criticalCases": [
+    { "id": "who-male-weight-birth-median", "country": "CO", "ageDays": 0, "sex": "male", "indicator": "weight_for_age", "expectedZ": "0", "expectedPercentile": "50" },
+    { "id": "us-who-before-transition", "country": "US", "ageDays": 729, "expectedDataset": "WHO_2006" },
+    { "id": "us-cdc-at-transition", "country": "US", "ageDays": 730, "expectedDataset": "CDC_2000" },
+    { "id": "corrected-age-without-approved-policy", "country": "CO", "ageDays": 100, "expectedStatus": "rule_unavailable" },
+    { "id": "tail-percentile-clamp", "z": "20", "expectedPercentile": "100" }
+  ],
+  "tolerances": {
+    "exactSelection": true,
+    "exactStatus": true,
+    "zScoreDecimalPlaces": 12,
+    "percentileDecimalPlaces": 8,
+    "independentNumericAbsolute": 0.000000001
+  },
+  "provider": "none"
+}

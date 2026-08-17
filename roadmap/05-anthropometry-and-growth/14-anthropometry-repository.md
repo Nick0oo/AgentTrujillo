@@ -2,7 +2,7 @@
 id: AT-05-14
 title: Persist anthropometry facts and assessments atomically
 module: 05-anthropometry-and-growth
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-05-12]
@@ -18,7 +18,9 @@ touches:
   create:
     - src/clinical/anthropometry/repository.ts
     - src/persistence/supabase/anthropometry-repository.ts
-    - supabase/migrations/20260816110000_anthropometry_persistence_hardening.sql
+    - supabase/migrations/20260816140000_anthropometry_persistence_hardening.sql
+    - supabase/migrations/20260816150000_anthropometry_rpc_qualification.sql
+    - supabase/migrations/20260816160000_anthropometry_rpc_digest_qualification.sql
     - supabase/tests/024_anthropometry_persistence.test.sql
     - tests/persistence/anthropometry-repository.test.ts
   modify:
@@ -29,7 +31,9 @@ touches:
 exclusive_paths:
   - src/clinical/anthropometry/repository.ts
   - src/persistence/supabase/anthropometry-repository.ts
-  - supabase/migrations/20260816110000_anthropometry_persistence_hardening.sql
+  - supabase/migrations/20260816140000_anthropometry_persistence_hardening.sql
+  - supabase/migrations/20260816150000_anthropometry_rpc_qualification.sql
+  - supabase/migrations/20260816160000_anthropometry_rpc_digest_qualification.sql
   - supabase/tests/024_anthropometry_persistence.test.sql
   - tests/persistence/anthropometry-repository.test.ts
   - src/persistence/supabase/database.types.ts
@@ -123,9 +127,11 @@ Model cannot write without exact guardian confirmation or provide scope/derived 
 
 ## Manual verification
 
-Run local reset/SQL tests, inspect grants/RLS/query plans, simulate concurrency/failure/replay/supersession, and verify rows/digests/typecheck/build.
+Run the repository/SQL contract tests, inspect Cloud grants/RLS/query contracts, simulate replay/failure/supersession, and verify rows/digests/typecheck/build.
 
 ## Completion evidence
+
+- Atomic RPC, scoped idempotency, replay/conflict, composite FK, immutable history, provenance columns, request-scoped adapter, and SQL contract are implemented. Cloud migrations `20260816140000`, `20260816150000`, and `20260816160000` are applied to `CreciendoApp`; remote migration list, schema lint, RLS, immutable triggers, RPC grants, and linked generated types were verified.
 
 Record migration checksum, generated-type diff, transaction/replay/concurrency/RLS/provenance counts, query plans, commands/exits, and commit.
 
@@ -135,11 +141,11 @@ Commit exclusive paths with `feat(growth): persist scoped anthropometry records`
 
 ## Completion checklist
 
-- [ ] Fact and assessments commit atomically.
-- [ ] Idempotency/fingerprint scope is complete.
-- [ ] Scope composite FKs/RLS prevent leakage.
-- [ ] Dataset/algorithm/age/numeric provenance is complete.
-- [ ] Corrections are additive supersessions.
+- [x] Fact and assessments commit atomically.
+- [x] Idempotency/fingerprint scope is complete.
+- [x] Scope composite FKs/RLS prevent leakage (Cloud postflight verified).
+- [x] Dataset/algorithm/age/numeric provenance is complete.
+- [x] Corrections are additive supersessions.
 
 ## Handoff
 

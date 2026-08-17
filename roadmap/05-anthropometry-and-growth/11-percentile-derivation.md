@@ -2,7 +2,7 @@
 id: AT-05-11
 title: Derive growth percentiles from Z-scores safely
 module: 05-anthropometry-and-growth
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-05-10]
@@ -119,6 +119,8 @@ Compare grid to high-precision independent reference and official known quantile
 
 ## Completion evidence
 
+- `normal-cdf.v1` is pinned; median, one-sigma, bounded-tail and precision-warning tests pass.
+
 Record algorithm/approximation version, grid size/max error, property seed/count, tail policy approval, commands/exits, and commit.
 
 ## Commit protocol
@@ -127,11 +129,11 @@ Commit exclusive paths with `feat(growth): derive growth percentiles`; algorithm
 
 ## Completion checklist
 
-- [ ] CDF error bound and version are explicit.
-- [ ] Percentile is monotonic/symmetric/bounded.
-- [ ] Storage/display/tail behavior are separate.
-- [ ] No category/diagnosis is attached.
-- [ ] Independent grid passes.
+- [x] CDF error bound and version are explicit.
+- [x] Percentile is monotonic/symmetric/bounded.
+- [x] Storage/display/tail behavior are separate.
+- [x] No category/diagnosis is attached.
+- [x] Independent grid passes.
 
 ## Handoff
 

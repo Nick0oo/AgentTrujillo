@@ -183,19 +183,33 @@ export type Database = {
           child_id: string
           created_at: string
           device: string | null
+          capture_policy_id: string | null
+          capture_policy_version: string | null
+          confirmed_at: string | null
+          confirmed_by: string | null
+          confirmation_sha256: string | null
+          conversion_version: string | null
           exclusion_reason: string | null
+          hmac_key_id: string | null
           id: string
           idempotency_key: string
+          input_fingerprint: string | null
           local_date: string
           measurement_method: string | null
           measurement_type: string
           normalized_unit: string
           normalized_value: number
+          normalized_value_lexeme: string | null
           occurred_at: string
           original_unit: string
           original_value: number
+          original_value_lexeme: string | null
           provenance_type: string
           recorded_by: string
+          rounding_mode: string | null
+          scope_fingerprint: string | null
+          supersedes_measurement_id: string | null
+          supersession_reason: string | null
           time_zone: string
           updated_at: string
           validation_status: string
@@ -205,19 +219,33 @@ export type Database = {
           child_id: string
           created_at?: string
           device?: string | null
+          capture_policy_id?: string | null
+          capture_policy_version?: string | null
+          confirmed_at?: string | null
+          confirmed_by?: string | null
+          confirmation_sha256?: string | null
+          conversion_version?: string | null
           exclusion_reason?: string | null
+          hmac_key_id?: string | null
           id?: string
           idempotency_key: string
+          input_fingerprint?: string | null
           local_date: string
           measurement_method?: string | null
           measurement_type: string
           normalized_unit: string
           normalized_value: number
+          normalized_value_lexeme?: string | null
           occurred_at: string
           original_unit: string
           original_value: number
+          original_value_lexeme?: string | null
           provenance_type: string
           recorded_by: string
+          rounding_mode?: string | null
+          scope_fingerprint?: string | null
+          supersedes_measurement_id?: string | null
+          supersession_reason?: string | null
           time_zone: string
           updated_at?: string
           validation_status?: string
@@ -227,19 +255,33 @@ export type Database = {
           child_id?: string
           created_at?: string
           device?: string | null
+          capture_policy_id?: string | null
+          capture_policy_version?: string | null
+          confirmed_at?: string | null
+          confirmed_by?: string | null
+          confirmation_sha256?: string | null
+          conversion_version?: string | null
           exclusion_reason?: string | null
+          hmac_key_id?: string | null
           id?: string
           idempotency_key?: string
+          input_fingerprint?: string | null
           local_date?: string
           measurement_method?: string | null
           measurement_type?: string
           normalized_unit?: string
           normalized_value?: number
+          normalized_value_lexeme?: string | null
           occurred_at?: string
           original_unit?: string
           original_value?: number
+          original_value_lexeme?: string | null
           provenance_type?: string
           recorded_by?: string
+          rounding_mode?: string | null
+          scope_fingerprint?: string | null
+          supersedes_measurement_id?: string | null
+          supersession_reason?: string | null
           time_zone?: string
           updated_at?: string
           validation_status?: string
@@ -1819,6 +1861,9 @@ export type Database = {
       growth_assessments: {
         Row: {
           algorithm_id: string
+          age_basis: string | null
+          age_policy_id: string | null
+          age_policy_version: string | null
           assessed_at: string
           care_space_id: string
           child_id: string
@@ -1826,18 +1871,31 @@ export type Database = {
           corrected_age_days: number | null
           correction_applied: boolean
           created_at: string
+          dataset_digest: string | null
+          decision_digest: string | null
           id: string
           indicator: string
+          measurement_input_fingerprint: string | null
+          input_digest: string | null
+          algorithm_version: string | null
+          interpretation: string | null
           measurement_id: string
           percentile: number | null
           result_status: string
           rule_pack_id: string
           standard_key: string
+          standard_version: string | null
+          transition_reason: string | null
           warnings: string[]
           z_score: number | null
+          z_score_lexeme: string | null
+          percentile_lexeme: string | null
         }
         Insert: {
           algorithm_id: string
+          age_basis?: string | null
+          age_policy_id?: string | null
+          age_policy_version?: string | null
           assessed_at?: string
           care_space_id: string
           child_id: string
@@ -1845,18 +1903,31 @@ export type Database = {
           corrected_age_days?: number | null
           correction_applied?: boolean
           created_at?: string
+          dataset_digest?: string | null
+          decision_digest?: string | null
           id?: string
           indicator: string
+          measurement_input_fingerprint?: string | null
+          input_digest?: string | null
+          algorithm_version?: string | null
+          interpretation?: string | null
           measurement_id: string
           percentile?: number | null
           result_status: string
           rule_pack_id: string
           standard_key: string
+          standard_version?: string | null
+          transition_reason?: string | null
           warnings?: string[]
           z_score?: number | null
+          z_score_lexeme?: string | null
+          percentile_lexeme?: string | null
         }
         Update: {
           algorithm_id?: string
+          age_basis?: string | null
+          age_policy_id?: string | null
+          age_policy_version?: string | null
           assessed_at?: string
           care_space_id?: string
           child_id?: string
@@ -1864,15 +1935,25 @@ export type Database = {
           corrected_age_days?: number | null
           correction_applied?: boolean
           created_at?: string
+          dataset_digest?: string | null
+          decision_digest?: string | null
           id?: string
           indicator?: string
+          measurement_input_fingerprint?: string | null
+          input_digest?: string | null
+          algorithm_version?: string | null
+          interpretation?: string | null
           measurement_id?: string
           percentile?: number | null
           result_status?: string
           rule_pack_id?: string
           standard_key?: string
+          standard_version?: string | null
+          transition_reason?: string | null
           warnings?: string[]
           z_score?: number | null
+          z_score_lexeme?: string | null
+          percentile_lexeme?: string | null
         }
         Relationships: [
           {
@@ -3390,7 +3471,37 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      growth_series_points: {
+        Row: {
+          assessment_id: string
+          assessed_at: string
+          age_basis: string | null
+          care_space_id: string
+          child_id: string
+          chronological_age_days: number
+          corrected_age_days: number | null
+          correction_applied: boolean
+          dataset_digest: string | null
+          indicator: string
+          interpretation: string | null
+          measurement_id: string
+          measurement_method: string | null
+          measurement_type: string
+          occurred_at: string
+          percentile: number | null
+          percentile_lexeme: string | null
+          result_status: string
+          standard_key: string
+          standard_version: string | null
+          superseded_by_measurement_id: string | null
+          transition_reason: string | null
+          validation_status: string
+          warnings: string[]
+          z_score: number | null
+          z_score_lexeme: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       bind_owned_eve_session: {
@@ -3448,6 +3559,40 @@ export type Database = {
           memory_type: string
           similarity: number
           structured_content: Json
+        }[]
+      }
+      record_confirmed_anthropometry: {
+        Args: {
+          p_assessments: Json
+          p_capture_policy_id: string
+          p_capture_policy_version: string
+          p_care_space_id: string
+          p_child_id: string
+          p_confirmation_expires_at: string
+          p_confirmation_sha256: string
+          p_conversion_version: string
+          p_device: string
+          p_hmac_key_id: string
+          p_idempotency_key: string
+          p_input_fingerprint: string
+          p_local_date: string
+          p_measurement_method: string
+          p_measurement_type: string
+          p_normalized_unit: string
+          p_normalized_value_lexeme: string
+          p_occurred_at: string
+          p_original_unit: string
+          p_original_value_lexeme: string
+          p_provenance_type: string
+          p_rounding_mode: string
+          p_supersedes_measurement_id?: string
+          p_supersession_reason?: string
+          p_time_zone: string
+        }
+        Returns: {
+          assessment_ids: string[]
+          measurement_id: string
+          outcome: string
         }[]
       }
       record_safety_evaluation: {

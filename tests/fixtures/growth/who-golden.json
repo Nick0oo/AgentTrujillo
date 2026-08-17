@@ -1,0 +1,10 @@
+{
+  "source": "WHO Child Growth Standards official expanded tables",
+  "cases": [
+    { "indicator": "weight_for_age", "sex": "male", "ageMonths": 0, "l": "0.3487", "m": "3.3464", "s": "0.14602" },
+    { "indicator": "weight_for_age", "sex": "female", "ageMonths": 60, "l": "-0.3518", "m": "18.2193", "s": "0.14821" },
+    { "indicator": "length_for_age", "sex": "male", "ageMonths": 0, "l": "1", "m": "49.8842", "s": "0.03795" },
+    { "indicator": "height_for_age", "sex": "female", "ageMonths": 60, "l": "1", "m": "109.4233", "s": "0.04347" },
+    { "indicator": "head_circumference_for_age", "sex": "female", "ageMonths": 0, "l": "1", "m": "33.8787", "s": "0.03496" }
+  ]
+}

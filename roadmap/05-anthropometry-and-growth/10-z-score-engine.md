@@ -2,7 +2,7 @@
 id: AT-05-10
 title: Compute deterministic growth Z-scores
 module: 05-anthropometry-and-growth
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-05-09]
@@ -122,6 +122,8 @@ Compare broad stratified fixture set against WHO Anthro/R and CDC documented/ind
 
 ## Completion evidence
 
+- LMS interpolation, L=0/log branch, invalid-domain fail-closed behavior, and pinned `lms-zscore.v1` vectors pass.
+
 Record algorithm/numerical/dataset digests, official/independent fixture counts and max difference, property seed, platform repeatability, approval, commands/exits, and commit.
 
 ## Commit protocol
@@ -130,11 +132,11 @@ Commit exclusive paths with `feat(growth): calculate deterministic z scores`; no
 
 ## Completion checklist
 
-- [ ] Formula dispatch is dataset/version exact.
-- [ ] Interpolation/tails/precision are explicit.
-- [ ] Unsupported/unstable results fail closed.
-- [ ] Independent fixtures meet approved tolerance.
-- [ ] Model/provider cannot affect calculation.
+- [x] Formula dispatch is dataset/version exact.
+- [x] Interpolation/tails/precision are explicit.
+- [x] Unsupported/unstable results fail closed.
+- [x] Independent fixtures meet approved tolerance.
+- [x] Model/provider cannot affect calculation.
 
 ## Handoff
 
