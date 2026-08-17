@@ -62,3 +62,28 @@ export function addCalendarInterval(date: CalendarDate | string, interval: Calen
   parsed!.setUTCDate(Math.min(originalDay, lastDay));
   return formatUtcDate(parsed!);
 }
+
+export function subtractCalendarInterval(date: CalendarDate | string, interval: CalendarInterval): CalendarDate {
+  const parsed = toUtcDate(parseCalendarDate(date));
+  if (!Number.isInteger(interval.value) || interval.value < 0) throw new Error("INVALID_CALENDAR_INTERVAL");
+  if (interval.unit === "days") {
+    parsed!.setUTCDate(parsed!.getUTCDate() - interval.value);
+    return formatUtcDate(parsed!);
+  }
+  if (interval.unit === "calendar_months") {
+    const originalDay = parsed!.getUTCDate();
+    parsed!.setUTCDate(1);
+    parsed!.setUTCMonth(parsed!.getUTCMonth() - interval.value);
+    const lastDay = new Date(Date.UTC(parsed!.getUTCFullYear(), parsed!.getUTCMonth() + 1, 0)).getUTCDate();
+    parsed!.setUTCDate(Math.min(originalDay, lastDay));
+    return formatUtcDate(parsed!);
+  }
+  const originalMonth = parsed!.getUTCMonth();
+  const originalDay = parsed!.getUTCDate();
+  parsed!.setUTCDate(1);
+  parsed!.setUTCFullYear(parsed!.getUTCFullYear() - interval.value);
+  parsed!.setUTCMonth(originalMonth);
+  const lastDay = new Date(Date.UTC(parsed!.getUTCFullYear(), originalMonth + 1, 0)).getUTCDate();
+  parsed!.setUTCDate(Math.min(originalDay, lastDay));
+  return formatUtcDate(parsed!);
+}

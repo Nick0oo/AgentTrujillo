@@ -118,6 +118,7 @@ export type ImmunizationRule = Readonly<{
   targetAgeUntil: CalendarInterval | null;
   minimumInterval: CalendarInterval | null;
   recommendedInterval: CalendarInterval | null;
+  gracePeriod?: CalendarInterval | null;
   catchUp: boolean;
   eligibilityCriteria: Readonly<Record<string, unknown>>;
   contraindicationReviewRequired: boolean;
@@ -182,9 +183,11 @@ export type EvidenceField<T> = Readonly<{
 }>;
 export type DraftDecision = "draft" | "confirmed" | "rejected" | "superseded";
 export type MinimumIntervalEvidence = Readonly<{
+  basis: "birth_date" | "prior_administration";
   priorAdministrationOn: CalendarDate;
   minimumInterval: CalendarInterval;
   earliestEligibleOn: CalendarDate;
+  graceApplied: boolean;
   valid: boolean;
 }>;
 export type DependencyGraph = Readonly<{

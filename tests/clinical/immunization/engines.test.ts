@@ -32,7 +32,18 @@ describe("immunization deterministic engines", () => {
     expect(evaluateMinimumAge("2026-01-31", { unit: "calendar_months", value: 1 }, "2026-02-27").valid).toBe(false);
     expect(evaluateMinimumInterval("2026-08-01", { unit: "days", value: 28 }, "2026-08-28").valid).toBe(false);
     expect(evaluateMinimumInterval("2026-08-01", { unit: "days", value: 28 }, "2026-08-29").valid).toBe(true);
-    expect(evaluateAdministrationValidity(rule("r2", 2), [{ administeredOn: "2026-08-01", valid: true }], "2026-01-01", "2026-08-28").validity).toBe("invalid");
+    const invalid = evaluateAdministrationValidity(rule("r2", 2), [{ administeredOn: "2026-08-01", valid: true }], "2026-01-01", "2026-08-28");
+    expect(invalid.validity).toBe("invalid");
+    expect(invalid.sourceReferences).toEqual(["synthetic"]);
+    expect(invalid.evidence).toMatchObject({ basis: "prior_administration", priorAdministrationOn: "2026-08-01", earliestEligibleOn: "2026-08-29", valid: false });
+  });
+
+  it("uses only package-provided grace and records when it was applied", () => {
+    const graceRule = { ...rule("r2", 2), gracePeriod: { unit: "days" as const, value: 4 } };
+    const withoutGrace = evaluateAdministrationValidity(graceRule, [{ administeredOn: "2026-08-01", valid: true }], "2026-01-01", { administeredOn: "2026-08-25" });
+    expect(withoutGrace.validity).toBe("invalid");
+    const withGrace = evaluateAdministrationValidity(graceRule, [{ administeredOn: "2026-08-01", valid: true }], "2026-01-01", { administeredOn: "2026-08-25", allowGrace: true });
+    expect(withGrace).toMatchObject({ validity: "valid", reasonCode: "DOSE_VALID_WITH_GRACE", graceApplied: true, evidence: { graceApplied: true, valid: true } });
   });
 
   it("topologically validates dependencies and reviews either-or ambiguity", () => {

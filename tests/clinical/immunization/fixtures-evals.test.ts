@@ -8,7 +8,7 @@ describe("immunization synthetic fixture evaluation", () => {
     const second = runImmunizationEval();
     expect(first).toEqual(second);
     expect(first.map((result) => result.country)).toEqual(["CO", "US"]);
-    expect(first.every((result) => result.failed === 0 && result.crossCountryMixes === 0 && result.criticalDiscrepancies === 0)).toBe(true);
+    expect(first.every((result) => result.failed === 0 && result.crossCountryMixes === 0 && result.criticalDiscrepancies === 0 && result.provenanceGaps === 0)).toBe(true);
     expect(first.every((result) => result.blocked > 0)).toBe(true);
   });
 });

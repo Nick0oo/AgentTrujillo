@@ -130,7 +130,7 @@ Commit exclusive paths with `feat(immunization): evaluate minimum intervals`; al
 
 - [x] Calendar/day/grace semantics are explicit.
 - [x] Only prior valid facts count.
-- [ ] Boundaries are exact and source-traceable.
+- [x] Boundaries are exact, package-provided grace is opt-in, and validity output carries the rule/source/boundary evidence.
 - [x] CO/US never mix.
 - [x] No repeat/order/immunity advice exists.
 

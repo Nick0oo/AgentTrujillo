@@ -24,7 +24,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:runtime": "vitest run tests/runtime",
-    "test:immunization": "vitest run tests/clinical/immunization tests/persistence/immunization-repository.test.ts",
+    "test:immunization": "vitest run tests/clinical/immunization tests/persistence/immunization-repository.test.ts tests/persistence/clinical-package-repository.test.ts",
     "eval:immunization": "node --experimental-strip-types tests/evals/immunization.eval.ts"
   },
   "dependencies": {

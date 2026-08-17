@@ -133,7 +133,7 @@ Commit exclusive paths with `test(immunization): prove schedule correctness`; do
 ## Completion checklist
 
 - [x] PAI and ACIP fixtures/decisions are independent.
-- [ ] Every expectation has source and approval provenance.
+- [x] Every expectation has source IDs and an explicit approval provenance state; pending external attestations keep activation blocked.
 - [x] Critical discrepancy and cross-country counts are zero.
 - [x] Negative isolation/replay/adversarial matrices pass.
 - [x] The verification artifact is deterministic and digest-bound.

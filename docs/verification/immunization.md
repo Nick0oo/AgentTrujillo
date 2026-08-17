@@ -4,7 +4,7 @@ Date: 2026-08-16
 
 ## Scope
 
-The implementation covers AT-06-01 through AT-06-14 with strict domain contracts, exact product/antigen resolution, separate CO PAI and US ACIP package compilers, draft-evidence confirmation, pure interval/dependency/catch-up/status engines, append-only Cloud persistence, country reevaluation, and synthetic fixture/eval coverage.
+The implementation covers AT-06-01 through AT-06-14 with strict domain contracts, exact product/antigen resolution, separate CO PAI and US ACIP package compilers, draft-evidence confirmation, source-traceable interval/dependency/catch-up/status engines, append-only Cloud persistence, country reevaluation, governed-package Cloud repository loading, and synthetic fixture/eval coverage.
 
 ## Evidence
 
@@ -12,7 +12,8 @@ The implementation covers AT-06-01 through AT-06-14 with strict domain contracts
 - Cloud migrations: `20260817100000_immunization_persistence_hardening.sql`, `20260817110000_immunization_assessment_replay.sql`, and `20260817120000_country_change_reassessment.sql`.
 - Cloud project: linked Supabase project ref `yapjiinrjsrothzgzxsv`; local and remote migration heads must match.
 - Official source locators and retrieval evidence: `tests/fixtures/immunization/official-source-manifest.json`; the manifest binds separate CO/US sets but intentionally does not activate either package.
-- Synthetic fixture digests are intentionally non-clinical and blocked until the exact compiled source artifacts and external approval attestations exist. AT-06-13 now includes the repository-backed event/run adapter, one-child scoped Cloud indexes, and replay-safe atomic RPC.
+- Synthetic fixture digests are intentionally non-clinical and blocked until the exact compiled source artifacts and external approval attestations exist. Every fixture expectation now carries source IDs plus an explicit pending/approved attestation state. AT-06-13 now includes the repository-backed event/run adapter, one-child scoped Cloud indexes, and replay-safe atomic RPC.
+- The Supabase clinical-package repository now joins active packs, source links, releases, algorithms, and approval attestations, and rejects incomplete source digests before the governed resolver can load an immunization package.
 - Linked database types regenerated from Cloud: `sha256:9c4aea17495232dfbe1cec9c17aedab3a71f9db455af78d3e4d758e99f262707`.
 
 ## Commands
@@ -26,7 +27,7 @@ npx supabase migration list --linked
 npm run eval:immunization
 ```
 
-Focused immunization suite: 8 files, 26 tests passed. Typecheck and Eve build pass with the main `.env` values mapped to the runtime's canonical names in the process environment. Cloud lint reports no schema errors; the migration head and generated types match the linked project. The linked SQL contract reports all 18 immunization persistence assertions as passing.
+Focused immunization suite: 9 files, 29 tests passed. Full suite: 79 files, 474 tests passed, 1 skipped. Typecheck and Eve build pass with the main `.env` values mapped to the runtime's canonical names in the process environment. Cloud lint reports no schema errors; the migration head and generated types match the linked project. The linked SQL contract reports all 18 immunization persistence assertions as passing.
 
 ## Country gates
 
