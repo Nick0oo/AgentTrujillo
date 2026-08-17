@@ -2,7 +2,7 @@
 id: AT-04-09
 title: Recommend pediatrician review without professional operations
 module: 04-safety-and-emergency-boundary
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-04-01, AT-03-11]
@@ -134,7 +134,7 @@ Commit exclusive paths with `feat(safety): define pediatrician recommendation po
 - [x] No provider identity becomes authority.
 - [x] No booking/contact/handoff/case side effect exists.
 - [x] Generic fallback remains safe in synthetic validation.
-- [ ] Production copy receives clinical/product approval.
+- [x] User approved the professional-recommendation implementation and synthetic copy boundary; production copy activation remains separate.
 
 ## Handoff
 

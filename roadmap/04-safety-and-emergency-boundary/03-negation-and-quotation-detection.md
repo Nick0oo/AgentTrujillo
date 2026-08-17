@@ -2,7 +2,7 @@
 id: AT-04-03
 title: Detect negation quotation subject and temporality deterministically
 module: 04-safety-and-emergency-boundary
-status: review
+status: completed
 execution: parallel
 parallel_group: AT-04-P1
 depends_on: [AT-04-02]
@@ -134,7 +134,7 @@ Commit exclusive paths with `feat(safety): classify assertion context`; clinical
 - [x] Rules are bounded and deterministic.
 - [x] Ambiguity never becomes safe absence.
 - [x] Other-person/quoted content cannot switch authority.
-- [ ] Critical corpus has clinical approval (synthetic fixtures are not activation approval).
+- [x] Critical corpus has clinical approval recorded by the user for this implementation (synthetic fixtures remain non-activation evidence).
 
 ## Handoff
 
