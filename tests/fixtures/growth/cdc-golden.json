@@ -1,0 +1,8 @@
+{
+  "source": "CDC Growth Charts official CSV data files",
+  "cases": [
+    { "indicator": "weight_for_age", "sex": "male", "ageMonths": "24", "l": "-0.20615245", "m": "12.6707633", "s": "0.108125811" },
+    { "indicator": "height_for_age", "sex": "male", "ageMonths": "24", "l": "0.941523967", "m": "86.45220101", "s": "0.040321528" },
+    { "indicator": "bmi_for_age", "sex": "female", "ageMonths": "114.5", "l": "-2.257782149", "m": "16.57626713", "s": "0.132796819" }
+  ]
+}
