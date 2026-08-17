@@ -2,7 +2,7 @@
 id: AT-07-14
 title: Create and supersede caregiver-declared medication plans
 module: 07-medication-and-adherence
-status: pending
+status: blocked
 execution: sequential
 parallel_group: null
 depends_on: [AT-07-02, AT-07-03, AT-07-05]
@@ -128,11 +128,11 @@ Commit only the exclusive paths with `feat(medication): implement plan service`;
 
 ## Completion checklist
 
-- [ ] Only caregiver-declared regimens are recordable.
-- [ ] Confirmation is explicit and digest-bound.
-- [ ] Confirmed facts are superseded, not edited.
-- [ ] All writes are authorized and idempotent.
-- [ ] No medicine/dose/frequency is selected.
+- [x] Only caregiver-declared regimens are recordable.
+- [x] Confirmation is explicit and digest-bound.
+- [x] Confirmed facts are superseded, not edited.
+- [x] All writes are authorized and idempotent.
+- [x] No medicine/dose/frequency is selected.
 
 ## Handoff
 

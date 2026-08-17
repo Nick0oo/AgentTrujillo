@@ -2,7 +2,7 @@
 id: AT-07-13
 title: Persist reproducible dose-validation decisions
 module: 07-medication-and-adherence
-status: pending
+status: blocked
 execution: sequential
 parallel_group: null
 depends_on: [AT-07-03, AT-07-12]

@@ -2,7 +2,7 @@
 id: AT-07-05
 title: Resolve exact medication presentation
 module: 07-medication-and-adherence
-status: pending
+status: blocked
 execution: sequential
 parallel_group: null
 depends_on: [AT-07-04]
@@ -128,11 +128,11 @@ Commit only the exclusive paths with `feat(medication): resolve presentations`; 
 
 ## Completion checklist
 
-- [ ] Form, route, release, and concentration must all agree.
-- [ ] Multi-ingredient strengths remain separate.
-- [ ] Drops/reconstitution ambiguity blocks conversion.
-- [ ] No alternative presentation is suggested.
-- [ ] Provenance identifies exact source version.
+- [x] Form, route, release, and concentration must all agree.
+- [x] Multi-ingredient strengths remain separate.
+- [x] Drops/reconstitution ambiguity blocks conversion.
+- [x] No alternative presentation is suggested.
+- [x] Provenance identifies exact source version.
 
 ## Handoff
 

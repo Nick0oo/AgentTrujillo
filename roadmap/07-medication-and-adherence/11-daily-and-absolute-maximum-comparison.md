@@ -2,7 +2,7 @@
 id: AT-07-11
 title: Compare declared daily exposure and absolute maxima
 module: 07-medication-and-adherence
-status: pending
+status: blocked
 execution: sequential
 parallel_group: null
 depends_on: [AT-07-10]
@@ -128,11 +128,11 @@ Commit only the exclusive paths with `feat(medication): compare daily limits`; a
 
 ## Completion checklist
 
-- [ ] Frequency must be explicit and package-supported.
-- [ ] Daily arithmetic uses exact decimals.
-- [ ] PRN/alternating ambiguity blocks reassurance.
-- [ ] No schedule or missed-dose advice is generated.
-- [ ] All ingredients and caps are evaluated.
+- [x] Frequency must be explicit and package-supported.
+- [x] Daily arithmetic uses exact decimals.
+- [x] PRN/alternating ambiguity blocks reassurance.
+- [x] No schedule or missed-dose advice is generated.
+- [x] All ingredients and caps are evaluated.
 
 ## Handoff
 

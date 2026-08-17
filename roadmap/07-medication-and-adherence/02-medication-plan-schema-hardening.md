@@ -2,7 +2,7 @@
 id: AT-07-02
 title: Harden medication plan persistence
 module: 07-medication-and-adherence
-status: pending
+status: blocked
 execution: sequential
 parallel_group: null
 depends_on: [AT-07-01]

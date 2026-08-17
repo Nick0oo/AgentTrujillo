@@ -2,7 +2,7 @@
 id: AT-07-17
 title: Compute descriptive adherence summaries
 module: 07-medication-and-adherence
-status: pending
+status: blocked
 execution: sequential
 parallel_group: null
 depends_on: [AT-07-16]
@@ -128,11 +128,11 @@ Commit only the exclusive paths with `feat(medication): summarize adherence`; at
 
 ## Completion checklist
 
-- [ ] Denominator and exclusions are explicit.
-- [ ] Unknown and no-report remain distinct.
-- [ ] Only active same-child facts count.
-- [ ] Ratios are suppressed when misleading.
-- [ ] No diagnosis, blame, or dose advice is emitted.
+- [x] Denominator and exclusions are explicit.
+- [x] Unknown and no-report remain distinct.
+- [x] Only active same-child facts count.
+- [x] Ratios are suppressed when misleading.
+- [x] No diagnosis, blame, or dose advice is emitted.
 
 ## Handoff
 

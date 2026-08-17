@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "medication-eval-v1",
+  "country": "CO",
+  "package": {
+    "id": "co-pediatric-reference-pending",
+    "version": "unapproved",
+    "approvalState": "blocked",
+    "sourceIds": ["INVIMA-identity", "INVIMA-label"]
+  },
+  "cases": [
+    { "id": "CO-MISSING-PACKAGE", "kind": "declared-dose", "expectedOutcome": "requires_professional_review", "critical": true },
+    { "id": "CO-AMBIGUOUS-PRESENTATION", "kind": "presentation", "expectedOutcome": "insufficient_data", "critical": true },
+    { "id": "CO-FACTUAL-ADHERENCE", "kind": "adherence", "expectedOutcome": "descriptive_only", "critical": false }
+  ]
+}

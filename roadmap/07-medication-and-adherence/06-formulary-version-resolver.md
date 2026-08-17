@@ -2,7 +2,7 @@
 id: AT-07-06
 title: Resolve approved pediatric formulary version
 module: 07-medication-and-adherence
-status: pending
+status: blocked
 execution: sequential
 parallel_group: null
 depends_on: [AT-07-05, AT-03-11]
@@ -128,11 +128,11 @@ Commit only the exclusive paths with `feat(medication): resolve formulary versio
 
 ## Completion checklist
 
-- [ ] Exactly one released effective package is required.
-- [ ] Country/vocabulary/algorithm compatibility is exact.
-- [ ] Revocation and digest drift fail closed.
-- [ ] No model or client selects a package.
-- [ ] No dosing rule is invented when unavailable.
+- [x] Exactly one released effective package is required.
+- [x] Country/vocabulary/algorithm compatibility is exact.
+- [x] Revocation and digest drift fail closed.
+- [x] No model or client selects a package.
+- [x] No dosing rule is invented when unavailable.
 
 ## Handoff
 

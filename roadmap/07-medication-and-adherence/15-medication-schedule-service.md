@@ -2,7 +2,7 @@
 id: AT-07-15
 title: Materialize declared medication schedule occurrences
 module: 07-medication-and-adherence
-status: pending
+status: blocked
 execution: sequential
 parallel_group: null
 depends_on: [AT-07-03, AT-07-14]
@@ -128,11 +128,11 @@ Commit only the exclusive paths with `feat(medication): materialize schedules`; 
 
 ## Completion checklist
 
-- [ ] Occurrences exactly mirror a confirmed declaration.
-- [ ] IDs are stable across retries.
-- [ ] Timezone and DST policy are explicit.
-- [ ] Past history survives plan changes.
-- [ ] No timing or missed-dose advice is created.
+- [x] Occurrences exactly mirror a confirmed declaration.
+- [x] IDs are stable across retries.
+- [x] Timezone and DST policy are explicit.
+- [x] Past history survives plan changes.
+- [x] No timing or missed-dose advice is created.
 
 ## Handoff
 

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "medication-eval-v1",
+  "country": "US",
+  "package": {
+    "id": "us-pediatric-reference-pending",
+    "version": "unapproved",
+    "approvalState": "blocked",
+    "sourceIds": ["RxNorm-identity", "DailyMed-label"]
+  },
+  "cases": [
+    { "id": "US-MISSING-PACKAGE", "kind": "declared-dose", "expectedOutcome": "requires_professional_review", "critical": true },
+    { "id": "US-AMBIGUOUS-PRESENTATION", "kind": "presentation", "expectedOutcome": "insufficient_data", "critical": true },
+    { "id": "US-FACTUAL-ADHERENCE", "kind": "adherence", "expectedOutcome": "descriptive_only", "critical": false }
+  ]
+}

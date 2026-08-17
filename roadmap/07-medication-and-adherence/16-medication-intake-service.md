@@ -2,7 +2,7 @@
 id: AT-07-16
 title: Record medication intake facts idempotently
 module: 07-medication-and-adherence
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-07-03, AT-07-15]
@@ -128,11 +128,11 @@ Commit only the exclusive paths with `feat(medication): record intake facts`; at
 
 ## Completion checklist
 
-- [ ] Intakes are retrospective caregiver-declared facts.
-- [ ] Confirmation and idempotency are enforced.
-- [ ] Corrections preserve history.
-- [ ] Occurrence and fact share one child scope.
-- [ ] No missed-dose or administration advice appears.
+- [x] Intakes are retrospective caregiver-declared facts.
+- [x] Confirmation and idempotency are enforced.
+- [x] Corrections preserve history.
+- [x] Occurrence and fact share one child scope.
+- [x] No missed-dose or administration advice appears.
 
 ## Handoff
 
