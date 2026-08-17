@@ -1,4 +1,4 @@
-select '1..12';
+select '1..18';
 
 select case when exists (
   select 1 from information_schema.columns
@@ -49,3 +49,26 @@ select case when has_table_privilege('anon', 'public.vaccination_assessment_evid
 select case when exists (
   select 1 from pg_indexes where schemaname = 'public' and indexname = 'vaccination_assessment_evidence_scope_idx'
 ) then 'ok 12 - normalized evidence has scoped access index' else 'not ok 12 - normalized evidence has scoped access index' end;
+
+select case when (
+  select count(*) = 3 from information_schema.columns
+  where table_schema = 'public' and table_name = 'vaccination_assessments'
+    and column_name in ('reevaluation_run_id', 'reevaluates_run_id', 'country_change_event_id')
+) then 'ok 13 - country-change provenance columns exist' else 'not ok 13 - country-change provenance columns exist' end;
+
+select case when exists (
+  select 1 from pg_indexes where schemaname = 'public' and indexname = 'vaccination_assessments_reevaluation_rule_idx'
+) then 'ok 14 - country-change runs are rule-idempotent' else 'not ok 14 - country-change runs are rule-idempotent' end;
+
+select case when exists (
+  select 1 from pg_indexes where schemaname = 'public' and indexname = 'vaccination_assessments_country_event_idx'
+) then 'ok 15 - country-change events are scoped and unique' else 'not ok 15 - country-change events are scoped and unique' end;
+
+select case when to_regprocedure('public.persist_country_change_reassessment(uuid,uuid,text,text,uuid,uuid,uuid,uuid,uuid,text,jsonb)') is not null
+  then 'ok 16 - atomic country-change reassessment RPC exists' else 'not ok 16 - atomic country-change reassessment RPC exists' end;
+
+select case when has_function_privilege('anon', 'public.persist_country_change_reassessment(uuid,uuid,text,text,uuid,uuid,uuid,uuid,uuid,text,jsonb)', 'execute') = false
+  then 'ok 17 - anonymous country-change RPC access is denied' else 'not ok 17 - anonymous country-change RPC access is denied' end;
+
+select case when has_function_privilege('authenticated', 'public.persist_country_change_reassessment(uuid,uuid,text,text,uuid,uuid,uuid,uuid,uuid,text,jsonb)', 'execute')
+  then 'ok 18 - authenticated country-change RPC access is granted' else 'not ok 18 - authenticated country-change RPC access is granted' end;

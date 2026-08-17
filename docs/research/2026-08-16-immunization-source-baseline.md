@@ -32,3 +32,9 @@ CDC documents nontrivial interval semantics: four weeks equals 28 days, interval
 8. Schedule updates trigger versioned reassessment; they never rewrite administration facts or prior assessment history.
 9. Mobile “traffic light” colors are presentation only. The structured status and explanation remain accessible without color.
 10. No result schedules vaccination, books care, contacts Dr. Trujillo, issues a prescription/order, or sends an alert. It may recommend pediatrician/vaccination-service review as plain text only.
+
+## Official source recheck recorded for implementation
+
+On 2026-08-16 (UTC retrieval crossing into 2026-08-17), the implementation rechecked the official source pages and recorded the locators and byte hashes available from direct retrieval in [`official-source-manifest.json`](../../tests/fixtures/immunization/official-source-manifest.json). The Colombia portal lists the 2026 PAI management guidelines and the PAI schedule; the linked PDF identifies itself as January 2026, version 12. The Colombia child schedule page explicitly describes 2026 schedule changes. The CDC child age, notes, and appendix pages are all dated July 2, 2025, while the ACIP recommendations status page is dated August 8, 2025 and states that ACIP recommendations become official CDC policy only after adoption by the CDC Director. Those facts bind the source set and its status; they do not approve this repository's compiled rule artifacts.
+
+The US pages are live HTML sources and therefore retain a current-status recheck marker rather than an invented immutable artifact digest. A release job must capture the exact bytes/PDFs used to compile a US package before any clinical approval or activation. Both countries remain fail-closed until the exact compiled package, algorithm digest, effective window, and independent clinical approval are present in Cloud governance.

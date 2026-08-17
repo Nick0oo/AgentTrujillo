@@ -5,7 +5,7 @@ This module records confirmed vaccine administration facts and evaluates a child
 ## Entry gate
 
 - Modules `02`–`05` access, governance, safety, and shared age contracts pass.
-- Research baseline: [immunization source baseline](../../docs/research/2026-08-16-immunization-source-baseline.md).
+- Research baseline: [immunization source baseline](../../docs/research/2026-08-16-immunization-source-baseline.md); implementation source manifest: [`official-source-manifest.json`](../../tests/fixtures/immunization/official-source-manifest.json).
 - Colombia 2026 PAI artifacts and all applicable updates are captured/approved before CO activation.
 - US activation requires a fresh CDC official-status check; research currently identifies the July 2, 2025 posted schedule as current under stated court stays.
 
@@ -73,7 +73,7 @@ $envLines = Get-Content .env | Where-Object { $_ -match '^[A-Za-z_][A-Za-z0-9_]*
 
 ## Implementation state
 
-AT-06-01, AT-06-02, AT-06-05, AT-06-07, AT-06-09, AT-06-11, and AT-06-12 have executable contracts, tests, and evidence. AT-06-03/04/06/08/10 are implemented with explicit review/activation gates; AT-06-13 has the deterministic pure reevaluation core but still needs the event/run persistence adapter; AT-06-14 has structural synthetic/adversarial coverage but still needs approved fixture expectations. None of these gates may be marked clinically active until the complete approved PAI/ACIP artifacts and reviewer attestations are supplied. Synthetic fixtures intentionally report `blocked` rather than inventing clinical approval.
+AT-06-01, AT-06-02, AT-06-05, AT-06-07, AT-06-09, AT-06-11, and AT-06-12 have executable contracts, tests, and evidence. AT-06-13 now has the deterministic pure reevaluation core plus the authorized repository adapter, Cloud one-child-scoped indexes, atomic RPC, and replay contract. The official CO/US source manifest and current-status checks support AT-06-03/04/14 source traceability, while exact compiled artifacts and independent clinical approvals remain explicit activation gates for AT-06-03/04/06/08/14. Synthetic fixtures intentionally report `blocked` rather than inventing clinical approval.
 
 ## Handoff
 

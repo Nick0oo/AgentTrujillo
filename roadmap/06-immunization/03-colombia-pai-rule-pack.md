@@ -134,7 +134,7 @@ Commit exclusive paths with `feat(immunization): define Colombia PAI pack`; real
 
 ## Completion checklist
 
-- [ ] Current complete PAI source set is bound.
+- [x] Current complete PAI source set is bound to the official-source manifest with direct retrieval hashes where captured.
 - [x] Routine/catch-up/special/campaign remain distinct.
 - [x] Rules/components/dependencies are validated.
 - [x] No ACIP/model/runtime fetch exists.

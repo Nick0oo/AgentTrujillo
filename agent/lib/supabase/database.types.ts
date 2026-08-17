@@ -3307,6 +3307,7 @@ export type Database = {
           assessment_run_id: string | null
           care_space_id: string
           child_id: string
+          country_change_event_id: string | null
           country_code: string | null
           created_at: string
           decision_digest: string | null
@@ -3317,6 +3318,8 @@ export type Database = {
           id: string
           input_digest: string | null
           input_fingerprint: string | null
+          reevaluates_run_id: string | null
+          reevaluation_run_id: string | null
           rule_id: string
           rule_pack_id: string | null
           rule_pack_version: string | null
@@ -3331,6 +3334,7 @@ export type Database = {
           assessment_run_id?: string | null
           care_space_id: string
           child_id: string
+          country_change_event_id?: string | null
           country_code?: string | null
           created_at?: string
           decision_digest?: string | null
@@ -3341,6 +3345,8 @@ export type Database = {
           id?: string
           input_digest?: string | null
           input_fingerprint?: string | null
+          reevaluates_run_id?: string | null
+          reevaluation_run_id?: string | null
           rule_id: string
           rule_pack_id?: string | null
           rule_pack_version?: string | null
@@ -3355,6 +3361,7 @@ export type Database = {
           assessment_run_id?: string | null
           care_space_id?: string
           child_id?: string
+          country_change_event_id?: string | null
           country_code?: string | null
           created_at?: string
           decision_digest?: string | null
@@ -3365,6 +3372,8 @@ export type Database = {
           id?: string
           input_digest?: string | null
           input_fingerprint?: string | null
+          reevaluates_run_id?: string | null
+          reevaluation_run_id?: string | null
           rule_id?: string
           rule_pack_id?: string | null
           rule_pack_version?: string | null
@@ -3777,6 +3786,26 @@ export type Database = {
           memory_type: string
           similarity: number
           structured_content: Json
+        }[]
+      }
+      persist_country_change_reassessment: {
+        Args: {
+          p_assessments: Json
+          p_care_space_id: string
+          p_child_id: string
+          p_country_change_event_id: string
+          p_country_code: string
+          p_database_algorithm_id: string
+          p_database_rule_pack_id: string
+          p_input_fingerprint: string
+          p_reevaluates_run_id: string
+          p_reevaluation_run_id: string
+          p_schedule_id: string
+        }
+        Returns: {
+          assessment_ids: string[]
+          outcome: string
+          reevaluation_run_id: string
         }[]
       }
       persist_vaccination_assessment: {

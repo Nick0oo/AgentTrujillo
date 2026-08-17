@@ -71,4 +71,47 @@ describe("Supabase immunization repository", () => {
     expect(rpc).toHaveBeenCalledWith("persist_vaccination_assessment", expect.objectContaining({ p_status: "due", p_input_fingerprint: "d".repeat(64) }));
     expect(result).toEqual({ outcome: "created", assessmentId: "00000000-0000-4000-8000-000000000012" });
   });
+
+  it("persists the country-change run and all assessments through one Cloud RPC", async () => {
+    const rpc = vi.fn().mockResolvedValue({ data: [{ reevaluation_run_id: "00000000-0000-4000-8000-000000000017", assessment_ids: ["00000000-0000-4000-8000-000000000018"], outcome: "created" }], error: null });
+    const repository = createImmunizationRepository({ rpc } as never);
+    const result = await repository.saveCountryChangeRun(scope, {
+      eventId: "country-event-1",
+      runId: "00000000-0000-4000-8000-000000000017",
+      reevaluatesRunId: null,
+      scheduleId: "00000000-0000-4000-8000-000000000013",
+      databaseRulePackId: "00000000-0000-4000-8000-000000000015",
+      databaseAlgorithmId: "00000000-0000-4000-8000-000000000016",
+      countryCode: "CO",
+      inputFingerprint: "d".repeat(64),
+      assessments: [{
+        scope: { careSpaceId: scope.careSpaceId, childId: scope.childId, countryCode: "CO", asOfDate: "2026-08-16" },
+        ruleId: "00000000-0000-4000-8000-000000000014",
+        status: "due",
+        reasonCode: "DOSE_DUE",
+        dueFrom: null,
+        dueUntil: null,
+        evidenceAdministrationIds: [],
+        rulePackId: "co-pai",
+        rulePackVersion: "synthetic",
+        algorithmId: "immunization-status-v1",
+        sourceDigest: "a".repeat(64),
+        inputDigest: "b".repeat(64),
+        decisionDigest: "c".repeat(64),
+        assessedAt: "2026-08-16T12:00:00.000Z",
+      } as never],
+      requestId: "immunization-test",
+    });
+    expect(rpc).toHaveBeenCalledWith("persist_country_change_reassessment", expect.objectContaining({ p_country_change_event_id: "country-event-1", p_assessments: expect.any(Array) }));
+    expect(result).toEqual({ outcome: "created", runId: "00000000-0000-4000-8000-000000000017", assessmentIds: ["00000000-0000-4000-8000-000000000018"] });
+  });
+
+  it("denies country-change persistence without the scoped record permission", async () => {
+    const rpc = vi.fn();
+    const repository = createImmunizationRepository({ rpc } as never);
+    const readOnly = { ...scope, permissions: ["read"] as const } as unknown as AuthorizedChildScope;
+    const result = await repository.saveCountryChangeRun(readOnly, {} as never);
+    expect(result).toMatchObject({ ok: false, code: "ACCESS_DENIED" });
+    expect(rpc).not.toHaveBeenCalled();
+  });
 });

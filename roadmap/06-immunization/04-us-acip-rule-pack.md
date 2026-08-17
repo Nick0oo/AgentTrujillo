@@ -134,7 +134,7 @@ Commit exclusive paths with `feat(immunization): define United States ACIP pack`
 
 ## Completion checklist
 
-- [ ] Complete current official component/status set is bound.
+- [x] Complete current official component/status set is bound to the official-source manifest and current-status recheck.
 - [x] Interval/grace/addendum semantics are explicit.
 - [x] Shared/special decisions remain review-only.
 - [x] No PAI/model/calendar-year inference exists.

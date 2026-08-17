@@ -3,7 +3,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { createAccessDenied } from "../../../agent/lib/access/access-denied.ts";
 import { hasPermission, type AuthorizedChildScope } from "../../../agent/lib/access/authorized-child-scope.ts";
 import type { Database } from "./database.types.ts";
-import type { ImmunizationRepository, RecordConfirmedAdministrationInput, VaccinationAssessmentWrite } from "../../clinical/immunization/repository.ts";
+import type { CountryChangeRunWrite, ImmunizationRepository, RecordConfirmedAdministrationInput, VaccinationAssessmentWrite } from "../../clinical/immunization/repository.ts";
 
 type Client = SupabaseClient<Database>;
 
@@ -62,6 +62,34 @@ function assessmentRpcArgs(scope: AuthorizedChildScope, input: VaccinationAssess
   };
 }
 
+function countryChangeRpcArgs(scope: AuthorizedChildScope, input: CountryChangeRunWrite) {
+  return {
+    p_care_space_id: scope.careSpaceId,
+    p_child_id: scope.childId,
+    p_country_code: input.countryCode,
+    p_country_change_event_id: input.eventId,
+    p_reevaluation_run_id: input.runId,
+    p_reevaluates_run_id: input.reevaluatesRunId,
+    p_schedule_id: input.scheduleId,
+    p_database_rule_pack_id: input.databaseRulePackId,
+    p_database_algorithm_id: input.databaseAlgorithmId,
+    p_input_fingerprint: input.inputFingerprint,
+    p_assessments: input.assessments.map((assessment) => ({
+      rule_id: assessment.ruleId,
+      status: assessment.status,
+      as_of_date: assessment.scope.asOfDate,
+      due_from: assessment.dueFrom,
+      due_until: assessment.dueUntil,
+      evidence_administration_ids: [...assessment.evidenceAdministrationIds],
+      explanation_code: assessment.reasonCode,
+      rule_pack_version: assessment.rulePackVersion,
+      source_digest: assessment.sourceDigest,
+      input_digest: assessment.inputDigest,
+      decision_digest: assessment.decisionDigest,
+    })),
+  };
+}
+
 export function createImmunizationRepository(client: Client): ImmunizationRepository {
   const recordConfirmed = async (scope: AuthorizedChildScope, input: RecordConfirmedAdministrationInput, signal?: AbortSignal) => {
       const request = requestId(input.requestId);
@@ -91,5 +119,19 @@ export function createImmunizationRepository(client: Client): ImmunizationReposi
       return failure("CLOUD_PERSISTENCE_ERROR", request);
     }
   };
-  return Object.freeze({ recordConfirmed, recordConfirmedAdministration: recordConfirmed, supersedeAdministration: recordConfirmed, saveAssessment });
+  const saveCountryChangeRun = async (scope: AuthorizedChildScope, input: CountryChangeRunWrite, signal?: AbortSignal) => {
+    const request = requestId(input.requestId);
+    if (!hasPermission(scope, "record") || signal?.aborted) return createAccessDenied(request);
+    if (scope.countryOfCare !== input.countryCode) return failure("CONFIRMATION_INVALID", request);
+    try {
+      const { data, error } = await client.rpc("persist_country_change_reassessment" as never, countryChangeRpcArgs(scope, input) as never);
+      if (error) return failure(error.code === "23505" ? "IDEMPOTENCY_CONFLICT" : "CLOUD_PERSISTENCE_ERROR", request);
+      const row = Array.isArray(data) ? data[0] as Record<string, unknown> | undefined : undefined;
+      if (!row || typeof row.reevaluation_run_id !== "string" || !Array.isArray(row.assessment_ids) || (row.outcome !== "created" && row.outcome !== "idempotent_replay")) return failure("CLOUD_PERSISTENCE_ERROR", request);
+      return { outcome: row.outcome, runId: row.reevaluation_run_id, assessmentIds: row.assessment_ids.filter((value): value is string => typeof value === "string") } as const;
+    } catch {
+      return failure("CLOUD_PERSISTENCE_ERROR", request);
+    }
+  };
+  return Object.freeze({ recordConfirmed, recordConfirmedAdministration: recordConfirmed, supersedeAdministration: recordConfirmed, saveAssessment, saveCountryChangeRun });
 }
