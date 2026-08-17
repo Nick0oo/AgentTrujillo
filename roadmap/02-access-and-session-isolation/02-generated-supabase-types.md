@@ -52,21 +52,21 @@ No runtime behavior changes. Contributors run `npm run generate:database-types`;
 
 ## Prerequisites
 
-- `AT-02-01` passes with local Supabase running for generation.
+- The linked Supabase Cloud project is available for read-only type generation.
 - Supabase CLI `2.114.0` generation syntax is verified from `--help`.
-- No linked project or environment token is required.
+- The verifier receives its Supabase access token through the authorized runtime environment; no token is committed or printed.
 
 ## Mandatory reading
 
 - `docs/operations/supabase.md`
 - `supabase/README.md`
 - `supabase/migrations/*.sql`
-- Supabase CLI help for `gen types typescript --local`
+- Supabase CLI help for `gen types typescript --linked`
 - `tsconfig.json`
 
 ## Scope
 
-- Generate `Database` from local public schema with the repository CLI.
+- Generate `Database` from the linked Supabase Cloud public schema with the repository CLI.
 - Normalize line endings and generator banner only; never rewrite semantic output.
 - Write atomically after successful generation.
 - Verify via regeneration to a temporary OS directory and byte comparison.
@@ -74,7 +74,7 @@ No runtime behavior changes. Contributors run `npm run generate:database-types`;
 
 ## Out of scope
 
-No handwritten convenience domain types, runtime Supabase client, linked generation, schema mutation, GraphQL types, or mobile copy is included.
+No handwritten convenience domain types, runtime Supabase client, schema mutation, GraphQL types, or mobile copy is included.
 
 ## Allowed files
 
@@ -82,7 +82,7 @@ Only the generated type, two scripts, dedicated test, and package scripts.
 
 ## Forbidden files and operations
 
-Do not redirect shell output directly over the committed file, generate from linked/remote state, edit generated members manually, include secret URLs, or touch migrations.
+Do not redirect shell output directly over the committed file, edit generated members manually, include secret URLs, or touch migrations.
 
 ## Interfaces and types
 
@@ -90,7 +90,7 @@ Do not redirect shell output directly over the committed file, generate from lin
 
 ## Technical design
 
-Spawn `supabase gen types typescript --local --schema public` with arguments. Capture output, require exit `0` and expected `export type Database`, normalize LF, then atomic rename a temp file within the target directory. Verification writes only to `os.tmpdir()` and deletes it in `finally`.
+Spawn `supabase gen types typescript --linked --schema public` with arguments. Capture output, require exit `0` and expected `export type Database`, normalize LF, then atomic rename a temp file within the target directory. Verification writes only to `os.tmpdir()` and deletes it in `finally`.
 
 ## Database and Storage contract
 
@@ -106,7 +106,7 @@ Types do not confer clinical meaning or permit the model to query tables. Domain
 
 ## Failure modes
 
-- Local stack absent: fail with setup guidance, no file change.
+- Cloud link/auth unavailable: fail with setup guidance, no file change.
 - Generator exits nonzero/empty: retain existing file.
 - Generated file drifts: verifier exits nonzero and prints bounded diff stats, not whole schema.
 - Output contains local URL/token: critical scan failure.
@@ -116,13 +116,13 @@ Types do not confer clinical meaning or permit the model to query tables. Domain
 
 1. Write script unit tests with synthetic output and failure injection.
 2. Implement safe generator/verifier.
-3. Run local reset/parity and generate the baseline file.
+3. Generate the baseline file from the linked Cloud schema.
 4. Add critical schema shape tests.
 5. Run verification twice, full tests, typecheck, discovery, and build.
 
 ## Unit and integration tests
 
-Tests cover argument list (`--local`, never `--linked`), atomic write, failed generation preservation, LF normalization, byte drift, cleanup, and critical `Database['public']` table/function keys. Type-level assertions require session/memory scope columns.
+Tests cover argument list (`--linked`, never `--local`), atomic write, failed generation preservation, LF normalization, byte drift, cleanup, and critical `Database['public']` table/function keys. Type-level assertions require session/memory scope columns.
 
 ## Eve evals and adversarial cases
 
@@ -130,7 +130,7 @@ No model eval. Compile-time/schema generation is deterministic.
 
 ## Manual verification
 
-Run parity, `npm run generate:database-types`, `npm run verify:database-types` twice, the dedicated test, typecheck, discovery, and build. Confirm the second generation produces a clean Git diff.
+Run `npm run generate:database-types`, `npm run verify:database-types` twice against the linked Cloud project, the dedicated test, typecheck, discovery, and build. Confirm the second generation produces a clean Git diff.
 
 ## Completion evidence
 
