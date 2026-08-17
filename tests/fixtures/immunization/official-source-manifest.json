@@ -1,0 +1,74 @@
+{
+  "schemaVersion": "immunization-official-source-manifest-v1",
+  "retrievedOn": "2026-08-16",
+  "status": "source-bound-not-clinically-approved",
+  "countries": {
+    "CO": {
+      "authority": "Ministerio de Salud y Protección Social de Colombia",
+      "sources": [
+        {
+          "id": "co-pai-technical-index-2026",
+          "uri": "https://vacunacion.minsalud.gov.co/RT/Paginas/lineamientos-tecnicos.aspx",
+          "title": "Lineamientos técnicos PAI",
+          "publishedOrCurrent": "2026 portal listing",
+          "artifactSha256": "89bd6e5c20bf0d78796897fea1dbad6c96bd17c0f79fdf09561b4995fd05df74",
+          "capture": "byte-hashed"
+        },
+        {
+          "id": "co-pai-management-2026-v12",
+          "uri": "https://www.minsalud.gov.co/sites/rid/Lists/BibliotecaDigital/RIDE/VS/PP/PAI/lineamientos-gestion-administracion-pai-2026.pdf",
+          "title": "Lineamientos para la gestión y administración del PAI 2026",
+          "publishedOrCurrent": "January 2026, version 12",
+          "artifactSha256": "9c9957034a7716092f696f702219d9a496ab12339d95eb00f957c8441283e34e",
+          "capture": "byte-hashed"
+        },
+        {
+          "id": "co-pai-children-under-six-2026",
+          "uri": "https://vacunacion.minsalud.gov.co/EV/Paginas/ninos-y-ninas-menores-de-6-anos.aspx",
+          "title": "Niños y niñas menores de 6 años",
+          "publishedOrCurrent": "2026 page content",
+          "artifactSha256": "e86bfdd7715f681e48b38ba0e0b3cf3ec5d190a3f162a2df1f9eb9a870b5e29d",
+          "capture": "byte-hashed"
+        }
+      ]
+    },
+    "US": {
+      "authority": "CDC / Advisory Committee on Immunization Practices",
+      "sources": [
+        {
+          "id": "us-acip-child-age-2025",
+          "uri": "https://www.cdc.gov/vaccines/hcp/imz-schedules/child-adolescent-age-compliant.html",
+          "title": "Child and Adolescent Immunization Schedule by Age (Compliant)",
+          "publishedOrCurrent": "July 2, 2025",
+          "artifactSha256": null,
+          "capture": "official-page-current-status-rechecked"
+        },
+        {
+          "id": "us-acip-child-notes-2025",
+          "uri": "https://www.cdc.gov/vaccines/hcp/imz-schedules/child-adolescent-notes.html",
+          "title": "Child Immunization Schedule Notes",
+          "publishedOrCurrent": "July 2, 2025",
+          "artifactSha256": null,
+          "capture": "official-page-current-status-rechecked"
+        },
+        {
+          "id": "us-acip-child-appendix-2025",
+          "uri": "https://www.cdc.gov/vaccines/hcp/imz-schedules/child-adolescent-appendix.html",
+          "title": "Child Immunization Schedule Appendix",
+          "publishedOrCurrent": "July 2, 2025",
+          "artifactSha256": null,
+          "capture": "official-page-current-status-rechecked"
+        },
+        {
+          "id": "us-acip-recommendations-status",
+          "uri": "https://www.cdc.gov/acip/vaccine-recommendations/index.html",
+          "title": "ACIP Recommendations",
+          "publishedOrCurrent": "August 8, 2025 page status",
+          "artifactSha256": null,
+          "capture": "official-page-current-status-rechecked"
+        }
+      ]
+    }
+  },
+  "activationRule": "No country pack may activate from this manifest alone. The exact compiled artifact, algorithm digest, effective window, source digests, and independent clinical approval must be recorded in the Cloud governance tables first."
+}

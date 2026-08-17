@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "acip-us-reviewed-import-v1",
+  "domain": "immunization",
+  "countryCode": "US",
+  "sourceSet": "official-source-manifest.json#US",
+  "requiredRuleKinds": ["routine", "catch_up", "special_population", "review_only"],
+  "requiredComponents": ["by_age", "catch_up", "medical_indication", "notes", "appendix", "addendum", "official_status"],
+  "activation": "blocked_pending_external_clinical_approval",
+  "containsActionableSchedule": false
+}

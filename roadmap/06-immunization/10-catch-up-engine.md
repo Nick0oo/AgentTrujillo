@@ -2,7 +2,7 @@
 id: AT-06-10
 title: Evaluate approved catch-up pathways
 module: 06-immunization
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-06-09]
@@ -126,11 +126,11 @@ Commit exclusive paths with `feat(immunization): evaluate catch-up pathways`; no
 
 ## Completion checklist
 
-- [ ] Series never restarts without exact rule.
-- [ ] Age/interval windows are exact.
-- [ ] Product/special ambiguity yields review.
-- [ ] CO/US remain separate.
-- [ ] No order/booking/reminder is created.
+- [x] Series never restarts without exact rule.
+- [x] Age/interval windows are exact.
+- [x] Product/special ambiguity yields review.
+- [x] CO/US remain separate.
+- [x] No order/booking/reminder is created.
 
 ## Handoff
 

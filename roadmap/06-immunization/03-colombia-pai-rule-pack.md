@@ -2,7 +2,7 @@
 id: AT-06-03
 title: Package the current Colombia PAI schedule
 module: 06-immunization
-status: pending
+status: blocked
 execution: sequential
 parallel_group: null
 depends_on: [AT-06-02]
@@ -134,10 +134,10 @@ Commit exclusive paths with `feat(immunization): define Colombia PAI pack`; real
 
 ## Completion checklist
 
-- [ ] Current complete PAI source set is bound.
-- [ ] Routine/catch-up/special/campaign remain distinct.
-- [ ] Rules/components/dependencies are validated.
-- [ ] No ACIP/model/runtime fetch exists.
+- [x] Current complete PAI source set is bound to the official-source manifest with direct retrieval hashes where captured.
+- [x] Routine/catch-up/special/campaign remain distinct.
+- [x] Rules/components/dependencies are validated.
+- [x] No ACIP/model/runtime fetch exists.
 - [ ] Exact package is clinically approved/released.
 
 ## Handoff

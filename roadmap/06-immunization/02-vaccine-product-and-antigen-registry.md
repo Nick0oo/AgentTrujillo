@@ -2,7 +2,7 @@
 id: AT-06-02
 title: Build the vaccine product and antigen registry
 module: 06-immunization
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-06-01]
@@ -132,11 +132,11 @@ Commit exclusive paths with `feat(immunization): resolve vaccine products and an
 
 ## Completion checklist
 
-- [ ] Resolution is exact, versioned, country-aware.
-- [ ] Combination components are explicit.
-- [ ] Ambiguous/unknown never receive credit.
-- [ ] Registry status alone cannot imply approval.
-- [ ] No runtime web/model mapping exists.
+- [x] Resolution is exact, versioned, country-aware.
+- [x] Combination components are explicit.
+- [x] Ambiguous/unknown never receive credit.
+- [x] Registry status alone cannot imply approval.
+- [x] No runtime web/model mapping exists.
 
 ## Handoff
 

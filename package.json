@@ -19,11 +19,15 @@
     "verify:clinical-artifact": "node --experimental-strip-types scripts/clinical/verify-artifact.mjs",
     "import:growth:who": "node scripts/clinical/import-who-growth.mjs",
     "import:growth:cdc": "node scripts/clinical/import-cdc-growth.mjs",
+    "import:immunization:co": "node scripts/clinical/import-pai-colombia.mjs",
+    "import:immunization:us": "node scripts/clinical/import-acip-us.mjs",
     "eval:runtime": "eve eval evals/runtime --strict --max-concurrency 1",
     "eval:runtime:json": "eve eval evals/runtime --strict --max-concurrency 1 --json",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:runtime": "vitest run tests/runtime"
+    "test:runtime": "vitest run tests/runtime",
+    "test:immunization": "vitest run tests/clinical/immunization tests/persistence/immunization-repository.test.ts tests/persistence/clinical-package-repository.test.ts",
+    "eval:immunization": "node --experimental-strip-types tests/evals/immunization.eval.ts"
   },
   "dependencies": {
     "@ai-sdk/google": "4.0.44",

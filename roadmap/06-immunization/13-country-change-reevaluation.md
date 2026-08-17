@@ -2,7 +2,7 @@
 id: AT-06-13
 title: Reevaluate immunization after country change
 module: 06-immunization
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-06-12]
@@ -126,11 +126,11 @@ Commit exclusive paths with `feat(immunization): reevaluate country change`; no 
 
 ## Completion checklist
 
-- [ ] PAI and ACIP are rerun independently.
-- [ ] Historical facts/assessments are never rewritten.
-- [ ] Foreign/ambiguous evidence yields review.
-- [ ] Event and all rows remain one-child scoped.
-- [ ] Replay converges without duplicate runs.
+- [x] PAI and ACIP are rerun independently.
+- [x] Historical facts/assessments are never rewritten.
+- [x] Foreign/ambiguous evidence yields review.
+- [x] Event and all rows remain one-child scoped.
+- [x] Replay converges without duplicate runs.
 
 ## Handoff
 

@@ -5,7 +5,7 @@ This module records confirmed vaccine administration facts and evaluates a child
 ## Entry gate
 
 - Modules `02`–`05` access, governance, safety, and shared age contracts pass.
-- Research baseline: [immunization source baseline](../../docs/research/2026-08-16-immunization-source-baseline.md).
+- Research baseline: [immunization source baseline](../../docs/research/2026-08-16-immunization-source-baseline.md); implementation source manifest: [`official-source-manifest.json`](../../tests/fixtures/immunization/official-source-manifest.json).
 - Colombia 2026 PAI artifacts and all applicable updates are captured/approved before CO activation.
 - US activation requires a fresh CDC official-status check; research currently identifies the July 2, 2025 posted schedule as current under stated court stays.
 
@@ -62,12 +62,18 @@ Statuses describe schedule comparison at an `asOfDate`; they do not certify immu
 ## Module verification
 
 ```powershell
-npm test -- tests/clinical/immunization tests/persistence/immunization
-npm run eval -- immunization
-npx supabase test db --local
+npm run test:immunization
+npm run eval:immunization
+npx supabase db lint --linked
+npx supabase db query --linked --file supabase/tests/025_immunization_persistence.test.sql
+npx supabase migration list --linked
 npm run typecheck
-npm run build
+$envLines = Get-Content .env | Where-Object { $_ -match '^[A-Za-z_][A-Za-z0-9_]*=' }; foreach ($line in $envLines) { $pair = $line -split '=', 2; Set-Item -Path ("Env:" + $pair[0]) -Value $pair[1] }; $env:APP_ENV = 'development'; $env:SUPABASE_URL = $env:NEXT_PUBLIC_SUPABASE_URL; $env:SUPABASE_PUBLISHABLE_KEY = $env:NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY; npm run build
 ```
+
+## Implementation state
+
+AT-06-01, AT-06-02, AT-06-03, AT-06-04, AT-06-05, AT-06-07, AT-06-09, AT-06-11, and AT-06-12 have executable contracts, tests, offline importers, and evidence. AT-06-13 now has the deterministic pure reevaluation core plus the authorized repository adapter, Cloud one-child-scoped indexes, atomic RPC, and replay contract. The official CO/US source manifest, current-status checks, reviewed Cloud source baseline, and draft algorithm identity support AT-06-03/04/14 traceability, while exact compiled artifacts and independent clinical approvals remain explicit activation gates for AT-06-03/04/06/08/14. Synthetic fixtures intentionally report `blocked` rather than inventing clinical approval.
 
 ## Handoff
 

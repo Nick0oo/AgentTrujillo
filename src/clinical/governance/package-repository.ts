@@ -20,7 +20,7 @@ export type ClinicalPackageCandidate = Readonly<{
   sources: readonly ClinicalSourceReference[];
   sourceSetSha256: Sha256Hex;
   approval: ApprovalAttestation | null;
-  algorithm: Readonly<{ status: string; identity: AlgorithmIdentity; implementation: ClinicalAlgorithm<unknown, unknown> }>;
+  algorithm: Readonly<{ status: string; identity: AlgorithmIdentity; implementation?: ClinicalAlgorithm<unknown, unknown> }>;
   release: Readonly<{ status: string; artifactSha256: Sha256Hex }> | null;
 }>;
 

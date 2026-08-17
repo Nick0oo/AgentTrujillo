@@ -2,7 +2,7 @@
 id: AT-06-12
 title: Persist vaccination facts and assessments atomically
 module: 06-immunization
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-06-11]
@@ -137,11 +137,11 @@ Commit exclusive paths with `feat(immunization): persist assessments atomically`
 
 ## Completion checklist
 
-- [ ] Confirmed facts are immutable and corrections are supersessions.
-- [ ] Identical retries converge; conflicting retries fail.
-- [ ] Every evidence ID is transactionally same-child.
-- [ ] Assessments contain complete package/source/decision provenance.
-- [ ] RLS/least privilege and clean/upgrade tests pass.
+- [x] Confirmed facts are immutable and corrections are supersessions.
+- [x] Identical retries converge; conflicting retries fail.
+- [x] Every evidence ID is transactionally same-child.
+- [x] Assessments contain complete package/source/decision provenance.
+- [x] RLS/least privilege and clean/upgrade tests pass.
 
 ## Handoff
 

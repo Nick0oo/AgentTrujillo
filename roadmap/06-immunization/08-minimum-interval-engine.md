@@ -2,7 +2,7 @@
 id: AT-06-08
 title: Evaluate vaccine minimum age and interval validity
 module: 06-immunization
-status: pending
+status: blocked
 execution: sequential
 parallel_group: null
 depends_on: [AT-06-03, AT-06-04, AT-06-07]
@@ -128,11 +128,11 @@ Commit exclusive paths with `feat(immunization): evaluate minimum intervals`; al
 
 ## Completion checklist
 
-- [ ] Calendar/day/grace semantics are explicit.
-- [ ] Only prior valid facts count.
-- [ ] Boundaries are exact and source-traceable.
-- [ ] CO/US never mix.
-- [ ] No repeat/order/immunity advice exists.
+- [x] Calendar/day/grace semantics are explicit.
+- [x] Only prior valid facts count.
+- [x] Boundaries are exact, package-provided grace is opt-in, and validity output carries the rule/source/boundary evidence.
+- [x] CO/US never mix.
+- [x] No repeat/order/immunity advice exists.
 
 ## Handoff
 

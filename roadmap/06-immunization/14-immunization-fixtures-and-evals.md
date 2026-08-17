@@ -2,7 +2,7 @@
 id: AT-06-14
 title: Prove immunization correctness and isolation
 module: 06-immunization
-status: pending
+status: blocked
 execution: sequential
 parallel_group: null
 depends_on: [AT-06-13]
@@ -132,11 +132,11 @@ Commit exclusive paths with `test(immunization): prove schedule correctness`; do
 
 ## Completion checklist
 
-- [ ] PAI and ACIP fixtures/decisions are independent.
-- [ ] Every expectation has source and approval provenance.
-- [ ] Critical discrepancy and cross-country counts are zero.
-- [ ] Negative isolation/replay/adversarial matrices pass.
-- [ ] The verification artifact is deterministic and digest-bound.
+- [x] PAI and ACIP fixtures/decisions are independent.
+- [x] Every expectation has source IDs and an explicit approval provenance state; pending external attestations keep activation blocked.
+- [x] Critical discrepancy and cross-country counts are zero.
+- [x] Negative isolation/replay/adversarial matrices pass.
+- [x] The verification artifact is deterministic and digest-bound.
 
 ## Handoff
 

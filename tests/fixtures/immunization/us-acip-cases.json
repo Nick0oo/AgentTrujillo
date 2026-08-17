@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "immunization-fixture-v1",
+  "country": "US",
+  "package": { "id": "us-acip-2026-synthetic", "version": "2026.synthetic", "sourceDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "approvalState": "blocked" },
+  "source": { "locator": "tests/fixtures/immunization/official-source-manifest.json#US", "approvalDigest": null, "reviewerState": "source_bound_pending_fresh_official_status_and_external_approval" },
+  "cases": [
+    { "id": "US-SYNTH-STATUS-001", "kind": "draft-evidence", "expectedStatus": "review_required", "critical": false, "provenance": { "sourceIds": ["us-acip-child-age-2025", "us-acip-child-notes-2025", "us-acip-child-appendix-2025", "us-acip-recommendations-status"], "approval": { "status": "pending_external", "manifestSha256": null, "attestationId": null } } },
+    { "id": "US-SYNTH-CONTRACT-001", "kind": "country-isolation", "expectedStatus": "review_required", "critical": false, "provenance": { "sourceIds": ["us-acip-child-age-2025", "us-acip-child-notes-2025", "us-acip-child-appendix-2025", "us-acip-recommendations-status"], "approval": { "status": "pending_external", "manifestSha256": null, "attestationId": null } } }
+  ]
+}
