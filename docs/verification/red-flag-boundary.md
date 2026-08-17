@@ -1,7 +1,7 @@
 # Red-flag boundary verification
 
-Date: 2026-08-16  
-Branch: `codex/roadmap-module-04`  
+Date: 2026-08-16
+Branch: `codex/roadmap-module-04`
 Cloud project: `yapjiinrjsrothzgzxsv`
 
 The module 04 deterministic safety boundary is exercised with six synthetic, non-identifying corpus cases across es-CO/CO and en-US/US. The fixture package and reviewer identifier are explicitly `synthetic_test_only`; no real clinical package, source body, PHI, approval token, or activation is present in this branch.

@@ -38,4 +38,9 @@ describe("pre-LLM safety preflight", () => {
     await expect(preflight.consumePermit({ permit: result.permit, authorization: { requestId: "req-1", sessionId: "session-1" }, scopeFingerprint: trusted.scopeFingerprint, access })).rejects.toThrow("CONTINUE_PERMIT_INVALID");
     expect(access.validate).toHaveBeenCalledTimes(2);
   });
+
+  it("blocks a clinically prohibited request before issuing a continue permit", async () => {
+    const result = await new SafetyPreflight().evaluate(input({ rawMessage: createRawGuardianMessage({ text: "¿Qué diagnóstico tiene?", locale: "es-CO", source: "guardian", requestId: "req-1" }) }));
+    expect(result).toMatchObject({ kind: "terminal", response: { type: "abstain", decision: { reasonCode: "DIAGNOSIS_REQUEST" } } });
+  });
 });

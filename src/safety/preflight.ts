@@ -10,6 +10,7 @@ export type AccessLeaseValidator = Readonly<{ validate(input: Readonly<{ request
 export type EmergencyPackageProvider = Readonly<{ resolve(input: Readonly<{ countryOfCare: "CO" | "US"; locale: "es-CO" | "en-US"; referenceInstant: Date }>, signal: AbortSignal): CompiledRedFlagPack | Promise<CompiledRedFlagPack | null> | null }>;
 export type SafetyEvaluationRecorder = Readonly<{ recordOnce(input: Readonly<{ requestId: string; sessionId: string; scopeFingerprint: string; decision: SafetyDecision; evidence: SafetyDecisionEvidence }>, signal: AbortSignal): void | Promise<void> }>;
 export type SafetyPackageFailure = Readonly<{ reason: "PACKAGE_UNAVAILABLE" | "PACKAGE_ERROR" }>;
+export type ClinicalResponsePolicyPort = Pick<ClinicalResponsePolicy, "evaluateRequest">;
 
 export type PreflightInput = Readonly<{
   requestId: string;
@@ -19,6 +20,7 @@ export type PreflightInput = Readonly<{
   access: AccessLeaseValidator;
   packages: EmergencyPackageProvider;
   recorder?: SafetyEvaluationRecorder;
+  responsePolicy?: ClinicalResponsePolicyPort;
   engineLimits?: SafetyEngineLimits;
   signal?: AbortSignal;
 }>;
@@ -92,6 +94,13 @@ export class SafetyPreflight {
     }
     await recordBestEffort(input, evaluated, { evidence: evaluated.evidence, warnings: evaluated.warnings, operationCount: evaluated.operationCount }, signal);
     if (evaluated.decision !== "not_urgent") return deepFreeze({ kind: "terminal", response: terminalFor(evaluated), decisionEvidence: { evidence: evaluated.evidence, warnings: evaluated.warnings, operationCount: evaluated.operationCount } });
+    const policyResult = (input.responsePolicy ?? defaultClinicalResponsePolicy).evaluateRequest({ text: input.rawMessage.text, locale: input.rawMessage.locale, safetyDecision: evaluated });
+    if (policyResult.terminal) {
+      const decision: SafetyDecision = { decision: "indeterminate", responseMode: "abstain", reasonCode: policyResult.violation?.code ?? "CLINICAL_RESPONSE_POLICY_BLOCKED" };
+      const evidence: SafetyDecisionEvidence = { evidence: evaluated.evidence, warnings: [...evaluated.warnings, decision.reasonCode], operationCount: evaluated.operationCount };
+      await recordBestEffort(input, decision, evidence, signal);
+      return deepFreeze({ kind: "terminal", response: terminalFor(decision), decisionEvidence: evidence });
+    }
     return deepFreeze({ kind: "continue", permit: createPermit(input), decision: evaluated, decisionEvidence: { evidence: evaluated.evidence, warnings: evaluated.warnings, operationCount: evaluated.operationCount } });
   }
 

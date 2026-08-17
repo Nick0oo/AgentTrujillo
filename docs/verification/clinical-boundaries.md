@@ -1,6 +1,6 @@
 # Clinical response-boundary verification
 
-Date: 2026-08-16  
+Date: 2026-08-16
 Branch: `codex/roadmap-module-04`
 
 The synthetic deterministic corpus covers diagnosis, prescription, medicine selection, dose authorization, false reassurance, professional operations, and benign education in Spanish Colombia and US English. The policy integration suite is the critical oracle and records only case IDs, behavior codes, modes, and aggregate counts; it never stores prompts or generated output.
