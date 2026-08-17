@@ -27,6 +27,7 @@ export type GrowthIndicator =
   | "bmi_for_age";
 
 export type GrowthAssessmentStatus = "calculated" | "rule_unavailable" | "insufficient_data" | "excluded";
+export type GrowthInterpretation = "within_expected" | "review_required" | "urgent_review" | "unavailable";
 export type GrowthAgeBasis = "chronological" | "corrected";
 export type GrowthWarning =
   | "age_unavailable"
@@ -116,10 +117,11 @@ export type ClinicalResultProvenance = Readonly<{
 }>;
 
 type GrowthAssessmentCommon = Readonly<{
-  standard: GrowthStandardIdentity;
+  standard: GrowthStandardIdentity | null;
   indicator: GrowthIndicator;
   age: GrowthAgeContext;
   warnings: readonly GrowthWarning[];
+  interpretation: GrowthInterpretation;
   provenance: ClinicalResultProvenance;
 }>;
 
