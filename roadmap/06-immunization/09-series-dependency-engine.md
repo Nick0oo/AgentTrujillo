@@ -2,7 +2,7 @@
 id: AT-06-09
 title: Resolve vaccine series dependencies and alternatives
 module: 06-immunization
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-06-08]
@@ -128,11 +128,11 @@ Commit exclusive paths with `feat(immunization): resolve series dependencies`; n
 
 ## Completion checklist
 
-- [ ] Graph is acyclic/bounded/source-traceable.
-- [ ] Only valid confirmed evidence assigns.
-- [ ] Alternatives/conditions/exclusions are explicit.
-- [ ] Ambiguity never advances automatically.
-- [ ] No recommendation/order occurs.
+- [x] Graph is acyclic/bounded/source-traceable.
+- [x] Only valid confirmed evidence assigns.
+- [x] Alternatives/conditions/exclusions are explicit.
+- [x] Ambiguity never advances automatically.
+- [x] No recommendation/order occurs.
 
 ## Handoff
 

@@ -2,7 +2,7 @@
 id: AT-06-06
 title: Validate confirmed vaccine administration facts
 module: 06-immunization
-status: pending
+status: blocked
 execution: sequential
 parallel_group: null
 depends_on: [AT-06-05]
@@ -128,10 +128,10 @@ Commit exclusive paths with `feat(immunization): validate administration facts`;
 
 ## Completion checklist
 
-- [ ] Confirmation/scope/evidence integrity verified.
-- [ ] Date/product/antigen/country are exact.
-- [ ] No silent correction/credit/immunity claim.
-- [ ] Uncertainty remains review-only.
+- [x] Confirmation/scope/evidence integrity verified.
+- [x] Date/product/antigen/country are exact.
+- [x] No silent correction/credit/immunity claim.
+- [x] Uncertainty remains review-only.
 - [ ] Boundaries are clinically approved.
 
 ## Handoff

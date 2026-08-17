@@ -2,7 +2,7 @@
 id: AT-06-05
 title: Keep vaccine documents OCR and imports as draft evidence
 module: 06-immunization
-status: pending
+status: completed
 execution: parallel
 parallel_group: AT-06-P1
 depends_on: [AT-06-02]
@@ -128,11 +128,11 @@ Commit exclusive paths with `feat(immunization): enforce draft vaccine evidence`
 
 ## Completion checklist
 
-- [ ] Every extraction/import remains draft.
-- [ ] Original/evidence/uncertainty is preserved.
-- [ ] Confirmation covers every material field.
-- [ ] Draft/rejected never count.
-- [ ] Evidence is private and child-bound.
+- [x] Every extraction/import remains draft.
+- [x] Original/evidence/uncertainty is preserved.
+- [x] Confirmation covers every material field.
+- [x] Draft/rejected never count.
+- [x] Evidence is private and child-bound.
 
 ## Handoff
 

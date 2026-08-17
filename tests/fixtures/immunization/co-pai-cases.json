@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "immunization-fixture-v1",
+  "country": "CO",
+  "package": { "id": "co-pai-2026-synthetic", "version": "2026.synthetic", "sourceDigest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "approvalState": "blocked" },
+  "source": { "locator": "docs/research/2026-08-16-immunization-source-baseline.md#colombia-first-source-set", "approvalDigest": null, "reviewerState": "pending_external_approval" },
+  "cases": [
+    { "id": "CO-SYNTH-DRAFT-001", "kind": "draft-evidence", "expectedStatus": "review_required", "critical": false },
+    { "id": "CO-SYNTH-CONTRACT-001", "kind": "country-isolation", "expectedStatus": "review_required", "critical": false }
+  ]
+}

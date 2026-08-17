@@ -2,7 +2,7 @@
 id: AT-06-04
 title: Package the current United States ACIP schedule
 module: 06-immunization
-status: pending
+status: blocked
 execution: sequential
 parallel_group: null
 depends_on: [AT-06-03]
@@ -135,9 +135,9 @@ Commit exclusive paths with `feat(immunization): define United States ACIP pack`
 ## Completion checklist
 
 - [ ] Complete current official component/status set is bound.
-- [ ] Interval/grace/addendum semantics are explicit.
-- [ ] Shared/special decisions remain review-only.
-- [ ] No PAI/model/calendar-year inference exists.
+- [x] Interval/grace/addendum semantics are explicit.
+- [x] Shared/special decisions remain review-only.
+- [x] No PAI/model/calendar-year inference exists.
 - [ ] Independent US approval/release passes.
 
 ## Handoff

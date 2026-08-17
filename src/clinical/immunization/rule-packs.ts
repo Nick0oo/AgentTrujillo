@@ -1,0 +1,85 @@
+import { isCalendarDate } from "./calendar.ts";
+import { validateDependencyGraph } from "./dependencies.ts";
+import type { ImmunizationCountry, ImmunizationRule, RuleDependency, VaccineCatalog } from "./types.ts";
+import { isSha256Hex } from "../anthropometry/value-objects.ts";
+
+export type RulePackSourceReference = Readonly<{ id: string; uri: string; digest: string }>;
+export type RulePackApprovalState = "blocked" | "approved";
+export type RulePackStatus = "candidate" | "approved" | "retired";
+
+export type RuleInput = Readonly<Omit<ImmunizationRule, "id" | "antigenId" | "sourceReferences"> & {
+  id: string;
+  antigenCode: string;
+  sourceReferenceIds: readonly string[];
+}>;
+
+export type RulePackInput = Readonly<{
+  packageId: string;
+  version: string;
+  effectiveFrom: string;
+  effectiveUntil: string | null;
+  status: RulePackStatus;
+  approvalState: RulePackApprovalState;
+  sourceReferences: readonly RulePackSourceReference[];
+  sourceDigest: string;
+  rules: readonly RuleInput[];
+  dependencies: readonly RuleDependency[];
+}>;
+
+export type CompiledRulePack = Readonly<{
+  packageId: string;
+  version: string;
+  countryCode: ImmunizationCountry;
+  effectiveFrom: string;
+  effectiveUntil: string | null;
+  activation: "active" | "blocked" | "retired";
+  sourceReferences: readonly RulePackSourceReference[];
+  sourceDigest: string;
+  rules: readonly ImmunizationRule[];
+  dependencies: readonly RuleDependency[];
+}>;
+
+export type PackCompileResult<T extends CompiledRulePack = CompiledRulePack> =
+  | Readonly<{ ok: true; pack: T }>
+  | Readonly<{ ok: false; issues: readonly string[] }>;
+
+export function compileRulePack<T extends CompiledRulePack>(input: RulePackInput, expectedCountry: ImmunizationCountry, catalog: VaccineCatalog): PackCompileResult<T> {
+  const issues: string[] = [];
+  if (!input.packageId.trim()) issues.push("PACKAGE_ID_REQUIRED");
+  if (!input.version.trim()) issues.push("PACKAGE_VERSION_REQUIRED");
+  if (!isCalendarDate(input.effectiveFrom) || (input.effectiveUntil !== null && !isCalendarDate(input.effectiveUntil))) issues.push("INVALID_EFFECTIVE_WINDOW");
+  if (!isSha256Hex(input.sourceDigest)) issues.push("INVALID_SOURCE_DIGEST");
+  const sourceIds = new Set<string>();
+  for (const source of input.sourceReferences) {
+    if (!source.id.trim() || sourceIds.has(source.id)) issues.push("DUPLICATE_SOURCE_ID");
+    sourceIds.add(source.id);
+    if (!source.uri.startsWith("https://")) issues.push("SOURCE_URI_NOT_HTTPS");
+    if (!isSha256Hex(source.digest)) issues.push("INVALID_SOURCE_REFERENCE_DIGEST");
+  }
+  const ruleIds = new Set<string>();
+  const ruleCodes = new Set<string>();
+  const rules: ImmunizationRule[] = [];
+  for (const rule of input.rules) {
+    if (rule.countryCode !== expectedCountry) issues.push("RULE_COUNTRY_MISMATCH");
+    if (ruleIds.has(rule.id)) issues.push("DUPLICATE_RULE_ID");
+    if (ruleCodes.has(rule.code)) issues.push("DUPLICATE_RULE_CODE");
+    ruleIds.add(rule.id);
+    ruleCodes.add(rule.code);
+    const antigen = catalog.antigens.find((candidate) => candidate.antigenCode === rule.antigenCode && candidate.active);
+    if (!antigen) issues.push("RULE_ANTIGEN_NOT_IN_CATALOG");
+    for (const sourceReferenceId of rule.sourceReferenceIds) if (!sourceIds.has(sourceReferenceId)) issues.push("RULE_SOURCE_REFERENCE_MISSING");
+    if (antigen) {
+      const { antigenCode: _antigenCode, sourceReferenceIds: _sourceReferenceIds, ...rest } = rule;
+      rules.push({ ...rest, id: rule.id as ImmunizationRule["id"], antigenId: antigen.id, sourceReferences: rule.sourceReferenceIds });
+    }
+  }
+  for (const dependency of input.dependencies) {
+    if (dependency.ruleId === dependency.dependsOnRuleId) issues.push("DEPENDENCY_SELF_REFERENCE");
+    if (!ruleIds.has(dependency.ruleId) || !ruleIds.has(dependency.dependsOnRuleId)) issues.push("DEPENDENCY_RULE_MISSING");
+  }
+  const graph = validateDependencyGraph(rules, input.dependencies);
+  if (!graph.ok) issues.push(...graph.issues);
+  if (issues.length > 0) return { ok: false, issues: [...new Set(issues)] };
+  const activation = input.status === "retired" ? "retired" : input.status === "approved" && input.approvalState === "approved" ? "active" : "blocked";
+  return { ok: true, pack: { packageId: input.packageId, version: input.version, countryCode: expectedCountry, effectiveFrom: input.effectiveFrom, effectiveUntil: input.effectiveUntil, activation, sourceReferences: input.sourceReferences, sourceDigest: input.sourceDigest, rules, dependencies: input.dependencies } as unknown as T };
+}

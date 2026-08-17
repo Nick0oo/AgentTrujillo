@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "immunization-fixture-v1",
+  "country": "US",
+  "package": { "id": "us-acip-2026-synthetic", "version": "2026.synthetic", "sourceDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "approvalState": "blocked" },
+  "source": { "locator": "docs/research/2026-08-16-immunization-source-baseline.md#united-states-source-set", "approvalDigest": null, "reviewerState": "pending_fresh_official_status_and_external_approval" },
+  "cases": [
+    { "id": "US-SYNTH-STATUS-001", "kind": "draft-evidence", "expectedStatus": "review_required", "critical": false },
+    { "id": "US-SYNTH-CONTRACT-001", "kind": "country-isolation", "expectedStatus": "review_required", "critical": false }
+  ]
+}

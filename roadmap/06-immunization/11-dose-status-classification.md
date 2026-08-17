@@ -2,7 +2,7 @@
 id: AT-06-11
 title: Classify dose schedule status deterministically
 module: 06-immunization
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-06-10]
@@ -126,11 +126,11 @@ Commit exclusive paths with `feat(immunization): classify dose status`; do not a
 
 ## Completion checklist
 
-- [ ] The public union contains exactly six statuses.
-- [ ] Precedence and date inclusivity are explicit and tested.
-- [ ] Ambiguity never becomes `due` or `applied`.
-- [ ] PAI and ACIP never merge.
-- [ ] No immunity, order, reminder, or booking claim is emitted.
+- [x] The public union contains exactly six statuses.
+- [x] Precedence and date inclusivity are explicit and tested.
+- [x] Ambiguity never becomes `due` or `applied`.
+- [x] PAI and ACIP never merge.
+- [x] No immunity, order, reminder, or booking claim is emitted.
 
 ## Handoff
 

@@ -2,7 +2,7 @@
 id: AT-06-01
 title: Define immunization facts rules and assessment types
 module: 06-immunization
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-04-14, AT-05-02, AT-03-11]
@@ -129,11 +129,11 @@ Commit exclusive paths with `feat(immunization): define domain contracts`; no DB
 
 ## Completion checklist
 
-- [ ] Draft/fact/rule/result are distinct.
-- [ ] Interval/date semantics are explicit.
-- [ ] Model schema excludes authority/derived fields.
-- [ ] Status vocabulary is exact/accessibility-ready.
-- [ ] No order/immunity/diagnostic type exists.
+- [x] Draft/fact/rule/result are distinct.
+- [x] Interval/date semantics are explicit.
+- [x] Model schema excludes authority/derived fields.
+- [x] Status vocabulary is exact/accessibility-ready.
+- [x] No order/immunity/diagnostic type exists.
 
 ## Handoff
 

@@ -62,12 +62,18 @@ Statuses describe schedule comparison at an `asOfDate`; they do not certify immu
 ## Module verification
 
 ```powershell
-npm test -- tests/clinical/immunization tests/persistence/immunization
-npm run eval -- immunization
-npx supabase test db --local
+npm run test:immunization
+npm run eval:immunization
+npx supabase db lint --linked
+npx supabase db query --linked --file supabase/tests/025_immunization_persistence.test.sql
+npx supabase migration list --linked
 npm run typecheck
-npm run build
+$envLines = Get-Content .env | Where-Object { $_ -match '^[A-Za-z_][A-Za-z0-9_]*=' }; foreach ($line in $envLines) { $pair = $line -split '=', 2; Set-Item -Path ("Env:" + $pair[0]) -Value $pair[1] }; $env:APP_ENV = 'development'; $env:SUPABASE_URL = $env:NEXT_PUBLIC_SUPABASE_URL; $env:SUPABASE_PUBLISHABLE_KEY = $env:NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY; npm run build
 ```
+
+## Implementation state
+
+AT-06-01, AT-06-02, AT-06-05, AT-06-07, AT-06-09, AT-06-11, and AT-06-12 have executable contracts, tests, and evidence. AT-06-03/04/06/08/10 are implemented with explicit review/activation gates; AT-06-13 has the deterministic pure reevaluation core but still needs the event/run persistence adapter; AT-06-14 has structural synthetic/adversarial coverage but still needs approved fixture expectations. None of these gates may be marked clinically active until the complete approved PAI/ACIP artifacts and reviewer attestations are supplied. Synthetic fixtures intentionally report `blocked` rather than inventing clinical approval.
 
 ## Handoff
 

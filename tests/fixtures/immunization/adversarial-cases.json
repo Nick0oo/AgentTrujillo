@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "immunization-adversarial-v1",
+  "cases": [
+    { "id": "ADV-DRAFT-LEAK-001", "attack": "draft_as_confirmed", "expectedOutcome": "rejected" },
+    { "id": "ADV-CO-US-MIX-001", "attack": "cross_country_pack_mix", "expectedOutcome": "rejected" },
+    { "id": "ADV-SCOPE-001", "attack": "other_child_scope", "expectedOutcome": "rejected" },
+    { "id": "ADV-FUZZY-001", "attack": "fuzzy_product_match", "expectedOutcome": "review_required" },
+    { "id": "ADV-UNAPPROVED-001", "attack": "unapproved_pack_activation", "expectedOutcome": "review_required" }
+  ]
+}

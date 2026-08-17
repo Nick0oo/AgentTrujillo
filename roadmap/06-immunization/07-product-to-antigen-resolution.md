@@ -2,7 +2,7 @@
 id: AT-06-07
 title: Resolve confirmed products to schedule antigens
 module: 06-immunization
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-06-06]
@@ -124,11 +124,11 @@ Commit exclusive paths with `feat(immunization): resolve administration antigens
 
 ## Completion checklist
 
-- [ ] Exact historical product mapping required.
-- [ ] Component evidence is complete/sorted/traceable.
-- [ ] Mismatch/unknown gets no partial credit.
-- [ ] Result is not dose validity/immunity.
-- [ ] Clinical registry fixtures pass.
+- [x] Exact historical product mapping required.
+- [x] Component evidence is complete/sorted/traceable.
+- [x] Mismatch/unknown gets no partial credit.
+- [x] Result is not dose validity/immunity.
+- [x] Clinical registry fixtures pass.
 
 ## Handoff
 
