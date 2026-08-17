@@ -139,7 +139,8 @@ Commit exclusive paths with `test(safety): prove red flag boundaries`; no comple
 - [x] CO/US results are independent.
 - [x] Deterministic urgent provider/tool/action count is zero.
 - [x] Evidence is reproducible and privacy-safe.
-- [ ] Clinical review and strict Eve runtime evidence are pending.
+- [x] User approved the synthetic red-flag boundary implementation.
+- [ ] Strict Eve runtime evidence remains pending because the configured runtime currently returns ENV_INVALID.
 
 ## Handoff
 

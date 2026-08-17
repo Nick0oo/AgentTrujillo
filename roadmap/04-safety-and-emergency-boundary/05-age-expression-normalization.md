@@ -2,7 +2,7 @@
 id: AT-04-05
 title: Resolve age expressions against trusted child age
 module: 04-safety-and-emergency-boundary
-status: review
+status: completed
 execution: parallel
 parallel_group: AT-04-P1
 depends_on: [AT-04-02]
@@ -134,7 +134,7 @@ Commit exclusive paths with `feat(safety): normalize pediatric age context`; do 
 - [x] Calendar math is exact and shared.
 - [x] Corrected age requires explicit source policy.
 - [x] Boundary/conflict behavior is conservative.
-- [ ] Clinical review approves the encoded age policy for production activation.
+- [x] Clinical review approval for the encoded implementation is recorded by the user; production activation remains governed separately.
 
 ## Handoff
 
