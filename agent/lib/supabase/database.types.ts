@@ -7,6 +7,11 @@ export type Json =
   | Json[]
 
 export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "14.5"
+  }
   public: {
     Tables: {
       agent_commands: {
@@ -174,72 +179,128 @@ export type Database = {
       }
       anthropometric_measurements: {
         Row: {
+          capture_policy_id: string | null
+          capture_policy_version: string | null
           care_space_id: string
           child_id: string
+          confirmation_sha256: string | null
+          confirmed_at: string | null
+          confirmed_by: string | null
+          conversion_version: string | null
           created_at: string
           device: string | null
           exclusion_reason: string | null
+          hmac_key_id: string | null
           id: string
           idempotency_key: string
+          input_fingerprint: string | null
           local_date: string
           measurement_method: string | null
           measurement_type: string
           normalized_unit: string
           normalized_value: number
+          normalized_value_lexeme: string | null
           occurred_at: string
           original_unit: string
           original_value: number
+          original_value_lexeme: string | null
           provenance_type: string
           recorded_by: string
+          rounding_mode: string | null
+          scope_fingerprint: string | null
+          supersedes_measurement_id: string | null
+          supersession_reason: string | null
           time_zone: string
           updated_at: string
           validation_status: string
         }
         Insert: {
+          capture_policy_id?: string | null
+          capture_policy_version?: string | null
           care_space_id: string
           child_id: string
+          confirmation_sha256?: string | null
+          confirmed_at?: string | null
+          confirmed_by?: string | null
+          conversion_version?: string | null
           created_at?: string
           device?: string | null
           exclusion_reason?: string | null
+          hmac_key_id?: string | null
           id?: string
           idempotency_key: string
+          input_fingerprint?: string | null
           local_date: string
           measurement_method?: string | null
           measurement_type: string
           normalized_unit: string
           normalized_value: number
+          normalized_value_lexeme?: string | null
           occurred_at: string
           original_unit: string
           original_value: number
+          original_value_lexeme?: string | null
           provenance_type: string
           recorded_by: string
+          rounding_mode?: string | null
+          scope_fingerprint?: string | null
+          supersedes_measurement_id?: string | null
+          supersession_reason?: string | null
           time_zone: string
           updated_at?: string
           validation_status?: string
         }
         Update: {
+          capture_policy_id?: string | null
+          capture_policy_version?: string | null
           care_space_id?: string
           child_id?: string
+          confirmation_sha256?: string | null
+          confirmed_at?: string | null
+          confirmed_by?: string | null
+          conversion_version?: string | null
           created_at?: string
           device?: string | null
           exclusion_reason?: string | null
+          hmac_key_id?: string | null
           id?: string
           idempotency_key?: string
+          input_fingerprint?: string | null
           local_date?: string
           measurement_method?: string | null
           measurement_type?: string
           normalized_unit?: string
           normalized_value?: number
+          normalized_value_lexeme?: string | null
           occurred_at?: string
           original_unit?: string
           original_value?: number
+          original_value_lexeme?: string | null
           provenance_type?: string
           recorded_by?: string
+          rounding_mode?: string | null
+          scope_fingerprint?: string | null
+          supersedes_measurement_id?: string | null
+          supersession_reason?: string | null
           time_zone?: string
           updated_at?: string
           validation_status?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "anthropometric_measurements_supersedes_measurement_id_fkey"
+            columns: ["supersedes_measurement_id"]
+            isOneToOne: false
+            referencedRelation: "anthropometric_measurements"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "anthropometric_measurements_supersedes_measurement_id_fkey"
+            columns: ["supersedes_measurement_id"]
+            isOneToOne: false
+            referencedRelation: "growth_series_points"
+            referencedColumns: ["superseded_by_measurement_id"]
+          },
           {
             foreignKeyName: "anthropometry_child_fk"
             columns: ["care_space_id", "child_id"]
@@ -703,74 +764,139 @@ export type Database = {
       }
       clinical_algorithms: {
         Row: {
+          activated_at: string | null
           algorithm_key: string
+          approved_at: string | null
+          artifact_schema_versions: string[]
           created_at: string
           domain: string
+          entrypoint: string
           id: string
           implementation_sha256: string
+          retired_at: string | null
+          runtime: string
           status: string
+          test_vector_sha256: string
+          updated_at: string
           version: string
         }
         Insert: {
+          activated_at?: string | null
           algorithm_key: string
+          approved_at?: string | null
+          artifact_schema_versions?: string[]
           created_at?: string
           domain: string
+          entrypoint: string
           id?: string
           implementation_sha256: string
+          retired_at?: string | null
+          runtime?: string
           status?: string
+          test_vector_sha256: string
+          updated_at?: string
           version: string
         }
         Update: {
+          activated_at?: string | null
           algorithm_key?: string
+          approved_at?: string | null
+          artifact_schema_versions?: string[]
           created_at?: string
           domain?: string
+          entrypoint?: string
           id?: string
           implementation_sha256?: string
+          retired_at?: string | null
+          runtime?: string
           status?: string
+          test_vector_sha256?: string
+          updated_at?: string
           version?: string
         }
         Relationships: []
       }
       clinical_approvals: {
         Row: {
+          algorithm_id: string
+          algorithm_implementation_sha256: string
           approver_name: string
+          approver_role: string
+          approver_subject: string
           approver_user_id: string | null
           artifact_sha256: string
+          attestation_version: number
           created_at: string
           decided_at: string
           decision: string
           id: string
+          manifest_sha256: string
           notes: string | null
+          request_id: string
           rule_pack_id: string
+          source_set_sha256: string
+          withdrawal_of: string | null
         }
         Insert: {
+          algorithm_id: string
+          algorithm_implementation_sha256: string
           approver_name: string
+          approver_role: string
+          approver_subject: string
           approver_user_id?: string | null
           artifact_sha256: string
+          attestation_version?: number
           created_at?: string
           decided_at?: string
           decision: string
           id?: string
+          manifest_sha256: string
           notes?: string | null
+          request_id: string
           rule_pack_id: string
+          source_set_sha256: string
+          withdrawal_of?: string | null
         }
         Update: {
+          algorithm_id?: string
+          algorithm_implementation_sha256?: string
           approver_name?: string
+          approver_role?: string
+          approver_subject?: string
           approver_user_id?: string | null
           artifact_sha256?: string
+          attestation_version?: number
           created_at?: string
           decided_at?: string
           decision?: string
           id?: string
+          manifest_sha256?: string
           notes?: string | null
+          request_id?: string
           rule_pack_id?: string
+          source_set_sha256?: string
+          withdrawal_of?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "clinical_approvals_algorithm_id_fkey"
+            columns: ["algorithm_id"]
+            isOneToOne: false
+            referencedRelation: "clinical_algorithms"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "clinical_approvals_rule_pack_id_fkey"
             columns: ["rule_pack_id"]
             isOneToOne: false
             referencedRelation: "clinical_rule_packs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clinical_approvals_withdrawal_of_fkey"
+            columns: ["withdrawal_of"]
+            isOneToOne: false
+            referencedRelation: "clinical_approvals"
             referencedColumns: ["id"]
           },
         ]
@@ -913,6 +1039,95 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "agent_sessions"
             referencedColumns: ["id", "care_space_id", "child_id"]
+          },
+        ]
+      }
+      clinical_package_releases: {
+        Row: {
+          action: string
+          activation_at: string
+          algorithm_id: string
+          approval_id: string
+          artifact_sha256: string
+          country_code: string
+          created_at: string
+          domain: string
+          evidence_sha256: string
+          id: string
+          locale: string
+          preview_sha256: string
+          previous_release_id: string | null
+          request_id: string
+          requester_subject: string
+          rule_pack_id: string
+          status: string
+        }
+        Insert: {
+          action: string
+          activation_at: string
+          algorithm_id: string
+          approval_id: string
+          artifact_sha256: string
+          country_code: string
+          created_at?: string
+          domain: string
+          evidence_sha256: string
+          id?: string
+          locale: string
+          preview_sha256: string
+          previous_release_id?: string | null
+          request_id: string
+          requester_subject: string
+          rule_pack_id: string
+          status: string
+        }
+        Update: {
+          action?: string
+          activation_at?: string
+          algorithm_id?: string
+          approval_id?: string
+          artifact_sha256?: string
+          country_code?: string
+          created_at?: string
+          domain?: string
+          evidence_sha256?: string
+          id?: string
+          locale?: string
+          preview_sha256?: string
+          previous_release_id?: string | null
+          request_id?: string
+          requester_subject?: string
+          rule_pack_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clinical_package_releases_algorithm_id_fkey"
+            columns: ["algorithm_id"]
+            isOneToOne: false
+            referencedRelation: "clinical_algorithms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clinical_package_releases_approval_id_fkey"
+            columns: ["approval_id"]
+            isOneToOne: false
+            referencedRelation: "clinical_approvals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clinical_package_releases_previous_release_id_fkey"
+            columns: ["previous_release_id"]
+            isOneToOne: false
+            referencedRelation: "clinical_package_releases"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clinical_package_releases_rule_pack_id_fkey"
+            columns: ["rule_pack_id"]
+            isOneToOne: false
+            referencedRelation: "clinical_rule_packs"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -1595,6 +1810,13 @@ export type Database = {
             referencedRelation: "anthropometric_measurements"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "dose_validations_weight_measurement_id_fkey"
+            columns: ["weight_measurement_id"]
+            isOneToOne: false
+            referencedRelation: "growth_series_points"
+            referencedColumns: ["superseded_by_measurement_id"]
+          },
         ]
       }
       entitlements: {
@@ -1659,61 +1881,103 @@ export type Database = {
       }
       growth_assessments: {
         Row: {
+          age_basis: string | null
+          age_policy_id: string | null
+          age_policy_version: string | null
           algorithm_id: string
+          algorithm_version: string | null
           assessed_at: string
           care_space_id: string
           child_id: string
           chronological_age_days: number
+          companion_measurement_id: string | null
           corrected_age_days: number | null
           correction_applied: boolean
           created_at: string
+          dataset_digest: string | null
+          decision_digest: string | null
           id: string
           indicator: string
+          input_digest: string | null
+          interpretation: string | null
           measurement_id: string
+          measurement_input_fingerprint: string | null
           percentile: number | null
+          percentile_lexeme: string | null
           result_status: string
           rule_pack_id: string
           standard_key: string
+          standard_version: string | null
+          transition_reason: string | null
           warnings: string[]
           z_score: number | null
+          z_score_lexeme: string | null
         }
         Insert: {
+          age_basis?: string | null
+          age_policy_id?: string | null
+          age_policy_version?: string | null
           algorithm_id: string
+          algorithm_version?: string | null
           assessed_at?: string
           care_space_id: string
           child_id: string
           chronological_age_days: number
+          companion_measurement_id?: string | null
           corrected_age_days?: number | null
           correction_applied?: boolean
           created_at?: string
+          dataset_digest?: string | null
+          decision_digest?: string | null
           id?: string
           indicator: string
+          input_digest?: string | null
+          interpretation?: string | null
           measurement_id: string
+          measurement_input_fingerprint?: string | null
           percentile?: number | null
+          percentile_lexeme?: string | null
           result_status: string
           rule_pack_id: string
           standard_key: string
+          standard_version?: string | null
+          transition_reason?: string | null
           warnings?: string[]
           z_score?: number | null
+          z_score_lexeme?: string | null
         }
         Update: {
+          age_basis?: string | null
+          age_policy_id?: string | null
+          age_policy_version?: string | null
           algorithm_id?: string
+          algorithm_version?: string | null
           assessed_at?: string
           care_space_id?: string
           child_id?: string
           chronological_age_days?: number
+          companion_measurement_id?: string | null
           corrected_age_days?: number | null
           correction_applied?: boolean
           created_at?: string
+          dataset_digest?: string | null
+          decision_digest?: string | null
           id?: string
           indicator?: string
+          input_digest?: string | null
+          interpretation?: string | null
           measurement_id?: string
+          measurement_input_fingerprint?: string | null
           percentile?: number | null
+          percentile_lexeme?: string | null
           result_status?: string
           rule_pack_id?: string
           standard_key?: string
+          standard_version?: string | null
+          transition_reason?: string | null
           warnings?: string[]
           z_score?: number | null
+          z_score_lexeme?: string | null
         }
         Relationships: [
           {
@@ -1724,6 +1988,20 @@ export type Database = {
             referencedColumns: ["care_space_id", "id"]
           },
           {
+            foreignKeyName: "growth_assessment_companion_scope_fk"
+            columns: ["care_space_id", "companion_measurement_id"]
+            isOneToOne: false
+            referencedRelation: "anthropometric_measurements"
+            referencedColumns: ["care_space_id", "id"]
+          },
+          {
+            foreignKeyName: "growth_assessment_measurement_scope_fk"
+            columns: ["care_space_id", "measurement_id"]
+            isOneToOne: false
+            referencedRelation: "anthropometric_measurements"
+            referencedColumns: ["care_space_id", "id"]
+          },
+          {
             foreignKeyName: "growth_assessments_algorithm_id_fkey"
             columns: ["algorithm_id"]
             isOneToOne: false
@@ -1731,11 +2009,32 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "growth_assessments_companion_measurement_id_fkey"
+            columns: ["companion_measurement_id"]
+            isOneToOne: false
+            referencedRelation: "anthropometric_measurements"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "growth_assessments_companion_measurement_id_fkey"
+            columns: ["companion_measurement_id"]
+            isOneToOne: false
+            referencedRelation: "growth_series_points"
+            referencedColumns: ["superseded_by_measurement_id"]
+          },
+          {
             foreignKeyName: "growth_assessments_measurement_id_fkey"
             columns: ["measurement_id"]
             isOneToOne: false
             referencedRelation: "anthropometric_measurements"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "growth_assessments_measurement_id_fkey"
+            columns: ["measurement_id"]
+            isOneToOne: false
+            referencedRelation: "growth_series_points"
+            referencedColumns: ["superseded_by_measurement_id"]
           },
           {
             foreignKeyName: "growth_assessments_rule_pack_id_fkey"
@@ -2652,42 +2951,66 @@ export type Database = {
       safety_evaluations: {
         Row: {
           agent_session_id: string | null
+          algorithm_key: string
+          algorithm_version: string
           approved_copy_key: string | null
           care_space_id: string
           child_id: string
+          copy_digest_sha256: string | null
           created_at: string
           decision: string
+          decision_sha256: string
           evaluated_at: string
+          evaluation_version: string
           id: string
+          input_fingerprint: string
+          latency_ms: number | null
           matched_rule_codes: string[]
+          owner_user_id: string
           request_id: string
           response_mode: string
           rule_pack_id: string
         }
         Insert: {
           agent_session_id?: string | null
+          algorithm_key?: string
+          algorithm_version?: string
           approved_copy_key?: string | null
           care_space_id: string
           child_id: string
+          copy_digest_sha256?: string | null
           created_at?: string
           decision: string
+          decision_sha256?: string
           evaluated_at?: string
+          evaluation_version?: string
           id?: string
+          input_fingerprint?: string
+          latency_ms?: number | null
           matched_rule_codes?: string[]
+          owner_user_id: string
           request_id: string
           response_mode: string
           rule_pack_id: string
         }
         Update: {
           agent_session_id?: string | null
+          algorithm_key?: string
+          algorithm_version?: string
           approved_copy_key?: string | null
           care_space_id?: string
           child_id?: string
+          copy_digest_sha256?: string | null
           created_at?: string
           decision?: string
+          decision_sha256?: string
           evaluated_at?: string
+          evaluation_version?: string
           id?: string
+          input_fingerprint?: string
+          latency_ms?: number | null
           matched_rule_codes?: string[]
+          owner_user_id?: string
           request_id?: string
           response_mode?: string
           rule_pack_id?: string
@@ -2706,6 +3029,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "children"
             referencedColumns: ["care_space_id", "id"]
+          },
+          {
+            foreignKeyName: "safety_evaluations_owner_fk"
+            columns: ["owner_user_id"]
+            isOneToOne: false
+            referencedRelation: "guardian_profiles"
+            referencedColumns: ["user_id"]
           },
           {
             foreignKeyName: "safety_evaluations_rule_pack_id_fkey"
@@ -3200,7 +3530,66 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      growth_series_points: {
+        Row: {
+          age_basis: string | null
+          assessed_at: string | null
+          assessment_id: string | null
+          care_space_id: string | null
+          child_id: string | null
+          chronological_age_days: number | null
+          corrected_age_days: number | null
+          correction_applied: boolean | null
+          dataset_digest: string | null
+          indicator: string | null
+          interpretation: string | null
+          measurement_id: string | null
+          measurement_method: string | null
+          measurement_type: string | null
+          occurred_at: string | null
+          percentile: number | null
+          percentile_lexeme: string | null
+          result_status: string | null
+          standard_key: string | null
+          standard_version: string | null
+          superseded_by_measurement_id: string | null
+          transition_reason: string | null
+          validation_status: string | null
+          warnings: string[] | null
+          z_score: number | null
+          z_score_lexeme: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "growth_assessment_child_fk"
+            columns: ["care_space_id", "child_id"]
+            isOneToOne: false
+            referencedRelation: "children"
+            referencedColumns: ["care_space_id", "id"]
+          },
+          {
+            foreignKeyName: "growth_assessment_measurement_scope_fk"
+            columns: ["care_space_id", "measurement_id"]
+            isOneToOne: false
+            referencedRelation: "anthropometric_measurements"
+            referencedColumns: ["care_space_id", "id"]
+          },
+          {
+            foreignKeyName: "growth_assessments_measurement_id_fkey"
+            columns: ["measurement_id"]
+            isOneToOne: false
+            referencedRelation: "anthropometric_measurements"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "growth_assessments_measurement_id_fkey"
+            columns: ["measurement_id"]
+            isOneToOne: false
+            referencedRelation: "growth_series_points"
+            referencedColumns: ["superseded_by_measurement_id"]
+          },
+        ]
+      }
     }
     Functions: {
       bind_owned_eve_session: {
@@ -3258,6 +3647,65 @@ export type Database = {
           memory_type: string
           similarity: number
           structured_content: Json
+        }[]
+      }
+      record_confirmed_anthropometry: {
+        Args: {
+          p_assessments: Json
+          p_capture_policy_id: string
+          p_capture_policy_version: string
+          p_care_space_id: string
+          p_child_id: string
+          p_confirmation_expires_at: string
+          p_confirmation_sha256: string
+          p_conversion_version: string
+          p_device: string
+          p_hmac_key_id: string
+          p_idempotency_key: string
+          p_input_fingerprint: string
+          p_local_date: string
+          p_measurement_method: string
+          p_measurement_type: string
+          p_normalized_unit: string
+          p_normalized_value_lexeme: string
+          p_occurred_at: string
+          p_original_unit: string
+          p_original_value_lexeme: string
+          p_provenance_type: string
+          p_rounding_mode: string
+          p_supersedes_measurement_id?: string
+          p_supersession_reason?: string
+          p_time_zone: string
+        }
+        Returns: {
+          assessment_ids: string[]
+          measurement_id: string
+          outcome: string
+        }[]
+      }
+      record_safety_evaluation: {
+        Args: {
+          p_agent_session_id: string
+          p_algorithm_key: string
+          p_algorithm_version: string
+          p_approved_copy_key: string
+          p_care_space_id: string
+          p_child_id: string
+          p_copy_digest_sha256: string
+          p_decision: string
+          p_decision_sha256: string
+          p_evaluation_version: string
+          p_input_fingerprint: string
+          p_latency_ms: number
+          p_matched_rule_codes: string[]
+          p_owner_user_id: string
+          p_request_id: string
+          p_response_mode: string
+          p_rule_pack_id: string
+        }
+        Returns: {
+          created: boolean
+          evaluation_id: string
         }[]
       }
       refresh_owned_agent_session_lease: {
@@ -3426,4 +3874,3 @@ export const Constants = {
     Enums: {},
   },
 } as const
-

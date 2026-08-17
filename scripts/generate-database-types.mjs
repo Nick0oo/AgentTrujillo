@@ -5,8 +5,9 @@ import { fileURLToPath } from "node:url";
 
 export const TARGET_PATH = resolve(process.cwd(), "agent/lib/supabase/database.types.ts");
 
-export function buildGenerateCommand() {
-  return ["supabase", "gen", "types", "typescript", "--local", "--schema", "public"];
+export function buildGenerateCommand({ source = process.env.SUPABASE_TYPES_SOURCE } = {}) {
+  const connection = source === "linked" ? "--linked" : "--local";
+  return ["supabase", "gen", "types", "typescript", connection, "--schema", "public"];
 }
 
 export function normalizeGeneratedTypes(source) {

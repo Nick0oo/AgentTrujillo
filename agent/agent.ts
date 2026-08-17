@@ -8,5 +8,6 @@ const runtimeConfig = loadRuntimeConfig(process.env);
 
 export default defineAgent({
   model: createPrimaryGoogleModel(runtimeConfig),
+  modelContextWindowTokens: 200_000,
   ...AGENT_RUNTIME_POLICY,
 });

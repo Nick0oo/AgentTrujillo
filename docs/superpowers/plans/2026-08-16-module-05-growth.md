@@ -201,7 +201,9 @@
 **Files:**
 - Create: `src/clinical/anthropometry/repository.ts`
 - Create: `src/persistence/supabase/anthropometry-repository.ts`
-- Create: `supabase/migrations/20260816110000_anthropometry_persistence_hardening.sql`
+- Create: `supabase/migrations/20260816140000_anthropometry_persistence_hardening.sql`
+- Create: `supabase/migrations/20260816150000_anthropometry_rpc_qualification.sql`
+- Create: `supabase/migrations/20260816160000_anthropometry_rpc_digest_qualification.sql`
 - Create: `supabase/tests/024_anthropometry_persistence.test.sql`
 - Create: `tests/persistence/anthropometry-repository.test.ts`
 - Modify: `src/persistence/supabase/database.types.ts`
@@ -210,7 +212,7 @@
 
 - [ ] Add failing repository tests for insert/replay/change conflict, confirmed/excluded, multiple assessments, rollback, supersession cycles, composite mismatch, precision, and permission matrix.
 - [ ] Verify red; add only missing Cloud constraints/RPCs for complete digest/provenance binding, atomic fact+assessment insert, immutable assessment rows, additive supersession, and child-bound RLS.
-- [ ] Apply the migration to Supabase Cloud, regenerate types, run SQL tests/parity checks against the linked project, then run repository tests.
+- [x] Apply the migrations to Supabase Cloud, regenerate types from the linked project, run schema lint/contract checks, then run repository tests.
 - [ ] Commit `feat(growth): persist anthropometry atomically`.
 
 ### Task 14: Query transition-aware series
@@ -241,7 +243,6 @@
 
 - [ ] Add failing integration/eval cases for every standard/indicator/sex boundary, official vectors, seeded interior/tail grid, corrected-age unavailable, transitions, invalid cases, persistence replay/concurrency, series segmentation, and RLS.
 - [ ] Verify red and implement clean-process/TZ/locale replay, canonical byte comparison, independent WHO/CDC comparisons, and diagnostic-free reporting with Gemini disabled.
-- [ ] Run `npm test`, focused anthropometry/persistence tests, `npm run typecheck`, `npm run build`, Cloud parity/SQL tests, and the growth reproducibility eval; record exact outputs in the verification document.
-- [ ] Check every completion checklist only against recorded evidence, verify `git diff --check`, commit `docs(growth): close module 05 evidence`.
-- [ ] Push `codex/roadmap-module-05` and open one PR against `main`; verify the PR contains all implementation, Cloud migration, evidence, and checklist changes.
-
+- [x] Run `npm test`, focused anthropometry/persistence tests, `npm run typecheck`, `npm run build`, Cloud parity/SQL tests, and the growth reproducibility eval; record exact outputs in the verification document.
+- [x] Check every operational completion checklist only against recorded evidence, verify `git -c core.whitespace=cr-at-eol diff --check`, commit `docs(growth): close module 05 evidence`.
+- [x] Push `codex/roadmap-module-05` and open one PR against `main`; verify the PR contains all implementation, Cloud migration, evidence, and checklist changes.

@@ -216,7 +216,7 @@ begin
       raise exception 'anthropometry_idempotency_conflict' using errcode = '23505';
     end if;
     select coalesce(array_agg(id order by id), '{}'::uuid[]) into ids
-    from public.growth_assessments where measurement_id = existing.id;
+    from public.growth_assessments ga where ga.measurement_id = existing.id;
     return query select existing.id, ids, 'idempotent_replay'::text;
     return;
   end if;
@@ -235,7 +235,7 @@ begin
     p_occurred_at, p_local_date, p_time_zone, p_measurement_method, p_device,
     p_provenance_type, 'confirmed', p_idempotency_key, actor, p_original_value_lexeme,
     p_normalized_value_lexeme, p_conversion_version, p_rounding_mode,
-    p_input_fingerprint, encode(digest(format('%s:%s', p_care_space_id, p_child_id), 'sha256'), 'hex'),
+    p_input_fingerprint, encode(extensions.digest(format('%s:%s', p_care_space_id, p_child_id), 'sha256'), 'hex'),
     p_hmac_key_id, p_capture_policy_id, p_capture_policy_version, now(), actor,
     p_confirmation_sha256, p_supersedes_measurement_id, p_supersession_reason
   ) returning * into created;
@@ -267,12 +267,29 @@ begin
   );
 
   select coalesce(array_agg(id order by id), '{}'::uuid[]) into ids
-  from public.growth_assessments where measurement_id = created.id;
+  from public.growth_assessments ga where ga.measurement_id = created.id;
   return query select created.id, ids, 'created'::text;
 exception when unique_violation then
   raise exception 'anthropometry_idempotency_conflict' using errcode = '23505';
 end;
 $$;
 
-revoke all on function public.record_confirmed_anthropometry(uuid, uuid, text, text, text, timestamptz, text, text, text, text, text, timestamptz, date, text, text, text, text, text, text, text, text, text, jsonb, uuid, text) from public, anon;
-grant execute on function public.record_confirmed_anthropometry(uuid, uuid, text, text, text, timestamptz, text, text, text, text, text, timestamptz, date, text, text, text, text, text, text, text, text, text, text, jsonb, uuid, text) to authenticated;
+do $$
+declare
+  function_signature regprocedure;
+begin
+  select p.oid::regprocedure
+    into function_signature
+  from pg_proc p
+  join pg_namespace n on n.oid = p.pronamespace
+  where n.nspname = 'public'
+    and p.proname = 'record_confirmed_anthropometry';
+
+  if function_signature is null then
+    raise exception 'record_confirmed_anthropometry was not created';
+  end if;
+
+  execute format('revoke all on function %s from public, anon', function_signature);
+  execute format('grant execute on function %s to authenticated', function_signature);
+end;
+$$;

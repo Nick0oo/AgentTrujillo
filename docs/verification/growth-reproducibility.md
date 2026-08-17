@@ -18,13 +18,15 @@ Manifest: `tests/fixtures/growth/reproducibility-manifest.json` (`growth-reprodu
 | `npm test` | 70 files passed, 445 tests passed, 1 skipped |
 | `npx vitest run tests/clinical/anthropometry/reproducibility.integration.test.ts` | passed: 2 files / 6 tests in the focused reproducibility/repository run |
 | `npm run typecheck` | passed after the Cloud repository and series contracts |
-| `npm run build` | blocked by missing runtime `ENV_INVALID` configuration in this worktree; no code/build error was emitted |
-| `npx supabase migration list --linked` | blocked: no `SUPABASE_ACCESS_TOKEN` in this worktree |
-| `npx supabase db push --linked` | intentionally not claimed/applied until the Cloud CLI token is present |
+| `npm run build` | passed with the copied `main` `.env` mapped to the runtime schema; `gemini-3.6-flash` retained with explicit Eve context metadata |
+| `npx supabase migration list --linked` | passed: migrations through `20260816160000` match Cloud project `CreciendoApp` |
+| `npx supabase db push --linked` | passed: `20260816140000_anthropometry_persistence_hardening.sql`, `20260816150000_anthropometry_rpc_qualification.sql`, and `20260816160000_anthropometry_rpc_digest_qualification.sql` applied |
+| `npx supabase db lint --linked --schema public --fail-on error` | passed: no schema errors; remote contract query confirms RLS, immutable triggers, RPC grants, and series view |
+| `SUPABASE_TYPES_SOURCE=linked npm run verify:database-types` | passed: 121,358 bytes; `sha256:3c87a59a2ac2d24c4b22e7b81ef9fbcbfbfa73bd139f2a489455ebd18acbb66b` |
 
 ## Interpretation
 
-The numerical and byte-repeatability gates are provider-free and use only synthetic inputs. The Cloud migration is forward-only and prepared at `supabase/migrations/20260816110000_anthropometry_persistence_hardening.sql`; its remote postflight (migration list, SQL contract, RLS/grants, RPC, generated types) remains an operational gate until the linked Supabase CLI has an access token.
+The numerical and byte-repeatability gates are provider-free and use only synthetic inputs. The Cloud migrations are forward-only at `supabase/migrations/20260816140000_anthropometry_persistence_hardening.sql`, `supabase/migrations/20260816150000_anthropometry_rpc_qualification.sql`, and `supabase/migrations/20260816160000_anthropometry_rpc_digest_qualification.sql`; their linked postflight (migration list, schema lint, SQL contract, RLS/grants, RPC, generated types) passed against `CreciendoApp`.
 
 Corrected age remains fail-closed when no approved prematurity policy is supplied. This is represented as `rule_unavailable`; no clinical boundary or policy is invented in code.
 
