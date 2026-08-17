@@ -2,7 +2,7 @@
 id: AT-04-05
 title: Resolve age expressions against trusted child age
 module: 04-safety-and-emergency-boundary
-status: pending
+status: review
 execution: parallel
 parallel_group: AT-04-P1
 depends_on: [AT-04-02]
@@ -129,11 +129,12 @@ Commit exclusive paths with `feat(safety): normalize pediatric age context`; do 
 
 ## Completion checklist
 
-- [ ] Trusted DOB/reference controls age.
-- [ ] User expressions are non-authoritative.
-- [ ] Calendar math is exact and shared.
-- [ ] Corrected age requires explicit source policy.
-- [ ] Boundary/conflict behavior is conservative.
+- [x] Trusted DOB/reference controls age.
+- [x] User expressions are non-authoritative.
+- [x] Calendar math is exact and shared.
+- [x] Corrected age requires explicit source policy.
+- [x] Boundary/conflict behavior is conservative.
+- [ ] Clinical review approves the encoded age policy for production activation.
 
 ## Handoff
 

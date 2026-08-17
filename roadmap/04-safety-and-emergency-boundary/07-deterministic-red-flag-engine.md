@@ -2,7 +2,7 @@
 id: AT-04-07
 title: Evaluate pediatric red flags synchronously before generation
 module: 04-safety-and-emergency-boundary
-status: pending
+status: review
 execution: parallel
 parallel_group: AT-04-P2
 depends_on: [AT-04-06]
@@ -132,11 +132,12 @@ Commit exclusive paths with `feat(safety): evaluate red flags deterministically`
 
 ## Completion checklist
 
-- [ ] Engine is pure, bounded, stable, and explainable.
-- [ ] Urgent dominates and terminates.
-- [ ] Failure cannot continue generation.
-- [ ] No Eve/model/I/O dependency exists.
-- [ ] Critical corpus and latency gates pass.
+- [x] Engine is pure, bounded, stable, and explainable.
+- [x] Urgent dominates and terminates.
+- [x] Failure cannot continue generation.
+- [x] No Eve/model/I/O dependency exists.
+- [x] Synthetic corpus and operation-limit gates pass.
+- [ ] Clinically reviewed production corpus and latency gate pass.
 
 ## Handoff
 

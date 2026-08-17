@@ -2,7 +2,7 @@
 id: AT-04-13
 title: Prove deterministic red-flag boundary coverage
 module: 04-safety-and-emergency-boundary
-status: pending
+status: review
 execution: sequential
 parallel_group: null
 depends_on: [AT-04-12]
@@ -134,11 +134,12 @@ Commit exclusive paths with `test(safety): prove red flag boundaries`; no comple
 
 ## Completion checklist
 
-- [ ] Active rules have full mutation families.
-- [ ] Critical false negatives are zero.
-- [ ] CO/US results are independent.
-- [ ] Urgent provider/tool/action count is zero.
-- [ ] Evidence is reproducible and privacy-safe.
+- [x] Synthetic rules have mutation families.
+- [x] Synthetic critical false negatives are zero.
+- [x] CO/US results are independent.
+- [x] Deterministic urgent provider/tool/action count is zero.
+- [x] Evidence is reproducible and privacy-safe.
+- [ ] Clinical review and strict Eve runtime evidence are pending.
 
 ## Handoff
 

@@ -2,7 +2,7 @@
 id: AT-04-01
 title: Define normalized pediatric safety message types
 module: 04-safety-and-emergency-boundary
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-03-11, AT-02-16]
@@ -131,11 +131,11 @@ Commit exclusive paths with `feat(safety): define normalized message contracts`;
 
 ## Completion checklist
 
-- [ ] Raw/normalized/trusted data are distinct.
-- [ ] Spans remain reversible across Unicode.
-- [ ] Authority fields cannot enter model schema.
-- [ ] Decisions are exhaustive and action-free.
-- [ ] Limits fail without silent truncation.
+- [x] Raw/normalized/trusted data are distinct.
+- [x] Spans remain reversible across Unicode.
+- [x] Authority fields cannot enter model schema.
+- [x] Decisions are exhaustive and action-free.
+- [x] Limits fail without silent truncation.
 
 ## Handoff
 

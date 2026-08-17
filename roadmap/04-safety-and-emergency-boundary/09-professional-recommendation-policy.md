@@ -2,7 +2,7 @@
 id: AT-04-09
 title: Recommend pediatrician review without professional operations
 module: 04-safety-and-emergency-boundary
-status: pending
+status: review
 execution: sequential
 parallel_group: null
 depends_on: [AT-04-01, AT-03-11]
@@ -129,11 +129,12 @@ Commit exclusive paths with `feat(safety): define pediatrician recommendation po
 
 ## Completion checklist
 
-- [ ] Recommendation is plain text only.
-- [ ] Urgent decision always wins.
-- [ ] No provider identity becomes authority.
-- [ ] No booking/contact/handoff/case side effect exists.
-- [ ] Generic fallback remains approved and safe.
+- [x] Recommendation is plain text only.
+- [x] Urgent decision always wins.
+- [x] No provider identity becomes authority.
+- [x] No booking/contact/handoff/case side effect exists.
+- [x] Generic fallback remains safe in synthetic validation.
+- [ ] Production copy receives clinical/product approval.
 
 ## Handoff
 

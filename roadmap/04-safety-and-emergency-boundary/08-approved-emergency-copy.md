@@ -2,7 +2,7 @@
 id: AT-04-08
 title: Enforce immutable emergency-department-only copy
 module: 04-safety-and-emergency-boundary
-status: pending
+status: review
 execution: parallel
 parallel_group: AT-04-P2
 depends_on: [AT-04-06]
@@ -131,11 +131,11 @@ Commit exclusive paths with `feat(safety): enforce approved emergency copy`; cop
 
 ## Completion checklist
 
-- [ ] Response schema contains no action capability.
-- [ ] Text is exact approved bytes, never generated.
-- [ ] es-CO/en-US are independently approved.
-- [ ] All prohibited content mutations fail.
-- [ ] Missing copy never invokes translation/model.
+- [x] Response schema contains no action capability.
+- [x] Synthetic text is exact bytes, never generated.
+- [ ] es-CO/en-US receive independent clinical approval.
+- [x] All prohibited content mutations fail.
+- [x] Missing copy never invokes translation/model.
 
 ## Handoff
 

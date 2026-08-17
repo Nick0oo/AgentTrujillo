@@ -2,7 +2,7 @@
 id: AT-04-10
 title: Enforce clinical response and abstention boundaries
 module: 04-safety-and-emergency-boundary
-status: pending
+status: review
 execution: sequential
 parallel_group: null
 depends_on: [AT-04-08, AT-04-09]
@@ -131,11 +131,12 @@ Commit exclusive paths with `feat(safety): enforce clinical response boundaries`
 
 ## Completion checklist
 
-- [ ] Diagnosis/prescription/medicine selection are blocked.
-- [ ] Declared-dose validation cannot become authorization.
-- [ ] Emergency/professional terminal modes are generated-free.
-- [ ] Rejected output is discarded and not persisted.
-- [ ] Uncertainty fails closed.
+- [x] Diagnosis/prescription/medicine selection are blocked.
+- [x] Declared-dose validation cannot become authorization.
+- [x] Emergency/professional terminal modes are generated-free.
+- [x] Rejected output is discarded and not persisted.
+- [x] Uncertainty fails closed.
+- [ ] Clinical review approves the production response rubric.
 
 ## Handoff
 

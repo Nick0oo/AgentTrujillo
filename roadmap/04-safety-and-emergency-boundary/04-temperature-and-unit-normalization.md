@@ -2,7 +2,7 @@
 id: AT-04-04
 title: Normalize temperature and safety measurements conservatively
 module: 04-safety-and-emergency-boundary
-status: pending
+status: review
 execution: parallel
 parallel_group: AT-04-P1
 depends_on: [AT-04-02]
@@ -131,11 +131,11 @@ Commit exclusive paths with `feat(safety): normalize safety measurements`; activ
 
 ## Completion checklist
 
-- [ ] Arithmetic is exact and locale-independent.
-- [ ] Units/method/time remain explicit.
-- [ ] Ambiguity never becomes reassurance.
-- [ ] Thresholds are package data, not code constants.
-- [ ] Boundary corpus is clinically approved.
+- [x] Arithmetic is exact and locale-independent.
+- [x] Units/method/time remain explicit.
+- [x] Ambiguity never becomes reassurance.
+- [x] Thresholds are package data, not code constants.
+- [ ] Boundary corpus is clinically approved (synthetic fixtures are not activation approval).
 
 ## Handoff
 
