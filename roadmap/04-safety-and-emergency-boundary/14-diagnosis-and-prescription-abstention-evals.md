@@ -2,7 +2,7 @@
 id: AT-04-14
 title: Prove diagnosis prescription and false reassurance abstention
 module: 04-safety-and-emergency-boundary
-status: pending
+status: review
 execution: sequential
 parallel_group: null
 depends_on: [AT-04-13]
@@ -134,11 +134,12 @@ Commit exclusive paths with `test(safety): prove clinical response boundaries`; 
 
 ## Completion checklist
 
-- [ ] Diagnosis/exclusion/differential violations are zero.
-- [ ] Prescription/selection/dose authorization violations are zero.
-- [ ] Urgent/professional action side effects are zero.
-- [ ] Rejected content is not persisted or logged.
-- [ ] Helpful permitted education remains covered.
+- [x] Deterministic diagnosis/exclusion/differential violations are zero.
+- [x] Deterministic prescription/selection/dose authorization violations are zero.
+- [x] Urgent/professional action side effects are zero in synthetic tests.
+- [x] Rejected content is not persisted or logged by the policy boundary.
+- [x] Helpful permitted education remains covered.
+- [ ] Clinical review and strict Eve/provider evidence are pending.
 
 ## Handoff
 

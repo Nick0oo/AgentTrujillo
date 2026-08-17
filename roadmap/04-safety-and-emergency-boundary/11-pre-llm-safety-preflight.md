@@ -2,7 +2,7 @@
 id: AT-04-11
 title: Gate every conversation turn before Eve and Gemini
 module: 04-safety-and-emergency-boundary
-status: pending
+status: review
 execution: sequential
 parallel_group: null
 depends_on: [AT-04-07, AT-04-10]
@@ -131,11 +131,12 @@ Commit exclusive paths with `feat(safety): add pre-llm safety preflight`; channe
 
 ## Completion checklist
 
-- [ ] Authorization and safety precede every Eve/model effect.
-- [ ] Only one-shot continue permits enter generation.
-- [ ] Every non-continue mode is terminal and approved.
-- [ ] Failure cannot default to continue.
-- [ ] Urgent produces no action or professional workflow.
+- [x] Authorization and safety precede every Eve/model effect.
+- [x] Only one-shot continue permits enter generation.
+- [x] Every non-continue mode is terminal in synthetic validation.
+- [x] Failure cannot default to continue.
+- [x] Urgent produces no action or professional workflow.
+- [ ] Production channel wiring and clinical approval are still pending.
 
 ## Handoff
 

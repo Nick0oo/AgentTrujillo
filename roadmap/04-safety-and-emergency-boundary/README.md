@@ -2,6 +2,10 @@
 
 This module creates the synchronous deterministic gate that evaluates every guardian message before Eve or Gemini receives it. It can continue, request one bounded clarification, abstain, recommend pediatrician review, or terminate with immutable emergency-department copy. It never diagnoses and never triggers an operational action.
 
+## Current implementation status
+
+The branch implements all fourteen deterministic contracts, synthetic boundary fixtures, and the Cloud-only redacted persistence migration. Leaves that require clinical approval remain in `review`; no real Colombia/US package or urgent copy is activated. Strict Eve evals are authored and discoverable, but the current runtime environment reports `ENV_INVALID` before execution.
+
 ## Entry gate
 
 - Module `03` governance is implemented and its eval gate passes.
@@ -91,11 +95,13 @@ Red-flag evaluation is not an Eve tool. There is no `trigger_red_flag_alert`, `e
 
 ```powershell
 npm test -- tests/safety
-npm run eval -- red-flags
-npm run eval -- clinical-boundaries
+npx eve eval safety/red-flags safety/clinical-boundaries --strict --max-concurrency 1 --skip-report
+npx supabase db query --linked --file supabase/tests/023_safety_evaluation_persistence.test.sql
 npm run typecheck
 npm run build
 ```
+
+Database verification uses the linked Supabase Cloud project only. No local Supabase start/reset, local SQL test, or Storage emulator is part of this module's evidence.
 
 Evidence stores synthetic text or corpus case IDs only. Real messages, child identity, prompts, provider output, and approval notes remain absent.
 

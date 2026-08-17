@@ -2,7 +2,7 @@
 id: AT-04-06
 title: Define versioned pediatric emergency rule packages
 module: 04-safety-and-emergency-boundary
-status: pending
+status: review
 execution: sequential
 parallel_group: null
 depends_on: [AT-04-03, AT-04-04, AT-04-05]
@@ -134,11 +134,12 @@ Commit exclusive paths with `feat(safety): define emergency rule packages`; real
 
 ## Completion checklist
 
-- [ ] Pack is strict, bounded, deterministic, and non-executable.
-- [ ] Every rule binds sources and approved copy.
-- [ ] CO and US remain separate.
-- [ ] No diagnosis/treatment/action schema exists.
-- [ ] Missing/corrupt pack cannot reach an LLM fallback.
+- [x] Pack is strict, bounded, deterministic, and non-executable.
+- [x] Every synthetic rule binds sources and approved copy.
+- [x] CO and US remain separate.
+- [x] No diagnosis/treatment/action schema exists.
+- [x] Missing/corrupt pack cannot reach an LLM fallback.
+- [ ] A real package has current clinical approval and activation evidence.
 
 ## Handoff
 

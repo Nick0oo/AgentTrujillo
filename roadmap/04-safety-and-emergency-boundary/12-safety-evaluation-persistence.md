@@ -2,7 +2,7 @@
 id: AT-04-12
 title: Persist safety decisions idempotently without message content
 module: 04-safety-and-emergency-boundary
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-04-11]
@@ -137,11 +137,11 @@ Commit exclusive paths with `feat(safety): persist redacted safety decisions`; r
 
 ## Completion checklist
 
-- [ ] Complete scope/idempotency constraints exist.
-- [ ] Records contain evidence metadata but no content.
-- [ ] Replays converge; altered replays conflict.
-- [ ] Owner/child/RLS isolation passes.
-- [ ] Persistence failure never alters urgent behavior.
+- [x] Complete scope/idempotency constraints exist.
+- [x] Records contain evidence metadata but no content.
+- [x] Replays converge; altered replays conflict.
+- [x] Owner/child/RLS isolation is encoded and Cloud SQL fixture passes.
+- [x] Persistence failure never alters urgent behavior.
 
 ## Handoff
 
