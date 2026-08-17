@@ -2,7 +2,7 @@
 id: AT-05-08
 title: Package official CDC growth references with checksums
 module: 05-anthropometry-and-growth
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-05-07]
@@ -127,6 +127,8 @@ Regenerate twice, compare bytes, validate CDC documented example and random appr
 
 ## Completion evidence
 
+- CDC 2000 and extended BMI 2022 remain separate manifests with 1,748 and 438 rows; importer/runtime checksum and official golden tests pass.
+
 Record source/normalized/import digests, counts/ranges, standard/extended identities, independent parity, approval, commands/exits, and commit.
 
 ## Commit protocol
@@ -135,11 +137,11 @@ Commit exclusive paths with `feat(growth): add verified CDC datasets`; updates r
 
 ## Completion checklist
 
-- [ ] CDC 2000/2022 datasets remain distinct.
-- [ ] Age-bin/interpolation semantics are explicit.
-- [ ] Import/runtime checksums pass.
-- [ ] Official examples/independent vectors match.
-- [ ] CDC cannot be selected outside US policy.
+- [x] CDC 2000/2022 datasets remain distinct.
+- [x] Age-bin/interpolation semantics are explicit.
+- [x] Import/runtime checksums pass.
+- [x] Official examples/independent vectors match.
+- [x] CDC cannot be selected outside US policy.
 
 ## Handoff
 

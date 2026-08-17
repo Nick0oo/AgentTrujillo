@@ -2,7 +2,7 @@
 id: AT-05-13
 title: Query transition-aware longitudinal growth series
 module: 05-anthropometry-and-growth
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-05-14]
@@ -122,6 +122,8 @@ Seed synthetic multi-standard history, page through, inspect SQL plan/index use 
 
 ## Completion evidence
 
+- HMAC-bound keyset cursor, 200-point cap, deterministic order, exclusions/supersessions and transition segments are implemented and tested.
+
 Record series/transition/pagination/isolation counts, query-plan result, cursor policy, commands/exits, and commit.
 
 ## Commit protocol
@@ -130,11 +132,11 @@ Commit exclusive paths with `feat(growth): query longitudinal growth series`; no
 
 ## Completion checklist
 
-- [ ] Series is stable, bounded, and paginated.
-- [ ] Incompatible standards/methods/ages segment visibly.
-- [ ] Excluded/superseded facts default hidden.
-- [ ] Cursor and query are child-bound.
-- [ ] No smoothing/diagnosis occurs.
+- [x] Series is stable, bounded, and paginated.
+- [x] Incompatible standards/methods/ages segment visibly.
+- [x] Excluded/superseded facts default hidden.
+- [x] Cursor and query are child-bound.
+- [x] No smoothing/diagnosis occurs.
 
 ## Handoff
 

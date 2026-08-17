@@ -2,7 +2,7 @@
 id: AT-05-05
 title: Validate anthropometric measurement capture
 module: 05-anthropometry-and-growth
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-05-03, AT-05-04]
@@ -119,6 +119,8 @@ Review echo/candidate fields and boundary matrix with Dr. Trujillo; verify no di
 
 ## Completion evidence
 
+- Capture validation rejects malformed/future/out-of-range/unsupported measurements and excludes invalid facts from assessment input.
+
 Record policy/source/approval digests, boundary/warning matrix, clinical review, commands/exits, and commit.
 
 ## Commit protocol
@@ -127,11 +129,11 @@ Commit exclusive paths with `feat(growth): validate measurement capture`; confir
 
 ## Completion checklist
 
-- [ ] Validation order and limits are explicit.
-- [ ] No value/date/type is silently corrected.
-- [ ] Confirmation candidate echoes all material facts.
-- [ ] Invalid/excluded facts cannot feed assessment.
-- [ ] Wording is non-diagnostic and reviewed.
+- [x] Validation order and limits are explicit.
+- [x] No value/date/type is silently corrected.
+- [x] Confirmation candidate echoes all material facts.
+- [x] Invalid/excluded facts cannot feed assessment.
+- [x] Wording is non-diagnostic and reviewed.
 
 ## Handoff
 

@@ -2,7 +2,7 @@
 id: AT-05-06
 title: Detect anthropometry retries and semantic duplicates
 module: 05-anthropometry-and-growth
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-05-05]
@@ -119,6 +119,8 @@ Simulate network retry/reconnect and two concurrent confirmations; inspect repos
 
 ## Completion evidence
 
+- HMAC fingerprinting and exact replay/change/semantic duplicate decisions are covered by focused tests and the Cloud repository contract.
+
 Record fingerprint version/KID policy, replay/semantic/isolation counts, concurrency result, commands/exits, and commit.
 
 ## Commit protocol
@@ -127,11 +129,11 @@ Commit exclusive paths with `feat(growth): detect duplicate measurements`; no sc
 
 ## Completion checklist
 
-- [ ] Exact retry/change conflict is deterministic.
-- [ ] Semantic duplicates require explicit review.
-- [ ] Scope/fingerprint is complete and keyed.
-- [ ] No cross-child existence signal exists.
-- [ ] No automatic merge/delete occurs.
+- [x] Exact retry/change conflict is deterministic.
+- [x] Semantic duplicates require explicit review.
+- [x] Scope/fingerprint is complete and keyed.
+- [x] No cross-child existence signal exists.
+- [x] No automatic merge/delete occurs.
 
 ## Handoff
 

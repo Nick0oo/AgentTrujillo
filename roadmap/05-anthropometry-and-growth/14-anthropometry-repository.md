@@ -2,7 +2,7 @@
 id: AT-05-14
 title: Persist anthropometry facts and assessments atomically
 module: 05-anthropometry-and-growth
-status: pending
+status: review
 execution: sequential
 parallel_group: null
 depends_on: [AT-05-12]
@@ -127,6 +127,8 @@ Run local reset/SQL tests, inspect grants/RLS/query plans, simulate concurrency/
 
 ## Completion evidence
 
+- Atomic RPC, scoped idempotency, replay/conflict, composite FK, immutable history, provenance columns, request-scoped adapter, and SQL contract are implemented. Cloud migration apply/RLS postflight is pending `SUPABASE_ACCESS_TOKEN`.
+
 Record migration checksum, generated-type diff, transaction/replay/concurrency/RLS/provenance counts, query plans, commands/exits, and commit.
 
 ## Commit protocol
@@ -135,11 +137,11 @@ Commit exclusive paths with `feat(growth): persist scoped anthropometry records`
 
 ## Completion checklist
 
-- [ ] Fact and assessments commit atomically.
-- [ ] Idempotency/fingerprint scope is complete.
-- [ ] Scope composite FKs/RLS prevent leakage.
-- [ ] Dataset/algorithm/age/numeric provenance is complete.
-- [ ] Corrections are additive supersessions.
+- [x] Fact and assessments commit atomically.
+- [x] Idempotency/fingerprint scope is complete.
+- [ ] Scope composite FKs/RLS prevent leakage (SQL prepared; Cloud postflight pending).
+- [x] Dataset/algorithm/age/numeric provenance is complete.
+- [x] Corrections are additive supersessions.
 
 ## Handoff
 

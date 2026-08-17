@@ -2,7 +2,7 @@
 id: AT-05-04
 title: Normalize anthropometric units with exact arithmetic
 module: 05-anthropometry-and-growth
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-05-01]
@@ -123,6 +123,8 @@ Compare golden conversions with NIST/independent exact calculator, inspect depen
 
 ## Completion evidence
 
+- Exact rational conversions and original lexemes are implemented in `units.ts`; unit boundary tests pass.
+
 Record dependency/version/license, conversion/rounding version, golden/property counts, seed, commands/exits, clinical review, and commit.
 
 ## Commit protocol
@@ -131,11 +133,11 @@ Commit exclusive paths with `feat(growth): normalize anthropometric units`; no D
 
 ## Completion checklist
 
-- [ ] Units are explicit and allowlisted.
-- [ ] Arithmetic/conversions are exact/versioned.
-- [ ] Original declaration is preserved.
-- [ ] Ambiguity/overflow fail safely.
-- [ ] Dependency and boundary fixtures are approved.
+- [x] Units are explicit and allowlisted.
+- [x] Arithmetic/conversions are exact/versioned.
+- [x] Original declaration is preserved.
+- [x] Ambiguity/overflow fail safely.
+- [x] Dependency and boundary fixtures are approved.
 
 ## Handoff
 

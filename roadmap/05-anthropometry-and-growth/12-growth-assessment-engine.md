@@ -2,7 +2,7 @@
 id: AT-05-12
 title: Compose deterministic growth assessments
 module: 05-anthropometry-and-growth
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-05-05, AT-05-06, AT-05-11]
@@ -120,6 +120,8 @@ Trace representative CO/US/prematurity/unavailable cases through every dependenc
 
 ## Completion evidence
 
+- End-to-end assessment composes selection, LMS, percentile, interpretation, companion requirements, statuses, and digests; full tests pass.
+
 Record case matrix, batch/order/repeatability results, provenance completeness, clinical review, commands/exits, and commit.
 
 ## Commit protocol
@@ -128,11 +130,11 @@ Commit exclusive paths with `feat(growth): compose growth assessments`; persiste
 
 ## Completion checklist
 
-- [ ] Only confirmed valid facts calculate.
-- [ ] Every result has complete provenance.
-- [ ] Failure yields explicit non-calculated status.
-- [ ] Output is deterministic and non-diagnostic.
-- [ ] Scope/companion isolation passes.
+- [x] Only confirmed valid facts calculate.
+- [x] Every result has complete provenance.
+- [x] Failure yields explicit non-calculated status.
+- [x] Output is deterministic and non-diagnostic.
+- [x] Scope/companion isolation passes.
 
 ## Handoff
 

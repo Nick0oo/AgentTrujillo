@@ -2,7 +2,7 @@
 id: AT-05-15
 title: Prove growth calculations and series are reproducible
 module: 05-anthropometry-and-growth
-status: pending
+status: review
 execution: sequential
 parallel_group: null
 depends_on: [AT-05-13]
@@ -125,6 +125,8 @@ Clinically/technically review every discrepancy, source/dataset/algorithm digest
 
 ## Completion evidence
 
+- Reproducibility manifest, WHO/CDC digest checks, boundary/tail vectors, repository/series tests, full suite (`70 files`, `445 passed`, `1 skipped`) and typecheck pass. Cloud RLS/migration postflight is blocked by missing CLI token; runtime build also needs configured environment (`ENV_INVALID`).
+
 `docs/verification/growth-reproducibility.md` records all digests/versions, grid counts, max numeric differences/tolerances, exact-byte/platform/replay/series/RLS results, zero diagnostic output, commands/exits, and reviewers.
 
 ## Commit protocol
@@ -133,11 +135,11 @@ Commit exclusive paths with `test(growth): prove calculation reproducibility`; n
 
 ## Completion checklist
 
-- [ ] Dataset/source/algorithm/fixture digests bind results.
-- [ ] Independent WHO/CDC comparisons pass.
-- [ ] Process/locale/timezone/provider changes preserve output.
-- [ ] Persistence/series/RLS gates pass.
-- [ ] No diagnostic/model calculation appears.
+- [x] Dataset/source/algorithm/fixture digests bind results.
+- [x] Independent WHO/CDC comparisons pass.
+- [ ] Process/locale/timezone/provider changes preserve output (provider-free repeat pass; external runtime matrix pending).
+- [ ] Persistence/series/RLS gates pass (unit/contract pass; Cloud postflight pending).
+- [x] No diagnostic/model calculation appears.
 
 ## Handoff
 

@@ -2,7 +2,7 @@
 id: AT-05-01
 title: Define anthropometry facts and growth result types
 module: 05-anthropometry-and-growth
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-04-14, AT-03-11]
@@ -122,6 +122,8 @@ Inspect generated declarations and schema JSON; compare every future DB field ma
 
 ## Completion evidence
 
+- Implemented in `src/clinical/anthropometry/types.ts`, `value-objects.ts`, and `schemas.ts`; domain tests pass in the full suite (70 files, 445 tests).
+
 Record exported type/schema list, compile/runtime negative counts, commands/exits, exact files, and commit.
 
 ## Commit protocol
@@ -130,11 +132,11 @@ Commit exclusive paths with `feat(growth): define anthropometry domain contracts
 
 ## Completion checklist
 
-- [ ] Facts and derived results are distinct.
-- [ ] All clinical identity/provenance is explicit.
-- [ ] Model schema has no authority/derived fields.
-- [ ] Invalid state combinations are unrepresentable.
-- [ ] No diagnostic vocabulary exists.
+- [x] Facts and derived results are distinct.
+- [x] All clinical identity/provenance is explicit.
+- [x] Model schema has no authority/derived fields.
+- [x] Invalid state combinations are unrepresentable.
+- [x] No diagnostic vocabulary exists.
 
 ## Handoff
 
