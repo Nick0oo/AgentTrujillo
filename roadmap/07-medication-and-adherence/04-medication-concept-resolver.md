@@ -2,7 +2,7 @@
 id: AT-07-04
 title: Resolve medication concepts by jurisdiction
 module: 07-medication-and-adherence
-status: pending
+status: blocked
 execution: sequential
 parallel_group: null
 depends_on: [AT-07-01]
@@ -128,11 +128,11 @@ Commit only the exclusive paths with `feat(medication): resolve medication conce
 
 ## Completion checklist
 
-- [ ] Catalogs and matches are jurisdiction-specific.
-- [ ] Only deterministic exact evidence resolves identity.
-- [ ] Salt/combination distinctions are preserved.
-- [ ] Ambiguity blocks downstream validation.
-- [ ] No medicine is selected from symptoms.
+- [x] Catalogs and matches are jurisdiction-specific.
+- [x] Only deterministic exact evidence resolves identity.
+- [x] Salt/combination distinctions are preserved.
+- [x] Ambiguity blocks downstream validation.
+- [x] No medicine is selected from symptoms.
 
 ## Handoff
 

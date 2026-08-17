@@ -2,7 +2,7 @@
 id: AT-07-10
 title: Compare declared per-dose amount with approved limits
 module: 07-medication-and-adherence
-status: pending
+status: blocked
 execution: sequential
 parallel_group: null
 depends_on: [AT-07-07, AT-07-08, AT-07-09]
@@ -128,11 +128,11 @@ Commit only the exclusive paths with `feat(medication): compare per-dose limits`
 
 ## Completion checklist
 
-- [ ] Only a declared dose is compared.
-- [ ] Exact bounds and caps are reproducible.
-- [ ] No alternative amount is calculated.
-- [ ] Any unresolved ingredient blocks reassurance.
-- [ ] Output never states safe to administer.
+- [x] Only a declared dose is compared.
+- [x] Exact bounds and caps are reproducible.
+- [x] No alternative amount is calculated.
+- [x] Any unresolved ingredient blocks reassurance.
+- [x] Output never states safe to administer.
 
 ## Handoff
 

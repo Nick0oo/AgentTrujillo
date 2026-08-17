@@ -2,7 +2,7 @@
 id: AT-07-08
 title: Resolve a recent verified child weight
 module: 07-medication-and-adherence
-status: pending
+status: blocked
 execution: sequential
 parallel_group: null
 depends_on: [AT-07-01, AT-05-15]
@@ -128,11 +128,11 @@ Commit only the exclusive paths with `feat(medication): resolve verified weight`
 
 ## Completion checklist
 
-- [ ] Only confirmed same-child measurements qualify.
-- [ ] Cutoff and freshness are explicit.
-- [ ] Future/stale/conflicting values block comparison.
-- [ ] No prediction/interpolation/default occurs.
-- [ ] Returned weight retains complete provenance.
+- [x] Only confirmed same-child measurements qualify.
+- [x] Cutoff and freshness are explicit.
+- [x] Future/stale/conflicting values block comparison.
+- [x] No prediction/interpolation/default occurs.
+- [x] Returned weight retains complete provenance.
 
 ## Handoff
 

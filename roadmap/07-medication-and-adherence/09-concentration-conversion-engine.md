@@ -2,7 +2,7 @@
 id: AT-07-09
 title: Convert a declared presentation to exact ingredient amounts
 module: 07-medication-and-adherence
-status: pending
+status: blocked
 execution: sequential
 parallel_group: null
 depends_on: [AT-07-05]
@@ -128,11 +128,11 @@ Commit only the exclusive paths with `feat(medication): convert declared concent
 
 ## Completion checklist
 
-- [ ] All arithmetic is exact decimal.
-- [ ] Dimensional compatibility is enforced.
-- [ ] Combination ingredients are separate.
-- [ ] Comparison occurs before display rounding.
-- [ ] No ambiguous presentation is converted.
+- [x] All arithmetic is exact decimal.
+- [x] Dimensional compatibility is enforced.
+- [x] Combination ingredients are separate.
+- [x] Comparison occurs before display rounding.
+- [x] No ambiguous presentation is converted.
 
 ## Handoff
 

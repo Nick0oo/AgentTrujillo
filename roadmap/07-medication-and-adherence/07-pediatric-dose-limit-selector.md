@@ -2,7 +2,7 @@
 id: AT-07-07
 title: Select an applicable approved dose-limit rule
 module: 07-medication-and-adherence
-status: pending
+status: blocked
 execution: sequential
 parallel_group: null
 depends_on: [AT-07-06]
@@ -128,11 +128,11 @@ Commit only the exclusive paths with `feat(medication): select dose limit rule`;
 
 ## Completion checklist
 
-- [ ] Only exact approved predicates select a rule.
-- [ ] Missing indication is never inferred.
-- [ ] Exclusions beat general rules.
-- [ ] Multiple maximal matches require review.
-- [ ] Selection is not treatment recommendation.
+- [x] Only exact approved predicates select a rule.
+- [x] Missing indication is never inferred.
+- [x] Exclusions beat general rules.
+- [x] Multiple maximal matches require review.
+- [x] Selection is not treatment recommendation.
 
 ## Handoff
 

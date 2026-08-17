@@ -2,7 +2,7 @@
 id: AT-07-12
 title: Map dose comparison to conservative status
 module: 07-medication-and-adherence
-status: pending
+status: blocked
 execution: sequential
 parallel_group: null
 depends_on: [AT-07-11]
@@ -128,11 +128,11 @@ Commit only the exclusive paths with `feat(medication): map validation status`; 
 
 ## Completion checklist
 
-- [ ] Exactly four public outcomes exist.
-- [ ] Clinical review outranks numeric reassurance.
-- [ ] Every numeric component must pass for within-reference.
-- [ ] No alternative dose or administration statement exists.
-- [ ] Decision/provenance are canonical and immutable.
+- [x] Exactly four public outcomes exist.
+- [x] Clinical review outranks numeric reassurance.
+- [x] Every numeric component must pass for within-reference.
+- [x] No alternative dose or administration statement exists.
+- [x] Decision/provenance are canonical and immutable.
 
 ## Handoff
 

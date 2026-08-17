@@ -99,4 +99,4 @@ Use synthetic identity/presentation fixtures with no numeric pediatric dose rang
 
 ### Task 7: Full verification and handoff
 
-Run focused tests, full `npm test`, `npm run typecheck`, `npm run build`, `npx supabase db push --linked --yes`, linked SQL tests, `npx supabase db lint --linked`, generated-type verification, medication evals, staged diff/secret/artifact scans, and `git diff --cached --check`. Commit once, push once, and create one PR with the Cloud migration evidence and explicit external clinical blockers.
+Run medication evals and all database evidence through Supabase Cloud/CI only: `npx supabase db push --linked --yes`, linked SQL tests, `npx supabase db lint --linked`, generated-type verification from the linked schema, and the remote migration list. Do not start/reset a local database or run local SQL verification. Commit once, push once, and create one PR with the Cloud evidence and explicit external clinical blockers. Code-unit verification already captured the initial TDD red/green cycle before the cloud-only verification instruction.

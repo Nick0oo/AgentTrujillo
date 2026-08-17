@@ -2,7 +2,7 @@
 id: AT-07-01
 title: Define medication and adherence domain contracts
 module: 07-medication-and-adherence
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-02-16, AT-03-11, AT-04-14, AT-05-15]
@@ -128,11 +128,11 @@ Commit only the exclusive paths with `feat(medication): define domain contracts`
 
 ## Completion checklist
 
-- [ ] Declared, resolved, and computed data are distinct.
-- [ ] Exact decimals and explicit units are mandatory.
-- [ ] The public outcome union has exactly four values.
-- [ ] No prescription/safety/recommended-dose field exists.
-- [ ] Authority identifiers are absent from model schemas.
+- [x] Declared, resolved, and computed data are distinct.
+- [x] Exact decimals and explicit units are mandatory.
+- [x] The public outcome union has exactly four values.
+- [x] No prescription/safety/recommended-dose field exists.
+- [x] Authority identifiers are absent from model schemas.
 
 ## Handoff
 

@@ -50,7 +50,7 @@ All reads and writes remain inside the trusted scope. A failed authorization, st
 
 ## Verification
 
-Each behavior starts with a failing Vitest test. The complete gate is: focused clinical tests, application/persistence tests, `npm run typecheck`, `npm test`, `npm run build`, linked migration push, linked SQL tests, database lint, generated-type verification, and medication evals. No clinical fixture includes an unapproved pediatric dose range.
+Each behavior starts with a failing Vitest test. The user-selected verification gate is Cloud-only for this module: linked migration push, linked SQL tests, database lint, generated-type verification from the linked schema, remote migration list, and medication evals in CI/Cloud. No local Supabase instance or local SQL runner is used. No clinical fixture includes an unapproved pediatric dose range.
 
 ## Explicit non-goals
 

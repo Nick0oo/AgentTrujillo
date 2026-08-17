@@ -68,12 +68,16 @@ The dose validator only compares the exact regimen already declared by the careg
 ## Module verification
 
 ```powershell
-npm test -- tests/clinical/medication tests/application/medication tests/persistence/medication
-npm run eval -- medication
-npx supabase test db --local
-npm run typecheck
-npm run build
+npx supabase db push --linked --yes
+npx supabase db query --linked --file supabase/tests/026_medication_plan_hardening.test.sql
+npx supabase db query --linked --file supabase/tests/027_medication_operation_idempotency.test.sql
+npx supabase db query --linked --file supabase/tests/028_medication_validation_persistence.test.sql
+npx supabase db lint --linked
+npx supabase migration list --linked
+npm run eval:medication
 ```
+
+This module uses the linked production Cloud project only. No local Supabase instance, local database reset, or local SQL test runner is part of the gate.
 
 ## Handoff
 

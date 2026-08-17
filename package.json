@@ -27,13 +27,15 @@
     "test:watch": "vitest",
     "test:runtime": "vitest run tests/runtime",
     "test:immunization": "vitest run tests/clinical/immunization tests/persistence/immunization-repository.test.ts tests/persistence/clinical-package-repository.test.ts",
-    "eval:immunization": "node --experimental-strip-types tests/evals/immunization.eval.ts"
+    "eval:immunization": "node --experimental-strip-types tests/evals/immunization.eval.ts",
+    "eval:medication": "node --experimental-strip-types tests/evals/medication.eval.ts"
   },
   "dependencies": {
     "@ai-sdk/google": "4.0.44",
     "@supabase/supabase-js": "2.112.3",
     "@vercel/connect": "0.4.2",
     "ai": "^7.0.34",
+    "decimal.js": "10.6.0",
     "eve": "0.27.1",
     "jose": "6.2.9",
     "json-canonicalize": "^1.2.0",
