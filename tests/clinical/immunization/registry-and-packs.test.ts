@@ -96,4 +96,12 @@ describe("immunization registry and jurisdiction packs", () => {
     }, catalog);
     expect(result.ok).toBe(false);
   });
+
+  it("rejects invalid windows, missing provenance, cross-country sources, and routine/campaign collisions", () => {
+    expect(compilePaiColombiaPack({ ...coInput, effectiveUntil: "2025-12-31" }, catalog).ok).toBe(false);
+    expect(compilePaiColombiaPack({ ...coInput, rules: [{ ...coInput.rules[0], sourceReferenceIds: [] }] }, catalog).ok).toBe(false);
+    expect(compilePaiColombiaPack({ ...coInput, sourceReferences: [{ ...coInput.sourceReferences[0], uri: "https://www.cdc.gov/vaccines/schedules/" }] }, catalog).ok).toBe(false);
+    const campaign = { ...coInput.rules[0], id: "co-hep-b-campaign", code: "CO-HEP-B-CAMPAIGN", kind: "campaign" as const };
+    expect(compilePaiColombiaPack({ ...coInput, rules: [coInput.rules[0], campaign] }, catalog).ok).toBe(false);
+  });
 });

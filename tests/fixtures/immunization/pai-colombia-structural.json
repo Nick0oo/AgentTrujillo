@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "pai-colombia-reviewed-import-v1",
+  "domain": "immunization",
+  "countryCode": "CO",
+  "sourceSet": "official-source-manifest.json#CO",
+  "requiredRuleKinds": ["routine", "catch_up", "special_population", "campaign", "outbreak", "review_only"],
+  "activation": "blocked_pending_external_clinical_approval",
+  "containsActionableSchedule": false
+}

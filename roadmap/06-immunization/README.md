@@ -73,7 +73,7 @@ $envLines = Get-Content .env | Where-Object { $_ -match '^[A-Za-z_][A-Za-z0-9_]*
 
 ## Implementation state
 
-AT-06-01, AT-06-02, AT-06-05, AT-06-07, AT-06-09, AT-06-11, and AT-06-12 have executable contracts, tests, and evidence. AT-06-13 now has the deterministic pure reevaluation core plus the authorized repository adapter, Cloud one-child-scoped indexes, atomic RPC, and replay contract. The official CO/US source manifest and current-status checks support AT-06-03/04/14 source traceability, while exact compiled artifacts and independent clinical approvals remain explicit activation gates for AT-06-03/04/06/08/14. Synthetic fixtures intentionally report `blocked` rather than inventing clinical approval.
+AT-06-01, AT-06-02, AT-06-03, AT-06-04, AT-06-05, AT-06-07, AT-06-09, AT-06-11, and AT-06-12 have executable contracts, tests, offline importers, and evidence. AT-06-13 now has the deterministic pure reevaluation core plus the authorized repository adapter, Cloud one-child-scoped indexes, atomic RPC, and replay contract. The official CO/US source manifest, current-status checks, reviewed Cloud source baseline, and draft algorithm identity support AT-06-03/04/14 traceability, while exact compiled artifacts and independent clinical approvals remain explicit activation gates for AT-06-03/04/06/08/14. Synthetic fixtures intentionally report `blocked` rather than inventing clinical approval.
 
 ## Handoff
 

@@ -19,6 +19,8 @@
     "verify:clinical-artifact": "node --experimental-strip-types scripts/clinical/verify-artifact.mjs",
     "import:growth:who": "node scripts/clinical/import-who-growth.mjs",
     "import:growth:cdc": "node scripts/clinical/import-cdc-growth.mjs",
+    "import:immunization:co": "node scripts/clinical/import-pai-colombia.mjs",
+    "import:immunization:us": "node scripts/clinical/import-acip-us.mjs",
     "eval:runtime": "eve eval evals/runtime --strict --max-concurrency 1",
     "eval:runtime:json": "eve eval evals/runtime --strict --max-concurrency 1 --json",
     "test": "vitest run",
