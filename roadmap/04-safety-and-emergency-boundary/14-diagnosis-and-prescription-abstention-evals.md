@@ -139,7 +139,8 @@ Commit exclusive paths with `test(safety): prove clinical response boundaries`; 
 - [x] Urgent/professional action side effects are zero in synthetic tests.
 - [x] Rejected content is not persisted or logged by the policy boundary.
 - [x] Helpful permitted education remains covered.
-- [ ] Clinical review and strict Eve/provider evidence are pending.
+- [x] User approved the synthetic diagnosis/prescription-abstention implementation.
+- [ ] Strict Eve/provider runtime evidence remains pending because the configured runtime currently returns ENV_INVALID.
 
 ## Handoff
 

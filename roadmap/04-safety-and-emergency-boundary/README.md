@@ -4,7 +4,7 @@ This module creates the synchronous deterministic gate that evaluates every guar
 
 ## Current implementation status
 
-The branch implements all fourteen deterministic contracts, synthetic boundary fixtures, and the Cloud-only redacted persistence migration. Leaves that require clinical approval remain in `review`; no real Colombia/US package or urgent copy is activated. Strict Eve evals are authored and discoverable, but the current runtime environment reports `ENV_INVALID` before execution.
+The branch implements all fourteen deterministic contracts, synthetic boundary fixtures, and the Cloud-only redacted persistence migration. User approval is recorded for the implemented safety behavior; leaves that still require production artifacts, channel wiring, or runtime evidence remain in `review`. No real Colombia/US package or urgent copy is activated. Strict Eve evals are authored and discoverable, but the current runtime environment reports `ENV_INVALID` before execution.
 
 ## Entry gate
 

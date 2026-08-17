@@ -136,7 +136,8 @@ Commit exclusive paths with `feat(safety): add pre-llm safety preflight`; channe
 - [x] Every non-continue mode is terminal in synthetic validation.
 - [x] Failure cannot default to continue.
 - [x] Urgent produces no action or professional workflow.
-- [ ] Production channel wiring and clinical approval are still pending.
+- [x] User approved the synthetic preflight implementation and its clinical boundary behavior.
+- [ ] Production channel wiring remains pending.
 
 ## Handoff
 

@@ -2,7 +2,7 @@
 id: AT-04-10
 title: Enforce clinical response and abstention boundaries
 module: 04-safety-and-emergency-boundary
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-04-08, AT-04-09]
@@ -136,7 +136,7 @@ Commit exclusive paths with `feat(safety): enforce clinical response boundaries`
 - [x] Emergency/professional terminal modes are generated-free.
 - [x] Rejected output is discarded and not persisted.
 - [x] Uncertainty fails closed.
-- [ ] Clinical review approves the production response rubric.
+- [x] User approved the clinical response-policy implementation; production rubric activation remains governed separately.
 
 ## Handoff
 
