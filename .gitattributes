@@ -1,0 +1,5 @@
+agent/tools/bash.ts text eol=lf
+agent/tools/glob.ts text eol=lf
+agent/tools/grep.ts text eol=lf
+agent/tools/read_file.ts text eol=lf
+agent/tools/write_file.ts text eol=lf

@@ -7,7 +7,7 @@ import {
   TARGET_PATH,
   buildGenerateCommand,
   normalizeGeneratedTypes,
-  runLocalGenerator,
+  runLinkedGenerator,
   validateGeneratedTypes,
 } from "./generate-database-types.mjs";
 
@@ -33,7 +33,7 @@ export function compareGeneratedTypes(expected, actual) {
   };
 }
 
-export function verifyDatabaseTypes({ targetPath = TARGET_PATH, runCommand = runLocalGenerator } = {}) {
+export function verifyDatabaseTypes({ targetPath = TARGET_PATH, runCommand = runLinkedGenerator } = {}) {
   const temporaryDirectory = mkdtempSync(join(tmpdir(), "supabase-types-"));
   const temporaryPath = join(temporaryDirectory, "database.types.ts");
   try {

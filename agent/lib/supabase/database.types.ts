@@ -7,6 +7,11 @@ export type Json =
   | Json[]
 
 export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "14.5"
+  }
   public: {
     Tables: {
       agent_commands: {
@@ -703,74 +708,139 @@ export type Database = {
       }
       clinical_algorithms: {
         Row: {
+          activated_at: string | null
           algorithm_key: string
+          approved_at: string | null
+          artifact_schema_versions: string[]
           created_at: string
           domain: string
+          entrypoint: string
           id: string
           implementation_sha256: string
+          retired_at: string | null
+          runtime: string
           status: string
+          test_vector_sha256: string
+          updated_at: string
           version: string
         }
         Insert: {
+          activated_at?: string | null
           algorithm_key: string
+          approved_at?: string | null
+          artifact_schema_versions?: string[]
           created_at?: string
           domain: string
+          entrypoint: string
           id?: string
           implementation_sha256: string
+          retired_at?: string | null
+          runtime?: string
           status?: string
+          test_vector_sha256: string
+          updated_at?: string
           version: string
         }
         Update: {
+          activated_at?: string | null
           algorithm_key?: string
+          approved_at?: string | null
+          artifact_schema_versions?: string[]
           created_at?: string
           domain?: string
+          entrypoint?: string
           id?: string
           implementation_sha256?: string
+          retired_at?: string | null
+          runtime?: string
           status?: string
+          test_vector_sha256?: string
+          updated_at?: string
           version?: string
         }
         Relationships: []
       }
       clinical_approvals: {
         Row: {
+          algorithm_id: string
+          algorithm_implementation_sha256: string
           approver_name: string
+          approver_role: string
+          approver_subject: string
           approver_user_id: string | null
           artifact_sha256: string
+          attestation_version: number
           created_at: string
           decided_at: string
           decision: string
           id: string
+          manifest_sha256: string
           notes: string | null
+          request_id: string
           rule_pack_id: string
+          source_set_sha256: string
+          withdrawal_of: string | null
         }
         Insert: {
+          algorithm_id: string
+          algorithm_implementation_sha256: string
           approver_name: string
+          approver_role: string
+          approver_subject: string
           approver_user_id?: string | null
           artifact_sha256: string
+          attestation_version?: number
           created_at?: string
           decided_at?: string
           decision: string
           id?: string
+          manifest_sha256: string
           notes?: string | null
+          request_id: string
           rule_pack_id: string
+          source_set_sha256: string
+          withdrawal_of?: string | null
         }
         Update: {
+          algorithm_id?: string
+          algorithm_implementation_sha256?: string
           approver_name?: string
+          approver_role?: string
+          approver_subject?: string
           approver_user_id?: string | null
           artifact_sha256?: string
+          attestation_version?: number
           created_at?: string
           decided_at?: string
           decision?: string
           id?: string
+          manifest_sha256?: string
           notes?: string | null
+          request_id?: string
           rule_pack_id?: string
+          source_set_sha256?: string
+          withdrawal_of?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "clinical_approvals_algorithm_id_fkey"
+            columns: ["algorithm_id"]
+            isOneToOne: false
+            referencedRelation: "clinical_algorithms"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "clinical_approvals_rule_pack_id_fkey"
             columns: ["rule_pack_id"]
             isOneToOne: false
             referencedRelation: "clinical_rule_packs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clinical_approvals_withdrawal_of_fkey"
+            columns: ["withdrawal_of"]
+            isOneToOne: false
+            referencedRelation: "clinical_approvals"
             referencedColumns: ["id"]
           },
         ]
@@ -913,6 +983,95 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "agent_sessions"
             referencedColumns: ["id", "care_space_id", "child_id"]
+          },
+        ]
+      }
+      clinical_package_releases: {
+        Row: {
+          action: string
+          activation_at: string
+          algorithm_id: string
+          approval_id: string
+          artifact_sha256: string
+          country_code: string
+          created_at: string
+          domain: string
+          evidence_sha256: string
+          id: string
+          locale: string
+          preview_sha256: string
+          previous_release_id: string | null
+          request_id: string
+          requester_subject: string
+          rule_pack_id: string
+          status: string
+        }
+        Insert: {
+          action: string
+          activation_at: string
+          algorithm_id: string
+          approval_id: string
+          artifact_sha256: string
+          country_code: string
+          created_at?: string
+          domain: string
+          evidence_sha256: string
+          id?: string
+          locale: string
+          preview_sha256: string
+          previous_release_id?: string | null
+          request_id: string
+          requester_subject: string
+          rule_pack_id: string
+          status: string
+        }
+        Update: {
+          action?: string
+          activation_at?: string
+          algorithm_id?: string
+          approval_id?: string
+          artifact_sha256?: string
+          country_code?: string
+          created_at?: string
+          domain?: string
+          evidence_sha256?: string
+          id?: string
+          locale?: string
+          preview_sha256?: string
+          previous_release_id?: string | null
+          request_id?: string
+          requester_subject?: string
+          rule_pack_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clinical_package_releases_algorithm_id_fkey"
+            columns: ["algorithm_id"]
+            isOneToOne: false
+            referencedRelation: "clinical_algorithms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clinical_package_releases_approval_id_fkey"
+            columns: ["approval_id"]
+            isOneToOne: false
+            referencedRelation: "clinical_approvals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clinical_package_releases_previous_release_id_fkey"
+            columns: ["previous_release_id"]
+            isOneToOne: false
+            referencedRelation: "clinical_package_releases"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clinical_package_releases_rule_pack_id_fkey"
+            columns: ["rule_pack_id"]
+            isOneToOne: false
+            referencedRelation: "clinical_rule_packs"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -2652,42 +2811,66 @@ export type Database = {
       safety_evaluations: {
         Row: {
           agent_session_id: string | null
+          algorithm_key: string
+          algorithm_version: string
           approved_copy_key: string | null
           care_space_id: string
           child_id: string
+          copy_digest_sha256: string | null
           created_at: string
           decision: string
+          decision_sha256: string
           evaluated_at: string
+          evaluation_version: string
           id: string
+          input_fingerprint: string
+          latency_ms: number | null
           matched_rule_codes: string[]
+          owner_user_id: string
           request_id: string
           response_mode: string
           rule_pack_id: string
         }
         Insert: {
           agent_session_id?: string | null
+          algorithm_key?: string
+          algorithm_version?: string
           approved_copy_key?: string | null
           care_space_id: string
           child_id: string
+          copy_digest_sha256?: string | null
           created_at?: string
           decision: string
+          decision_sha256?: string
           evaluated_at?: string
+          evaluation_version?: string
           id?: string
+          input_fingerprint?: string
+          latency_ms?: number | null
           matched_rule_codes?: string[]
+          owner_user_id: string
           request_id: string
           response_mode: string
           rule_pack_id: string
         }
         Update: {
           agent_session_id?: string | null
+          algorithm_key?: string
+          algorithm_version?: string
           approved_copy_key?: string | null
           care_space_id?: string
           child_id?: string
+          copy_digest_sha256?: string | null
           created_at?: string
           decision?: string
+          decision_sha256?: string
           evaluated_at?: string
+          evaluation_version?: string
           id?: string
+          input_fingerprint?: string
+          latency_ms?: number | null
           matched_rule_codes?: string[]
+          owner_user_id?: string
           request_id?: string
           response_mode?: string
           rule_pack_id?: string
@@ -2706,6 +2889,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "children"
             referencedColumns: ["care_space_id", "id"]
+          },
+          {
+            foreignKeyName: "safety_evaluations_owner_fk"
+            columns: ["owner_user_id"]
+            isOneToOne: false
+            referencedRelation: "guardian_profiles"
+            referencedColumns: ["user_id"]
           },
           {
             foreignKeyName: "safety_evaluations_rule_pack_id_fkey"
@@ -3260,6 +3450,31 @@ export type Database = {
           structured_content: Json
         }[]
       }
+      record_safety_evaluation: {
+        Args: {
+          p_agent_session_id: string
+          p_algorithm_key: string
+          p_algorithm_version: string
+          p_approved_copy_key: string
+          p_care_space_id: string
+          p_child_id: string
+          p_copy_digest_sha256: string
+          p_decision: string
+          p_decision_sha256: string
+          p_evaluation_version: string
+          p_input_fingerprint: string
+          p_latency_ms: number
+          p_matched_rule_codes: string[]
+          p_owner_user_id: string
+          p_request_id: string
+          p_response_mode: string
+          p_rule_pack_id: string
+        }
+        Returns: {
+          created: boolean
+          evaluation_id: string
+        }[]
+      }
       refresh_owned_agent_session_lease: {
         Args: {
           p_authorization_expires_at: string
@@ -3426,4 +3641,3 @@ export const Constants = {
     Enums: {},
   },
 } as const
-

@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 export const TARGET_PATH = resolve(process.cwd(), "agent/lib/supabase/database.types.ts");
 
 export function buildGenerateCommand() {
-  return ["supabase", "gen", "types", "typescript", "--local", "--schema", "public"];
+  return ["supabase", "gen", "types", "typescript", "--linked", "--schema", "public"];
 }
 
 export function normalizeGeneratedTypes(source) {
@@ -38,7 +38,7 @@ function cliInvocation(args) {
   };
 }
 
-export function runLocalGenerator(args = buildGenerateCommand()) {
+export function runLinkedGenerator(args = buildGenerateCommand()) {
   const { command, prefix } = cliInvocation(args);
   const result = spawnSync(command, [...prefix, "--no-install", ...args], {
     cwd: process.cwd(),
@@ -74,7 +74,7 @@ export function writeGeneratedTypesAtomic(source, targetPath = TARGET_PATH) {
   return { targetPath, bytes: Buffer.byteLength(normalized), lineCount: normalized.split("\n").length - 1 };
 }
 
-export function generateDatabaseTypes({ targetPath = TARGET_PATH, runCommand = runLocalGenerator } = {}) {
+export function generateDatabaseTypes({ targetPath = TARGET_PATH, runCommand = runLinkedGenerator } = {}) {
   const result = runCommand(buildGenerateCommand());
   if (result.status !== 0) {
     throw new Error(`SUPABASE_TYPES_GENERATION_FAILED: ${redactOutput(result.stderr)}`);

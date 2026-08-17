@@ -11,17 +11,17 @@ const verifier = await import("../../scripts/verify-database-types.mjs");
 const targetPath = resolve(process.cwd(), "agent/lib/supabase/database.types.ts");
 
 describe("generated Supabase database types", () => {
-  it("builds a local-only generator command", () => {
+  it("builds a Cloud-linked generator command", () => {
     expect(types.buildGenerateCommand()).toEqual([
       "supabase",
       "gen",
       "types",
       "typescript",
-      "--local",
+      "--linked",
       "--schema",
       "public",
     ]);
-    expect(JSON.stringify(types.buildGenerateCommand())).not.toMatch(/--linked|--db-url|--project-id|--project-ref/i);
+    expect(JSON.stringify(types.buildGenerateCommand())).not.toMatch(/--local|--db-url|--project-id|--project-ref/i);
   });
 
   it("normalizes only the generator banner and line endings", () => {
