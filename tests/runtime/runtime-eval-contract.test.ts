@@ -13,6 +13,19 @@ const expectedFiles = [
 ].sort();
 
 describe("runtime smoke eval contract", () => {
+  it("filters the Eve CLI by the runtime eval id", () => {
+    const packageJson = JSON.parse(
+      readFileSync(resolve(process.cwd(), "package.json"), "utf8"),
+    ) as { scripts: Record<string, string> };
+
+    expect(packageJson.scripts["eval:runtime"]).toBe(
+      "eve eval runtime --strict --max-concurrency 1",
+    );
+    expect(packageJson.scripts["eval:runtime:json"]).toBe(
+      "eve eval runtime --strict --max-concurrency 1 --json",
+    );
+  });
+
   it("discovers exactly six focused synthetic evals", () => {
     expect(readdirSync(evalRoot).filter((name) => name.endsWith(".eval.ts")).sort()).toEqual(expectedFiles);
     expect(existsSync(resolve(process.cwd(), "evals/evals.config.ts"))).toBe(true);

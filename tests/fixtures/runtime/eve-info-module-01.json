@@ -45,6 +45,12 @@
       "kind": "http",
       "method": "POST",
       "urlPath": "/eve/v1/session/:sessionId/cancel"
+    },
+    {
+      "name": "eve",
+      "kind": "http",
+      "method": "POST",
+      "urlPath": "/eve/v1/session/reset"
     }
   ],
   "messaging": {

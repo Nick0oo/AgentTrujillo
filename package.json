@@ -21,8 +21,8 @@
     "import:growth:cdc": "node scripts/clinical/import-cdc-growth.mjs",
     "import:immunization:co": "node scripts/clinical/import-pai-colombia.mjs",
     "import:immunization:us": "node scripts/clinical/import-acip-us.mjs",
-    "eval:runtime": "eve eval evals/runtime --strict --max-concurrency 1",
-    "eval:runtime:json": "eve eval evals/runtime --strict --max-concurrency 1 --json",
+    "eval:runtime": "eve eval runtime --strict --max-concurrency 1",
+    "eval:runtime:json": "eve eval runtime --strict --max-concurrency 1 --json",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:runtime": "vitest run tests/runtime",
@@ -36,13 +36,14 @@
     "@vercel/connect": "0.4.2",
     "ai": "^7.0.34",
     "decimal.js": "10.6.0",
-    "eve": "0.27.1",
+    "eve": "0.27.13",
     "jose": "6.2.9",
     "json-canonicalize": "^1.2.0",
     "zod": "4.4.3"
   },
   "devDependencies": {
     "@types/node": "24.x",
+    "just-bash": "3.4.1",
     "supabase": "^2.114.0",
     "typescript": "7.0.2",
     "vitest": "4.1.10"

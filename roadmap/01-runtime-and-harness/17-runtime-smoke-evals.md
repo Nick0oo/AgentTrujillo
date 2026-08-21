@@ -40,7 +40,8 @@ forbidden_paths:
   - agent/**
   - supabase/**
   - .eve/**
-commit: 27650c7
+commit:
+  hash: 27650c7
   message: "test(runtime): add Gemini safety smoke evals"
 ---
 

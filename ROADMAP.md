@@ -18,7 +18,7 @@ The following foundation exists and is not module `00`:
 - Five private Storage buckets documented.
 - pgvector enabled.
 - Legacy migrations quarantined under `supabase/legacy-reference/`.
-- Eve `0.27.1`, Node.js `24.x`, AI SDK, Zod, and strict TypeScript installed.
+- Eve `0.27.13`, Node.js `24.x`, AI SDK, Zod, and strict TypeScript installed.
 - Current scaffold passes typecheck and build.
 
 These facts do not close pending behavioral gates. Local schema parity, generated types, negative RLS testing, session ownership, idempotency gaps, vector scope hardening, and Realtime hardening remain explicit module `02` work.
