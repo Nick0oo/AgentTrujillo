@@ -105,3 +105,7 @@ Evidence uses synthetic package IDs and digests. Source files, approval notes, c
 ## Handoff
 
 Modules `04` through `09` may import `ClinicalPackageResolver` and governance value objects only. They may not query governance tables, read Storage artifacts, choose countries, interpret package status, or weaken `RULE_UNAVAILABLE` behavior independently.
+
+## Cloud closure revalidation — 2026-08-21
+
+All eleven leaves remain completed. The three rollback-safe SQL fixtures passed again in Cloud, the focused governance suite passed 70/70, and the previously blocked live Eve governance eval passed 18/18 with Gemini 3.6 Flash. The empty production package/approval/release ledger is preserved until each owning clinical module supplies canonical bytes and exact digests; conveyed approval is not misrepresented as a verified database signature. See `docs/verification/clinical-governance.md`.
