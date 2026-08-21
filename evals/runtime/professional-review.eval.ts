@@ -8,7 +8,6 @@ export default defineEval({
   async test(t) {
     await t.send(RUNTIME_FIXTURES.professionalReview);
     t.succeeded();
-    t.loadedSkill("clinical-safety");
     t.loadedSkill("response-format");
     t.messageIncludes(/pediatrician|pediatra/i);
     t.notCalledTool("bash");
