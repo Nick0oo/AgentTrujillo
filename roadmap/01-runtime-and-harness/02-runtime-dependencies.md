@@ -2,7 +2,7 @@
 id: AT-01-02
 title: Pin the direct Google provider and runtime test dependencies
 module: 01-runtime-and-harness
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-01-01]
@@ -38,7 +38,8 @@ forbidden_paths:
   - agent/**
   - supabase/**
   - node_modules/**
-commit: 8cb0041
+commit:
+  hash: 8cb0041
   message: "build(runtime): add pinned Gemini and test dependencies"
 ---
 
@@ -58,7 +59,7 @@ No production behavior changes. Contributors can run `npm test`; dependency inst
 
 - `AT-01-01` is completed.
 - Registry evidence captured on 2026-08-16 identifies `@ai-sdk/google@4.0.44` and `vitest@4.1.10` as Node 24-compatible.
-- Installed `ai` remains `7.0.35`, Eve remains `0.27.1`, and Zod remains `4.4.3` unless compatibility verification proves a focused lock adjustment is required.
+- Installed `ai` remains `7.0.35` and Zod remains `4.4.3`; Eve is `0.27.13` through the focused compatibility and security amendment `AT-01-18`.
 
 ## Mandatory reading
 
@@ -137,7 +138,7 @@ No model-facing eval runs because credentials and provider construction do not y
 
 ## Manual verification
 
-Run `npm ls @ai-sdk/google ai eve vitest zod`, `npm test -- --reporter=verbose`, `npm run typecheck`, `npx eve info --json`, and `npm run build`. Expected exact direct dependencies are Google `4.0.44`, AI SDK `7.0.35`, Eve `0.27.1`, and Vitest `4.1.10`.
+Run `npm ls @ai-sdk/google ai eve vitest zod`, `npm test -- --reporter=verbose`, `npm run typecheck`, `npx eve info --json`, and `npm run build`. Current expected dependencies are Google `4.0.44`, AI SDK `7.0.35`, Eve `0.27.13` through `AT-01-18`, and Vitest `4.1.10`.
 
 ## Completion evidence
 

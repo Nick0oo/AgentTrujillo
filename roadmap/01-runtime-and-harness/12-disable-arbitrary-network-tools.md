@@ -2,7 +2,7 @@
 id: AT-01-12
 title: Disable arbitrary network tools in the root harness
 module: 01-runtime-and-harness
-status: pending
+status: completed
 execution: parallel
 parallel_group: default-tool-lockdown
 depends_on: [AT-01-02]
@@ -33,7 +33,8 @@ forbidden_paths:
   - agent/connections/**
   - agent/skills/**
   - supabase/**
-commit: a470587
+commit:
+  hash: a470587
   message: "security(runtime): disable arbitrary network tools"
 ---
 
@@ -88,7 +89,7 @@ Both sentinel modules use the exact two-line `disableTool()` shape. The test's f
 
 ## Technical design
 
-Disable known defaults at discovery. Because Eve `0.27.1` creates `connection_search` dynamically only when connections exist and it is not a sentinel-disableable registered default, enforce an empty connection source/manifest until a later reviewed architecture explicitly replaces this gate.
+Disable known defaults at discovery. Eve `0.27.13` still creates `connection_search` dynamically only when connections exist and it is not a sentinel-disableable registered default, so enforce an empty connection source/manifest until a later reviewed architecture explicitly replaces this gate.
 
 ## Database and Storage contract
 
@@ -144,7 +145,7 @@ Stage only three declared paths, run cached/secret/artifact checks, and commit e
 - [x] Connections and conditional connection search are absent.
 - [x] Provider-native search is absent.
 - [x] Missing sources fail safely.
-- [ ] Live evals pass; static contracts, discovery, build, and scans pass.
+- [x] Live evals, static contracts, discovery, build, and scans pass.
 
 ## Handoff
 

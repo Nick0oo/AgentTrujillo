@@ -2,7 +2,7 @@
 id: AT-01-18
 title: Apply the Eve 0.27 ESM runtime patch
 module: 01-runtime-and-harness
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-01-15]
@@ -56,7 +56,7 @@ forbidden_paths:
   - node_modules/**
   - .eve/**
 commit:
-  hash: null
+  hash: 5501fd4
   message: "fix(runtime): apply Eve 0.27 ESM patch"
 ---
 

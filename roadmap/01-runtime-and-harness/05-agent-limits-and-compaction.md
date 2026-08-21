@@ -2,7 +2,7 @@
 id: AT-01-05
 title: Set explicit durable-session limits and compaction
 module: 01-runtime-and-harness
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-01-03]
@@ -32,7 +32,8 @@ forbidden_paths:
   - agent/instructions.md
   - agent/tools/**
   - supabase/**
-commit: f9239aa
+commit:
+  hash: f9239aa
   message: "feat(runtime): bound session usage and compaction"
 ---
 
@@ -51,7 +52,7 @@ Normal conversations compact older material into an Eve checkpoint at the config
 ## Prerequisites
 
 - `AT-01-03` completed and direct Gemini is the only model.
-- Eve `agent-config.md` limits and compaction semantics have been reread from `0.27.1`.
+- Eve `agent-config.md` limits and compaction semantics have been reread from the installed `0.27.13` package after `AT-01-18`.
 - The values are treated as initial conservative operational policy, not clinical evidence.
 
 ## Mandatory reading

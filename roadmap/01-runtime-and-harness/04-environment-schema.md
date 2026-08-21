@@ -2,7 +2,7 @@
 id: AT-01-04
 title: Validate the server-only runtime environment
 module: 01-runtime-and-harness
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-01-02]
@@ -32,7 +32,8 @@ forbidden_paths:
   - .env.production
   - agent/agent.ts
   - supabase/**
-commit: 98d3bb5
+commit:
+  hash: 98d3bb5
   message: "feat(runtime): validate server environment configuration"
 ---
 

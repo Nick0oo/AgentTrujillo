@@ -28,14 +28,14 @@ These facts do not close pending behavioral gates. Local schema parity, generate
 - Documentation design: `completed` at commit `08ed71a`.
 - Documentation implementation plan: `completed` at commit `2ba542b`.
 - Atomic roadmap authoring: modules `01` through `15` completed and cross-module verification passed; see [verification evidence](docs/verification/2026-08-16-agent-roadmap.md).
-- Product implementation: modules `02` and `03` completed with Cloud evidence; module `04` has its deterministic contracts, Cloud persistence hardening, and synthetic boundary evidence implemented, with clinical-approval and Eve-runtime gates explicitly in review.
+- Product implementation: modules `01`, `02`, and `03` completed with fresh runtime or Cloud evidence; module `04` has its deterministic contracts, Cloud persistence hardening, and synthetic boundary evidence implemented, with clinical-approval and Eve-runtime gates explicitly in review.
 - Next active executable unit: module `04` review/activation gates; no real clinical package is active.
 
 ## Module ledger
 
 | Module | Purpose | Documentation | Product implementation | Exit gate | Index |
 |---|---|---:|---:|---|---|
-| 01 | Runtime and harness | completed | pending | Safe Eve surface with Gemini baseline and discovery gate | [Module 01](roadmap/01-runtime-and-harness/README.md) |
+| 01 | Runtime and harness | completed | completed | Safe Eve surface with Gemini baseline and discovery gate | [Module 01](roadmap/01-runtime-and-harness/README.md) |
 | 02 | Access and session isolation | completed | completed | Zero cross-space, cross-child, and cross-session access | [Module 02](roadmap/02-access-and-session-isolation/README.md) |
 | 03 | Clinical governance | completed | completed | Only approved, versioned, checksum-matching packages resolve | [Module 03](roadmap/03-clinical-governance/README.md) |
 | 04 | Safety and emergency boundary | completed | review | Critical red flags bypass the LLM and emit approved emergency-only copy | [Module 04](roadmap/04-safety-and-emergency-boundary/README.md) |

@@ -101,3 +101,7 @@ The exit gate additionally runs `npm run verify:discovery` and `npx eve eval run
 ## Handoff
 
 Completion unblocks `AT-02-01`, `AT-10-01`, `AT-11-01`, and `AT-14-01`. Those modules may extend the runtime only through typed, authenticated, child-scoped surfaces; they may not re-enable capabilities removed here.
+
+## Closure evidence — 2026-08-21
+
+All eighteen leaf ledgers are reconciled to `completed`. Fresh runtime, build, repeated discovery, security-audit, privacy-scan, and two-run live Gemini evidence is recorded in `docs/verification/runtime-module-01.md`; conveyed clinical wording approval is recorded in `docs/clinical/approval-record-2026-08-21.md` without creating or attributing a signature.

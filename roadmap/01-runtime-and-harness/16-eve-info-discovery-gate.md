@@ -2,7 +2,7 @@
 id: AT-01-16
 title: Enforce the compiled Eve runtime surface
 module: 01-runtime-and-harness
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-01-07, AT-01-08, AT-01-09, AT-01-10, AT-01-14, AT-01-15, AT-01-18]

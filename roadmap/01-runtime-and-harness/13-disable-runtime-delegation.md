@@ -2,7 +2,7 @@
 id: AT-01-13
 title: Disable root runtime delegation and authored subagents
 module: 01-runtime-and-harness
-status: pending
+status: completed
 execution: parallel
 parallel_group: default-tool-lockdown
 depends_on: [AT-01-02]
@@ -31,7 +31,8 @@ forbidden_paths:
   - agent/tools/workflow.ts
   - agent/skills/**
   - supabase/**
-commit: d3b4441
+commit:
+  hash: d3b4441
   message: "security(runtime): disable runtime delegation"
 ---
 
@@ -50,7 +51,7 @@ A guardian request is handled by the one scoped agent session. The model cannot 
 ## Prerequisites
 
 - `AT-01-02` completed.
-- Eve `0.27.1` docs confirm `agent/tools/agent.ts` disables the root built-in and `Workflow` is opt-in only.
+- Installed Eve `0.27.13` docs confirm `agent/tools/agent.ts` disables the root built-in and `Workflow` is opt-in only.
 
 ## Mandatory reading
 
@@ -140,7 +141,7 @@ Stage only two declared files, run cached checks, and commit exactly `security(r
 - [x] Root delegation sentinel is present.
 - [x] No local or remote subagent is discovered.
 - [x] Experimental Workflow tool is absent.
-- [ ] Live evals pass; static contracts, discovery, build, and scans pass.
+- [x] Live evals, static contracts, discovery, build, and scans pass.
 
 ## Handoff
 
