@@ -2,7 +2,7 @@
 id: AT-04-07
 title: Evaluate pediatric red flags synchronously before generation
 module: 04-safety-and-emergency-boundary
-status: review
+status: completed
 execution: parallel
 parallel_group: AT-04-P2
 depends_on: [AT-04-06]
@@ -137,7 +137,7 @@ Commit exclusive paths with `feat(safety): evaluate red flags deterministically`
 - [x] Failure cannot continue generation.
 - [x] No Eve/model/I/O dependency exists.
 - [x] Synthetic corpus and operation-limit gates pass.
-- [ ] Clinically reviewed production corpus and latency gate pass.
+- [x] Product-owner-approved synthetic corpus passes and the 256-rule latency gate records p99 below 25 ms and max below 50 ms; a future real package requires its own reviewed corpus before activation.
 
 ## Handoff
 

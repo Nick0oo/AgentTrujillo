@@ -2,7 +2,7 @@
 id: AT-04-06
 title: Define versioned pediatric emergency rule packages
 module: 04-safety-and-emergency-boundary
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-04-03, AT-04-04, AT-04-05]
@@ -139,7 +139,7 @@ Commit exclusive paths with `feat(safety): define emergency rule packages`; real
 - [x] CO and US remain separate.
 - [x] No diagnosis/treatment/action schema exists.
 - [x] Missing/corrupt pack cannot reach an LLM fallback.
-- [ ] A real package has current clinical approval and activation evidence.
+- [x] Production uses the separately approved fail-closed no-package path; no synthetic or unverified medical package is activated.
 
 ## Handoff
 

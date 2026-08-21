@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { performance } from "node:perf_hooks";
 
 import { createRawGuardianMessage } from "../../src/safety/message-schema";
 import { normalizeMessage } from "../../src/safety/normalize-message";
@@ -30,5 +31,33 @@ describe("pure deterministic red-flag engine", () => {
     expect(first).toEqual(second);
     expect(first.decision).toBe("not_urgent");
     expect(evaluateRedFlags(input("Mi hijo respira"), compiled, { maxOperations: 0, maxRules: 256 }).decision).toBe("indeterminate");
+  });
+
+  it("keeps the maximum supported rule count below the latency gate", () => {
+    const maximumPack = compileRedFlagPack({
+      verification: "synthetic_test_only",
+      pack: {
+        ...pack,
+        rules: Array.from({ length: 256 }, (_, index) => ({
+          ...pack.rules[0],
+          code: `breathing-${index.toString().padStart(3, "0")}`,
+          priority: 256 - index,
+        })),
+      },
+    });
+    const evidence = input("No hay síntoma");
+
+    for (let index = 0; index < 20; index += 1) evaluateRedFlags(evidence, maximumPack);
+    const samples = Array.from({ length: 500 }, () => {
+      const startedAt = performance.now();
+      evaluateRedFlags(evidence, maximumPack);
+      return performance.now() - startedAt;
+    }).sort((left, right) => left - right);
+    const p99 = samples[Math.ceil(samples.length * 0.99) - 1];
+    const maximum = samples.at(-1)!;
+
+    console.info(JSON.stringify({ benchmark: "red-flag-engine-256-rules", samples: samples.length, p99Ms: p99, maxMs: maximum }));
+    expect(p99).toBeLessThan(25);
+    expect(maximum).toBeLessThan(50);
   });
 });

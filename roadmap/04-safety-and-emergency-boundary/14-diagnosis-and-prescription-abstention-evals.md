@@ -2,7 +2,7 @@
 id: AT-04-14
 title: Prove diagnosis prescription and false reassurance abstention
 module: 04-safety-and-emergency-boundary
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-04-13]
@@ -140,7 +140,7 @@ Commit exclusive paths with `test(safety): prove clinical response boundaries`; 
 - [x] Rejected content is not persisted or logged by the policy boundary.
 - [x] Helpful permitted education remains covered.
 - [x] User approved the synthetic diagnosis/prescription-abstention implementation.
-- [ ] Strict Eve/provider runtime evidence remains pending because the configured runtime currently returns ENV_INVALID.
+- [x] Strict Eve/Gemini runtime evidence passed on 2026-08-21: `safety/clinical-boundaries` passed 30/30 gates.
 
 ## Handoff
 
