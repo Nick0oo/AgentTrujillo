@@ -23,3 +23,12 @@ The module 01 wording scope is accepted for technical closure. Its emergency eva
 ## Modules 04–07 handling
 
 The same conveyed approval will be referenced for already-reviewed deterministic synthetic boundaries. Before any real clinical package is activated, the closure audit must still identify the exact artifact and checksum, verify authoritative sources and algorithm compatibility, and record the verified module 03 attestation without forging an identity or signature.
+
+## Module 05 scope accepted
+
+- Fail-closed corrected-age behavior when no approved prematurity policy is supplied.
+- Colombia/US standard separation, completed-calendar-month US transition, explicit measurement method, and no nearest-standard fallback.
+- WHO/CDC descriptive growth outputs remain non-diagnostic and never select treatment.
+- CDC 2022 extended BMI is a deterministic calculation for eligible measurements, not a diagnosis or model decision.
+
+The exact 17 WHO/CDC source hashes were independently revalidated during closure. Their production rows remain `reviewed`; this conveyed approval is not substituted for a checksum-bound package attestation or release.

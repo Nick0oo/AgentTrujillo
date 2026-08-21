@@ -20,6 +20,14 @@ describe("CDC growth dataset", () => {
     expect(row?.s).toBe("0.108125811");
   });
 
+  it("does not collapse overlapping infant and child chart rows", () => {
+    const dataset = loadCdcDataset();
+
+    expect(dataset.lookup({ indicator: "weight_for_age", sex: "female", ageMonths: "24.5" })).toBeNull();
+    expect(dataset.lookup({ indicator: "weight_for_age", sex: "female", ageMonths: "24.5", sourceFile: "cdc-wtage.csv" })?.m).toBe("12.13455523");
+    expect(dataset.lookup({ indicator: "weight_for_age", sex: "female", ageMonths: "24.5", sourceFile: "cdc-wtageinf.csv" })?.m).toBe("12.13455528");
+  });
+
   it("rejects a tampered expected digest", () => {
     expect(() => loadCdcDataset("0".repeat(64))).toThrowError("CDC_DATASET_DIGEST_MISMATCH");
   });

@@ -128,6 +128,8 @@ Regenerate twice, compare bytes, validate CDC documented example and random appr
 ## Completion evidence
 
 - CDC 2000 and extended BMI 2022 remain separate manifests with 1,748 and 438 rows; importer/runtime checksum and official golden tests pass.
+- The 2026-08-21 closure audit found 24 logical coordinates shared by infant and 2–20-year source tables. Lookups now reject an unspecified ambiguous family and selectors bind the exact official source file.
+- All nine official CDC source artifacts were re-fetched and matched their pinned SHA-256 digests before Cloud metadata registration.
 
 Record source/normalized/import digests, counts/ranges, standard/extended identities, independent parity, approval, commands/exits, and commit.
 

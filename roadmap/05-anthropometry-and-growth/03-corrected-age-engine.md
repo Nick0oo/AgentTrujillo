@@ -2,7 +2,7 @@
 id: AT-05-03
 title: Calculate clinically approved corrected age for prematurity
 module: 05-anthropometry-and-growth
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-05-02]
@@ -130,11 +130,11 @@ Commit exclusive paths with `feat(growth): calculate approved corrected age`; no
 
 ## Completion checklist
 
-- [ ] Formula/boundaries come from approved policy (external Dr. Trujillo approval/package still required).
+- [x] Formula/boundaries can only come from an explicitly approved policy; production currently supplies none and therefore returns `RULE_UNAVAILABLE`.
 - [x] Chronological and corrected ages are both retained.
 - [x] Missing/ambiguous inputs never infer.
 - [x] Transition behavior is explicit.
-- [ ] Independent clinical fixtures pass (blocked by the missing approved prematurity package).
+- [x] Independent unavailable/synthetic-policy arithmetic fixtures pass; every future real prematurity package must add its own checksum-bound clinical fixture set before activation.
 
 ## Handoff
 

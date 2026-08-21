@@ -50,7 +50,8 @@ describe("growth reproducibility manifest", () => {
         normalizedUnit: "kg" as const,
         sex: "female" as const,
         countryCode: "US",
-        chronologicalAgeDays: 730,
+        chronologicalAgeDays: 731,
+        chronologicalCompletedMonths: 24,
         correctedAge: null,
         occurredAt: "2026-08-16T12:00:00.000Z",
         timeZone: "America/Bogota",
@@ -65,8 +66,8 @@ describe("growth reproducibility manifest", () => {
   });
 
   it("proves boundary and tail contracts independently of the assessment composer", () => {
-    expect(selectGrowthStandard({ countryCode: "US", sex: "female", measurementType: "weight", chronologicalAgeDays: 729, correctedAge: null }).standard?.datasetKey).toBe("WHO_2006");
-    expect(selectGrowthStandard({ countryCode: "US", sex: "female", measurementType: "weight", chronologicalAgeDays: 730, correctedAge: null }).standard?.datasetKey).toBe("CDC_2000");
+    expect(selectGrowthStandard({ countryCode: "US", sex: "female", measurementType: "weight", chronologicalAgeDays: 730, chronologicalCompletedMonths: 23, correctedAge: null }).standard?.datasetKey).toBe("WHO_2006");
+    expect(selectGrowthStandard({ countryCode: "US", sex: "female", measurementType: "weight", chronologicalAgeDays: 731, chronologicalCompletedMonths: 24, correctedAge: null }).standard?.datasetKey).toBe("CDC_2000");
     expect(calculatePercentile("20").percentile?.canonical).toBe("100");
   });
 });

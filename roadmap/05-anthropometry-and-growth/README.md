@@ -2,6 +2,12 @@
 
 This module records confirmed weight, recumbent length, standing height, and head circumference; computes chronological/corrected age; selects an approved WHO/CDC standard; and derives reproducible Z-scores, percentiles, assessments, and longitudinal series. Gemini never performs a clinical calculation.
 
+## Current implementation status
+
+All sixteen leaves, including the 2026-08-21 Cloud source-registry amendment, are complete. The audit corrected ambiguous CDC infant/child rows, made the US 24-month transition depend on completed calendar months, prevented post-transition infant-chart selection, and implemented the CDC 2022 extended-BMI algorithm only after measured eligibility. Seventeen current official source artifacts were re-fetched and matched their pinned hashes before their metadata was registered in production.
+
+Production has zero patient measurements/assessments and zero active growth packages, which is the correct state before real use. Source metadata is `reviewed`, not activated. A future module `10` tool must resolve a checksum-bound module `03` package before calling these deterministic engines.
+
 ## Entry gate
 
 - Modules `02`–`04` access, governance, and response-policy gates pass.
@@ -11,7 +17,7 @@ This module records confirmed weight, recumbent length, standing height, and hea
 
 ## Exit gate
 
-All fifteen leaves are complete and fresh evidence proves:
+All sixteen leaves are complete and fresh evidence proves:
 
 - age calculations are calendar/timezone exact and shared by every domain;
 - corrected age is explicit, versioned, bounded, and never inferred when gestation data/rules are missing;
@@ -78,6 +84,7 @@ WHO and CDC dataset leaves `07`/`08` run sequentially because both own `package.
 | [AT-05-13](13-growth-series-query.md) | Return transition-aware longitudinal series | no | no | `AT-05-14` |
 | [AT-05-14](14-anthropometry-repository.md) | Persist scoped facts/assessments | yes | no | `AT-05-12` |
 | [AT-05-15](15-growth-reproducibility-tests.md) | Prove independent numerical parity | no | no | `AT-05-13` |
+| [AT-05-16](16-production-source-registry-amendment.md) | Register verified WHO/CDC source metadata in Cloud | yes | no | `AT-05-07`, `AT-05-08` |
 
 ## Clinical boundary
 
@@ -86,12 +93,15 @@ Results state the standard, indicator, Z-score/percentile, data quality, and lim
 ## Module verification
 
 ```powershell
-npm test -- tests/clinical/anthropometry tests/persistence/anthropometry
-npm run eval -- growth-reproducibility
-npx supabase test db --local
+npm test -- tests/clinical/anthropometry tests/persistence/anthropometry-repository.test.ts
+npx eve eval growth/growth-reproducibility --strict --max-concurrency 1 --skip-report
+npx supabase db query --linked --file supabase/tests/024_anthropometry_persistence.test.sql
+npx supabase db query --linked --file supabase/tests/029_growth_source_registry.test.sql
 npm run typecheck
 npm run build
 ```
+
+These database gates run against the linked Supabase Cloud project. Dataset coefficients remain immutable build artifacts; Cloud stores their reviewed source metadata and future package governance, not duplicate coefficient tables.
 
 ## Handoff
 

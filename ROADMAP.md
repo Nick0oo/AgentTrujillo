@@ -28,8 +28,8 @@ These facts do not close pending behavioral gates. Local schema parity, generate
 - Documentation design: `completed` at commit `08ed71a`.
 - Documentation implementation plan: `completed` at commit `2ba542b`.
 - Atomic roadmap authoring: modules `01` through `15` completed and cross-module verification passed; see [verification evidence](docs/verification/2026-08-16-agent-roadmap.md).
-- Product implementation: modules `01` through `04` completed with fresh runtime or Cloud evidence. Module `04` closes on the approved fail-closed path; no synthetic fixture or unverified medical rule is active in production.
-- Next active executable unit: module `05` review gates; no real clinical package is active.
+- Product implementation: modules `01` through `05` completed with fresh runtime or Cloud evidence. Module `05` registers 17 hash-verified WHO/CDC source artifacts but leaves package activation fail-closed.
+- Next active executable unit: module `06` review and activation gates; no real clinical package is active.
 
 ## Module ledger
 
@@ -39,7 +39,7 @@ These facts do not close pending behavioral gates. Local schema parity, generate
 | 02 | Access and session isolation | completed | completed | Zero cross-space, cross-child, and cross-session access | [Module 02](roadmap/02-access-and-session-isolation/README.md) |
 | 03 | Clinical governance | completed | completed | Only approved, versioned, checksum-matching packages resolve | [Module 03](roadmap/03-clinical-governance/README.md) |
 | 04 | Safety and emergency boundary | completed | completed | Critical red flags bypass the LLM and emit approved emergency-only copy | [Module 04](roadmap/04-safety-and-emergency-boundary/README.md) |
-| 05 | Anthropometry and growth | completed | pending | Reproducible age, Z-score, percentile, and growth-series results | [Module 05](roadmap/05-anthropometry-and-growth/README.md) |
+| 05 | Anthropometry and growth | completed | completed | Reproducible age, Z-score, percentile, and growth-series results | [Module 05](roadmap/05-anthropometry-and-growth/README.md) |
 | 06 | Immunization | completed | pending | PAI and ACIP evaluations are separate, reproducible, and source-traceable | [Module 06](roadmap/06-immunization/README.md) |
 | 07 | Medication and adherence | completed | pending | Declared-dose validation is conservative and plans/intakes are idempotent | [Module 07](roadmap/07-medication-and-adherence/README.md) |
 | 08 | Nutrition and development | completed | pending | Guidance stays educational and EAD-3 remains professional-only | [Module 08](roadmap/08-nutrition-and-development/README.md) |
@@ -59,7 +59,7 @@ The documentation gate is complete. The initial product implementation candidate
 
 | ID | Work unit | Required before dispatch |
 |---|---|---|
-| — | No module-04 leaf remains | Module 04 exit evidence recorded in `docs/verification/red-flag-boundary.md` and `docs/verification/clinical-boundaries.md` |
+| — | No module-05 leaf remains | Module 05 exit evidence recorded in `docs/verification/growth-reproducibility.md` |
 
 The root agent recalculates readiness from leaf frontmatter before every dispatch.
 

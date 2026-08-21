@@ -36,6 +36,7 @@ describe("growth assessment", () => {
       sex: "female",
       countryCode: "US",
       chronologicalAgeDays: 3650,
+      chronologicalCompletedMonths: 120,
       correctedAge: null,
       occurredAt: "2026-08-16T12:00:00.000Z",
       timeZone: "America/Bogota",
@@ -44,6 +45,29 @@ describe("growth assessment", () => {
     expect(result.status).toBe("insufficient_data");
     expect(result.zScore).toBeNull();
     expect(result.warnings).toContain("insufficient_companion");
+  });
+
+  it("uses the CDC extended algorithm only after a calculated BMI exceeds the eligibility threshold", () => {
+    const result = assessGrowth({
+      measurementId: "measurement-extended-bmi",
+      measurementType: "weight",
+      indicator: "bmi_for_age",
+      normalizedValue: "22.6",
+      normalizedUnit: "kg",
+      companion: { measurementType: "standing_height", normalizedValue: "100", normalizedUnit: "cm" },
+      sex: "male",
+      countryCode: "US",
+      chronologicalAgeDays: 1537,
+      chronologicalCompletedMonths: 50,
+      correctedAge: null,
+      occurredAt: "2026-08-16T12:00:00.000Z",
+      timeZone: "America/Bogota",
+    });
+
+    expect(result.status).toBe("calculated");
+    expect(result.standard?.datasetKey).toBe("CDC_2022_EXTENDED_BMI");
+    expect(Number(result.percentile?.canonical)).toBeGreaterThan(99);
+    expect(result.provenance.algorithmId).toContain("cdc-extended-bmi.v1");
   });
 
   it("does not silently use chronological age when corrected age was requested but unavailable", () => {

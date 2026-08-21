@@ -4,7 +4,7 @@
 
 Este registro identifica autoridades primarias candidatas. Una URL por sí sola no activa una regla: cada fuente debe archivarse según licencia, fecharse, transformarse en datos/reglas reproducibles, recibir casos de prueba y ser aprobada por el Dr. Trujillo dentro de un paquete clínico.
 
-Campos obligatorios al incorporar una fuente: `authority`, `jurisdiction`, `title`, `source_url`, `published_at`, `retrieved_at`, `effective_from`, `effective_to`, `license`, `checksum`, `rule_pack_id`, `review_status` y `clinical_approval_id`.
+Campos de fuente obligatorios al incorporar una fuente: `authority`, `jurisdiction`, `title`, `source_uri`, `retrieved_at`, `effective_from`, `effective_until`, `license`, `artifact_sha256` y `status`. La relación con paquetes vive en `clinical_rule_pack_sources`; la aprobación y el release son registros append-only separados, nunca campos implícitos de la fuente.
 
 ## Antropometría
 
