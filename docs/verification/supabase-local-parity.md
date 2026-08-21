@@ -47,3 +47,18 @@ npm test -- tests/access/local-schema-parity.test.ts
 ```
 
 La salida del verificador se mantiene redactada; no se guardan URLs, tokens, dumps ni filas clínicas.
+
+## Revalidación Cloud acumulada — 2026-08-21
+
+Por instrucción explícita del propietario, el cierre actual se auditó directamente contra el proyecto enlazado `CreciendoApp` (`yapjiinrjsrothzgzxsv`) y se interpretó como el esquema acumulado después de los módulos 01–07, no como una fotografía aislada del módulo 02.
+
+- El proyecto está `ACTIVE_HEALTHY`, PostgreSQL 17, región `us-east-1`.
+- Las 27 migraciones locales y remotas coinciden hasta `20260817170000`; no se aplicó ninguna migración durante esta revalidación.
+- La consulta de catálogo Cloud reporta 62 tablas públicas actuales, las 62 con RLS habilitado y forzado, cero grants de tabla para `anon`, cero tablas públicas en `supabase_realtime` y cero funciones `SECURITY DEFINER` sin `search_path` fijado.
+- Las cinco funciones críticas actuales de acceso/sesión existen en un único overload cada una; `anon` tiene cero permisos de ejecución y `authenticated` tiene cinco. Tres son deliberadamente `SECURITY DEFINER` y cumplen el gate de `search_path`.
+- La firma antigua de cuatro argumentos de `match_clinical_memory` no existe.
+- El lint remoto terminó en código 0. Conserva advertencias administradas de `storage.search_by_timestamp` y una advertencia de variable no usada en `persist_country_change_reassessment`, propiedad del módulo 06.
+- El verificador de tipos reprodujo primero `TYPE_DRIFT`: el archivo versionado omitía tres tablas y siete RPC introducidos por el módulo 07. Se regeneró desde Cloud, quedó en 142,636 bytes con `sha256:71cf31d244f173e62d72bd7dc62589ee076eacc9f197df876da5d7551df08fbd`, y la segunda verificación pasó. Commit: `f3b8597`.
+- La suite combinada de acceso/runtime pasó 29 archivos, 272 pruebas y un único skip local opt-in; TypeScript pasó sin errores.
+
+El intento de `db dump` de solo esquema no se usó como evidencia porque esa operación de la CLI requiere Docker Desktop incluso para el proyecto enlazado. Las verificaciones Cloud válidas se realizaron mediante `migration list`, `db lint`, generación de tipos y consultas SQL de catálogo por Management API. No se ejecutó reset local ni remoto, no se copiaron filas y no se modificaron datos de producción.

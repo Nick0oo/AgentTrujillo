@@ -108,3 +108,7 @@ The access denial matrix has zero tolerance. Evidence contains only synthetic ID
 ## Handoff
 
 Completion unblocks all child-scoped domain work. Callers receive verified `AuthenticatedGuardian`, `AuthorizedChildScope`, `SignedChildContext`, `SessionOwnershipRepository`, and `AccessLeaseValidator` interfaces. No caller may reconstruct these contracts from body fields, metadata, model output, or feature flags.
+
+## Cloud closure revalidation — 2026-08-21
+
+The production project was revalidated as the accumulated schema through module 07 under the user's Cloud-only instruction. All 27 migrations match, all 62 current public tables have enabled and forced RLS, raw public Realtime membership and anonymous table grants are zero, the five critical access/session RPCs have the intended authenticated/anonymous execution split, the legacy vector RPC is absent, and generated types now match Cloud at commit `f3b8597`. Detailed bounded evidence is recorded in `docs/verification/supabase-local-parity.md`.

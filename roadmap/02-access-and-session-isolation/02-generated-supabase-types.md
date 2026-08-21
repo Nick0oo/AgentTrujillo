@@ -151,3 +151,7 @@ Stage only five declared paths, review generated type for source/header and abse
 ## Handoff
 
 Unblocks `AT-02-03`. Every later database leaf regenerates and verifies this exact file.
+
+## Cloud reconciliation amendment — 2026-08-21
+
+Later module-07 migrations were present in Cloud but had not been reflected in the committed generated type. The linked verifier first failed with `TYPE_DRIFT`; authorized Cloud generation added the missing three tables and seven RPCs, then passed byte verification and typecheck at commit `f3b8597`. The original module-02 local baseline remains historical evidence; the current file now represents the full production schema through module 07.
