@@ -12,9 +12,12 @@ import {
   compileAcipUsPack,
   type AcipUsPackageInput,
 } from "../../../src/clinical/immunization/us-acip.ts";
+import { computeRulePackSourceDigest } from "../../../src/clinical/immunization/rule-packs.ts";
 import type { VaccineCatalog } from "../../../src/clinical/immunization/types.ts";
 
 const digest = "a".repeat(64) as VaccineCatalog["sourceDigest"];
+const coSources = [{ id: "co-source", uri: "https://www.minsalud.gov.co/sites/rid/Lists/BibliotecaDigital/RIDE/VS/PP/PAI/lineamientos-gestion-administracion-pai-2026.pdf", digest }];
+const usSources = [{ id: "us-source", uri: "https://www.cdc.gov/vaccines/hcp/imz-schedules/child-adolescent-notes.html", digest }];
 const catalog: VaccineCatalog = {
   version: "catalog-2026-01",
   sourceDigest: digest,
@@ -36,8 +39,8 @@ const coInput: PaiColombiaPackageInput = {
   effectiveUntil: null,
   status: "candidate",
   approvalState: "blocked",
-  sourceReferences: [{ id: "co-source", uri: "https://www.minsalud.gov.co/sites/rid/Lists/BibliotecaDigital/RIDE/VS/PP/PAI/lineamientos-gestion-administracion-pai-2026.pdf", digest }],
-  sourceDigest: digest,
+  sourceReferences: coSources,
+  sourceDigest: computeRulePackSourceDigest(coSources),
   rules: [{ id: "co-hep-b-1", code: "CO-HEP-B-1", countryCode: "CO", kind: "routine", seriesCode: "HEP_B", doseCode: "D1", doseNumber: 1, antigenCode: "HEP_B", minimumAge: null, targetAge: null, targetAgeUntil: null, minimumInterval: null, recommendedInterval: null, catchUp: true, eligibilityCriteria: {}, contraindicationReviewRequired: false, sourceReferenceIds: ["co-source"] }],
   dependencies: [],
 };
@@ -49,10 +52,11 @@ const usInput: AcipUsPackageInput = {
   effectiveUntil: null,
   status: "candidate",
   approvalState: "blocked",
-  sourceReferences: [{ id: "us-source", uri: "https://www.cdc.gov/vaccines/hcp/imz-schedules/child-adolescent-notes.html", digest }],
-  sourceDigest: digest,
+  sourceReferences: usSources,
+  sourceDigest: computeRulePackSourceDigest(usSources),
   rules: [{ id: "us-hep-b-1", code: "US-HEP-B-1", countryCode: "US", kind: "routine", seriesCode: "HEP_B", doseCode: "D1", doseNumber: 1, antigenCode: "HEP_B", minimumAge: null, targetAge: null, targetAgeUntil: null, minimumInterval: null, recommendedInterval: null, catchUp: true, eligibilityCriteria: {}, contraindicationReviewRequired: false, sourceReferenceIds: ["us-source"] }],
   dependencies: [],
+  officialStatus: { state: "current", checkedAt: "2026-08-21T12:00:00.000Z", sourceReferenceIds: ["us-source"] },
 };
 
 describe("immunization registry and jurisdiction packs", () => {
@@ -103,5 +107,11 @@ describe("immunization registry and jurisdiction packs", () => {
     expect(compilePaiColombiaPack({ ...coInput, sourceReferences: [{ ...coInput.sourceReferences[0], uri: "https://www.cdc.gov/vaccines/schedules/" }] }, catalog).ok).toBe(false);
     const campaign = { ...coInput.rules[0], id: "co-hep-b-campaign", code: "CO-HEP-B-CAMPAIGN", kind: "campaign" as const };
     expect(compilePaiColombiaPack({ ...coInput, rules: [coInput.rules[0], campaign] }, catalog).ok).toBe(false);
+  });
+
+  it("binds package provenance to exact sources and approved authority hosts", () => {
+    expect(compilePaiColombiaPack({ ...coInput, sourceDigest: digest }, catalog)).toMatchObject({ ok: false, issues: expect.arrayContaining(["SOURCE_DIGEST_MISMATCH"]) });
+    const deceptive = [{ ...coInput.sourceReferences[0], uri: "https://minsalud.gov.co.attacker.example/pai.pdf" }];
+    expect(compilePaiColombiaPack({ ...coInput, sourceReferences: deceptive, sourceDigest: computeRulePackSourceDigest(deceptive) }, catalog)).toMatchObject({ ok: false, issues: expect.arrayContaining(["SOURCE_AUTHORITY_MISMATCH"]) });
   });
 });

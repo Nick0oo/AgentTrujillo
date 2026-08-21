@@ -54,6 +54,7 @@ PAI `03` then ACIP `04` run sequentially because both own `package.json`; their 
 | [AT-06-12](12-vaccination-assessment-persistence.md) | Persist facts/assessments atomically | yes | no | `AT-06-11` |
 | [AT-06-13](13-country-change-reevaluation.md) | Reevaluate after country/package change | no | yes | `AT-06-12` |
 | [AT-06-14](14-immunization-fixtures-and-evals.md) | Prove PAI/ACIP correctness/isolation | no | no | `AT-06-13` |
+| [AT-06-15](15-production-closure-audit-and-hardening.md) | Audit and harden production closure | yes | yes | `AT-06-13` |
 
 ## Clinical boundary
 
@@ -73,7 +74,9 @@ $envLines = Get-Content .env | Where-Object { $_ -match '^[A-Za-z_][A-Za-z0-9_]*
 
 ## Implementation state
 
-AT-06-01, AT-06-02, AT-06-03, AT-06-04, AT-06-05, AT-06-07, AT-06-09, AT-06-11, and AT-06-12 have executable contracts, tests, offline importers, and evidence. AT-06-13 now has the deterministic pure reevaluation core plus the authorized repository adapter, Cloud one-child-scoped indexes, atomic RPC, and replay contract. The official CO/US source manifest, current-status checks, reviewed Cloud source baseline, and draft algorithm identity support AT-06-03/04/14 traceability, while exact compiled artifacts and independent clinical approvals remain explicit activation gates for AT-06-03/04/06/08/14. Synthetic fixtures intentionally report `blocked` rather than inventing clinical approval.
+AT-06-15 completed the root-owned production audit on 2026-08-21. The technical foundation, administration boundary, deterministic helpers, authenticated replay-safe Cloud persistence, current source registry, versioned 24-antigen reference catalog, generated types, tests, typecheck, build, migration parity, and Cloud lint pass. The product-owner-conveyed approval closes the behavior boundary in AT-06-06 without creating a signature or artifact-specific attestation.
+
+The module exit gate is still blocked at AT-06-03, AT-06-04, AT-06-08, and AT-06-14. There is no canonical released PAI or ACIP rules artifact and no real approved country golden suite. Production therefore contains no immunization pack, schedule, or rule rows, and the eval intentionally reports both countries as `blocked`. See [fresh production evidence](../../docs/verification/immunization.md).
 
 ## Handoff
 

@@ -28,8 +28,8 @@ These facts do not close pending behavioral gates. Local schema parity, generate
 - Documentation design: `completed` at commit `08ed71a`.
 - Documentation implementation plan: `completed` at commit `2ba542b`.
 - Atomic roadmap authoring: modules `01` through `15` completed and cross-module verification passed; see [verification evidence](docs/verification/2026-08-16-agent-roadmap.md).
-- Product implementation: modules `01` through `05` completed with fresh runtime or Cloud evidence. Module `05` registers 17 hash-verified WHO/CDC source artifacts but leaves package activation fail-closed.
-- Next active executable unit: module `06` review and activation gates; no real clinical package is active.
+- Product implementation: modules `01` through `05` completed with fresh runtime or Cloud evidence. Module `06` has completed production hardening but remains clinically blocked because no real PAI/ACIP package or approved golden suite exists.
+- Next active executable unit: module `07` production closure audit. Module `06` schedule evaluation remains fail-closed.
 
 ## Module ledger
 
@@ -40,7 +40,7 @@ These facts do not close pending behavioral gates. Local schema parity, generate
 | 03 | Clinical governance | completed | completed | Only approved, versioned, checksum-matching packages resolve | [Module 03](roadmap/03-clinical-governance/README.md) |
 | 04 | Safety and emergency boundary | completed | completed | Critical red flags bypass the LLM and emit approved emergency-only copy | [Module 04](roadmap/04-safety-and-emergency-boundary/README.md) |
 | 05 | Anthropometry and growth | completed | completed | Reproducible age, Z-score, percentile, and growth-series results | [Module 05](roadmap/05-anthropometry-and-growth/README.md) |
-| 06 | Immunization | completed | pending | PAI and ACIP evaluations are separate, reproducible, and source-traceable | [Module 06](roadmap/06-immunization/README.md) |
+| 06 | Immunization | completed | blocked | PAI and ACIP evaluations are separate, reproducible, and source-traceable | [Module 06](roadmap/06-immunization/README.md) |
 | 07 | Medication and adherence | completed | pending | Declared-dose validation is conservative and plans/intakes are idempotent | [Module 07](roadmap/07-medication-and-adherence/README.md) |
 | 08 | Nutrition and development | completed | pending | Guidance stays educational and EAD-3 remains professional-only | [Module 08](roadmap/08-nutrition-and-development/README.md) |
 | 09 | Clinical memory and documents | completed | pending | Retrieval and Storage remain private and child-scoped | [Module 09](roadmap/09-clinical-memory-and-documents/README.md) |
@@ -59,7 +59,7 @@ The documentation gate is complete. The initial product implementation candidate
 
 | ID | Work unit | Required before dispatch |
 |---|---|---|
-| — | No module-05 leaf remains | Module 05 exit evidence recorded in `docs/verification/growth-reproducibility.md` |
+| — | No work unit selected | Module 07 audit is selected after the module 06 focused commit |
 
 The root agent recalculates readiness from leaf frontmatter before every dispatch.
 
@@ -67,7 +67,7 @@ The root agent recalculates readiness from leaf frontmatter before every dispatc
 
 | Worker | Work unit | Claimed paths | Started | State |
 |---|---|---|---|---|
-| None | None | None | — | Roadmap authoring is owned by the root agent |
+| — | — | — | — | idle |
 
 Future implementation workers use GPT-5.6 Luna with reasoning `max`. At most three may run concurrently after collision analysis.
 
@@ -75,7 +75,7 @@ Future implementation workers use GPT-5.6 Luna with reasoning `max`. At most thr
 
 | Blocker | Affected units | Resolution authority | State |
 |---|---|---|---|
-| No approved production clinical rule-pack artifacts yet | Clinical engines and activation gates | Dr. Trujillo approval plus technical checksum gate | Expected future gate |
+| No canonical approved PAI/ACIP rule-pack artifacts or real golden suites | AT-06-03, AT-06-04, AT-06-08, AT-06-14 and schedule exposure | Verified clinical attestation plus technical checksum/release gate | Active blocker |
 | OpenRouter has no parity evidence | Fallback activation | Module 14 evidence and user-approved rollout | Expected future gate |
 | United States production activation is not approved | Module 15 US activation | Clinical, legal, provider, and release evidence | Expected future gate |
 

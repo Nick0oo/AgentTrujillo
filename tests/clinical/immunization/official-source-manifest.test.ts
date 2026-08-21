@@ -24,8 +24,13 @@ describe("official immunization source manifest", () => {
 
   it("requires immutable byte digests where an artifact was captured and records live-page recheck otherwise", () => {
     const colombia = manifest.countries.CO.sources;
-    expect(colombia.filter((source) => source.capture === "byte-hashed").every((source) => /^[a-f0-9]{64}$/.test(source.artifactSha256 ?? ""))).toBe(true);
+    expect(colombia).toHaveLength(6);
+    expect(colombia.every((source) => source.capture === "byte-hashed" && /^[a-f0-9]{64}$/.test(source.artifactSha256 ?? ""))).toBe(true);
     const unitedStates = manifest.countries.US.sources;
     expect(unitedStates.every((source) => source.capture === "official-page-current-status-rechecked")).toBe(true);
+    expect(unitedStates.map((source) => source.id)).toEqual(expect.arrayContaining([
+      "us-acip-child-age-2025", "us-acip-child-catch-up-2025", "us-acip-child-medical-indication-2025",
+      "us-acip-child-notes-2025", "us-acip-child-appendix-2025", "us-acip-child-addendum-2025", "us-acip-recommendations-status",
+    ]));
   });
 });

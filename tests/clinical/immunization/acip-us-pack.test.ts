@@ -13,4 +13,14 @@ describe("US ACIP pack boundary", () => {
   it("rejects a malformed package before compilation", () => {
     expect(() => acipUsPackSchema.parse({ packageId: "us", version: "2026.1", effectiveFrom: "2026-01-01", effectiveUntil: null, status: "candidate", approvalState: "blocked", sourceReferences: [], sourceDigest: "bad", rules: [], dependencies: [] })).toThrow();
   });
+
+  it("rejects an unbounded or unsupported ACIP interval at the JSON trust boundary", () => {
+    const sourceDigest = "b".repeat(64);
+    expect(() => acipUsPackSchema.parse({
+      packageId: "us-acip-2025", version: "2025.07.02", effectiveFrom: "2025-07-02", effectiveUntil: null, status: "approved", approvalState: "approved",
+      sourceReferences: [{ id: "us-source", uri: "https://www.cdc.gov/vaccines/schedule", digest: sourceDigest }], sourceDigest,
+      rules: [{ id: "us-rule-1", code: "US-RULE-1", countryCode: "US", kind: "routine", seriesCode: "HEP_B", doseCode: "D1", doseNumber: 1, antigenCode: "HEP_B", minimumAge: { unit: "days", value: 1_000_001 }, targetAge: null, targetAgeUntil: null, minimumInterval: null, recommendedInterval: null, catchUp: true, eligibilityCriteria: {}, contraindicationReviewRequired: false, sourceReferenceIds: ["us-source"] }],
+      dependencies: [], officialStatus: { state: "current", checkedAt: "2026-08-21T12:00:00.000Z", sourceReferenceIds: ["us-source"] },
+    })).toThrow();
+  });
 });

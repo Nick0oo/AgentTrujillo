@@ -1,5 +1,5 @@
 import { addCalendarInterval, compareCalendarDates, subtractCalendarInterval } from "./calendar.ts";
-import type { CalendarDate, CalendarInterval, DoseValidity, ImmunizationRule, MinimumIntervalEvidence } from "./types.ts";
+import type { AntigenId, CalendarDate, CalendarInterval, DoseValidity, ImmunizationCountry, ImmunizationRule, MinimumIntervalEvidence } from "./types.ts";
 export type { MinimumIntervalEvidence } from "./types.ts";
 
 export type CalendarBoundaryResult = Readonly<{ valid: boolean; earliestDate: string; reasonCode: string }>;
@@ -14,7 +14,7 @@ export function evaluateMinimumInterval(previousAdministrationOn: string, minimu
   return { valid: compareCalendarDates(administeredOn, earliestDate) >= 0, earliestDate, reasonCode: "MINIMUM_INTERVAL" };
 }
 
-export type AdministrationValidityInput = Readonly<{ administeredOn: string; valid?: boolean; validity?: DoseValidity }>;
+export type AdministrationValidityInput = Readonly<{ administeredOn: string; validity: DoseValidity; countryCode: ImmunizationCountry; antigenId: AntigenId }>;
 export type AdministrationValidityResult = Readonly<{
   validity: DoseValidity;
   reasonCode: string;
@@ -42,6 +42,8 @@ export function evaluateAdministrationValidity(rule: ImmunizationRule, administr
   const childBirthDate = typeof childAge === "string" ? childAge : childAge.dateOfBirth;
   const policyValue = typeof policy === "string" ? { administeredOn: policy } : policy;
   const administeredOn = policyValue.administeredOn ?? (typeof childAge === "string" ? childAge : childAge.administeredOn ?? childBirthDate);
+  if (administrations.some((administration) => administration.countryCode !== rule.countryCode && administration.antigenId === rule.antigenId)) return result(rule, "review_required", "CROSS_COUNTRY_HISTORY", null, null);
+  const validHistory = administrations.filter((administration) => administration.validity === "valid" && administration.countryCode === rule.countryCode && administration.antigenId === rule.antigenId);
   let boundaryEvidence: MinimumIntervalEvidence | null = null;
   let graceApplied = false;
   if (rule.minimumAge) {
@@ -56,7 +58,8 @@ export function evaluateAdministrationValidity(rule: ImmunizationRule, administr
   }
   if (rule.contraindicationReviewRequired) return result(rule, "review_required", "CONTRAINDICATION_REVIEW_REQUIRED", null, null);
   if (rule.minimumInterval) {
-    const previous = administrations.filter((administration) => administration.valid !== false && administration.validity !== "invalid" && administration.validity !== "review_required" && compareCalendarDates(administration.administeredOn, administeredOn) < 0).sort((left, right) => compareCalendarDates(left.administeredOn, right.administeredOn)).at(-1);
+    const previous = validHistory.filter((administration) => compareCalendarDates(administration.administeredOn, administeredOn) < 0).sort((left, right) => compareCalendarDates(left.administeredOn, right.administeredOn)).at(-1);
+    if (!previous && rule.doseNumber > 1) return result(rule, "review_required", "PRIOR_VALID_DOSE_REQUIRED", null, null);
     if (previous) {
       const interval = evaluateMinimumInterval(previous.administeredOn, rule.minimumInterval, administeredOn);
       const boundary = boundaryWithGrace(interval.earliestDate, rule, policyValue);
@@ -68,5 +71,6 @@ export function evaluateAdministrationValidity(rule: ImmunizationRule, administr
       if (boundary.graceConfigured && !interval.valid) return result(rule, "valid", "DOSE_VALID_WITH_GRACE", null, evidence, true);
     }
   }
+  if (rule.doseNumber > 1 && validHistory.length < rule.doseNumber - 1) return result(rule, "review_required", "PRIOR_VALID_DOSE_REQUIRED", null, null);
   return result(rule, "valid", graceApplied ? "DOSE_VALID_WITH_GRACE" : "DOSE_VALID", null, boundaryEvidence, graceApplied);
 }

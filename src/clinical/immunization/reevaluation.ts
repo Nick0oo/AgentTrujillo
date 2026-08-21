@@ -4,7 +4,9 @@ import { canonicalize } from "json-canonicalize";
 import type { Sha256Hex } from "../governance/source-types.ts";
 import type { AdministrationId, AssessmentId, CalendarDate, ImmunizationCountry, ImmunizationRule, VaccinationAssessment } from "./types.ts";
 import type { ImmunizationRepositoryResult } from "./repository.ts";
-import { compareCalendarDates } from "./calendar.ts";
+import { addCalendarInterval, compareCalendarDates, isCalendarDate } from "./calendar.ts";
+import { evaluateAdministrationValidity } from "./minimum-interval.ts";
+import { classifyDoseStatus } from "./status.ts";
 import type { AuthorizedChildScope } from "../../../agent/lib/access/authorized-child-scope.ts";
 
 export type ReevaluationAdministration = Readonly<{ id: AdministrationId; administeredOn: CalendarDate; countryCode: ImmunizationCountry; antigenIds: readonly string[] }>;
@@ -13,6 +15,7 @@ export type CountryReevaluationInput = Readonly<{
   careSpaceId: string;
   fromCountry: ImmunizationCountry;
   toCountry: ImmunizationCountry;
+  childDateOfBirth: CalendarDate;
   asOfDate: CalendarDate;
   rulePack: Readonly<{ packageId: string; version: string; countryCode: ImmunizationCountry; activation: "active" | "blocked" | "retired"; sourceDigest: Sha256Hex }>;
   rules: readonly ImmunizationRule[];
@@ -51,6 +54,7 @@ export type CountryChangeRunWrite = Readonly<{
   assessments: readonly VaccinationAssessment[];
 }>;
 export type CountryChangeDependencies = Readonly<{
+  loadChildDateOfBirth: (scope: CountryChangeScope) => Promise<CalendarDate | null>;
   loadConfirmedAdministrations: (scope: CountryChangeScope) => Promise<readonly ReevaluationAdministration[]>;
   resolveTargetPackage: (country: ImmunizationCountry, cutoff: CalendarDate) => Promise<CountryChangeTargetPackage | null>;
   saveCountryChangeRun: (scope: CountryChangeScope, input: CountryChangeRunWrite) => Promise<ImmunizationRepositoryResult<Readonly<{ outcome: "created" | "idempotent_replay"; runId: string; assessmentIds: readonly string[] }>>>;
@@ -69,12 +73,29 @@ function digest(value: unknown): Sha256Hex {
   return createHash("sha256").update(canonicalize(value)).digest("hex") as Sha256Hex;
 }
 
+function laterDate(left: CalendarDate | null, right: CalendarDate | null): CalendarDate | null {
+  if (left === null) return right;
+  if (right === null) return left;
+  return compareCalendarDates(left, right) >= 0 ? left : right;
+}
+
+function dueWindow(rule: ImmunizationRule, dateOfBirth: CalendarDate, prior: ReevaluationAdministration | undefined): Readonly<{ dueFrom: CalendarDate | null; dueUntil: CalendarDate | null }> {
+  let dueFrom: CalendarDate | null = null;
+  if (rule.minimumAge) dueFrom = laterDate(dueFrom, addCalendarInterval(dateOfBirth, rule.minimumAge));
+  if (rule.targetAge) dueFrom = laterDate(dueFrom, addCalendarInterval(dateOfBirth, rule.targetAge));
+  if (prior && rule.minimumInterval) dueFrom = laterDate(dueFrom, addCalendarInterval(prior.administeredOn, rule.minimumInterval));
+  if (prior && rule.recommendedInterval) dueFrom = laterDate(dueFrom, addCalendarInterval(prior.administeredOn, rule.recommendedInterval));
+  const dueUntil = rule.targetAgeUntil ? addCalendarInterval(dateOfBirth, rule.targetAgeUntil) : null;
+  return { dueFrom, dueUntil };
+}
+
 export function reevaluateCountry(input: CountryReevaluationInput): CountryReevaluationResult {
   const assessments = input.rules.map((rule) => {
     const inputDigest = digest({
       childId: input.childId,
       careSpaceId: input.careSpaceId,
       toCountry: input.toCountry,
+      childDateOfBirth: input.childDateOfBirth,
       asOfDate: input.asOfDate,
       rulePack: {
         packageId: input.rulePack.packageId,
@@ -86,21 +107,42 @@ export function reevaluateCountry(input: CountryReevaluationInput): CountryReeva
       rule,
       confirmedAdministrations: input.confirmedAdministrations,
     });
-    const foreignMatching = input.confirmedAdministrations.some((administration) => administration.countryCode !== input.toCountry && administration.antigenIds.includes(rule.antigenId));
-    const matching = input.confirmedAdministrations.some((administration) => administration.countryCode === input.toCountry && administration.antigenIds.includes(rule.antigenId));
-    const reviewReason = input.rulePack.countryCode !== input.toCountry ? "RULE_PACK_COUNTRY_MISMATCH" : input.rulePack.activation !== "active" ? "RULE_PACK_NOT_ACTIVE" : rule.countryCode !== input.toCountry ? "RULE_COUNTRY_MISMATCH" : foreignMatching ? "FOREIGN_JURISDICTION_FACT" : null;
-    const status = reviewReason ? "review_required" : matching ? "applied" : "due";
-    const reasonCode = reviewReason ?? (matching ? "DOSE_APPLIED" : "DOSE_DUE");
-    const decisionDigest = digest({ inputDigest, status, reasonCode, countryCode: input.toCountry });
+    const relevant = input.confirmedAdministrations
+      .filter((administration) => administration.antigenIds.includes(rule.antigenId) && compareCalendarDates(administration.administeredOn, input.asOfDate) <= 0)
+      .sort((left, right) => compareCalendarDates(left.administeredOn, right.administeredOn));
+    const foreignMatching = relevant.some((administration) => administration.countryCode !== input.toCountry);
+    const local = relevant.filter((administration) => administration.countryCode === input.toCountry);
+    const matched = local.at(rule.doseNumber - 1);
+    const prior = local.at(rule.doseNumber - 2);
+    const unsupportedRule = rule.kind === "special_population" || rule.kind === "campaign" || rule.kind === "outbreak" || rule.kind === "review_only" || Object.keys(rule.eligibilityCriteria).length > 0;
+    const reviewReason = input.rulePack.countryCode !== input.toCountry ? "RULE_PACK_COUNTRY_MISMATCH"
+      : input.rulePack.activation !== "active" ? "RULE_PACK_NOT_ACTIVE"
+      : rule.countryCode !== input.toCountry ? "RULE_COUNTRY_MISMATCH"
+      : foreignMatching ? "FOREIGN_JURISDICTION_FACT"
+      : unsupportedRule ? "PROFESSIONAL_REVIEW_REQUIRED"
+      : null;
+    const validity = !reviewReason && matched
+      ? evaluateAdministrationValidity(rule, local.slice(0, rule.doseNumber - 1).map((administration) => ({ administeredOn: administration.administeredOn, validity: "valid" as const, countryCode: administration.countryCode, antigenId: rule.antigenId })), input.childDateOfBirth, matched.administeredOn)
+      : null;
+    const window = dueWindow(rule, input.childDateOfBirth, prior);
+    const classification = reviewReason || (validity && validity.validity !== "valid")
+      ? { status: "review_required" as const, reasonCode: reviewReason ?? validity!.reasonCode }
+      : matched
+        ? { status: "applied" as const, reasonCode: "DOSE_APPLIED" }
+        : classifyDoseStatus({ asOfDate: input.asOfDate, dueFrom: window.dueFrom, dueUntil: window.dueUntil });
+    const status = classification.status;
+    const reasonCode = classification.reasonCode;
+    const evidenceAdministrationIds = matched ? [matched.id] : [];
+    const decisionDigest = digest({ inputDigest, status, reasonCode, countryCode: input.toCountry, dueFrom: window.dueFrom, dueUntil: window.dueUntil, evidenceAdministrationIds });
     return Object.freeze({
       id: `assessment-${decisionDigest.slice(0, 32)}` as AssessmentId,
       scope: { careSpaceId: input.careSpaceId, childId: input.childId, countryCode: input.toCountry, asOfDate: input.asOfDate },
       ruleId: rule.id,
       status,
       reasonCode,
-      dueFrom: null,
-      dueUntil: null,
-      evidenceAdministrationIds: matching && !reviewReason ? input.confirmedAdministrations.filter((administration) => administration.countryCode === input.toCountry && administration.antigenIds.includes(rule.antigenId)).map((administration) => administration.id) : [],
+      dueFrom: matched ? null : window.dueFrom,
+      dueUntil: matched ? null : window.dueUntil,
+      evidenceAdministrationIds,
       rulePackId: input.rulePack.packageId,
       rulePackVersion: input.rulePack.version,
       algorithmId: input.algorithmId,
@@ -132,6 +174,8 @@ export async function reevaluateForCountryChange(deps: CountryChangeDependencies
   if (input.newCountry !== "CO" && input.newCountry !== "US") return { outcome: "rejected", reasonCode: "COUNTRY_UNSUPPORTED" };
   if (compareCalendarDates(input.effectiveAt, input.targetCutoff) > 0) return { outcome: "rejected", reasonCode: "EVENT_AFTER_TARGET_CUTOFF" };
   if (!input.idempotencyKey.trim()) return { outcome: "rejected", reasonCode: "IDEMPOTENCY_KEY_REQUIRED" };
+  const childDateOfBirth = await deps.loadChildDateOfBirth(scope);
+  if (!childDateOfBirth || !isCalendarDate(childDateOfBirth) || compareCalendarDates(childDateOfBirth, input.targetCutoff) > 0) return { outcome: "rejected", reasonCode: "CHILD_DATE_OF_BIRTH_UNAVAILABLE" };
   const targetPackage = await deps.resolveTargetPackage(input.newCountry, input.targetCutoff);
   if (!targetPackage) return { outcome: "rejected", reasonCode: "TARGET_PACKAGE_UNAVAILABLE" };
   if (targetPackage.activation !== "active" || targetPackage.countryCode !== input.newCountry) return { outcome: "rejected", reasonCode: "TARGET_PACKAGE_NOT_ACTIVE" };
@@ -141,6 +185,7 @@ export async function reevaluateForCountryChange(deps: CountryChangeDependencies
     careSpaceId: scope.careSpaceId,
     fromCountry: input.expectedPriorCountry,
     toCountry: input.newCountry,
+    childDateOfBirth,
     asOfDate: input.targetCutoff,
     rulePack: targetPackage,
     rules: targetPackage.rules,

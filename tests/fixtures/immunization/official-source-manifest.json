@@ -1,6 +1,6 @@
 {
   "schemaVersion": "immunization-official-source-manifest-v1",
-  "retrievedOn": "2026-08-16",
+  "retrievedOn": "2026-08-21",
   "status": "source-bound-not-clinically-approved",
   "countries": {
     "CO": {
@@ -11,7 +11,7 @@
           "uri": "https://vacunacion.minsalud.gov.co/RT/Paginas/lineamientos-tecnicos.aspx",
           "title": "Lineamientos técnicos PAI",
           "publishedOrCurrent": "2026 portal listing",
-          "artifactSha256": "89bd6e5c20bf0d78796897fea1dbad6c96bd17c0f79fdf09561b4995fd05df74",
+          "artifactSha256": "0ca29072ae5cd2e38e299e15feaa87bef9f260fcbfaa6079cf45ff702bedb43e",
           "capture": "byte-hashed"
         },
         {
@@ -23,11 +23,35 @@
           "capture": "byte-hashed"
         },
         {
+          "id": "co-pai-schedule-current-2026-08-21",
+          "uri": "https://minsalud.gov.co/sites/rid/Lists/BibliotecaDigital/RIDE/VS/PP/ET/afiche-esquema-vacunacion-col.pdf",
+          "title": "Esquema de vacunación PAI Colombia",
+          "publishedOrCurrent": "current poster retrieved August 21, 2026",
+          "artifactSha256": "47d39fbdfbe514b18df484970aa47e63118c20debca5a944742e88380c7ed753",
+          "capture": "byte-hashed"
+        },
+        {
+          "id": "co-pai-measles-rubella-zero-dose-2026",
+          "uri": "https://www.minsalud.gov.co/sites/rid/Lists/BibliotecaDigital/RIDE/VS/PP/PAI/lin-tec-op-vac-sar-rub-6-11-meses.zip",
+          "title": "Lineamientos técnicos y operativos para vacunación sarampión y rubéola dosis cero, 6 a 11 meses",
+          "publishedOrCurrent": "May 29, 2026 ZIP",
+          "artifactSha256": "f6c781eb73df09c256f193ec9fa623ed880c9485c9193ca8bd15345cbe41e39c",
+          "capture": "byte-hashed"
+        },
+        {
+          "id": "co-pai-dengue-pilot-2026",
+          "uri": "https://www.minsalud.gov.co/sites/rid/Lists/BibliotecaDigital/RIDE/VS/PP/PAI/lineamientos-vacunas-dengue-ninos-9-anos-edad-municipios.zip",
+          "title": "Lineamientos para la inclusión escalonada de vacuna contra dengue en municipios priorizados",
+          "publishedOrCurrent": "2026 pilot ZIP",
+          "artifactSha256": "d613557217cb967224069e932d9b236081e3e3da7d5a99f6a3fa2ce6aa492ccd",
+          "capture": "byte-hashed"
+        },
+        {
           "id": "co-pai-children-under-six-2026",
           "uri": "https://vacunacion.minsalud.gov.co/EV/Paginas/ninos-y-ninas-menores-de-6-anos.aspx",
           "title": "Niños y niñas menores de 6 años",
           "publishedOrCurrent": "2026 page content",
-          "artifactSha256": "e86bfdd7715f681e48b38ba0e0b3cf3ec5d190a3f162a2df1f9eb9a870b5e29d",
+          "artifactSha256": "760b445acfc16c8961cc0b432029b013a32ff81f70446429e65722e96a697e51",
           "capture": "byte-hashed"
         }
       ]
@@ -44,6 +68,22 @@
           "capture": "official-page-current-status-rechecked"
         },
         {
+          "id": "us-acip-child-catch-up-2025",
+          "uri": "https://www.cdc.gov/vaccines/hcp/imz-schedules/child-adolescent-catch-up.html",
+          "title": "Catch-up Immunization Schedule for Children and Adolescents",
+          "publishedOrCurrent": "July 2, 2025; rechecked current August 21, 2026 under stated court stay",
+          "artifactSha256": null,
+          "capture": "official-page-current-status-rechecked"
+        },
+        {
+          "id": "us-acip-child-medical-indication-2025",
+          "uri": "https://www.cdc.gov/vaccines/hcp/imz-schedules/child-adolescent-medical-indication.html",
+          "title": "Child and Adolescent Immunization Schedule by Medical Indication",
+          "publishedOrCurrent": "July 2, 2025; rechecked current August 21, 2026 under stated court stay",
+          "artifactSha256": null,
+          "capture": "official-page-current-status-rechecked"
+        },
+        {
           "id": "us-acip-child-notes-2025",
           "uri": "https://www.cdc.gov/vaccines/hcp/imz-schedules/child-adolescent-notes.html",
           "title": "Child Immunization Schedule Notes",
@@ -56,6 +96,14 @@
           "uri": "https://www.cdc.gov/vaccines/hcp/imz-schedules/child-adolescent-appendix.html",
           "title": "Child Immunization Schedule Appendix",
           "publishedOrCurrent": "July 2, 2025",
+          "artifactSha256": null,
+          "capture": "official-page-current-status-rechecked"
+        },
+        {
+          "id": "us-acip-child-addendum-2025",
+          "uri": "https://www.cdc.gov/vaccines/hcp/imz-schedules/child-adolescent-addendum.html",
+          "title": "Child Immunization Schedule Addendum",
+          "publishedOrCurrent": "July 2, 2025; rechecked current August 21, 2026 under stated court stay",
           "artifactSha256": null,
           "capture": "official-page-current-status-rechecked"
         },

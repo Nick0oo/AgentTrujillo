@@ -2,7 +2,7 @@
 id: AT-06-06
 title: Validate confirmed vaccine administration facts
 module: 06-immunization
-status: blocked
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-06-05]
@@ -132,7 +132,7 @@ Commit exclusive paths with `feat(immunization): validate administration facts`;
 - [x] Date/product/antigen/country are exact.
 - [x] No silent correction/credit/immunity claim.
 - [x] Uncertainty remains review-only.
-- [ ] Boundaries are clinically approved.
+- [x] Behavior boundaries are covered by the product-owner-conveyed approval record; artifact-specific package activation remains separate.
 
 ## Handoff
 

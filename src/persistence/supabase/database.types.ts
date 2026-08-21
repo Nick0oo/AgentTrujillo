@@ -3201,59 +3201,148 @@ export type Database = {
           },
         ]
       }
-      vaccination_assessments: {
+      vaccination_assessment_evidence: {
         Row: {
-          as_of_date: string
-          assessed_at: string
           care_space_id: string
           child_id: string
           created_at: string
+          vaccination_assessment_id: string
+          vaccine_administration_id: string
+        }
+        Insert: {
+          care_space_id: string
+          child_id: string
+          created_at?: string
+          vaccination_assessment_id: string
+          vaccine_administration_id: string
+        }
+        Update: {
+          care_space_id?: string
+          child_id?: string
+          created_at?: string
+          vaccination_assessment_id?: string
+          vaccine_administration_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vaccination_assessment_evidence_administration_fk"
+            columns: ["care_space_id", "child_id", "vaccine_administration_id"]
+            isOneToOne: false
+            referencedRelation: "vaccine_administrations"
+            referencedColumns: ["care_space_id", "child_id", "id"]
+          },
+          {
+            foreignKeyName: "vaccination_assessment_evidence_assessment_fk"
+            columns: ["care_space_id", "child_id", "vaccination_assessment_id"]
+            isOneToOne: false
+            referencedRelation: "vaccination_assessments"
+            referencedColumns: ["care_space_id", "child_id", "id"]
+          },
+        ]
+      }
+      vaccination_assessments: {
+        Row: {
+          algorithm_id: string | null
+          as_of_date: string
+          assessed_at: string
+          assessment_run_id: string | null
+          care_space_id: string
+          child_id: string
+          country_change_event_id: string | null
+          country_code: string | null
+          created_at: string
+          decision_digest: string | null
           due_from: string | null
           due_until: string | null
           evidence_administration_ids: string[]
           explanation_code: string
           id: string
+          input_digest: string | null
+          input_fingerprint: string | null
+          reevaluates_run_id: string | null
+          reevaluation_run_id: string | null
           rule_id: string
+          rule_pack_id: string | null
+          rule_pack_version: string | null
           schedule_id: string
+          source_digest: string | null
           status: string
         }
         Insert: {
+          algorithm_id?: string | null
           as_of_date: string
           assessed_at?: string
+          assessment_run_id?: string | null
           care_space_id: string
           child_id: string
+          country_change_event_id?: string | null
+          country_code?: string | null
           created_at?: string
+          decision_digest?: string | null
           due_from?: string | null
           due_until?: string | null
           evidence_administration_ids?: string[]
           explanation_code: string
           id?: string
+          input_digest?: string | null
+          input_fingerprint?: string | null
+          reevaluates_run_id?: string | null
+          reevaluation_run_id?: string | null
           rule_id: string
+          rule_pack_id?: string | null
+          rule_pack_version?: string | null
           schedule_id: string
+          source_digest?: string | null
           status: string
         }
         Update: {
+          algorithm_id?: string | null
           as_of_date?: string
           assessed_at?: string
+          assessment_run_id?: string | null
           care_space_id?: string
           child_id?: string
+          country_change_event_id?: string | null
+          country_code?: string | null
           created_at?: string
+          decision_digest?: string | null
           due_from?: string | null
           due_until?: string | null
           evidence_administration_ids?: string[]
           explanation_code?: string
           id?: string
+          input_digest?: string | null
+          input_fingerprint?: string | null
+          reevaluates_run_id?: string | null
+          reevaluation_run_id?: string | null
           rule_id?: string
+          rule_pack_id?: string | null
+          rule_pack_version?: string | null
           schedule_id?: string
+          source_digest?: string | null
           status?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "vaccination_assessment_algorithm_fk"
+            columns: ["algorithm_id"]
+            isOneToOne: false
+            referencedRelation: "clinical_algorithms"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "vaccination_assessment_child_fk"
             columns: ["care_space_id", "child_id"]
             isOneToOne: false
             referencedRelation: "children"
             referencedColumns: ["care_space_id", "id"]
+          },
+          {
+            foreignKeyName: "vaccination_assessment_rule_pack_fk"
+            columns: ["rule_pack_id"]
+            isOneToOne: false
+            referencedRelation: "clinical_rule_packs"
+            referencedColumns: ["id"]
           },
           {
             foreignKeyName: "vaccination_assessments_rule_id_fkey"
@@ -3274,14 +3363,20 @@ export type Database = {
       vaccine_administration_antigens: {
         Row: {
           antigen_id: string
+          care_space_id: string
+          child_id: string
           vaccine_administration_id: string
         }
         Insert: {
           antigen_id: string
+          care_space_id: string
+          child_id: string
           vaccine_administration_id: string
         }
         Update: {
           antigen_id?: string
+          care_space_id?: string
+          child_id?: string
           vaccine_administration_id?: string
         }
         Relationships: [
@@ -3291,6 +3386,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "vaccine_antigens"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vaccine_administration_antigens_scope_fk"
+            columns: ["care_space_id", "child_id", "vaccine_administration_id"]
+            isOneToOne: false
+            referencedRelation: "vaccine_administrations"
+            referencedColumns: ["care_space_id", "child_id", "id"]
           },
           {
             foreignKeyName: "vaccine_administration_antigens_vaccine_administration_id_fkey"
@@ -3306,17 +3408,27 @@ export type Database = {
           administered_on: string
           administration_site: string | null
           care_space_id: string
+          catalog_digest: string | null
+          catalog_version: string | null
           child_id: string
+          confirmation_sha256: string | null
           confirmation_status: string
+          confirmed_at: string | null
+          confirmed_by: string | null
           country_code: string
           created_at: string
           dose_label: string | null
           id: string
           idempotency_key: string
+          input_fingerprint: string | null
           lot_number: string | null
           provenance_type: string
           provider_name: string | null
           recorded_by: string
+          scope_fingerprint: string | null
+          source_digest: string | null
+          supersedes_administration_id: string | null
+          supersession_reason: string | null
           updated_at: string
           vaccine_product_id: string | null
         }
@@ -3324,17 +3436,27 @@ export type Database = {
           administered_on: string
           administration_site?: string | null
           care_space_id: string
+          catalog_digest?: string | null
+          catalog_version?: string | null
           child_id: string
+          confirmation_sha256?: string | null
           confirmation_status?: string
+          confirmed_at?: string | null
+          confirmed_by?: string | null
           country_code: string
           created_at?: string
           dose_label?: string | null
           id?: string
           idempotency_key: string
+          input_fingerprint?: string | null
           lot_number?: string | null
           provenance_type: string
           provider_name?: string | null
           recorded_by: string
+          scope_fingerprint?: string | null
+          source_digest?: string | null
+          supersedes_administration_id?: string | null
+          supersession_reason?: string | null
           updated_at?: string
           vaccine_product_id?: string | null
         }
@@ -3342,17 +3464,27 @@ export type Database = {
           administered_on?: string
           administration_site?: string | null
           care_space_id?: string
+          catalog_digest?: string | null
+          catalog_version?: string | null
           child_id?: string
+          confirmation_sha256?: string | null
           confirmation_status?: string
+          confirmed_at?: string | null
+          confirmed_by?: string | null
           country_code?: string
           created_at?: string
           dose_label?: string | null
           id?: string
           idempotency_key?: string
+          input_fingerprint?: string | null
           lot_number?: string | null
           provenance_type?: string
           provider_name?: string | null
           recorded_by?: string
+          scope_fingerprint?: string | null
+          source_digest?: string | null
+          supersedes_administration_id?: string | null
+          supersession_reason?: string | null
           updated_at?: string
           vaccine_product_id?: string | null
         }
@@ -3363,6 +3495,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "children"
             referencedColumns: ["care_space_id", "id"]
+          },
+          {
+            foreignKeyName: "vaccine_administration_supersedes_fk"
+            columns: ["supersedes_administration_id"]
+            isOneToOne: false
+            referencedRelation: "vaccine_administrations"
+            referencedColumns: ["id"]
           },
           {
             foreignKeyName: "vaccine_administrations_vaccine_product_id_fkey"
@@ -3377,29 +3516,41 @@ export type Database = {
         Row: {
           active: boolean
           antigen_code: string
+          catalog_version: string
           created_at: string
           disease_group: string | null
           display_name_en: string
           display_name_es: string
+          effective_from: string
+          effective_until: string | null
           id: string
+          source_digest: string
         }
         Insert: {
           active?: boolean
           antigen_code: string
+          catalog_version: string
           created_at?: string
           disease_group?: string | null
           display_name_en: string
           display_name_es: string
+          effective_from: string
+          effective_until?: string | null
           id?: string
+          source_digest: string
         }
         Update: {
           active?: boolean
           antigen_code?: string
+          catalog_version?: string
           created_at?: string
           disease_group?: string | null
           display_name_en?: string
           display_name_es?: string
+          effective_from?: string
+          effective_until?: string | null
           id?: string
+          source_digest?: string
         }
         Relationships: []
       }
@@ -3436,36 +3587,51 @@ export type Database = {
       vaccine_products: {
         Row: {
           active: boolean
+          aliases: string[]
           brand_name: string | null
+          catalog_version: string
           country_code: string
           created_at: string
+          effective_from: string
+          effective_until: string | null
           id: string
           manufacturer: string | null
           presentation: string | null
           product_code: string
           regulatory_identifier: string | null
+          source_digest: string
         }
         Insert: {
           active?: boolean
+          aliases?: string[]
           brand_name?: string | null
+          catalog_version: string
           country_code: string
           created_at?: string
+          effective_from: string
+          effective_until?: string | null
           id?: string
           manufacturer?: string | null
           presentation?: string | null
           product_code: string
           regulatory_identifier?: string | null
+          source_digest: string
         }
         Update: {
           active?: boolean
+          aliases?: string[]
           brand_name?: string | null
+          catalog_version?: string
           country_code?: string
           created_at?: string
+          effective_from?: string
+          effective_until?: string | null
           id?: string
           manufacturer?: string | null
           presentation?: string | null
           product_code?: string
           regulatory_identifier?: string | null
+          source_digest?: string
         }
         Relationships: []
       }
@@ -3592,6 +3758,77 @@ export type Database = {
         Returns: {
           assessment_ids: string[]
           measurement_id: string
+          outcome: string
+        }[]
+      }
+      persist_country_change_reassessment: {
+        Args: {
+          p_assessments: Json
+          p_care_space_id: string
+          p_child_id: string
+          p_country_change_event_id: string
+          p_country_code: string
+          p_database_algorithm_id: string
+          p_database_rule_pack_id: string
+          p_input_fingerprint: string
+          p_reevaluates_run_id: string
+          p_reevaluation_run_id: string
+          p_schedule_id: string
+        }
+        Returns: {
+          assessment_ids: string[]
+          outcome: string
+          reevaluation_run_id: string
+        }[]
+      }
+      persist_vaccination_assessment: {
+        Args: {
+          p_algorithm_id: string
+          p_as_of_date: string
+          p_care_space_id: string
+          p_child_id: string
+          p_country_code: string
+          p_decision_digest: string
+          p_due_from: string
+          p_due_until: string
+          p_evidence_administration_ids: string[]
+          p_explanation_code: string
+          p_input_digest: string
+          p_input_fingerprint: string
+          p_rule_id: string
+          p_rule_pack_id: string
+          p_rule_pack_version: string
+          p_schedule_id: string
+          p_source_digest: string
+          p_status: string
+        }
+        Returns: {
+          assessment_id: string
+          outcome: string
+        }[]
+      }
+      record_confirmed_vaccine_administration: {
+        Args: {
+          p_administered_on: string
+          p_administration_site: string
+          p_antigen_ids: Json
+          p_care_space_id: string
+          p_child_id: string
+          p_confirmation_sha256: string
+          p_country_code: string
+          p_dose_label: string
+          p_idempotency_key: string
+          p_input_fingerprint: string
+          p_lot_number: string
+          p_provenance_type: string
+          p_provider_name: string
+          p_source_digest: string
+          p_supersedes_administration_id?: string
+          p_supersession_reason?: string
+          p_vaccine_product_id: string
+        }
+        Returns: {
+          administration_id: string
           outcome: string
         }[]
       }

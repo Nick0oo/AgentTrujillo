@@ -1,7 +1,8 @@
-import type { AdministrationId, DependencyGraph, EvidenceAssignment, ImmunizationRule, ImmunizationRuleId, RuleDependency, RuleSatisfaction } from "./types.ts";
+import { addCalendarInterval, compareCalendarDates, isCalendarDate } from "./calendar.ts";
+import type { AdministrationId, DependencyGraph, EvidenceAssignment, ImmunizationCountry, ImmunizationRule, ImmunizationRuleId, RuleDependency, RuleSatisfaction } from "./types.ts";
 
 export type DependencyGraphValidation = Readonly<{ ok: true; topologicalOrder: readonly ImmunizationRuleId[] }> | Readonly<{ ok: false; issues: readonly string[] }>;
-export type RuleEvidence = Readonly<{ ruleId: ImmunizationRuleId; administrationId: AdministrationId }>;
+export type RuleEvidence = Readonly<{ ruleId: ImmunizationRuleId; administrationId: AdministrationId; administeredOn: string; countryCode: ImmunizationCountry }>;
 export type { DependencyGraph, EvidenceAssignment, RuleSatisfaction };
 
 export function validateDependencyGraph(rules: readonly ImmunizationRule[], dependencies: readonly RuleDependency[]): DependencyGraphValidation {
@@ -30,25 +31,44 @@ export function validateDependencyGraph(rules: readonly ImmunizationRule[], depe
   return { ok: true, topologicalOrder: order };
 }
 
-export function resolveSeriesDependencies(rules: readonly ImmunizationRule[], dependencies: readonly RuleDependency[], validEvidence: readonly RuleEvidence[], _asOfDate: string): readonly RuleSatisfaction[];
+export function resolveSeriesDependencies(rules: readonly ImmunizationRule[], dependencies: readonly RuleDependency[], validEvidence: readonly RuleEvidence[], asOfDate: string): readonly RuleSatisfaction[];
 export function resolveSeriesDependencies(rules: readonly ImmunizationRule[], validEvidence: readonly RuleEvidence[], context: Readonly<{ dependencies?: readonly RuleDependency[]; asOfDate?: string }>): readonly RuleSatisfaction[];
-export function resolveSeriesDependencies(rules: readonly ImmunizationRule[], dependenciesOrEvidence: readonly RuleDependency[] | readonly RuleEvidence[], evidenceOrContext: readonly RuleEvidence[] | Readonly<{ dependencies?: readonly RuleDependency[]; asOfDate?: string }>, _asOfDate?: string): readonly RuleSatisfaction[] {
+export function resolveSeriesDependencies(rules: readonly ImmunizationRule[], dependenciesOrEvidence: readonly RuleDependency[] | readonly RuleEvidence[], evidenceOrContext: readonly RuleEvidence[] | Readonly<{ dependencies?: readonly RuleDependency[]; asOfDate?: string }>, explicitAsOfDate?: string): readonly RuleSatisfaction[] {
   const dependencyEntries = (dependenciesOrEvidence as readonly RuleDependency[]).filter((entry): entry is RuleDependency => "dependencyType" in entry);
-  const dependencies = _asOfDate === undefined ? ((evidenceOrContext as { dependencies?: readonly RuleDependency[] }).dependencies ?? dependencyEntries) : dependencyEntries;
-  const validEvidence = _asOfDate === undefined ? dependenciesOrEvidence as readonly RuleEvidence[] : evidenceOrContext as readonly RuleEvidence[];
-  const evidenceRules = new Set(validEvidence.map((evidence) => evidence.ruleId));
+  const dependencies = explicitAsOfDate === undefined ? ((evidenceOrContext as { dependencies?: readonly RuleDependency[] }).dependencies ?? dependencyEntries) : dependencyEntries;
+  const validEvidence = explicitAsOfDate === undefined ? dependenciesOrEvidence as readonly RuleEvidence[] : evidenceOrContext as readonly RuleEvidence[];
+  const asOfDate = explicitAsOfDate ?? (evidenceOrContext as { asOfDate?: string }).asOfDate;
+  if (!asOfDate || !isCalendarDate(asOfDate)) return rules.map((rule) => ({ ruleId: rule.id, satisfied: false, status: "review_required", reasonCode: "TRUSTED_DATE_CONTEXT_INVALID" }));
+  const evidenceFor = (dependency: RuleDependency) => validEvidence.filter((evidence) => evidence.ruleId === dependency.dependsOnRuleId);
+  const dependencyCountry = (dependency: RuleDependency) => rules.find((candidate) => candidate.id === dependency.dependsOnRuleId)?.countryCode;
+  const evidenceIssue = (dependency: RuleDependency): string | null => {
+    const expectedCountry = dependencyCountry(dependency);
+    const evidence = evidenceFor(dependency);
+    if (expectedCountry && evidence.some((entry) => entry.countryCode !== expectedCountry)) return "DEPENDENCY_COUNTRY_MISMATCH";
+    if (evidence.some((entry) => !isCalendarDate(entry.administeredOn) || compareCalendarDates(entry.administeredOn, asOfDate) > 0)) return "DEPENDENCY_EVIDENCE_DATE_INVALID";
+    return null;
+  };
+  const hasSatisfiedEvidence = (dependency: RuleDependency): boolean => evidenceFor(dependency).some((entry) => dependency.minimumInterval === null
+    || compareCalendarDates(addCalendarInterval(entry.administeredOn, dependency.minimumInterval), asOfDate) <= 0);
   return rules.map((rule) => {
     const ownDependencies = dependencies.filter((dependency) => dependency.ruleId === rule.id);
     if (ownDependencies.length === 0) return { ruleId: rule.id, satisfied: true, status: "satisfied", reasonCode: "NO_DEPENDENCY" };
+    const issue = ownDependencies.map(evidenceIssue).find((candidate) => candidate !== null);
+    if (issue) return { ruleId: rule.id, satisfied: false, status: "review_required", reasonCode: issue };
     const alternatives = ownDependencies.filter((dependency) => dependency.dependencyType === "either_or");
     if (alternatives.length > 0) {
-      const satisfiedAlternatives = alternatives.filter((dependency) => evidenceRules.has(dependency.dependsOnRuleId));
+      const satisfiedAlternatives = alternatives.filter(hasSatisfiedEvidence);
       if (satisfiedAlternatives.length > 1) return { ruleId: rule.id, satisfied: false, status: "review_required", reasonCode: "EITHER_OR_AMBIGUOUS" };
-      if (satisfiedAlternatives.length === 0) return { ruleId: rule.id, satisfied: false, status: "unsatisfied", reasonCode: "EITHER_OR_UNSATISFIED" };
+      if (satisfiedAlternatives.length === 0) {
+        const intervalPending = alternatives.some((dependency) => evidenceFor(dependency).length > 0 && dependency.minimumInterval !== null);
+        return { ruleId: rule.id, satisfied: false, status: "unsatisfied", reasonCode: intervalPending ? "DEPENDENCY_INTERVAL_NOT_MET" : "EITHER_OR_UNSATISFIED" };
+      }
     }
     for (const dependency of ownDependencies.filter((candidate) => candidate.dependencyType !== "either_or")) {
-      if (dependency.dependencyType === "excludes" && evidenceRules.has(dependency.dependsOnRuleId)) return { ruleId: rule.id, satisfied: false, status: "excluded", reasonCode: "EXCLUDED_BY_DEPENDENCY" };
-      if (dependency.dependencyType !== "excludes" && !evidenceRules.has(dependency.dependsOnRuleId)) return { ruleId: rule.id, satisfied: false, status: "unsatisfied", reasonCode: "DEPENDENCY_UNSATISFIED" };
+      if (dependency.dependencyType === "conditional") return { ruleId: rule.id, satisfied: false, status: "review_required", reasonCode: "CONDITIONAL_DEPENDENCY_REQUIRES_REVIEW" };
+      if (dependency.dependencyType === "excludes" && evidenceFor(dependency).length > 0) return { ruleId: rule.id, satisfied: false, status: "excluded", reasonCode: "EXCLUDED_BY_DEPENDENCY" };
+      if (dependency.dependencyType !== "excludes" && evidenceFor(dependency).length === 0) return { ruleId: rule.id, satisfied: false, status: "unsatisfied", reasonCode: "DEPENDENCY_UNSATISFIED" };
+      if (dependency.dependencyType !== "excludes" && !hasSatisfiedEvidence(dependency)) return { ruleId: rule.id, satisfied: false, status: "unsatisfied", reasonCode: "DEPENDENCY_INTERVAL_NOT_MET" };
     }
     return { ruleId: rule.id, satisfied: true, status: "satisfied", reasonCode: "DEPENDENCIES_SATISFIED" };
   });
