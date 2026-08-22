@@ -2,7 +2,7 @@
 id: AT-07-20
 title: Release minimal declared-dose reference packages
 module: 07-medication-and-adherence
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-03-12, AT-07-19]
@@ -80,8 +80,8 @@ Medication selection, prescription, administration authorization, alternative-do
 
 ## Completion checklist
 
-- [ ] Exact CO/US identities and label hashes resolve only in their own country.
-- [ ] Every supported weight-band boundary and all exclusion/ambiguity paths pass real deterministic tests.
-- [ ] Output contains no safety, prescription, or recommended/alternative-dose language.
-- [ ] Cloud concepts, presentations, formularies, limits, attestations, and releases match exact hashes.
-- [ ] AT-07-04 through AT-07-18 have fresh evidence and dependency-correct statuses.
+- [x] Exact CO/US identities and label hashes resolve only in their own country.
+- [x] Every supported weight-band boundary and all exclusion/ambiguity paths pass real deterministic tests.
+- [x] Output contains no safety, prescription, or recommended/alternative-dose language.
+- [x] Cloud concepts, presentations, formularies, limits, attestations, and releases match exact hashes.
+- [x] AT-07-04 through AT-07-18 have fresh evidence and dependency-correct statuses.

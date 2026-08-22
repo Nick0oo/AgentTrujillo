@@ -2,7 +2,7 @@
 id: AT-07-14
 title: Create and supersede caregiver-declared medication plans
 module: 07-medication-and-adherence
-status: blocked
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-07-02, AT-07-03, AT-07-05]

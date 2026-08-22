@@ -2,7 +2,7 @@
 id: AT-07-09
 title: Convert a declared presentation to exact ingredient amounts
 module: 07-medication-and-adherence
-status: blocked
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-07-05]

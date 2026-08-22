@@ -2,7 +2,7 @@
 id: AT-07-10
 title: Compare declared per-dose amount with approved limits
 module: 07-medication-and-adherence
-status: blocked
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-07-07, AT-07-08, AT-07-09]

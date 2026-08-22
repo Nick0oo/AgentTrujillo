@@ -28,8 +28,8 @@ These facts do not close pending behavioral gates. Local schema parity, generate
 - Documentation design: `completed` at commit `08ed71a`.
 - Documentation implementation plan: `completed` at commit `2ba542b`.
 - Atomic roadmap authoring: modules `01` through `15` completed and cross-module verification passed; see [verification evidence](docs/verification/2026-08-16-agent-roadmap.md).
-- Product implementation: modules `01` through `06` completed with fresh runtime or Cloud evidence. Module `07` remains clinically blocked pending its exact minimal formularies.
-- Next active executable unit: `AT-07-20`. `AT-03-12` completed in `6a2d2b7`; the user authorized conveyed approval without a personal signature and production Cloud publication of conservative basic packages. Module 06 release implementation completed in `453032e`.
+- Product implementation: modules `01` through `07` completed with fresh runtime and Cloud evidence. Module `07` exact minimal formularies were released in `54e615c`; conveyed approval is recorded without a personal signature.
+- Next candidate executable unit: `AT-08-01`. Module `08` has been read for compatibility but has not been selected or started.
 
 ## Module ledger
 
@@ -41,7 +41,7 @@ These facts do not close pending behavioral gates. Local schema parity, generate
 | 04 | Safety and emergency boundary | completed | completed | Critical red flags bypass the LLM and emit approved emergency-only copy | [Module 04](roadmap/04-safety-and-emergency-boundary/README.md) |
 | 05 | Anthropometry and growth | completed | completed | Reproducible age, Z-score, percentile, and growth-series results | [Module 05](roadmap/05-anthropometry-and-growth/README.md) |
 | 06 | Immunization | completed | completed | PAI and ACIP evaluations are separate, reproducible, and source-traceable | [Module 06](roadmap/06-immunization/README.md) |
-| 07 | Medication and adherence | completed | blocked | Declared-dose validation is conservative and plans/intakes are idempotent | [Module 07](roadmap/07-medication-and-adherence/README.md) |
+| 07 | Medication and adherence | completed | completed | Declared-dose validation is conservative and plans/intakes are idempotent | [Module 07](roadmap/07-medication-and-adherence/README.md) |
 | 08 | Nutrition and development | completed | pending | Guidance stays educational and EAD-3 remains professional-only | [Module 08](roadmap/08-nutrition-and-development/README.md) |
 | 09 | Clinical memory and documents | completed | pending | Retrieval and Storage remain private and child-scoped | [Module 09](roadmap/09-clinical-memory-and-documents/README.md) |
 | 10 | Eve tools and presenters | completed | pending | Every tool is typed, scoped, policy-gated, idempotent, and safely rendered | [Module 10](roadmap/10-eve-tools-and-presenters/README.md) |
@@ -55,13 +55,13 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-`AT-07-20` is ready for sequential Cloud/package work. Module `08` has not been selected.
+Modules `01`–`07` have no remaining ready or active work. `AT-08-01` is the next candidate, but module `08` has not been selected.
 
 ## Active workers
 
 | Worker | Work unit | Claimed paths | Started | State |
 |---|---|---|---|---|
-| root | AT-07-20 | M7 minimal formularies/evals/Cloud release/roadmap evidence | 2026-08-22 | ready |
+| — | — | No active implementation worker | — | — |
 
 Future implementation workers use GPT-5.6 Luna with reasoning `max`. At most three may run concurrently after collision analysis.
 
@@ -69,7 +69,6 @@ Future implementation workers use GPT-5.6 Luna with reasoning `max`. At most thr
 
 | Blocker | Affected units | Resolution authority | State |
 |---|---|---|---|
-| No immutable medication catalogs, exact CO/US pediatric formulary packages, checksum-bound approval attestations, or real golden arithmetic suites | AT-07-04 through AT-07-15, AT-07-17, AT-07-18 and dose-validation exposure | AT-07-20 exact minimal formularies | Resolution in progress |
 | OpenRouter has no parity evidence | Fallback activation | Module 14 evidence and user-approved rollout | Expected future gate |
 | United States production activation is not approved | Module 15 US activation | Clinical, legal, provider, and release evidence | Expected future gate |
 

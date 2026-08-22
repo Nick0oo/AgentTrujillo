@@ -11,7 +11,7 @@ This module records caregiver-declared medication plans and intake facts, render
 
 ## Exit gate
 
-All eighteen leaves are complete and fresh evidence proves:
+All twenty leaves are complete and fresh evidence proves:
 
 - declared, resolved, and computed medication data are structurally separate;
 - model/client payloads cannot supply authority, product resolution, reference rule, weight evidence, or validation outcome;
@@ -25,19 +25,18 @@ All eighteen leaves are complete and fresh evidence proves:
 - adherence is descriptive, neutral, source-complete, and never a diagnosis or blame score;
 - critical clinical, arithmetic, replay, isolation, and prohibited-language discrepancies are zero.
 
-## Production closure state — 2026-08-21
+## Production closure state — 2026-08-22
 
-The lifecycle foundation is deployed and Cloud-verified, but the module exit gate remains `blocked` rather than falsely completed.
+The module exit gate is `completed`. Commit `54e615c` releases one exact, conservative acetaminophen 160 mg/5 mL declared-dose comparison package per country: Dolex Niños for Colombia and Children's Tylenol for the United States. Product-owner-conveyed approvals are checksum-bound and explicitly carry no personal signature or claimed approver identity.
 
-| State | Leaves | Evidence or blocker |
+| State | Leaves | Evidence |
 |---|---|---|
-| completed | `AT-07-01`, `AT-07-02`, `AT-07-03` | Typed boundary, forward schema, and server-derived replay identity pass. |
-| completed | `AT-07-19` | Production hardening, trusted-write wrappers, real concurrent replay, Cloud SQL, and evidence commits `603bfc4`/`3770878` pass. |
-| blocked: catalog/package | `AT-07-04`–`AT-07-12` | No immutable INVIMA/IUM or RxNorm/DailyMed medication catalog, no exact active country formulary, no checksum-bound approval attestation, and no real reviewed arithmetic vectors exist. |
-| blocked: dependency | `AT-07-13`–`AT-07-17` | Persistence and factual-intake paths are technically verified and lifecycle helpers fail closed, but the declared dependency chain and full leaf acceptance matrices cannot be completed while the catalog/package leaves remain blocked. `AT-07-16` was corrected from `completed` because its declared `AT-07-15` dependency is blocked. |
-| blocked: acceptance | `AT-07-18` | CO and US cases correctly report `blocked`; real golden arithmetic, source/package/approval digests, and the complete isolation/property suite are absent. |
+| completed | `AT-07-01`–`AT-07-03`, `AT-07-19` | Typed boundary, forward schema, replay identity, Cloud hardening, concurrency, and RLS gates pass. |
+| completed | `AT-07-04`–`AT-07-12` | Exact country identity, presentation, active formulary, rule selection, weight, conversion, per-dose/daily comparison, and four-outcome mapping pass. |
+| completed | `AT-07-13`–`AT-07-17` | Governed validation persistence and factual plan/schedule/intake/adherence paths pass replay and isolation checks. |
+| completed | `AT-07-18`, `AT-07-20` | Real CO/US/adversarial fixtures pass with zero critical discrepancies or prohibited-language leakage; Cloud hashes and releases match. |
 
-Product-owner-conveyed approval closes the non-prescriptive behavior wording review. It does not create the missing package artifacts or substitute for the module `03` digest-bound attestation. Production therefore contains six reviewed official source locators and zero medication concepts, presentations, formularies, dose limits, patient plans, intakes, or validation decisions.
+Production contains two concepts, two presentations, two active formularies, sixteen exact label bands, and two active medication package releases. No patient medication plan, intake, or validation row was seeded. Package presence does not activate United States product rollout; module `15` retains that independent market gate.
 
 ## Dependency graph
 

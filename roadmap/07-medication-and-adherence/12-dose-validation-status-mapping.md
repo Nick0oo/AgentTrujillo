@@ -2,7 +2,7 @@
 id: AT-07-12
 title: Map dose comparison to conservative status
 module: 07-medication-and-adherence
-status: blocked
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-07-11]

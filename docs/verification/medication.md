@@ -2,96 +2,75 @@
 
 ## Result
 
-Production lifecycle hardening is complete against Supabase Cloud `CreciendoApp` (`yapjiinrjsrothzgzxsv`). The overall module remains clinically `blocked`: no exact released Colombia or United States pediatric formulary, checksum-bound module `03` approval attestation, or reviewed real arithmetic suite exists.
+Module `07` is complete in Supabase Cloud `CreciendoApp` (`yapjiinrjsrothzgzxsv`) at implementation commit `54e615c`.
 
-This is the intended fail-closed state. No medication, dose, frequency, plan, or validation decision was invented to make the roadmap green.
+The production package is deliberately small: one exact acetaminophen 160 mg/5 mL product per country, used only to compare a caregiver-declared amount and explicit frequency against exact label bands. It does not select a medicine, propose or change a dose, prescribe, diagnose, authorize administration, or provide missed-dose advice.
 
-## Changes verified
+Approval provenance is `product_owner_conveyed`, bound to immutable manifest/source/algorithm/artifact hashes and conveyance digest `bd4050c1b6331bde351d3c41ee92e68b6409a9e546f1ec6f201f89913ca48b42`. `approver_subject` is null: the record is not a personal signature and does not claim Dr. Trujillo's identity.
 
-- Model-facing plan input rejects authority fields, non-positive/non-exact quantities, duplicate times, and inverted windows.
-- Formulary resolution accepts only one exact `active` package with valid effective dates, source locators, and SHA-256 values.
-- Same-time conflicting weights, invalid confirmation chronology, and invalid rule inputs fail closed.
-- Weight freshness has no built-in clinical default; an explicit policy is required, and malformed declared arithmetic returns a conservative status rather than throwing.
-- Combination concentration applies its denominator to every ingredient and returns review instead of throwing on a dimension mismatch.
-- Fixed and weight-derived per-dose limits are intersected; daily mass units convert exactly and duplicate times do not inflate exposure.
-- Interval schedules remain anchored to the declared plan start and fail instead of silently truncating at a materialization bound.
-- Time-of-day schedules advance by local calendar date; nonexistent and repeated US DST wall times fail closed instead of shifting or duplicating occurrences.
-- Application and Cloud replay digests derive from domain input; a caller-supplied digest cannot make changed input replay as identical.
-- Confirmation, intake, and correction retries resolve exact replays before post-transition active-state checks.
-- Public medication writes acquire transaction-scoped advisory locks before replay checks; the unlocked implementations are private and cannot be executed by authenticated callers.
-- Schedule occurrence writes prove the timestamp, local date, time zone, cadence, plan window, source, and SHA-256 key against the stored declared schedule.
-- Intake writes reject future scheduled/taken timestamps and mismatches between a supplied occurrence and its persisted instant.
-- The pre-package validation path accepts only `insufficient_data` or `requires_professional_review`, requires registered reviewed source evidence, and cannot persist a reassuring numeric comparison.
-- Public occurrence keys resolve to scoped storage UUIDs for RPC writes and map back to stable keys for adherence joins.
-- Conflicting active adherence facts set `sourceComplete: false` rather than producing a reassuring summary.
-- Validation writes atomically retain normalized source and ingredient evidence.
+## Released artifacts
 
-## Cloud migrations and SQL behavior
+| Country | Exact product | Package version | Artifact SHA-256 | Private Storage path |
+|---|---|---|---|---|
+| CO | Dolex Niños 3.2% jarabe; INVIMA `2019M-0019412`; CUM `20164282-1`; IUM `1P1019281000104` | `2026.basic.1` | `39628bf866ff3b94b85dfbbb336a8a2600b048415c81afb690718625c6081dd8` | `v1/medication/CO/39628bf866ff3b94b85dfbbb336a8a2600b048415c81afb690718625c6081dd8.json` |
+| US | Children's Tylenol; SPL `46ddbfde-54ab-4373-b832-b9c0620b1e9d`; RxCUI `307668`; NDC `50580-170` | `2024.11.07.basic.1` | `7877724c3978955e9e44e92b6d5bacec49464fbe52190b4dbe16e389d05d5db0` | `v1/medication/US/7877724c3978955e9e44e92b6d5bacec49464fbe52190b4dbe16e389d05d5db0.json` |
 
-Applied forward-only migrations:
+Both objects were uploaded with `upsert: false`, downloaded again, and byte-verified against these hashes. No Storage object was overwritten or deleted.
 
-- `20260821190000_medication_production_hardening.sql` — SHA-256 `f68f37c2790869b26f4f43140995ca200e80ef2af9f91ee50ab42359e9bf2340`.
-- `20260821190100_medication_replay_order_fix.sql` — SHA-256 `5e20a63cdb7b324ceb0236132661c8c156619a6fd62023c5e9436054e928516d`.
-- `20260821190200_medication_correction_replay_order_fix.sql` — SHA-256 `666bad8c9619c729ca011063d8004f3a2b4b44c825cac5d407c6aaade19eb39a`.
-- `20260821190300_medication_trusted_write_and_concurrency.sql` — SHA-256 `ca3de5f658624269283fcdae5da3407b820284ceb28e49f4ae953625fd9a1ab0`.
+Source artifacts:
 
-`supabase/tests/032_medication_production_hardening.test.sql` (SHA-256 `63ec93da47964af1ca58eb10e0195df528c072d50f9528bab7d2ad30ea764ac4`) ran directly through the linked project's database-query endpoint inside `BEGIN`/`ROLLBACK`: `25/25` checks passed. It proved authenticated create/replay/conflict behavior, declared schedule persistence, plan confirmation, schedule-proof occurrence materialization, retrospective intake and correction, abstention-only validation persistence, normalized evidence, private unlocked implementations, and RPC-only grants.
+- INVIMA CUM XLSX: `9a421f308acf1263cfee3149aa350f647eedfd5adb4e29f460edd5283d8c05ae`.
+- INVIMA Acta 09/2018 label PDF: `81cb94ff9f3856e804957a8588fd4f0dff35af45e5532917572121d11f6e8b01`.
+- DailyMed exact SPL XML: `1052c04560eae49ba2f319c68d53d1905a3f7997a24396f272cba64beda1d01f`.
 
-The first rollback run exposed that the active-fact conflict check preceded same-key intake replay. The forward-only `190100` migration corrected that order. Final review then added correction replay coverage; the red Cloud run passed `18/20` and exposed the same ordering defect in `correct_medication_intake`. Forward-only migration `190200` fixed it. Independent Standards and Spec reviews then found five further gaps: ungoverned reassuring validation, forged schedule occurrences, future intake facts, non-serialized replay checks, and callable unlocked implementations. The expanded red Cloud run passed `20/25`; `190300` closed all five and the persisted rerun passed `25/25`.
+Algorithm identity:
 
-A real two-connection Cloud smoke used one exact synthetic scope and held the winning transaction open. Its two simultaneous same-key plan calls returned exactly `created` and `idempotent_replay`. Exact-ID cleanup ran in `finally`, and a subsequent production count confirmed zero fixture residue.
+- key/version: `medication-declared-dose-basic` / `1.0.0`;
+- implementation SHA-256: `407e1b6caf7f9d70aab23a108c8399b889c47fdc748009cdcbf8d20ebc631554`;
+- golden-vector SHA-256: `c6351213ff8667721c64f220e9e7328eef9faabb9a92f8adfcaad83ded106992`.
 
-Cloud commands and outcomes:
+## Production data and migration
 
-```text
-npx supabase db push --linked                         exit 0; migrations 190000 through 190300 applied
-npx supabase migration list --linked                 exit 0; 33/33 local and remote versions match
-npx supabase db lint --linked --level error           exit 0; 0 errors
-database-query: SQL 032                               HTTP 201; 25/25; rollback
-database-query: concurrent replay smoke               created + idempotent_replay; cleanup verified
-```
+Forward-only migration `20260822120000_minimal_medication_formularies.sql` was preflighted inside a real Cloud transaction and rolled back before `supabase db push --linked` applied it. It widens weight precision, adds source-bound metadata, registers exact sources/packages/approvals/releases, and replaces the validation wrapper with an exact active-package gate. It contains no deletion, truncation, patient-data update, or artifact overwrite.
 
-Legacy digest/payload parameters remain in deployed RPC signatures for caller compatibility, while replay identity is derived from server-owned canonical domain input. Linked generation also exposed and fixed stale transition argument names in the repository adapter (`p_target_status` and `p_input_fingerprint`).
+Fresh production postflight counts:
 
-## Production data state
+| Entity | Count added/present for Module 07 |
+|---|---:|
+| medication concepts | 2 |
+| medication presentations | 2 |
+| active formulary versions | 2 |
+| exact dose-label bands | 16 (`11` CO, `5` US) |
+| active medication releases | 2 |
+| seeded patient plans/intakes/validations | 0 |
 
-Six exact retrieval records are `reviewed` in `clinical_sources`:
+The RPC permits numeric outcomes only when country, package version, artifact hash, algorithm, vocabulary, active release, approval, and the complete linked source set match. The earlier `unavailable` abstention path remains compatible. RLS, child permission checks, append-only evidence, advisory-lock replay serialization, and source/ingredient normalization remain intact.
 
-| Authority | Locator | Captured SHA-256 |
-|---|---|---|
-| INVIMA | Sanitary register lookup | `88c29bedd81f9ab0d1a01fe9a5e9d191b67601f7780e742ea52070c12f5c13f7` |
-| INVIMA | Commercialization authorization | `2dbc9e2fc7b43862aaee94428b7645c67eab3a574dc17655f6879e97f8f3ebc9` |
-| NLM RxNorm | Overview | `fdc2e6e6859d8867b4a6fe7b9c0a1e897d0c4a6b66f74a0ecf79deb22918f18c` |
-| NLM RxNorm | API documentation | `d037f07cac2e2f18225cff27f792c2d0133d945d67b175108d0866d4acfd49d8` |
-| NLM DailyMed | Web services | `3fbe63342062c085fcbb85f1431f6c1614bbacc6b2ade5adc21de8eba3c4327e` |
-| FDA | Pediatric labeling changes | `a46ec23c96d76c3c39bd37bdd10e25a1e6cabcde99fb03406aecb2080700ec09` |
-
-Post-rollback Cloud counts: sources `6`; medication concepts, presentations, pediatric formulary versions, pediatric dose limits, plans, occurrences, intakes, validations, validation sources, and validation ingredients are all `0`.
-
-Reviewed locators are provenance records, not a catalog, formulary, dose range, approval, or release.
-
-## Code and generated-contract gates
+## Fresh verification after commit
 
 ```text
-Focused medication tests                     7 files, 51 passed
-Full Vitest suite                            89 files, 551 passed, 1 skipped
-npm run typecheck                            exit 0
-npm run build                                exit 0
-npm run verify:discovery                     ready; 0 errors/warnings; gemini-3.6-flash
-npm run verify:eve-baseline                  Eve 0.27.13; Node 24.x
-npm run verify:database-types (linked)        exit 0; sha256:ee1b87e790adb12f12bb5274cf95e9cff1dcf488029fe08f1c657283e31ac58d
-npm run eval:medication                      CO 0 pass/3 blocked; US 0 pass/3 blocked; adversarial 4/4 pass; 0 critical/leakage
+npm test                                      90 files; 565 passed; 1 skipped
+npm run typecheck                             exit 0
+npm run build                                 exit 0 (production env loaded in-memory)
+npm run verify:eve-baseline                   Eve 0.27.13; Node 24.x
+npm run verify:discovery                      ready; 0 errors/warnings; gemini-3.6-flash
+npm run eval:medication                       CO 5/5; US 5/5; adversarial 4/4; 0 blocked/failed/critical/leakage
+npm run verify:database-types (linked)         exit 0; sha256:0ccdd9a443eb11d9901afa77eb28d5764572a6eed06fb44ec8f97b9f1cfc859f
+Cloud SQL 032                                 passed; lifecycle/replay/hardening matrix
+Cloud SQL 033                                 passed; conveyed approval without signature
+Cloud SQL 035                                 passed; exact packages/bands/releases and governed numeric persistence
+npx supabase db lint --linked --level error    0 errors
+npx supabase migration list                    local/remote through 20260822120000 match
+live governed repository                       CO 1 candidate; US 1 candidate; exact medication Storage paths
 ```
 
-Both generated type entry points contain the same normalized complete linked-Cloud generation with SHA-256 `ee1b87e790adb12f12bb5274cf95e9cff1dcf488029fe08f1c657283e31ac58d`.
+Every supported lower and upper weight boundary is executed by deterministic tests. Source gaps, cross-country identity, fuzzy identity, exclusion precedence, PRN frequency, excessive declared amount, interval spacing, and prohibited authority fields fail closed or require professional review.
 
-## Remaining clinical blockers
+## Compatibility with Modules 08–15
 
-- Immutable, versioned INVIMA/IUM and RxNorm/DailyMed product/presentation catalog snapshots with legal/source metadata.
-- Separate exact Colombia and United States pediatric formulary artifacts.
-- Source set, schema/vocabulary versions, effective windows, algorithm version, and artifact checksums.
-- Verified Dr. Trujillo approver subject and append-only module `03` approval attestation bound to those exact artifacts; the conveyed approval record is not that attestation or a signature.
-- Real reviewed CO/US golden vectors covering identities, presentations, weights, conversion, per-dose/daily bounds, properties, lifecycle, isolation, and prohibited language.
-- A clean `AT-07-18` acceptance run with every clinical case executed rather than correctly blocked.
+- Module `10` can resolve the medication package through the generic governance repository; the repository now uses medication authorities and `v1/medication/...` paths instead of hard-coded immunization values.
+- Module `12` may later reevaluate a package or deliver ordinary opt-in reminders, but urgent medication safety still starts no workflow, Realtime event, alert, or notification.
+- Package activation is not market activation. Module `15` keeps United States product rollout independently disabled until its explicit clinical/legal/release gate passes.
+- Modules `08`–`09`, `11`, and `13`–`14` do not require schema changes from this release; their authorization, privacy, tool, channel, entitlement, and fallback gates remain pending and unchanged.
 
-Until those conditions exist, dose validation must remain unavailable. Caregiver-declared plan/intake infrastructure can be consumed by later modules only after their own tool/channel/release gates pass.
+No remaining blocker belongs to modules `01`–`07`. The next executable product module is `08`; later tool/channel/deployment work must preserve this informational-only boundary.

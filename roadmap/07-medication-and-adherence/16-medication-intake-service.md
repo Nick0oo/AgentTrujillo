@@ -2,7 +2,7 @@
 id: AT-07-16
 title: Record medication intake facts idempotently
 module: 07-medication-and-adherence
-status: blocked
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-07-03, AT-07-15]

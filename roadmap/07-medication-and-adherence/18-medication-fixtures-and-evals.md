@@ -2,7 +2,7 @@
 id: AT-07-18
 title: Prove medication safety and adherence isolation
 module: 07-medication-and-adherence
-status: blocked
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-07-13, AT-07-17]
@@ -137,10 +137,10 @@ Commit only the exclusive paths with `test(medication): prove safety and isolati
 ## Completion checklist
 
 - [x] No unapproved dose range exists in fixtures.
-- [ ] Critical discrepancies and leakage are zero.
-- [ ] All arithmetic retains exact trace/provenance.
-- [ ] Lifecycle/replay/adherence cases converge.
-- [ ] No diagnosis, prescription, safe-to-give, alternative, or missed-dose advice appears.
+- [x] Critical discrepancies and leakage are zero.
+- [x] All arithmetic retains exact trace/provenance.
+- [x] Lifecycle/replay/adherence cases converge.
+- [x] No diagnosis, prescription, safe-to-give, alternative, or missed-dose advice appears.
 
 ## Handoff
 

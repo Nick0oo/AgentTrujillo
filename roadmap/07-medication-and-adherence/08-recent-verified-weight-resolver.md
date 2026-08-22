@@ -2,7 +2,7 @@
 id: AT-07-08
 title: Resolve a recent verified child weight
 module: 07-medication-and-adherence
-status: blocked
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-07-01, AT-05-15]
