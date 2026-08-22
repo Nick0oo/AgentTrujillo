@@ -82,8 +82,7 @@ The ledger now distinguishes that technical evidence from dependency completion:
 
 | State | Leaves | Evidence or blocker |
 |---|---|---|
-| completed | `AT-06-01`, `AT-06-02`, `AT-06-05`–`AT-06-07` | Domain, reference identities, factual administration boundary, and antigen resolution pass. |
-| review | `AT-06-16` | Independent production-ledger correction awaits its focused evidence commit. |
+| completed | `AT-06-01`, `AT-06-02`, `AT-06-05`–`AT-06-07`, `AT-06-16` | Domain, reference identities, factual administration boundary, antigen resolution, and independent ledger correction `f448444` pass. |
 | blocked: package | `AT-06-03`, `AT-06-04`, `AT-06-08` | No canonical released PAI/ACIP rule artifacts, digest-bound approvals/releases, or executable interval package exists. |
 | blocked: dependency | `AT-06-09`–`AT-06-13`, `AT-06-15` | Code and technical tests exist, but every declared chain crosses blocked `AT-06-08`; `AT-06-15` itself declares `AT-06-13`. |
 | blocked: acceptance | `AT-06-14` | No real approved country golden suite can execute. |

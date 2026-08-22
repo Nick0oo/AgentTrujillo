@@ -2,7 +2,7 @@
 id: AT-06-16
 title: Correct the immunization production dependency ledger
 module: 06-immunization
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-06-07]
@@ -65,7 +65,13 @@ Changing immunization code or Cloud data; inventing PAI/ACIP rules; changing his
 - [x] `AT-06-15` is blocked by its declared dependency on `AT-06-13` while its technical evidence remains recorded.
 - [x] The module README distinguishes implemented scaffolding from executable clinical acceptance.
 - [x] The root blocker ledger names the complete affected chain.
-- [ ] Focused ledger-correction commit and hash are recorded.
+- [x] Focused ledger-correction commit `f448444` is recorded.
+
+## Completion evidence
+
+- Ledger correction commit: `f448444`.
+- Fresh dependency audit across modules `01`–`07`: zero completed leaves depend on a missing or non-completed leaf.
+- No source, test, migration, generated type, Cloud row, or clinical artifact changed in this amendment.
 
 ## Handoff
 
