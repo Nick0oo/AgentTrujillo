@@ -2,12 +2,12 @@
 id: AT-06-17
 title: Release basic informational PAI and ACIP packages
 module: 06-immunization
-status: pending
+status: in_progress
 execution: sequential
 parallel_group: null
 depends_on: [AT-03-12, AT-06-16]
 blocks: []
-worker: null
+worker: root
 clinical_risk: critical
 security_risk: high
 database_change: true

@@ -2,7 +2,7 @@
 id: AT-03-12
 title: Record conveyed approval without a personal signature
 module: 03-clinical-governance
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-03-11]
@@ -81,6 +81,8 @@ Forging a signature; assigning the approval to Dr. Trujillo's account; removing 
 - Remote SQL `033_conveyed_clinical_approvals.test.sql`: pass after correction.
 - Focused Vitest: 12/12 pass; TypeScript typecheck pass; linked database lint has only four pre-existing unused-parameter warnings.
 - Database types regenerated directly from linked Cloud and contain both provenance columns.
+- Focused implementation commit: `6a2d2b7`.
+- Conveyance record SHA-256: `bd4050c1b6331bde351d3c41ee92e68b6409a9e546f1ec6f201f89913ca48b42`.
 
 ## Handoff
 

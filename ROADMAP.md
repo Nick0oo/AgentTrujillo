@@ -29,7 +29,7 @@ These facts do not close pending behavioral gates. Local schema parity, generate
 - Documentation implementation plan: `completed` at commit `2ba542b`.
 - Atomic roadmap authoring: modules `01` through `15` completed and cross-module verification passed; see [verification evidence](docs/verification/2026-08-16-agent-roadmap.md).
 - Product implementation: modules `01` through `05` completed with fresh runtime or Cloud evidence. Modules `06` and `07` have completed production hardening but remain clinically blocked because their real country packages, checksum-bound attestations, and approved golden suites do not exist.
-- Next active executable unit: `AT-03-12`, followed by `AT-06-17` and `AT-07-20`. The user authorized conveyed approval without a personal signature and production Cloud publication of conservative basic packages.
+- Next active executable unit: `AT-06-17`, followed by `AT-07-20`. `AT-03-12` completed in `6a2d2b7`; the user authorized conveyed approval without a personal signature and production Cloud publication of conservative basic packages.
 
 ## Module ledger
 
@@ -55,13 +55,13 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-`AT-06-17` and `AT-07-20` are pending on the in-progress `AT-03-12` governance amendment. Module `08` has not been selected.
+`AT-06-17` is in progress. `AT-07-20` is pending on sequential Cloud/package work. Module `08` has not been selected.
 
 ## Active workers
 
 | Worker | Work unit | Claimed paths | Started | State |
 |---|---|---|---|---|
-| root | AT-03-12 | Governance approval types/repository/migration/tests/docs | 2026-08-22 | review |
+| root | AT-06-17 | M6 artifacts/evals/Cloud release/roadmap evidence | 2026-08-22 | in_progress |
 
 Future implementation workers use GPT-5.6 Luna with reasoning `max`. At most three may run concurrently after collision analysis.
 
