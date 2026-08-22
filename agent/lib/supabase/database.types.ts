@@ -820,12 +820,14 @@ export type Database = {
         Row: {
           algorithm_id: string
           algorithm_implementation_sha256: string
+          approval_provenance: string
           approver_name: string
           approver_role: string
-          approver_subject: string
+          approver_subject: string | null
           approver_user_id: string | null
           artifact_sha256: string
           attestation_version: number
+          conveyance_record_sha256: string | null
           created_at: string
           decided_at: string
           decision: string
@@ -840,12 +842,14 @@ export type Database = {
         Insert: {
           algorithm_id: string
           algorithm_implementation_sha256: string
+          approval_provenance?: string
           approver_name: string
           approver_role: string
-          approver_subject: string
+          approver_subject?: string | null
           approver_user_id?: string | null
           artifact_sha256: string
           attestation_version?: number
+          conveyance_record_sha256?: string | null
           created_at?: string
           decided_at?: string
           decision: string
@@ -860,12 +864,14 @@ export type Database = {
         Update: {
           algorithm_id?: string
           algorithm_implementation_sha256?: string
+          approval_provenance?: string
           approver_name?: string
           approver_role?: string
-          approver_subject?: string
+          approver_subject?: string | null
           approver_user_id?: string | null
           artifact_sha256?: string
           attestation_version?: number
+          conveyance_record_sha256?: string | null
           created_at?: string
           decided_at?: string
           decision?: string
@@ -2258,14 +2264,23 @@ export type Database = {
           dose_code: string
           dose_number: number | null
           eligibility_criteria: Json
+          grace_period: Json | null
           id: string
           minimum_age_days: number | null
+          minimum_age_interval: Json | null
+          minimum_interval: Json | null
           minimum_interval_days: number | null
+          recommended_interval: Json | null
           recommended_interval_days: number | null
+          rule_code: string | null
+          rule_kind: string | null
           schedule_id: string
           series_code: string
+          source_reference_ids: string[]
           target_age_days: number | null
           target_age_end_days: number | null
+          target_age_interval: Json | null
+          target_age_until_interval: Json | null
         }
         Insert: {
           antigen_id: string
@@ -2275,14 +2290,23 @@ export type Database = {
           dose_code: string
           dose_number?: number | null
           eligibility_criteria?: Json
+          grace_period?: Json | null
           id?: string
           minimum_age_days?: number | null
+          minimum_age_interval?: Json | null
+          minimum_interval?: Json | null
           minimum_interval_days?: number | null
+          recommended_interval?: Json | null
           recommended_interval_days?: number | null
+          rule_code?: string | null
+          rule_kind?: string | null
           schedule_id: string
           series_code: string
+          source_reference_ids?: string[]
           target_age_days?: number | null
           target_age_end_days?: number | null
+          target_age_interval?: Json | null
+          target_age_until_interval?: Json | null
         }
         Update: {
           antigen_id?: string
@@ -2292,14 +2316,23 @@ export type Database = {
           dose_code?: string
           dose_number?: number | null
           eligibility_criteria?: Json
+          grace_period?: Json | null
           id?: string
           minimum_age_days?: number | null
+          minimum_age_interval?: Json | null
+          minimum_interval?: Json | null
           minimum_interval_days?: number | null
+          recommended_interval?: Json | null
           recommended_interval_days?: number | null
+          rule_code?: string | null
+          rule_kind?: string | null
           schedule_id?: string
           series_code?: string
+          source_reference_ids?: string[]
           target_age_days?: number | null
           target_age_end_days?: number | null
+          target_age_interval?: Json | null
+          target_age_until_interval?: Json | null
         }
         Relationships: [
           {

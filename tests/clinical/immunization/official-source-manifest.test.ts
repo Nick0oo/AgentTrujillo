@@ -10,9 +10,9 @@ type Manifest = Readonly<{
 const manifest = JSON.parse(readFileSync(new URL("../../fixtures/immunization/official-source-manifest.json", import.meta.url), "utf8")) as Manifest;
 
 describe("official immunization source manifest", () => {
-  it("binds independent official source sets without activating a clinical package", () => {
+  it("binds independent official source sets to the registered basic subsets", () => {
     expect(manifest.schemaVersion).toBe("immunization-official-source-manifest-v1");
-    expect(manifest.status).toBe("source-bound-not-clinically-approved");
+    expect(manifest.status).toBe("approved-basic-subsets-registered");
     for (const country of ["CO", "US"] as const) {
       expect(manifest.countries[country].sources.length).toBeGreaterThan(0);
       expect(manifest.countries[country].sources.every((source) => new URL(source.uri).protocol === "https:")).toBe(true);
@@ -22,12 +22,17 @@ describe("official immunization source manifest", () => {
     expect(manifest.countries.US.sources.every((source) => new URL(source.uri).hostname === "www.cdc.gov")).toBe(true);
   });
 
-  it("requires immutable byte digests where an artifact was captured and records live-page recheck otherwise", () => {
+  it("requires immutable byte digests for every source used by the active subsets", () => {
     const colombia = manifest.countries.CO.sources;
     expect(colombia).toHaveLength(6);
     expect(colombia.every((source) => source.capture === "byte-hashed" && /^[a-f0-9]{64}$/.test(source.artifactSha256 ?? ""))).toBe(true);
     const unitedStates = manifest.countries.US.sources;
-    expect(unitedStates.every((source) => source.capture === "official-page-current-status-rechecked")).toBe(true);
+    const usedByActiveSubset = unitedStates.filter((source) => [
+      "us-acip-child-age-2025", "us-acip-child-catch-up-2025",
+      "us-acip-child-medical-indication-2025", "us-acip-child-notes-2025",
+    ].includes(source.id));
+    expect(usedByActiveSubset.every((source) => source.capture === "byte-hashed" && /^[a-f0-9]{64}$/.test(source.artifactSha256 ?? ""))).toBe(true);
+    expect(unitedStates.filter((source) => !usedByActiveSubset.includes(source)).every((source) => source.capture === "official-page-current-status-rechecked" && source.artifactSha256 === null)).toBe(true);
     expect(unitedStates.map((source) => source.id)).toEqual(expect.arrayContaining([
       "us-acip-child-age-2025", "us-acip-child-catch-up-2025", "us-acip-child-medical-indication-2025",
       "us-acip-child-notes-2025", "us-acip-child-appendix-2025", "us-acip-child-addendum-2025", "us-acip-recommendations-status",

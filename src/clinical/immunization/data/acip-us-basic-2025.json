@@ -1,0 +1,29 @@
+{
+  "packageId": "us-acip-basic-2025-v1",
+  "version": "2025.07.02.basic.1",
+  "effectiveFrom": "2025-07-02",
+  "effectiveUntil": null,
+  "status": "approved",
+  "approvalState": "approved",
+  "sourceReferences": [
+    { "id": "us-acip-child-age-2025", "uri": "https://www.cdc.gov/vaccines/hcp/imz-schedules/child-adolescent-age.html", "digest": "5033ce27b6c114148e35c7c255da0ae00cc2fc5b8f68d74a20595537af42664a" },
+    { "id": "us-acip-child-catch-up-2025", "uri": "https://www.cdc.gov/vaccines/hcp/imz-schedules/child-adolescent-catch-up.html", "digest": "42c1fee6cc65a2fe51ac7708e566428a693fc14b3568685bee777c76f0803fda" },
+    { "id": "us-acip-child-medical-indication-2025", "uri": "https://www.cdc.gov/vaccines/hcp/imz-schedules/child-adolescent-medical-indication.html", "digest": "090e13f99d2b478581a86cfb3508f14237981e0e85f6a34d06a42e78f72f9ad4" },
+    { "id": "us-acip-child-notes-2025", "uri": "https://www.cdc.gov/vaccines/hcp/imz-schedules/child-adolescent-notes.html", "digest": "d0cfe078b519b0e4bb0938ba2a5cd4cf8607bb5b71e4f4bd901027334b57c688" }
+  ],
+  "sourceDigest": "f5f1eff3cd360ad63f202dfdeb4dbb2c6dd00f066d556a722c0526e2a73cf51c",
+  "rules": [
+    { "id": "us-hepb-1", "code": "US-ACIP-HEPB-BIRTH", "countryCode": "US", "kind": "routine", "seriesCode": "HEP_B", "doseCode": "D1", "doseNumber": 1, "antigenCode": "HEP_B", "minimumAge": null, "targetAge": { "unit": "days", "value": 0 }, "targetAgeUntil": null, "minimumInterval": null, "recommendedInterval": null, "catchUp": false, "eligibilityCriteria": { "scope": "routine_age_only", "requiresReviewIf": ["birth_weight_under_2000g", "maternal_hbsag_positive_or_unknown", "medical_instability"] }, "contraindicationReviewRequired": false, "sourceReferenceIds": ["us-acip-child-age-2025", "us-acip-child-notes-2025"] },
+    { "id": "us-hepb-2", "code": "US-ACIP-HEPB-1-2M", "countryCode": "US", "kind": "routine", "seriesCode": "HEP_B", "doseCode": "D2", "doseNumber": 2, "antigenCode": "HEP_B", "minimumAge": null, "targetAge": { "unit": "calendar_months", "value": 1 }, "targetAgeUntil": { "unit": "calendar_months", "value": 2 }, "minimumInterval": null, "recommendedInterval": null, "catchUp": false, "eligibilityCriteria": { "scope": "routine_age_only" }, "contraindicationReviewRequired": false, "sourceReferenceIds": ["us-acip-child-age-2025", "us-acip-child-notes-2025"] },
+    { "id": "us-hepb-3", "code": "US-ACIP-HEPB-6-18M", "countryCode": "US", "kind": "routine", "seriesCode": "HEP_B", "doseCode": "D3", "doseNumber": 3, "antigenCode": "HEP_B", "minimumAge": null, "targetAge": { "unit": "calendar_months", "value": 6 }, "targetAgeUntil": { "unit": "calendar_months", "value": 18 }, "minimumInterval": null, "recommendedInterval": null, "catchUp": false, "eligibilityCriteria": { "scope": "routine_age_only" }, "contraindicationReviewRequired": false, "sourceReferenceIds": ["us-acip-child-age-2025", "us-acip-child-notes-2025"] },
+    { "id": "us-hepb-catchup-review", "code": "US-ACIP-HEPB-CATCHUP-REVIEW", "countryCode": "US", "kind": "catch_up", "seriesCode": "REVIEW_CATCH_UP_HEP_B", "doseCode": "REVIEW", "doseNumber": 1, "antigenCode": "HEP_B", "minimumAge": null, "targetAge": null, "targetAgeUntil": null, "minimumInterval": null, "recommendedInterval": null, "catchUp": true, "eligibilityCriteria": { "scope": "professional_interpretation_required", "reason": "catch_up_or_minimum_intervals" }, "contraindicationReviewRequired": true, "sourceReferenceIds": ["us-acip-child-catch-up-2025", "us-acip-child-notes-2025"] },
+    { "id": "us-hepb-special-review", "code": "US-ACIP-HEPB-SPECIAL-REVIEW", "countryCode": "US", "kind": "special_population", "seriesCode": "REVIEW_SPECIAL_HEP_B", "doseCode": "REVIEW", "doseNumber": 1, "antigenCode": "HEP_B", "minimumAge": null, "targetAge": null, "targetAgeUntil": null, "minimumInterval": null, "recommendedInterval": null, "catchUp": false, "eligibilityCriteria": { "scope": "professional_interpretation_required", "reason": "birth_weight_maternal_status_hbig_or_medical_indication" }, "contraindicationReviewRequired": true, "sourceReferenceIds": ["us-acip-child-medical-indication-2025", "us-acip-child-notes-2025"] },
+    { "id": "us-hepb-uncertain-review", "code": "US-ACIP-HEPB-UNCERTAIN-REVIEW", "countryCode": "US", "kind": "review_only", "seriesCode": "REVIEW_UNCERTAIN_HEP_B", "doseCode": "REVIEW", "doseNumber": 1, "antigenCode": "HEP_B", "minimumAge": null, "targetAge": null, "targetAgeUntil": null, "minimumInterval": null, "recommendedInterval": null, "catchUp": false, "eligibilityCriteria": { "scope": "professional_interpretation_required", "reason": "uncertain_contradictory_or_contraindication" }, "contraindicationReviewRequired": true, "sourceReferenceIds": ["us-acip-child-medical-indication-2025", "us-acip-child-notes-2025"] }
+  ],
+  "dependencies": [],
+  "officialStatus": {
+    "state": "current",
+    "checkedAt": "2026-08-22T12:00:00.000Z",
+    "sourceReferenceIds": ["us-acip-child-age-2025", "us-acip-child-medical-indication-2025"]
+  }
+}

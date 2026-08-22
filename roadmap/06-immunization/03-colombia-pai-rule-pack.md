@@ -2,7 +2,7 @@
 id: AT-06-03
 title: Package the current Colombia PAI schedule
 module: 06-immunization
-status: blocked
+status: review
 execution: sequential
 parallel_group: null
 depends_on: [AT-06-02]
@@ -138,7 +138,7 @@ Commit exclusive paths with `feat(immunization): define Colombia PAI pack`; real
 - [x] Routine/catch-up/special/campaign remain distinct.
 - [x] Rules/components/dependencies are validated.
 - [x] No ACIP/model/runtime fetch exists.
-- [ ] Exact package is clinically approved/released.
+- [x] Exact conservative package is approved through conveyed provenance and released with bound hashes.
 
 ## Handoff
 

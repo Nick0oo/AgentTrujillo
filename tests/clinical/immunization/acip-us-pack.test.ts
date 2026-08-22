@@ -1,12 +1,28 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { acipUsPackSchema } from "../../../src/clinical/immunization/packs/acip-us-schema.ts";
+import { compileAcipUsPack } from "../../../src/clinical/immunization/us-acip.ts";
+import { computeRulePackSourceDigest } from "../../../src/clinical/immunization/rule-packs.ts";
+import type { VaccineCatalog } from "../../../src/clinical/immunization/types.ts";
 
 describe("US ACIP pack boundary", () => {
-  it("requires every official component and keeps the fixture non-actionable", () => {
+  it("validates and activates the current conservative 2025 package", () => {
+    const raw = JSON.parse(readFileSync(new URL("../../../src/clinical/immunization/data/acip-us-basic-2025.json", import.meta.url), "utf8"));
+    const pack = acipUsPackSchema.parse(raw);
+    expect(pack.sourceDigest).toBe(computeRulePackSourceDigest(pack.sourceReferences));
+    expect(pack.officialStatus.state).toBe("current");
+    const antigens = [...new Set(pack.rules.map((rule) => rule.antigenCode))].map((antigenCode, index) => ({ id: `us-antigen-${index}` as never, antigenCode, displayName: antigenCode, diseaseGroup: antigenCode, active: true }));
+    const catalog: VaccineCatalog = { version: "2025-basic", sourceDigest: "f".repeat(64) as never, antigens, products: [], productAntigens: [] };
+    const compiled = compileAcipUsPack(pack as never, catalog);
+    expect(compiled).toMatchObject({ ok: true, pack: { countryCode: "US", activation: "active" } });
+  });
+
+  it("requires every official component and points to the exact active basic subset", () => {
     const fixture = JSON.parse(readFileSync(new URL("../../fixtures/immunization/acip-us-structural.json", import.meta.url), "utf8"));
     expect(fixture.countryCode).toBe("US");
-    expect(fixture.containsActionableSchedule).toBe(false);
+    expect(fixture.containsActionableSchedule).toBe(true);
+    expect(fixture.activation).toBe("active_exact_basic_subset");
+    expect(fixture.approvalProvenance).toBe("product_owner_conveyed");
     expect(fixture.requiredComponents).toEqual(expect.arrayContaining(["by_age", "catch_up", "medical_indication", "notes", "appendix", "addendum", "official_status"]));
   });
 

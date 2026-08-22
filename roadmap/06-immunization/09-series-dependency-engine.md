@@ -2,7 +2,7 @@
 id: AT-06-09
 title: Resolve vaccine series dependencies and alternatives
 module: 06-immunization
-status: blocked
+status: review
 execution: sequential
 parallel_group: null
 depends_on: [AT-06-08]

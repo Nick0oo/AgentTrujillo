@@ -28,8 +28,8 @@ These facts do not close pending behavioral gates. Local schema parity, generate
 - Documentation design: `completed` at commit `08ed71a`.
 - Documentation implementation plan: `completed` at commit `2ba542b`.
 - Atomic roadmap authoring: modules `01` through `15` completed and cross-module verification passed; see [verification evidence](docs/verification/2026-08-16-agent-roadmap.md).
-- Product implementation: modules `01` through `05` completed with fresh runtime or Cloud evidence. Modules `06` and `07` have completed production hardening but remain clinically blocked because their real country packages, checksum-bound attestations, and approved golden suites do not exist.
-- Next active executable unit: `AT-06-17`, followed by `AT-07-20`. `AT-03-12` completed in `6a2d2b7`; the user authorized conveyed approval without a personal signature and production Cloud publication of conservative basic packages.
+- Product implementation: modules `01` through `05` completed with fresh runtime or Cloud evidence. Module `06` basic CO/US packages are released in production and awaiting the focused commit/ledger close. Module `07` remains clinically blocked pending its exact minimal formularies.
+- Next active executable unit: finish the `AT-06-17` ledger close, followed by `AT-07-20`. `AT-03-12` completed in `6a2d2b7`; the user authorized conveyed approval without a personal signature and production Cloud publication of conservative basic packages.
 
 ## Module ledger
 
@@ -40,7 +40,7 @@ These facts do not close pending behavioral gates. Local schema parity, generate
 | 03 | Clinical governance | completed | completed | Only approved, versioned, checksum-matching packages resolve | [Module 03](roadmap/03-clinical-governance/README.md) |
 | 04 | Safety and emergency boundary | completed | completed | Critical red flags bypass the LLM and emit approved emergency-only copy | [Module 04](roadmap/04-safety-and-emergency-boundary/README.md) |
 | 05 | Anthropometry and growth | completed | completed | Reproducible age, Z-score, percentile, and growth-series results | [Module 05](roadmap/05-anthropometry-and-growth/README.md) |
-| 06 | Immunization | completed | blocked | PAI and ACIP evaluations are separate, reproducible, and source-traceable | [Module 06](roadmap/06-immunization/README.md) |
+| 06 | Immunization | completed | review | PAI and ACIP evaluations are separate, reproducible, and source-traceable | [Module 06](roadmap/06-immunization/README.md) |
 | 07 | Medication and adherence | completed | blocked | Declared-dose validation is conservative and plans/intakes are idempotent | [Module 07](roadmap/07-medication-and-adherence/README.md) |
 | 08 | Nutrition and development | completed | pending | Guidance stays educational and EAD-3 remains professional-only | [Module 08](roadmap/08-nutrition-and-development/README.md) |
 | 09 | Clinical memory and documents | completed | pending | Retrieval and Storage remain private and child-scoped | [Module 09](roadmap/09-clinical-memory-and-documents/README.md) |
@@ -55,13 +55,13 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-`AT-06-17` is in progress. `AT-07-20` is pending on sequential Cloud/package work. Module `08` has not been selected.
+`AT-06-17` is in review pending its focused commit and final evidence pass. `AT-07-20` is pending on sequential Cloud/package work. Module `08` has not been selected.
 
 ## Active workers
 
 | Worker | Work unit | Claimed paths | Started | State |
 |---|---|---|---|---|
-| root | AT-06-17 | M6 artifacts/evals/Cloud release/roadmap evidence | 2026-08-22 | in_progress |
+| root | AT-06-17 | M6 artifacts/evals/Cloud release/roadmap evidence | 2026-08-22 | review |
 
 Future implementation workers use GPT-5.6 Luna with reasoning `max`. At most three may run concurrently after collision analysis.
 
@@ -69,7 +69,6 @@ Future implementation workers use GPT-5.6 Luna with reasoning `max`. At most thr
 
 | Blocker | Affected units | Resolution authority | State |
 |---|---|---|---|
-| No canonical approved PAI/ACIP rule-pack artifacts or real golden suites | AT-06-03, AT-06-04, and the dependent AT-06-08 through AT-06-15 clinical chain | AT-06-17 conservative source-backed release | Resolution in progress |
 | No immutable medication catalogs, exact CO/US pediatric formulary packages, checksum-bound approval attestations, or real golden arithmetic suites | AT-07-04 through AT-07-15, AT-07-17, AT-07-18 and dose-validation exposure | AT-07-20 exact minimal formularies | Resolution in progress |
 | OpenRouter has no parity evidence | Fallback activation | Module 14 evidence and user-approved rollout | Expected future gate |
 | United States production activation is not approved | Module 15 US activation | Clinical, legal, provider, and release evidence | Expected future gate |

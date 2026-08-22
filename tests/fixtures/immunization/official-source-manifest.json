@@ -1,7 +1,7 @@
 {
   "schemaVersion": "immunization-official-source-manifest-v1",
   "retrievedOn": "2026-08-21",
-  "status": "source-bound-not-clinically-approved",
+  "status": "approved-basic-subsets-registered",
   "countries": {
     "CO": {
       "authority": "Ministerio de Salud y Protección Social de Colombia",
@@ -61,35 +61,35 @@
       "sources": [
         {
           "id": "us-acip-child-age-2025",
-          "uri": "https://www.cdc.gov/vaccines/hcp/imz-schedules/child-adolescent-age-compliant.html",
-          "title": "Child and Adolescent Immunization Schedule by Age (Compliant)",
+          "uri": "https://www.cdc.gov/vaccines/hcp/imz-schedules/child-adolescent-age.html",
+          "title": "Child and Adolescent Immunization Schedule by Age",
           "publishedOrCurrent": "July 2, 2025",
-          "artifactSha256": null,
-          "capture": "official-page-current-status-rechecked"
+          "artifactSha256": "5033ce27b6c114148e35c7c255da0ae00cc2fc5b8f68d74a20595537af42664a",
+          "capture": "byte-hashed"
         },
         {
           "id": "us-acip-child-catch-up-2025",
           "uri": "https://www.cdc.gov/vaccines/hcp/imz-schedules/child-adolescent-catch-up.html",
           "title": "Catch-up Immunization Schedule for Children and Adolescents",
           "publishedOrCurrent": "July 2, 2025; rechecked current August 21, 2026 under stated court stay",
-          "artifactSha256": null,
-          "capture": "official-page-current-status-rechecked"
+          "artifactSha256": "42c1fee6cc65a2fe51ac7708e566428a693fc14b3568685bee777c76f0803fda",
+          "capture": "byte-hashed"
         },
         {
           "id": "us-acip-child-medical-indication-2025",
           "uri": "https://www.cdc.gov/vaccines/hcp/imz-schedules/child-adolescent-medical-indication.html",
           "title": "Child and Adolescent Immunization Schedule by Medical Indication",
           "publishedOrCurrent": "July 2, 2025; rechecked current August 21, 2026 under stated court stay",
-          "artifactSha256": null,
-          "capture": "official-page-current-status-rechecked"
+          "artifactSha256": "090e13f99d2b478581a86cfb3508f14237981e0e85f6a34d06a42e78f72f9ad4",
+          "capture": "byte-hashed"
         },
         {
           "id": "us-acip-child-notes-2025",
           "uri": "https://www.cdc.gov/vaccines/hcp/imz-schedules/child-adolescent-notes.html",
           "title": "Child Immunization Schedule Notes",
           "publishedOrCurrent": "July 2, 2025",
-          "artifactSha256": null,
-          "capture": "official-page-current-status-rechecked"
+          "artifactSha256": "d0cfe078b519b0e4bb0938ba2a5cd4cf8607bb5b71e4f4bd901027334b57c688",
+          "capture": "byte-hashed"
         },
         {
           "id": "us-acip-child-appendix-2025",
@@ -118,5 +118,5 @@
       ]
     }
   },
-  "activationRule": "No country pack may activate from this manifest alone. The exact compiled artifact, algorithm digest, effective window, source digests, and independent clinical approval must be recorded in the Cloud governance tables first."
+  "activationRule": "Only the exact conservative artifact subset whose artifact, algorithm, test-vector, source-set, manifest, approval-conveyance, and effective-window digests are recorded in Cloud governance may be active. This manifest alone does not activate another package or expand clinical scope."
 }

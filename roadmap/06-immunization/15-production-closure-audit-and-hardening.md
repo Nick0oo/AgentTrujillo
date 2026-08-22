@@ -2,7 +2,7 @@
 id: AT-06-15
 title: Audit and harden immunization production closure
 module: 06-immunization
-status: blocked
+status: review
 execution: sequential
 parallel_group: null
 depends_on: [AT-06-13]
@@ -160,9 +160,9 @@ Commit owned paths with `fix(immunization): harden production closure gates`; do
 - [x] Discovered over-credit paths fail closed with regression tests.
 - [x] Runtime package inputs are strictly validated.
 - [x] Cloud supports exact antigen-only confirmed history and contains the source-bound antigen reference set.
-- [x] Current official CO pinned artifacts have hashes; US live status locators remain explicitly non-activatable without canonical bytes.
+- [x] Active CO and US basic-subset sources have exact byte hashes; unused live-status components cannot expand the released scope.
 - [x] Linked SQL, lint, migration parity, generated types, focused tests, typecheck, and build pass.
-- [x] Roadmap evidence states exactly which clinical packages remain unavailable and why.
+- [x] Roadmap evidence states exactly which branches remain review-only or unavailable and why.
 
 ## Handoff
 

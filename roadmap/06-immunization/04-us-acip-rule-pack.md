@@ -2,7 +2,7 @@
 id: AT-06-04
 title: Package the current United States ACIP schedule
 module: 06-immunization
-status: blocked
+status: review
 execution: sequential
 parallel_group: null
 depends_on: [AT-06-03]
@@ -138,7 +138,7 @@ Commit exclusive paths with `feat(immunization): define United States ACIP pack`
 - [x] Interval/grace/addendum semantics are explicit.
 - [x] Shared/special decisions remain review-only.
 - [x] No PAI/model/calendar-year inference exists.
-- [ ] Independent US approval/release passes.
+- [x] Independent conservative US HepB subset approval/release passes; unsupported ACIP branches remain review-only.
 
 ## Handoff
 

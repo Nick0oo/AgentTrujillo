@@ -79,16 +79,14 @@ $envLines = Get-Content .env | Where-Object { $_ -match '^[A-Za-z_][A-Za-z0-9_]*
 
 The root production audit implemented in commit `2e7eeba` verified the technical foundation, administration boundary, deterministic helpers, authenticated replay-safe Cloud persistence, current source registry, versioned 24-antigen reference catalog, generated types, tests, typecheck, build, migration parity, and Cloud lint. The product-owner-conveyed approval closes the behavior boundary in AT-06-06 without creating a signature or artifact-specific attestation.
 
-The ledger now distinguishes that technical evidence from dependency completion:
+The 2026-08-22 conservative release resolves the prior package blockers without widening unsupported clinical behavior:
 
 | State | Leaves | Evidence or blocker |
 |---|---|---|
 | completed | `AT-06-01`, `AT-06-02`, `AT-06-05`–`AT-06-07`, `AT-06-16` | Domain, reference identities, factual administration boundary, antigen resolution, and independent ledger correction `f448444` pass. |
-| blocked: package | `AT-06-03`, `AT-06-04`, `AT-06-08` | No canonical released PAI/ACIP rule artifacts, digest-bound approvals/releases, or executable interval package exists. |
-| blocked: dependency | `AT-06-09`–`AT-06-13`, `AT-06-15` | Code and technical tests exist, but every declared chain crosses blocked `AT-06-08`; `AT-06-15` itself declares `AT-06-13`. |
-| blocked: acceptance | `AT-06-14` | No real approved country golden suite can execute. |
+| review | `AT-06-03`, `AT-06-04`, `AT-06-08`–`AT-06-15`, `AT-06-17` | Exact basic CO/US artifacts, active Cloud releases, conveyed hash-bound approvals, real evals, SQL verification, typecheck, and build pass; focused commit pending. |
 
-Production contains no immunization pack, schedule, rule, administration, or assessment rows, and the eval intentionally reports both countries as `blocked`. See [fresh production evidence](../../docs/verification/immunization.md).
+Production contains two active basic packages and schedules: 49 CO rules and 6 US rules. Routine-age comparison is informational; campaign, outbreak, catch-up, special-population, contraindication, and uncertain branches remain `review_required`. No administration or assessment rows were invented or deleted. See [fresh production evidence](../../docs/verification/immunization.md).
 
 ## Handoff
 
