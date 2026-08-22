@@ -146,9 +146,13 @@ export type MedicationPlanInput = Readonly<{
   instructions?: string;
 }>;
 
+const positiveExactDecimalSchema = z.string().regex(/^(?:0\.[0-9]*[1-9][0-9]*|[1-9][0-9]*(?:\.[0-9]+)?)$/);
+
 export const medicationFrequencySchema = z.discriminatedUnion("kind", [
-  z.object({ kind: z.literal("interval"), everyHours: z.string().regex(/^(?:0|[1-9][0-9]*)(?:\.[0-9]+)?$/) }).strict(),
-  z.object({ kind: z.literal("times_of_day"), times: z.array(z.string().regex(/^([01][0-9]|2[0-3]):[0-5][0-9]$/)).min(1).max(24) }).strict(),
+  z.object({ kind: z.literal("interval"), everyHours: positiveExactDecimalSchema }).strict(),
+  z.object({ kind: z.literal("times_of_day"), times: z.array(z.string().regex(/^([01][0-9]|2[0-3]):[0-5][0-9]$/)).min(1).max(24) }).strict().superRefine((value, context) => {
+    if (new Set(value.times).size !== value.times.length) context.addIssue({ code: "custom", path: ["times"], message: "duplicate_time" });
+  }),
   z.object({ kind: z.literal("as_needed"), label: z.string().min(1).max(200) }).strict(),
 ]);
 
@@ -160,11 +164,13 @@ export const medicationPlanInputSchema = z.object({
   declaredIndication: z.string().min(1).max(200).optional(),
   startsAt: z.string().datetime({ offset: true }),
   endsAt: z.string().datetime({ offset: true }).optional(),
-  dose: z.object({ quantity: z.string(), unit: medicationUnitSchema }).strict().optional(),
+  dose: z.object({ quantity: positiveExactDecimalSchema, unit: medicationUnitSchema }).strict().optional(),
   route: medicationRouteSchema.optional(),
   frequency: medicationFrequencySchema.optional(),
   instructions: z.string().max(500).optional(),
-}).strict();
+}).strict().superRefine((value, context) => {
+  if (value.endsAt && Date.parse(value.endsAt) <= Date.parse(value.startsAt)) context.addIssue({ code: "custom", path: ["endsAt"], message: "end_must_follow_start" });
+});
 
 export const medicationValidationResultSchema = z.object({
   outcome: medicationValidationOutcomeSchema,

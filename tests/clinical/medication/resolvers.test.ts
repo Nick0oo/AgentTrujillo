@@ -42,8 +42,8 @@ const approvedPackage = (overrides: Partial<ApprovedMedicationPackage> = {}): Ap
   effectiveUntil: null,
   algorithmVersion: "synthetic-algorithm-1",
   vocabularyVersion: "synthetic-vocabulary-1",
-  status: "approved",
-  approvedBy: "dr-trujillo",
+  status: "active",
+  approvedBy: "synthetic-approver",
   artifactSha256: "a".repeat(64),
   sources: [{ sourceId: "synthetic-source", sourceVersion: "1", sourceKind: "formulary", sourceUri: "https://example.invalid/source", artifactSha256: "b".repeat(64) }],
   ...overrides,
@@ -84,5 +84,23 @@ describe("medication identity and package resolvers", () => {
     }, [approvedPackage({ country: "US" })]);
     expect(result.status).toBe("rule_unavailable");
     expect(result.package).toBeNull();
+  });
+
+  it("resolves only an active package with valid dates and complete source checksums", () => {
+    const query = {
+      country: "CO" as const,
+      at: "2026-08-16T12:00:00Z",
+      algorithmVersion: "synthetic-algorithm-1",
+      vocabularyVersion: "synthetic-vocabulary-1",
+      requiredSourceIds: ["synthetic-source"],
+      requiredArtifactSha256: "a".repeat(64),
+    };
+
+    expect(resolveMedicationFormulary(query, [approvedPackage({ status: "approved" })]).status).toBe("rule_unavailable");
+    expect(resolveMedicationFormulary(query, [approvedPackage({ effectiveFrom: "not-a-date" })]).status).toBe("rule_unavailable");
+    expect(resolveMedicationFormulary(query, [approvedPackage({ sources: [{ ...approvedPackage().sources[0]!, artifactSha256: "invalid" }] })]).status).toBe("rule_unavailable");
+    expect(resolveMedicationFormulary(query, [approvedPackage({ approvedBy: "" })]).status).toBe("rule_unavailable");
+    expect(resolveMedicationFormulary(query, [approvedPackage({ sources: [...approvedPackage().sources, { ...approvedPackage().sources[0]!, sourceId: "invalid-extra", sourceUri: "http://invalid.test" }] })]).status).toBe("rule_unavailable");
+    expect(resolveMedicationFormulary({ ...query, requiredSourceIds: [] }, [approvedPackage()]).status).toBe("rule_unavailable");
   });
 });

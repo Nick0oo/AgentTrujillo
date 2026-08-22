@@ -1880,7 +1880,7 @@ export type Database = {
           package_version?: string | null
           request_id: string
           result: string
-          source_evidence?: Json
+          source_evidence: Json
           validated_at?: string
           validated_by?: string | null
           vocabulary_version?: string | null
@@ -3857,29 +3857,41 @@ export type Database = {
         Row: {
           active: boolean
           antigen_code: string
+          catalog_version: string
           created_at: string
           disease_group: string | null
           display_name_en: string
           display_name_es: string
+          effective_from: string
+          effective_until: string | null
           id: string
+          source_digest: string
         }
         Insert: {
           active?: boolean
           antigen_code: string
+          catalog_version: string
           created_at?: string
           disease_group?: string | null
           display_name_en: string
           display_name_es: string
+          effective_from: string
+          effective_until?: string | null
           id?: string
+          source_digest: string
         }
         Update: {
           active?: boolean
           antigen_code?: string
+          catalog_version?: string
           created_at?: string
           disease_group?: string | null
           display_name_en?: string
           display_name_es?: string
+          effective_from?: string
+          effective_until?: string | null
           id?: string
+          source_digest?: string
         }
         Relationships: []
       }
@@ -3916,36 +3928,51 @@ export type Database = {
       vaccine_products: {
         Row: {
           active: boolean
+          aliases: string[]
           brand_name: string | null
+          catalog_version: string
           country_code: string
           created_at: string
+          effective_from: string
+          effective_until: string | null
           id: string
           manufacturer: string | null
           presentation: string | null
           product_code: string
           regulatory_identifier: string | null
+          source_digest: string
         }
         Insert: {
           active?: boolean
+          aliases?: string[]
           brand_name?: string | null
+          catalog_version: string
           country_code: string
           created_at?: string
+          effective_from: string
+          effective_until?: string | null
           id?: string
           manufacturer?: string | null
           presentation?: string | null
           product_code: string
           regulatory_identifier?: string | null
+          source_digest: string
         }
         Update: {
           active?: boolean
+          aliases?: string[]
           brand_name?: string | null
+          catalog_version?: string
           country_code?: string
           created_at?: string
+          effective_from?: string
+          effective_until?: string | null
           id?: string
           manufacturer?: string | null
           presentation?: string | null
           product_code?: string
           regulatory_identifier?: string | null
+          source_digest?: string
         }
         Relationships: []
       }

@@ -1,6 +1,6 @@
 import type { AuthorizedChildScope } from "../../../agent/lib/access/authorized-child-scope.ts";
 import { hasPermission } from "../../../agent/lib/access/authorized-child-scope.ts";
-import type { MedicationValidationOutcome } from "./types.ts";
+import type { MedicationSourceEvidence, MedicationValidationOutcome } from "./types.ts";
 
 export type DoseValidationIngredientTrace = Readonly<{
   ingredientCode: string;
@@ -22,7 +22,7 @@ export type DoseValidationWrite = Readonly<{
   artifactSha256: string | null;
   inputDigest: string;
   decisionDigest: string;
-  sourceEvidence: Readonly<Record<string, unknown>>;
+  sourceEvidence: readonly MedicationSourceEvidence[];
   ingredients: readonly DoseValidationIngredientTrace[];
 }>;
 
@@ -36,6 +36,17 @@ export function createDoseValidationRepository(client: Readonly<{ rpc(name: stri
   return {
     async save(scope, input) {
       if (!hasPermission(scope, "record")) throw new Error("MEDICATION_SCOPE_DENIED");
+      const sourceKinds = new Set(["identity", "label", "formulary", "algorithm"]);
+      const sourcesValid = input.sourceEvidence.length > 0 && input.sourceEvidence.every((source) => {
+        const keys = Object.keys(source).sort();
+        return keys.join("|") === "artifactSha256|sourceId|sourceKind|sourceUri|sourceVersion"
+          && source.sourceId.length > 0
+          && source.sourceVersion.length > 0
+          && sourceKinds.has(source.sourceKind)
+          && /^https:\/\//.test(source.sourceUri)
+          && /^[a-f0-9]{64}$/.test(source.artifactSha256);
+      });
+      if (!sourcesValid) throw new Error("MEDICATION_SOURCE_EVIDENCE_INVALID");
       const response = await client.rpc("record_dose_validation", {
         p_care_space_id: scope.careSpaceId,
         p_child_id: scope.childId,

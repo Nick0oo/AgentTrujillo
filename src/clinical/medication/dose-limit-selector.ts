@@ -28,6 +28,10 @@ function weightInRange(value: string | null, min: string | null, max: string | n
 }
 
 export function selectMedicationDoseRule(query: MedicationDoseRuleQuery, rules: readonly MedicationDoseRule[]): MedicationDoseRuleResolution {
+  if (!Number.isInteger(query.ageDays) || query.ageDays < 0) return { status: "insufficient_data", rule: null, explanationCodes: ["AGE_INPUT_INVALID"] };
+  if (query.weightKg !== null) {
+    try { parseExactDecimal(query.weightKg, { strictlyPositive: true }); } catch { return { status: "insufficient_data", rule: null, explanationCodes: ["WEIGHT_INPUT_INVALID"] }; }
+  }
   const candidates = rules.filter((rule) => rule.conceptCode === query.conceptCode
     && rule.route === query.route
     && inRange(query.ageDays, rule.minAgeDays, rule.maxAgeDays)

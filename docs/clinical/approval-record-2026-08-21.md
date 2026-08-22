@@ -32,3 +32,13 @@ The same conveyed approval will be referenced for already-reviewed deterministic
 - CDC 2022 extended BMI is a deterministic calculation for eligible measurements, not a diagnosis or model decision.
 
 The exact 17 WHO/CDC source hashes were independently revalidated during closure. Their production rows remain `reviewed`; this conveyed approval is not substituted for a checksum-bound package attestation or release.
+
+## Module 07 behavior scope accepted
+
+- Plans and schedules only render a regimen already declared by the caregiver; they do not select a medicine, dose, frequency, start, or duration.
+- Intakes are retrospective facts and adherence output is neutral, descriptive, and incomplete when source rows conflict.
+- Medication identity, presentation, weight, concentration, rule, and limit ambiguity blocks comparison rather than selecting a convenient value.
+- `within_reference_limits` is never described as safe to administer and no result proposes an alternative, corrective, catch-up, or missed-dose action.
+- Urgent medication harm remains owned by the deterministic module `04` boundary and creates no medication write or operational escalation.
+
+This conveyed behavior approval permits the synthetic deterministic boundaries to be reviewed as implemented. It does not approve any medication catalog, pediatric dose range, formulary, country package, or real golden arithmetic result because none exists in the repository or production registry. Those artifacts still require exact checksum-bound module `03` attestation by a verified approver subject; this record is neither that attestation nor Dr. Trujillo's signature.

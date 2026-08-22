@@ -28,8 +28,8 @@ These facts do not close pending behavioral gates. Local schema parity, generate
 - Documentation design: `completed` at commit `08ed71a`.
 - Documentation implementation plan: `completed` at commit `2ba542b`.
 - Atomic roadmap authoring: modules `01` through `15` completed and cross-module verification passed; see [verification evidence](docs/verification/2026-08-16-agent-roadmap.md).
-- Product implementation: modules `01` through `05` completed with fresh runtime or Cloud evidence. Module `06` has completed production hardening but remains clinically blocked because no real PAI/ACIP package or approved golden suite exists.
-- Next active executable unit: module `07` production closure audit. Module `06` schedule evaluation remains fail-closed.
+- Product implementation: modules `01` through `05` completed with fresh runtime or Cloud evidence. Modules `06` and `07` have completed production hardening but remain clinically blocked because their real country packages, checksum-bound attestations, and approved golden suites do not exist.
+- Next active executable unit: none selected. Modules `06` immunization and `07` dose evaluation remain fail-closed; module `08` has only been compatibility-read and has not started implementation.
 
 ## Module ledger
 
@@ -41,7 +41,7 @@ These facts do not close pending behavioral gates. Local schema parity, generate
 | 04 | Safety and emergency boundary | completed | completed | Critical red flags bypass the LLM and emit approved emergency-only copy | [Module 04](roadmap/04-safety-and-emergency-boundary/README.md) |
 | 05 | Anthropometry and growth | completed | completed | Reproducible age, Z-score, percentile, and growth-series results | [Module 05](roadmap/05-anthropometry-and-growth/README.md) |
 | 06 | Immunization | completed | blocked | PAI and ACIP evaluations are separate, reproducible, and source-traceable | [Module 06](roadmap/06-immunization/README.md) |
-| 07 | Medication and adherence | completed | pending | Declared-dose validation is conservative and plans/intakes are idempotent | [Module 07](roadmap/07-medication-and-adherence/README.md) |
+| 07 | Medication and adherence | completed | blocked | Declared-dose validation is conservative and plans/intakes are idempotent | [Module 07](roadmap/07-medication-and-adherence/README.md) |
 | 08 | Nutrition and development | completed | pending | Guidance stays educational and EAD-3 remains professional-only | [Module 08](roadmap/08-nutrition-and-development/README.md) |
 | 09 | Clinical memory and documents | completed | pending | Retrieval and Storage remain private and child-scoped | [Module 09](roadmap/09-clinical-memory-and-documents/README.md) |
 | 10 | Eve tools and presenters | completed | pending | Every tool is typed, scoped, policy-gated, idempotent, and safely rendered | [Module 10](roadmap/10-eve-tools-and-presenters/README.md) |
@@ -59,7 +59,7 @@ The documentation gate is complete. The initial product implementation candidate
 
 | ID | Work unit | Required before dispatch |
 |---|---|---|
-| — | No work unit selected | Module 07 audit is selected after the module 06 focused commit |
+| AT-07-19 | Audit and harden medication production closure | Root review pending focused commit and evidence hash |
 
 The root agent recalculates readiness from leaf frontmatter before every dispatch.
 
@@ -67,7 +67,7 @@ The root agent recalculates readiness from leaf frontmatter before every dispatc
 
 | Worker | Work unit | Claimed paths | Started | State |
 |---|---|---|---|---|
-| — | — | — | — | idle |
+| Root agent | AT-07-19 | Declared module-07 amendment paths | 2026-08-21 | review |
 
 Future implementation workers use GPT-5.6 Luna with reasoning `max`. At most three may run concurrently after collision analysis.
 
@@ -76,6 +76,7 @@ Future implementation workers use GPT-5.6 Luna with reasoning `max`. At most thr
 | Blocker | Affected units | Resolution authority | State |
 |---|---|---|---|
 | No canonical approved PAI/ACIP rule-pack artifacts or real golden suites | AT-06-03, AT-06-04, AT-06-08, AT-06-14 and schedule exposure | Verified clinical attestation plus technical checksum/release gate | Active blocker |
+| No immutable medication catalogs, exact CO/US pediatric formulary packages, checksum-bound approval attestations, or real golden arithmetic suites | AT-07-04 through AT-07-15, AT-07-17, AT-07-18 and dose-validation exposure | Verified clinical artifact authorship, module 03 attestation, release, and acceptance suite | Active blocker |
 | OpenRouter has no parity evidence | Fallback activation | Module 14 evidence and user-approved rollout | Expected future gate |
 | United States production activation is not approved | Module 15 US activation | Clinical, legal, provider, and release evidence | Expected future gate |
 

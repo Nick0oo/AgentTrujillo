@@ -2,7 +2,7 @@
 id: AT-07-03
 title: Make medication operations replay-safe
 module: 07-medication-and-adherence
-status: blocked
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-07-02]
@@ -135,11 +135,11 @@ Commit only the exclusive paths with `feat(medication): enforce operation idempo
 
 ## Completion checklist
 
-- [ ] Domain write and idempotency result are one transaction.
-- [ ] Changed input under one key conflicts.
-- [ ] Replay rechecks current authorization.
-- [ ] Keys are child/actor/kind scoped.
-- [ ] Concurrent retries create one domain effect.
+- [x] Domain write and idempotency result are one transaction.
+- [x] Changed input under one key conflicts.
+- [x] Replay rechecks current authorization.
+- [x] Keys are child/actor/kind scoped.
+- [x] Concurrent retries create one domain effect.
 
 ## Handoff
 

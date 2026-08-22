@@ -47,4 +47,18 @@ describe("medication domain contracts", () => {
 
     expect(result.success).toBe(false);
   });
+
+  it("rejects invalid quantities, duplicate times, and inverted plan windows", () => {
+    const base = {
+      displayName: "medication",
+      conceptCode: "synthetic-identity",
+      codingSystem: "INVIMA" as const,
+      startsAt: "2026-08-17T08:00:00Z",
+    };
+
+    expect(medicationPlanInputSchema.safeParse({ ...base, dose: { quantity: "0", unit: "mL" } }).success).toBe(false);
+    expect(medicationPlanInputSchema.safeParse({ ...base, dose: { quantity: "1e3", unit: "mL" } }).success).toBe(false);
+    expect(medicationPlanInputSchema.safeParse({ ...base, frequency: { kind: "times_of_day", times: ["08:00", "08:00"] } }).success).toBe(false);
+    expect(medicationPlanInputSchema.safeParse({ ...base, endsAt: "2026-08-16T08:00:00Z" }).success).toBe(false);
+  });
 });

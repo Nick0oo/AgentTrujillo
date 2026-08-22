@@ -1,14 +1,14 @@
 import type { AuthorizedChildScope } from "../../../agent/lib/access/authorized-child-scope.ts";
 import type { MedicationIntakeRecord } from "../../clinical/medication/types.ts";
-import { createMedicationOperationExecutor } from "../../persistence/supabase/medication-idempotency.ts";
+import { createMedicationOperationExecutor, deriveMedicationOperationDigest } from "../../persistence/supabase/medication-idempotency.ts";
 import type { MedicationIntakeCommand, MedicationOperationInput, MedicationStore } from "./ports.ts";
 import { requireMedicationScope, requirePlanRecord } from "./scope.ts";
 
 export function createMedicationIntakeService(store: MedicationStore, options: Readonly<{ now?: () => Date }> = {}) {
   const now = options.now ?? (() => new Date());
   const execute = createMedicationOperationExecutor();
-  function operation(scope: AuthorizedChildScope, kind: "record_intake" | "correct_intake", input: MedicationOperationInput) {
-    return { careSpaceId: scope.careSpaceId, childId: scope.childId, actorUserId: scope.actorUserId, operationKind: kind, idempotencyKey: input.idempotencyKey, digest: input.digest } as const;
+  function operation(scope: AuthorizedChildScope, kind: "record_intake" | "correct_intake", input: MedicationOperationInput, domainInput: unknown) {
+    return { careSpaceId: scope.careSpaceId, childId: scope.childId, actorUserId: scope.actorUserId, operationKind: kind, idempotencyKey: input.idempotencyKey, digest: deriveMedicationOperationDigest({ kind, domainInput }) } as const;
   }
   async function validateCommand(scope: AuthorizedChildScope, command: MedicationIntakeCommand): Promise<Readonly<{ planId: string; occurrenceId: string | null; scheduledFor: string | null }>> {
     requirePlanRecord(scope, command.planId);
@@ -22,14 +22,14 @@ export function createMedicationIntakeService(store: MedicationStore, options: R
     async record(scope: AuthorizedChildScope, command: MedicationIntakeCommand, inputOperation: MedicationOperationInput): Promise<MedicationIntakeRecord> {
       requireMedicationScope(scope, "record", now());
       const normalized = await validateCommand(scope, command);
-      const op = operation(scope, "record_intake", inputOperation);
+      const op = operation(scope, "record_intake", inputOperation, { ...normalized, takenAt: command.takenAt ?? null, state: command.state, quantity: command.quantity ?? null, unit: command.unit ?? null });
       return (await execute(op, () => store.createIntake(scope, { ...normalized, takenAt: command.takenAt ?? null, state: command.state, quantity: (command.quantity ?? null) as MedicationIntakeRecord["quantity"], unit: command.unit ?? null, supersedesId: null }, op))).value;
     },
     async correct(scope: AuthorizedChildScope, intakeId: string, command: MedicationIntakeCommand, inputOperation: MedicationOperationInput): Promise<MedicationIntakeRecord> {
       requireMedicationScope(scope, "record", now());
       const previous = await store.getIntake(scope, intakeId); if (!previous) throw new Error("MEDICATION_INTAKE_NOT_FOUND");
       const normalized = await validateCommand(scope, command);
-      const op = operation(scope, "correct_intake", inputOperation);
+      const op = operation(scope, "correct_intake", inputOperation, { intakeId, ...normalized, takenAt: command.takenAt ?? null, state: command.state, quantity: command.quantity ?? null, unit: command.unit ?? null });
       return (await execute(op, () => store.createIntake(scope, { ...normalized, takenAt: command.takenAt ?? null, state: command.state, quantity: (command.quantity ?? null) as MedicationIntakeRecord["quantity"], unit: command.unit ?? null, supersedesId: previous.id }, op))).value;
     },
     async get(scope: AuthorizedChildScope, intakeId: string): Promise<MedicationIntakeRecord> {

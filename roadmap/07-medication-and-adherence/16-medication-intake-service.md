@@ -2,7 +2,7 @@
 id: AT-07-16
 title: Record medication intake facts idempotently
 module: 07-medication-and-adherence
-status: completed
+status: blocked
 execution: sequential
 parallel_group: null
 depends_on: [AT-07-03, AT-07-15]
@@ -127,6 +127,8 @@ Record transition/replay vectors, negative access matrix, row history trace, com
 Commit only the exclusive paths with `feat(medication): record intake facts`; attach verification evidence and leave unrelated user changes untouched.
 
 ## Completion checklist
+
+Production audit correction (2026-08-21): the implementation and Cloud persistence evidence below are technically verified, but root status is `blocked` because declared dependency `AT-07-15` is not completed. The checked criteria are evidence of implemented behavior, not permission to bypass the dependency gate.
 
 - [x] Intakes are retrospective caregiver-declared facts.
 - [x] Confirmation and idempotency are enforced.

@@ -25,6 +25,20 @@ All eighteen leaves are complete and fresh evidence proves:
 - adherence is descriptive, neutral, source-complete, and never a diagnosis or blame score;
 - critical clinical, arithmetic, replay, isolation, and prohibited-language discrepancies are zero.
 
+## Production closure state — 2026-08-21
+
+The lifecycle foundation is deployed and Cloud-verified, but the module exit gate remains `blocked` rather than falsely completed.
+
+| State | Leaves | Evidence or blocker |
+|---|---|---|
+| completed | `AT-07-01`, `AT-07-02`, `AT-07-03` | Typed boundary, forward schema, and server-derived replay identity pass. |
+| review | `AT-07-19` | Production hardening is implemented and awaiting its focused commit/evidence hash. |
+| blocked: catalog/package | `AT-07-04`–`AT-07-12` | No immutable INVIMA/IUM or RxNorm/DailyMed medication catalog, no exact active country formulary, no checksum-bound approval attestation, and no real reviewed arithmetic vectors exist. |
+| blocked: dependency | `AT-07-13`–`AT-07-17` | Persistence and factual-intake paths are technically verified and lifecycle helpers fail closed, but the declared dependency chain and full leaf acceptance matrices cannot be completed while the catalog/package leaves remain blocked. `AT-07-16` was corrected from `completed` because its declared `AT-07-15` dependency is blocked. |
+| blocked: acceptance | `AT-07-18` | CO and US cases correctly report `blocked`; real golden arithmetic, source/package/approval digests, and the complete isolation/property suite are absent. |
+
+Product-owner-conveyed approval closes the non-prescriptive behavior wording review. It does not create the missing package artifacts or substitute for the module `03` digest-bound attestation. Production therefore contains six reviewed official source locators and zero medication concepts, presentations, formularies, dose limits, patient plans, intakes, or validation decisions.
+
 ## Dependency graph
 
 ```text
@@ -60,6 +74,7 @@ After shared types, schema, concept resolution, and verified-weight work may pro
 | [AT-07-16](16-medication-intake-service.md) | Record retrospective intake facts | no | no | `AT-07-03`, `AT-07-15` |
 | [AT-07-17](17-adherence-summary-query.md) | Summarize factual adherence neutrally | no | yes | `AT-07-16` |
 | [AT-07-18](18-medication-fixtures-and-evals.md) | Prove arithmetic, safety, replay, isolation | no | no | `AT-07-13`, `AT-07-17` |
+| [AT-07-19](19-production-closure-audit-and-hardening.md) | Audit and harden production closure | yes | yes | `AT-07-16` |
 
 ## Clinical boundary
 
@@ -68,16 +83,16 @@ The dose validator only compares the exact regimen already declared by the careg
 ## Module verification
 
 ```powershell
-npx supabase db push --linked --yes
-npx supabase db query --linked --file supabase/tests/026_medication_plan_hardening.test.sql
-npx supabase db query --linked --file supabase/tests/027_medication_operation_idempotency.test.sql
-npx supabase db query --linked --file supabase/tests/028_medication_validation_persistence.test.sql
-npx supabase db lint --linked
-npx supabase migration list --linked
+npx supabase db push --linked
+npx supabase db lint --linked --level error
+npx supabase migration list
 npm run eval:medication
+npm test
+npm run typecheck
+npm run build
 ```
 
-This module uses the linked production Cloud project only. No local Supabase instance, local database reset, or local SQL test runner is part of the gate.
+`supabase/tests/032_medication_production_hardening.test.sql` is submitted directly to the linked project's database-query endpoint and runs all fixtures inside `BEGIN`/`ROLLBACK`. This module uses the linked production Cloud project only. No local Supabase instance, local database reset, or Docker SQL runner is part of the gate.
 
 ## Handoff
 
