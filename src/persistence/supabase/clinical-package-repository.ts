@@ -7,7 +7,7 @@ import type { AlgorithmIdentity } from "../../clinical/governance/algorithm-type
 import { clinicalArtifactPath } from "../../clinical/governance/artifact-store.ts";
 import type { ApprovalAttestation } from "../../clinical/governance/approval-types.ts";
 import type { ClinicalPackageCandidate, ClinicalPackageRepository, ClinicalPackageQuery } from "../../clinical/governance/package-repository.ts";
-import type { ClinicalSourceReference, CountryCode, Sha256Hex } from "../../clinical/governance/source-types.ts";
+import type { ClinicalAuthority, ClinicalSourceReference, CountryCode, Sha256Hex } from "../../clinical/governance/source-types.ts";
 
 type Client = SupabaseClient<Database>;
 type PackRow = Database["public"]["Tables"]["clinical_rule_packs"]["Row"];
@@ -29,17 +29,22 @@ function asCountry(value: string): CountryCode | null {
 }
 
 function sourceFor(row: SourceRow, query: ClinicalPackageQuery): ClinicalSourceReference | null {
-  const authority = query.countryCode === "CO" ? "MINSALUD_PAI" : "CDC_ACIP";
+  const allowedAuthorities: readonly ClinicalAuthority[] = query.domain === "immunization"
+    ? query.countryCode === "CO" ? ["MINSALUD_PAI"] : ["CDC_ACIP"]
+    : query.domain === "medication"
+      ? query.countryCode === "CO" ? ["INVIMA"] : ["NLM_DAILYMED", "NLM_RXNORM", "FDA"]
+      : query.countryCode === "GLOBAL" ? ["WHO"] : [];
+  const authority = allowedAuthorities.find((candidate) => candidate === row.authority);
   const artifactSha256 = asSha256(row.artifact_sha256);
   const jurisdiction = asCountry(row.jurisdiction);
-  if (row.authority !== authority || jurisdiction !== query.countryCode || row.status !== "approved"
+  if (!authority || jurisdiction !== query.countryCode || row.status !== "approved"
     || !artifactSha256 || !row.license?.trim() || !row.retrieved_at
     || !ISO_DATE.test(row.published_at ?? row.retrieved_at.slice(0, 10))) return null;
   return Object.freeze({
     id: row.id,
     authority,
     jurisdiction,
-    domain: "immunization",
+    domain: query.domain,
     title: row.title,
     sourceUri: row.source_uri,
     citation: row.citation,
@@ -115,10 +120,10 @@ function approvalFor(row: ApprovalRow, pack: PackRow, algorithmId: string, algor
   });
 }
 
-function locationFor(pack: PackRow, artifactSha256: Sha256Hex) {
+function locationFor(pack: PackRow, artifactSha256: Sha256Hex, query: ClinicalPackageQuery) {
   const country = asCountry(pack.country_code);
   if (!country || !ISO_DATE.test(pack.effective_from ?? "")) return null;
-  return { bucket: "clinical-sources" as const, path: clinicalArtifactPath("immunization", country, artifactSha256), artifactSha256 };
+  return { bucket: "clinical-sources" as const, path: clinicalArtifactPath(query.domain, country, artifactSha256), artifactSha256 };
 }
 
 function candidateFor(
@@ -148,7 +153,7 @@ function candidateFor(
   const approvalRows = approvals.filter((item) => item.rule_pack_id === pack.id && item.decision === "approved")
     .sort((left, right) => right.decided_at.localeCompare(left.decided_at));
   const approval = approvalRows.map((row) => approvalFor(row, pack, release.algorithm_id, algorithm.identity, sourceSetSha256)).find((value): value is ApprovalAttestation => Boolean(value));
-  const location = locationFor(pack, artifactSha256);
+  const location = locationFor(pack, artifactSha256, query);
   if (!approval || !location) return null;
   return Object.freeze({
     pack: Object.freeze({ id: pack.id, domain: query.domain, countryCode: country, version: pack.version, locale: pack.locale, status: pack.status, effectiveFrom, effectiveUntil: pack.effective_until, artifactSha256 }),

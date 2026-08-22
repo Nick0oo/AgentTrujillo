@@ -25,6 +25,23 @@ export function compareMedicationDailyExposure(input: Readonly<{ perDoseAmount: 
   if (input.frequency.kind === "times_of_day") {
     if (new Set(input.frequency.times).size !== input.frequency.times.length) return { status: "requires_professional_review", dailyAmount: null, expectedDoses: null, explanationCodes: ["DUPLICATE_DECLARED_TIMES"] };
     if (input.frequency.times.length === 0) return { status: "insufficient_data", dailyAmount: null, expectedDoses: null, explanationCodes: ["DECLARED_FREQUENCY_INVALID"] };
+    if (input.rule.minimumIntervalHours) {
+      let minimumMinutes;
+      try { minimumMinutes = parseExactDecimal(input.rule.minimumIntervalHours, { strictlyPositive: true }).value.mul(60); } catch {
+        return { status: "requires_professional_review", dailyAmount: null, expectedDoses: null, explanationCodes: ["DAILY_REFERENCE_INVALID"] };
+      }
+      const minutes = input.frequency.times.map((time) => {
+        const [hour, minute] = time.split(":").map(Number);
+        return hour! * 60 + minute!;
+      }).sort((left, right) => left - right);
+      const intervals = minutes.map((value, index) => {
+        const next = index === minutes.length - 1 ? minutes[0]! + 24 * 60 : minutes[index + 1]!;
+        return next - value;
+      });
+      if (intervals.some((interval) => minimumMinutes.gt(interval))) {
+        return { status: "outside", dailyAmount: null, expectedDoses: String(minutes.length), explanationCodes: ["MINIMUM_INTERVAL_EXCEEDED"] };
+      }
+    }
     expectedDoses = parseExactDecimal(String(input.frequency.times.length), { strictlyPositive: true });
   } else {
     let interval;

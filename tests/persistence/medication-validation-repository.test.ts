@@ -58,4 +58,17 @@ describe("dose validation repository", () => {
 
     expect(rpc).not.toHaveBeenCalled();
   });
+
+  it("passes a numeric comparison only when exact governed package identity is present", async () => {
+    const rpc = vi.fn(async (_name: string, _args: Record<string, unknown>) => ({ data: [{ validation_id: "00000000-0000-4000-8000-000000000098", outcome: "created" }], error: null }));
+    const governed = {
+      ...write,
+      outcome: "within_reference_limits" as const,
+      explanationCodes: ["DECLARED_DOSE_WITHIN_EXACT_REFERENCE"],
+      packageVersion: "2026.basic.1",
+      artifactSha256: "d".repeat(64),
+    };
+    await expect(createDoseValidationRepository({ rpc }).save(scope(), governed)).resolves.toMatchObject({ outcome: "created" });
+    expect(rpc).toHaveBeenCalledOnce();
+  });
 });

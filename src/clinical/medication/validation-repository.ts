@@ -36,10 +36,10 @@ export function createDoseValidationRepository(client: Readonly<{ rpc(name: stri
   return {
     async save(scope, input) {
       if (!hasPermission(scope, "record")) throw new Error("MEDICATION_SCOPE_DENIED");
-      const legacyOutcome = input.outcome === "insufficient_data" || input.outcome === "requires_professional_review";
-      if (!legacyOutcome
-        || input.packageVersion !== "unavailable"
-        || input.artifactSha256 !== null
+      const unavailableOutcome = input.outcome === "insufficient_data" || input.outcome === "requires_professional_review";
+      const unavailablePackage = unavailableOutcome && input.packageVersion === "unavailable" && input.artifactSha256 === null;
+      const governedPackage = input.packageVersion !== "unavailable" && /^[a-f0-9]{64}$/.test(input.artifactSha256 ?? "");
+      if ((!unavailablePackage && !governedPackage)
         || input.explanationCodes.length === 0
         || input.algorithmVersion.length === 0
         || input.vocabularyVersion.length === 0) {

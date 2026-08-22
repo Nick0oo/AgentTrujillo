@@ -2404,33 +2404,45 @@ export type Database = {
       medication_concepts: {
         Row: {
           active: boolean
+          catalog_version: string | null
           coding_system: string
           concept_code: string
+          country_code: string | null
           created_at: string
           display_name_en: string | null
           display_name_es: string
           id: string
           ingredient_name: string
+          source_artifact_sha256: string | null
+          source_reference_ids: string[]
         }
         Insert: {
           active?: boolean
+          catalog_version?: string | null
           coding_system: string
           concept_code: string
+          country_code?: string | null
           created_at?: string
           display_name_en?: string | null
           display_name_es: string
           id?: string
           ingredient_name: string
+          source_artifact_sha256?: string | null
+          source_reference_ids?: string[]
         }
         Update: {
           active?: boolean
+          catalog_version?: string | null
           coding_system?: string
           concept_code?: string
+          country_code?: string | null
           created_at?: string
           display_name_en?: string | null
           display_name_es?: string
           id?: string
           ingredient_name?: string
+          source_artifact_sha256?: string | null
+          source_reference_ids?: string[]
         }
         Relationships: []
       }
@@ -2660,11 +2672,14 @@ export type Database = {
           concentration_numerator_unit: string
           country_code: string
           created_at: string
+          dosage_form: string | null
           id: string
           medication_concept_id: string
           presentation_name: string
           regulatory_identifier: string | null
+          release_type: string | null
           route: string | null
+          source_reference_ids: string[]
         }
         Insert: {
           active?: boolean
@@ -2674,11 +2689,14 @@ export type Database = {
           concentration_numerator_unit: string
           country_code: string
           created_at?: string
+          dosage_form?: string | null
           id?: string
           medication_concept_id: string
           presentation_name: string
           regulatory_identifier?: string | null
+          release_type?: string | null
           route?: string | null
+          source_reference_ids?: string[]
         }
         Update: {
           active?: boolean
@@ -2688,11 +2706,14 @@ export type Database = {
           concentration_numerator_unit?: string
           country_code?: string
           created_at?: string
+          dosage_form?: string | null
           id?: string
           medication_concept_id?: string
           presentation_name?: string
           regulatory_identifier?: string | null
+          release_type?: string | null
           route?: string | null
+          source_reference_ids?: string[]
         }
         Relationships: [
           {
@@ -3083,10 +3104,13 @@ export type Database = {
       pediatric_dose_limits: {
         Row: {
           created_at: string
+          daily_unit: string | null
           dose_per_kg_max: number | null
           dose_per_kg_min: number | null
           dose_unit: string
           exclusions: Json
+          fixed_per_dose_max: number | null
+          fixed_per_dose_min: number | null
           formulary_version_id: string
           id: string
           indication_code: string | null
@@ -3095,17 +3119,26 @@ export type Database = {
           maximum_age_days: number | null
           maximum_weight_kg: number | null
           medication_concept_id: string
+          medication_presentation_id: string | null
           minimum_age_days: number | null
           minimum_interval_hours: number | null
           minimum_weight_kg: number | null
           route: string
+          rule_code: string | null
+          source_maximum_weight: number | null
+          source_minimum_weight: number | null
+          source_reference_ids: string[]
+          source_weight_unit: string | null
         }
         Insert: {
           created_at?: string
+          daily_unit?: string | null
           dose_per_kg_max?: number | null
           dose_per_kg_min?: number | null
           dose_unit: string
           exclusions?: Json
+          fixed_per_dose_max?: number | null
+          fixed_per_dose_min?: number | null
           formulary_version_id: string
           id?: string
           indication_code?: string | null
@@ -3114,17 +3147,26 @@ export type Database = {
           maximum_age_days?: number | null
           maximum_weight_kg?: number | null
           medication_concept_id: string
+          medication_presentation_id?: string | null
           minimum_age_days?: number | null
           minimum_interval_hours?: number | null
           minimum_weight_kg?: number | null
           route: string
+          rule_code?: string | null
+          source_maximum_weight?: number | null
+          source_minimum_weight?: number | null
+          source_reference_ids?: string[]
+          source_weight_unit?: string | null
         }
         Update: {
           created_at?: string
+          daily_unit?: string | null
           dose_per_kg_max?: number | null
           dose_per_kg_min?: number | null
           dose_unit?: string
           exclusions?: Json
+          fixed_per_dose_max?: number | null
+          fixed_per_dose_min?: number | null
           formulary_version_id?: string
           id?: string
           indication_code?: string | null
@@ -3133,10 +3175,16 @@ export type Database = {
           maximum_age_days?: number | null
           maximum_weight_kg?: number | null
           medication_concept_id?: string
+          medication_presentation_id?: string | null
           minimum_age_days?: number | null
           minimum_interval_hours?: number | null
           minimum_weight_kg?: number | null
           route?: string
+          rule_code?: string | null
+          source_maximum_weight?: number | null
+          source_minimum_weight?: number | null
+          source_reference_ids?: string[]
+          source_weight_unit?: string | null
         }
         Relationships: [
           {
@@ -3151,6 +3199,13 @@ export type Database = {
             columns: ["medication_concept_id"]
             isOneToOne: false
             referencedRelation: "medication_concepts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pediatric_dose_limits_medication_presentation_id_fkey"
+            columns: ["medication_presentation_id"]
+            isOneToOne: false
+            referencedRelation: "medication_presentations"
             referencedColumns: ["id"]
           },
         ]

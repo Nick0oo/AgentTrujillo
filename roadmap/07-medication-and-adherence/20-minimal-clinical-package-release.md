@@ -18,9 +18,17 @@ touches:
     - supabase/migrations/20260822120000_minimal_medication_formularies.sql
     - roadmap/07-medication-and-adherence/20-minimal-clinical-package-release.md
   modify:
+    - agent/lib/supabase/database.types.ts
     - fixtures/medication/**
+    - src/clinical/governance/source-policy.ts
+    - src/clinical/governance/source-types.ts
+    - src/persistence/supabase/clinical-package-repository.ts
+    - supabase/tests/032_medication_production_hardening.test.sql
     - tests/evals/medication.eval.ts
     - tests/clinical/medication/**
+    - tests/clinical/governance/source-contract.test.ts
+    - tests/persistence/clinical-package-repository.test.ts
+    - tests/persistence/medication-validation-repository.test.ts
     - src/persistence/supabase/database.types.ts
     - docs/verification/medication.md
     - roadmap/07-medication-and-adherence/**
@@ -30,10 +38,19 @@ touches:
     - tests/evals/medication.eval.ts
 exclusive_paths:
   - src/clinical/medication/**
+  - src/clinical/governance/source-policy.ts
+  - src/clinical/governance/source-types.ts
+  - src/persistence/supabase/clinical-package-repository.ts
+  - agent/lib/supabase/database.types.ts
   - fixtures/medication/**
   - tests/clinical/medication/**
   - tests/evals/medication.eval.ts
   - supabase/migrations/20260822120000_minimal_medication_formularies.sql
+  - supabase/tests/032_medication_production_hardening.test.sql
+  - supabase/tests/035_minimal_medication_formularies.test.sql
+  - tests/clinical/governance/source-contract.test.ts
+  - tests/persistence/clinical-package-repository.test.ts
+  - tests/persistence/medication-validation-repository.test.ts
   - docs/verification/medication.md
   - roadmap/07-medication-and-adherence/**
   - ROADMAP.md
