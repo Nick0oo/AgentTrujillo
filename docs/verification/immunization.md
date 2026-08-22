@@ -78,3 +78,7 @@ AT-06-03, AT-06-04, AT-06-08, and AT-06-14 remain blocked for clinical activatio
 4. Publish independent releases and rerun both country suites with zero critical discrepancy before exposing schedule evaluation.
 
 Until then, module 10 must refuse schedule evaluation for that country. Reference antigens and confirmed administration storage are available; clinical dose advice is not.
+
+## Dependency-ledger correction
+
+The 2026-08-21 root re-audit found a metadata inconsistency, not a newly introduced code failure. `AT-06-09` through `AT-06-13` had been marked completed even though their declared dependency chain crosses blocked `AT-06-08`; `AT-06-15` then inherited the same inconsistency through its declared `AT-06-13` prerequisite. Amendment `AT-06-16` corrects those states to `blocked` while preserving commit `2e7eeba` and all technical Cloud evidence. These leaves may return to review/completed only after the PAI/ACIP package gates are resolved and the chain is freshly verified in order.

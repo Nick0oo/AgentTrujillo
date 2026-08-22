@@ -2,7 +2,7 @@
 id: AT-06-11
 title: Classify dose schedule status deterministically
 module: 06-immunization
-status: completed
+status: blocked
 execution: sequential
 parallel_group: null
 depends_on: [AT-06-10]

@@ -69,7 +69,7 @@ Future implementation workers use GPT-5.6 Luna with reasoning `max`. At most thr
 
 | Blocker | Affected units | Resolution authority | State |
 |---|---|---|---|
-| No canonical approved PAI/ACIP rule-pack artifacts or real golden suites | AT-06-03, AT-06-04, AT-06-08, AT-06-14 and schedule exposure | Verified clinical attestation plus technical checksum/release gate | Active blocker |
+| No canonical approved PAI/ACIP rule-pack artifacts or real golden suites | AT-06-03, AT-06-04, and the dependent AT-06-08 through AT-06-15 clinical chain | Verified clinical attestation plus technical checksum/release gate | Active blocker |
 | No immutable medication catalogs, exact CO/US pediatric formulary packages, checksum-bound approval attestations, or real golden arithmetic suites | AT-07-04 through AT-07-15, AT-07-17, AT-07-18 and dose-validation exposure | Verified clinical artifact authorship, module 03 attestation, release, and acceptance suite | Active blocker |
 | OpenRouter has no parity evidence | Fallback activation | Module 14 evidence and user-approved rollout | Expected future gate |
 | United States production activation is not approved | Module 15 US activation | Clinical, legal, provider, and release evidence | Expected future gate |
