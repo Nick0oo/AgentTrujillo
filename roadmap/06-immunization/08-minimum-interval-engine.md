@@ -2,7 +2,7 @@
 id: AT-06-08
 title: Evaluate vaccine minimum age and interval validity
 module: 06-immunization
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-06-03, AT-06-04, AT-06-07]

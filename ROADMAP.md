@@ -28,8 +28,8 @@ These facts do not close pending behavioral gates. Local schema parity, generate
 - Documentation design: `completed` at commit `08ed71a`.
 - Documentation implementation plan: `completed` at commit `2ba542b`.
 - Atomic roadmap authoring: modules `01` through `15` completed and cross-module verification passed; see [verification evidence](docs/verification/2026-08-16-agent-roadmap.md).
-- Product implementation: modules `01` through `05` completed with fresh runtime or Cloud evidence. Module `06` basic CO/US packages are released in production and awaiting the focused commit/ledger close. Module `07` remains clinically blocked pending its exact minimal formularies.
-- Next active executable unit: finish the `AT-06-17` ledger close, followed by `AT-07-20`. `AT-03-12` completed in `6a2d2b7`; the user authorized conveyed approval without a personal signature and production Cloud publication of conservative basic packages.
+- Product implementation: modules `01` through `06` completed with fresh runtime or Cloud evidence. Module `07` remains clinically blocked pending its exact minimal formularies.
+- Next active executable unit: `AT-07-20`. `AT-03-12` completed in `6a2d2b7`; the user authorized conveyed approval without a personal signature and production Cloud publication of conservative basic packages. Module 06 release implementation completed in `453032e`.
 
 ## Module ledger
 
@@ -40,7 +40,7 @@ These facts do not close pending behavioral gates. Local schema parity, generate
 | 03 | Clinical governance | completed | completed | Only approved, versioned, checksum-matching packages resolve | [Module 03](roadmap/03-clinical-governance/README.md) |
 | 04 | Safety and emergency boundary | completed | completed | Critical red flags bypass the LLM and emit approved emergency-only copy | [Module 04](roadmap/04-safety-and-emergency-boundary/README.md) |
 | 05 | Anthropometry and growth | completed | completed | Reproducible age, Z-score, percentile, and growth-series results | [Module 05](roadmap/05-anthropometry-and-growth/README.md) |
-| 06 | Immunization | completed | review | PAI and ACIP evaluations are separate, reproducible, and source-traceable | [Module 06](roadmap/06-immunization/README.md) |
+| 06 | Immunization | completed | completed | PAI and ACIP evaluations are separate, reproducible, and source-traceable | [Module 06](roadmap/06-immunization/README.md) |
 | 07 | Medication and adherence | completed | blocked | Declared-dose validation is conservative and plans/intakes are idempotent | [Module 07](roadmap/07-medication-and-adherence/README.md) |
 | 08 | Nutrition and development | completed | pending | Guidance stays educational and EAD-3 remains professional-only | [Module 08](roadmap/08-nutrition-and-development/README.md) |
 | 09 | Clinical memory and documents | completed | pending | Retrieval and Storage remain private and child-scoped | [Module 09](roadmap/09-clinical-memory-and-documents/README.md) |
@@ -55,13 +55,13 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-`AT-06-17` is in review pending its focused commit and final evidence pass. `AT-07-20` is pending on sequential Cloud/package work. Module `08` has not been selected.
+`AT-07-20` is ready for sequential Cloud/package work. Module `08` has not been selected.
 
 ## Active workers
 
 | Worker | Work unit | Claimed paths | Started | State |
 |---|---|---|---|---|
-| root | AT-06-17 | M6 artifacts/evals/Cloud release/roadmap evidence | 2026-08-22 | review |
+| root | AT-07-20 | M7 minimal formularies/evals/Cloud release/roadmap evidence | 2026-08-22 | ready |
 
 Future implementation workers use GPT-5.6 Luna with reasoning `max`. At most three may run concurrently after collision analysis.
 

@@ -2,7 +2,7 @@
 id: AT-06-14
 title: Prove immunization correctness and isolation
 module: 06-immunization
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-06-13]

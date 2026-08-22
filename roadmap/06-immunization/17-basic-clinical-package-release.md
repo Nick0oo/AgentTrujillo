@@ -2,7 +2,7 @@
 id: AT-06-17
 title: Release basic informational PAI and ACIP packages
 module: 06-immunization
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-03-12, AT-06-16]
@@ -71,4 +71,4 @@ Complete campaign/special-population/catch-up automation; vaccine selection; boo
 - [x] Golden cases execute real deterministic code with zero critical discrepancy or cross-country mix.
 - [x] Review-only/unavailable branches are explicit.
 - [x] Cloud sources, algorithms, packages, rules, attestations, and releases match exact hashes.
-- [x] AT-06-03 through AT-06-15 have fresh evidence and dependency-correct review statuses pending the focused implementation commit.
+- [x] AT-06-03 through AT-06-15 have fresh evidence and dependency-correct completed statuses after implementation commit `453032e`.

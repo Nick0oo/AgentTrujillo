@@ -2,7 +2,7 @@
 id: AT-06-03
 title: Package the current Colombia PAI schedule
 module: 06-immunization
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-06-02]

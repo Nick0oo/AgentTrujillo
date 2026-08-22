@@ -84,7 +84,7 @@ The 2026-08-22 conservative release resolves the prior package blockers without 
 | State | Leaves | Evidence or blocker |
 |---|---|---|
 | completed | `AT-06-01`, `AT-06-02`, `AT-06-05`–`AT-06-07`, `AT-06-16` | Domain, reference identities, factual administration boundary, antigen resolution, and independent ledger correction `f448444` pass. |
-| review | `AT-06-03`, `AT-06-04`, `AT-06-08`–`AT-06-15`, `AT-06-17` | Exact basic CO/US artifacts, active Cloud releases, conveyed hash-bound approvals, real evals, SQL verification, typecheck, and build pass; focused commit pending. |
+| completed | `AT-06-03`, `AT-06-04`, `AT-06-08`–`AT-06-15`, `AT-06-17` | Exact basic CO/US artifacts, active Cloud releases, conveyed hash-bound approvals, real evals, SQL verification, typecheck, and build pass in `453032e`. |
 
 Production contains two active basic packages and schedules: 49 CO rules and 6 US rules. Routine-age comparison is informational; campaign, outbreak, catch-up, special-population, contraindication, and uncertain branches remain `review_required`. No administration or assessment rows were invented or deleted. See [fresh production evidence](../../docs/verification/immunization.md).
 

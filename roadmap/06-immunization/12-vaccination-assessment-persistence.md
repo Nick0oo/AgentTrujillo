@@ -2,7 +2,7 @@
 id: AT-06-12
 title: Persist vaccination facts and assessments atomically
 module: 06-immunization
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-06-11]

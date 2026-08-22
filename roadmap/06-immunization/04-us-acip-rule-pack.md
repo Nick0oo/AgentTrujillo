@@ -2,7 +2,7 @@
 id: AT-06-04
 title: Package the current United States ACIP schedule
 module: 06-immunization
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-06-03]

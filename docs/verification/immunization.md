@@ -60,4 +60,4 @@ npm run verify:database-types (SUPABASE_TYPES_SOURCE=linked)
   exact match, sha256:cf9b6d9d55a5a73f7f41406c1613be364985efc4f7344e28787354fcee5e4e9c
 ```
 
-The implementation commit is recorded by the subsequent roadmap ledger update. Module 10 may expose only these exact active subsets through the deterministic package resolver and must preserve `review_required`/`RULE_UNAVAILABLE` elsewhere.
+Implementation commit: `453032e` (`feat(immunization): release basic country packages`). The focused tests, eval, typecheck, linked generated-type comparison, and Cloud SQL fixture were rerun successfully after that commit. Module 10 may expose only these exact active subsets through the deterministic package resolver and must preserve `review_required`/`RULE_UNAVAILABLE` elsewhere.
