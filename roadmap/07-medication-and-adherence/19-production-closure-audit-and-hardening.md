@@ -2,7 +2,7 @@
 id: AT-07-19
 title: Audit and harden medication production closure
 module: 07-medication-and-adherence
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-07-03]
@@ -120,3 +120,13 @@ The system compares only an already-declared regimen against one exact active pa
 ## Handoff
 
 Module 10 may expose declared-plan and factual-adherence operations after their gates pass. Dose validation must return rule unavailable until an exact country package, approval attestation, release, and real golden suite exist.
+
+## Completion evidence
+
+- Implementation commits: `603bfc4` and follow-up review closure `3770878`.
+- Linked project: `CreciendoApp` (`yapjiinrjsrothzgzxsv`), PostgreSQL 17.
+- Forward migrations: `20260821190000` through `20260821190300`; local/remote ledger `33/33`.
+- SQL 032: `25/25` inside `BEGIN`/`ROLLBACK`; concurrent same-key Cloud smoke returned exactly `created` plus `idempotent_replay`, then verified zero fixture residue.
+- Linked lint: zero errors. Linked generated contract: `sha256:ee1b87e790adb12f12bb5274cf95e9cff1dcf488029fe08f1c657283e31ac58d`.
+- Focused medication suite: 7 files, 51 passed. Full suite: 89 files, 551 passed, 1 skipped. Typecheck, production build, Eve discovery/baseline, and medication eval passed.
+- Residual clinical block: no exact CO/US medication catalog, formulary/rule artifact, checksum-bound approval/release, or reviewed real arithmetic suite exists; numeric dose-validation persistence remains unavailable by design.

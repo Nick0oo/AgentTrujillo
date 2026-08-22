@@ -18,6 +18,10 @@ This is the intended fail-closed state. No medication, dose, frequency, plan, or
 - Time-of-day schedules advance by local calendar date; nonexistent and repeated US DST wall times fail closed instead of shifting or duplicating occurrences.
 - Application and Cloud replay digests derive from domain input; a caller-supplied digest cannot make changed input replay as identical.
 - Confirmation, intake, and correction retries resolve exact replays before post-transition active-state checks.
+- Public medication writes acquire transaction-scoped advisory locks before replay checks; the unlocked implementations are private and cannot be executed by authenticated callers.
+- Schedule occurrence writes prove the timestamp, local date, time zone, cadence, plan window, source, and SHA-256 key against the stored declared schedule.
+- Intake writes reject future scheduled/taken timestamps and mismatches between a supplied occurrence and its persisted instant.
+- The pre-package validation path accepts only `insufficient_data` or `requires_professional_review`, requires registered reviewed source evidence, and cannot persist a reassuring numeric comparison.
 - Public occurrence keys resolve to scoped storage UUIDs for RPC writes and map back to stable keys for adherence joins.
 - Conflicting active adherence facts set `sourceComplete: false` rather than producing a reassuring summary.
 - Validation writes atomically retain normalized source and ingredient evidence.
@@ -29,22 +33,25 @@ Applied forward-only migrations:
 - `20260821190000_medication_production_hardening.sql` — SHA-256 `f68f37c2790869b26f4f43140995ca200e80ef2af9f91ee50ab42359e9bf2340`.
 - `20260821190100_medication_replay_order_fix.sql` — SHA-256 `5e20a63cdb7b324ceb0236132661c8c156619a6fd62023c5e9436054e928516d`.
 - `20260821190200_medication_correction_replay_order_fix.sql` — SHA-256 `666bad8c9619c729ca011063d8004f3a2b4b44c825cac5d407c6aaade19eb39a`.
+- `20260821190300_medication_trusted_write_and_concurrency.sql` — SHA-256 `ca3de5f658624269283fcdae5da3407b820284ceb28e49f4ae953625fd9a1ab0`.
 
-`supabase/tests/032_medication_production_hardening.test.sql` (SHA-256 `984c4d8af60ecf6b60b0512cadfa92ca50fcfff9bf8d43ab7250358dd9c04a73`) ran directly through the linked project's database-query endpoint inside `BEGIN`/`ROLLBACK`: `20/20` checks passed. It proved authenticated create/replay/conflict behavior, declared schedule persistence, plan confirmation, occurrence materialization, factual intake and correction, validation replay/conflict, normalized evidence, and RPC-only grants.
+`supabase/tests/032_medication_production_hardening.test.sql` (SHA-256 `63ec93da47964af1ca58eb10e0195df528c072d50f9528bab7d2ad30ea764ac4`) ran directly through the linked project's database-query endpoint inside `BEGIN`/`ROLLBACK`: `25/25` checks passed. It proved authenticated create/replay/conflict behavior, declared schedule persistence, plan confirmation, schedule-proof occurrence materialization, retrospective intake and correction, abstention-only validation persistence, normalized evidence, private unlocked implementations, and RPC-only grants.
 
-The first rollback run exposed that the active-fact conflict check preceded same-key intake replay. The forward-only `190100` migration corrected that order. Final review then added correction replay coverage; the red Cloud run passed `18/20` and exposed the same ordering defect in `correct_medication_intake`. Forward-only migration `190200` fixed it and the final complete rollback run passed `20/20`. No fixture row remained.
+The first rollback run exposed that the active-fact conflict check preceded same-key intake replay. The forward-only `190100` migration corrected that order. Final review then added correction replay coverage; the red Cloud run passed `18/20` and exposed the same ordering defect in `correct_medication_intake`. Forward-only migration `190200` fixed it. Independent Standards and Spec reviews then found five further gaps: ungoverned reassuring validation, forged schedule occurrences, future intake facts, non-serialized replay checks, and callable unlocked implementations. The expanded red Cloud run passed `20/25`; `190300` closed all five and the persisted rerun passed `25/25`.
+
+A real two-connection Cloud smoke used one exact synthetic scope and held the winning transaction open. Its two simultaneous same-key plan calls returned exactly `created` and `idempotent_replay`. Exact-ID cleanup ran in `finally`, and a subsequent production count confirmed zero fixture residue.
 
 Cloud commands and outcomes:
 
 ```text
-npx supabase db push --linked                         exit 0; migrations 190000, 190100, and 190200 applied
-npx supabase migration list                          exit 0; 32/32 local and remote versions match
+npx supabase db push --linked                         exit 0; migrations 190000 through 190300 applied
+npx supabase migration list --linked                 exit 0; 33/33 local and remote versions match
 npx supabase db lint --linked --level error           exit 0; 0 errors
-npx supabase db lint --linked --level warning         exit 0; 4 intentional unused legacy ABI parameters
-database-query: SQL 032                               HTTP 201; 20/20; rollback
+database-query: SQL 032                               HTTP 201; 25/25; rollback
+database-query: concurrent replay smoke               created + idempotent_replay; cleanup verified
 ```
 
-The warning-level findings are limited to legacy digest/payload parameters retained so deployed callers keep the existing RPC signatures. The functions validate those legacy inputs where needed but derive replay identity from server-owned canonical domain input.
+Legacy digest/payload parameters remain in deployed RPC signatures for caller compatibility, while replay identity is derived from server-owned canonical domain input. Linked generation also exposed and fixed stale transition argument names in the repository adapter (`p_target_status` and `p_input_fingerprint`).
 
 ## Production data state
 
@@ -66,17 +73,17 @@ Reviewed locators are provenance records, not a catalog, formulary, dose range, 
 ## Code and generated-contract gates
 
 ```text
-Focused medication tests                     7 files, 48 passed
-Full Vitest suite                            89 files, 548 passed, 1 skipped
+Focused medication tests                     7 files, 51 passed
+Full Vitest suite                            89 files, 551 passed, 1 skipped
 npm run typecheck                            exit 0
 npm run build                                exit 0
 npm run verify:discovery                     ready; 0 errors/warnings; gemini-3.6-flash
 npm run verify:eve-baseline                  Eve 0.27.13; Node 24.x
-npm run verify:database-types (linked)        exit 0; sha256:2488d7f9bb1334d52879009270e8a016d4206686e2de4bf14fdf8e1f863007f2
+npm run verify:database-types (linked)        exit 0; sha256:ee1b87e790adb12f12bb5274cf95e9cff1dcf488029fe08f1c657283e31ac58d
 npm run eval:medication                      CO 0 pass/3 blocked; US 0 pass/3 blocked; adversarial 4/4 pass; 0 critical/leakage
 ```
 
-Both generated type entry points contain the same complete linked-Cloud generation and have SHA-256 `2488d7f9bb1334d52879009270e8a016d4206686e2de4bf14fdf8e1f863007f2`.
+Both generated type entry points contain the same normalized complete linked-Cloud generation with SHA-256 `ee1b87e790adb12f12bb5274cf95e9cff1dcf488029fe08f1c657283e31ac58d`.
 
 ## Remaining clinical blockers
 

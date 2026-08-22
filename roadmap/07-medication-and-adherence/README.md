@@ -32,7 +32,7 @@ The lifecycle foundation is deployed and Cloud-verified, but the module exit gat
 | State | Leaves | Evidence or blocker |
 |---|---|---|
 | completed | `AT-07-01`, `AT-07-02`, `AT-07-03` | Typed boundary, forward schema, and server-derived replay identity pass. |
-| review | `AT-07-19` | Production hardening is implemented and awaiting its focused commit/evidence hash. |
+| completed | `AT-07-19` | Production hardening, trusted-write wrappers, real concurrent replay, Cloud SQL, and evidence commits `603bfc4`/`3770878` pass. |
 | blocked: catalog/package | `AT-07-04`–`AT-07-12` | No immutable INVIMA/IUM or RxNorm/DailyMed medication catalog, no exact active country formulary, no checksum-bound approval attestation, and no real reviewed arithmetic vectors exist. |
 | blocked: dependency | `AT-07-13`–`AT-07-17` | Persistence and factual-intake paths are technically verified and lifecycle helpers fail closed, but the declared dependency chain and full leaf acceptance matrices cannot be completed while the catalog/package leaves remain blocked. `AT-07-16` was corrected from `completed` because its declared `AT-07-15` dependency is blocked. |
 | blocked: acceptance | `AT-07-18` | CO and US cases correctly report `blocked`; real golden arithmetic, source/package/approval digests, and the complete isolation/property suite are absent. |
@@ -74,7 +74,7 @@ After shared types, schema, concept resolution, and verified-weight work may pro
 | [AT-07-16](16-medication-intake-service.md) | Record retrospective intake facts | no | no | `AT-07-03`, `AT-07-15` |
 | [AT-07-17](17-adherence-summary-query.md) | Summarize factual adherence neutrally | no | yes | `AT-07-16` |
 | [AT-07-18](18-medication-fixtures-and-evals.md) | Prove arithmetic, safety, replay, isolation | no | no | `AT-07-13`, `AT-07-17` |
-| [AT-07-19](19-production-closure-audit-and-hardening.md) | Audit and harden production closure | yes | yes | `AT-07-16` |
+| [AT-07-19](19-production-closure-audit-and-hardening.md) | Audit and harden production closure | yes | yes | `AT-07-03` |
 
 ## Clinical boundary
 

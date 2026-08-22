@@ -55,19 +55,13 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-The documentation gate is complete. The initial product implementation candidate is:
-
-| ID | Work unit | Required before dispatch |
-|---|---|---|
-| AT-07-19 | Audit and harden medication production closure | Root review pending focused commit and evidence hash |
-
-The root agent recalculates readiness from leaf frontmatter before every dispatch.
+No work unit is ready. Modules `06` and `07` remain at explicit external clinical-artifact gates; module `08` has not been selected.
 
 ## Active workers
 
 | Worker | Work unit | Claimed paths | Started | State |
 |---|---|---|---|---|
-| Root agent | AT-07-19 | Declared module-07 amendment paths | 2026-08-21 | review |
+| None | — | — | — | — |
 
 Future implementation workers use GPT-5.6 Luna with reasoning `max`. At most three may run concurrently after collision analysis.
 
