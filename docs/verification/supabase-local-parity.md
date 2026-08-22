@@ -62,3 +62,7 @@ Por instrucción explícita del propietario, el cierre actual se auditó directa
 - La suite combinada de acceso/runtime pasó 29 archivos, 272 pruebas y un único skip local opt-in; TypeScript pasó sin errores.
 
 El intento de `db dump` de solo esquema no se usó como evidencia porque esa operación de la CLI requiere Docker Desktop incluso para el proyecto enlazado. Las verificaciones Cloud válidas se realizaron mediante `migration list`, `db lint`, generación de tipos y consultas SQL de catálogo por Management API. No se ejecutó reset local ni remoto, no se copiaron filas y no se modificaron datos de producción.
+
+### Snapshot acumulado final 01–07
+
+Después de aplicar las migraciones autorizadas de cierre de los módulos `05`–`07`, la verificación final reporta `33/33` migraciones locales/remotas hasta `20260821190300`. El catálogo conserva 62 tablas públicas, todas con RLS habilitado y forzado; cero grants de tabla para `anon`; cero tablas públicas en `supabase_realtime`; cinco buckets, todos privados. Los tipos regenerados desde Cloud pasan con `sha256:ee1b87e790adb12f12bb5274cf95e9cff1dcf488029fe08f1c657283e31ac58d`. Las cifras anteriores de 27 migraciones y el hash de `f3b8597` son el checkpoint histórico del cierre del módulo `02`, no el head acumulado final.
