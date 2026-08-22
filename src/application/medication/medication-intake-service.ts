@@ -14,9 +14,16 @@ export function createMedicationIntakeService(store: MedicationStore, options: R
     requirePlanRecord(scope, command.planId);
     const plan = await store.getPlan(scope, command.planId); if (!plan) throw new Error("MEDICATION_PLAN_NOT_FOUND");
     if (command.state === "taken" && !command.takenAt) throw new Error("MEDICATION_TAKEN_AT_REQUIRED");
+    if (command.state !== "taken" && command.takenAt) throw new Error("MEDICATION_TAKEN_AT_FORBIDDEN");
     const occurrence = command.occurrenceId ? await store.getOccurrence(scope, command.occurrenceId) : null;
     if (command.occurrenceId && (!occurrence || occurrence.planId !== plan.id)) throw new Error("MEDICATION_OCCURRENCE_NOT_FOUND");
-    return { planId: plan.id, occurrenceId: occurrence?.occurrenceId ?? null, scheduledFor: occurrence?.scheduledFor ?? command.scheduledFor ?? null };
+    const scheduledFor = occurrence?.scheduledFor ?? command.scheduledFor ?? null;
+    const currentTime = now().getTime();
+    const scheduledTime = scheduledFor === null ? null : Date.parse(scheduledFor);
+    const takenTime = command.takenAt === undefined ? null : Date.parse(command.takenAt);
+    if ((scheduledTime !== null && !Number.isFinite(scheduledTime)) || (takenTime !== null && !Number.isFinite(takenTime))) throw new Error("MEDICATION_INTAKE_TIME_INVALID");
+    if ((scheduledTime !== null && scheduledTime > currentTime) || (takenTime !== null && takenTime > currentTime)) throw new Error("MEDICATION_FUTURE_INTAKE_DENIED");
+    return { planId: plan.id, occurrenceId: occurrence?.occurrenceId ?? null, scheduledFor };
   }
   const service = {
     async record(scope: AuthorizedChildScope, command: MedicationIntakeCommand, inputOperation: MedicationOperationInput): Promise<MedicationIntakeRecord> {

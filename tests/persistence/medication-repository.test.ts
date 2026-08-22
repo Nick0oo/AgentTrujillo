@@ -69,4 +69,40 @@ describe("medication operation idempotency", () => {
     await repository.createIntake(authorized, { planId: "00000000-0000-4000-8000-000000000030", occurrenceId: "occurrence-sha256-key", scheduledFor: "2026-08-21T08:00:00Z", takenAt: "2026-08-21T08:01:00Z", state: "taken", quantity: null, unit: null, supersedesId: null }, { careSpaceId: authorized.careSpaceId, childId: authorized.childId, actorUserId: authorized.actorUserId, operationKind: "record_intake", idempotencyKey: "intake", digest: "a".repeat(64) });
     expect(rpcCalls[0]?.[1].p_medication_schedule_occurrence_id).toBe("00000000-0000-4000-8000-000000000010");
   });
+
+  it("uses the transition argument names generated from linked Cloud", async () => {
+    const rpcCalls: Array<[string, Record<string, unknown>]> = [];
+    const query: any = {
+      select: () => query,
+      eq: () => query,
+      maybeSingle: async () => ({ data: {
+        id: "00000000-0000-4000-8000-000000000030",
+        medication_plan_id: "00000000-0000-4000-8000-000000000030",
+        display_name: "Synthetic medication",
+        medication_concept_id: "00000000-0000-4000-8000-000000000040",
+        starts_at: "2026-08-21T08:00:00Z",
+        status: "active",
+        version: 1,
+        recorded_by: "00000000-0000-4000-8000-000000000001",
+        medication_concepts: { concept_code: "SYN-001", coding_system: "INVIMA" },
+        medication_schedules: [],
+      }, error: null }),
+    };
+    const client: any = {
+      from: () => query,
+      rpc: async (name: string, args: Record<string, unknown>) => {
+        rpcCalls.push([name, args]);
+        return { data: [{ plan_id: "00000000-0000-4000-8000-000000000030", outcome: "created" }], error: null };
+      },
+    };
+    const repository = createMedicationRepository(client, { resolveConceptId: async () => "concept" });
+    const now = Date.now();
+    const authorized = createAuthorizedChildScopeFromTrustedRow({ actorUserId: "00000000-0000-4000-8000-000000000001", careSpaceId: "00000000-0000-4000-8000-000000000002", childId: "00000000-0000-4000-8000-000000000003", permissions: ["read", "manage_medication"], countryOfCare: "CO", timezone: "UTC", authorizationVersion: "m:1:a:1", issuedAt: new Date(now - 60_000), expiresAt: new Date(now + 60_000) });
+
+    await repository.setPlanStatus(authorized, "00000000-0000-4000-8000-000000000030", "active", { careSpaceId: authorized.careSpaceId, childId: authorized.childId, actorUserId: authorized.actorUserId, operationKind: "confirm_plan", idempotencyKey: "confirm", digest: "a".repeat(64) });
+
+    expect(rpcCalls[0]).toEqual(["transition_medication_plan", expect.objectContaining({ p_target_status: "active", p_input_fingerprint: "a".repeat(64) })]);
+    expect(rpcCalls[0]?.[1]).not.toHaveProperty("p_status");
+    expect(rpcCalls[0]?.[1]).not.toHaveProperty("p_input_digest");
+  });
 });

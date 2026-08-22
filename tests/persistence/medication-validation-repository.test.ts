@@ -46,4 +46,16 @@ describe("dose validation repository", () => {
     await expect(repository.save(scope(), { ...write, sourceEvidence: [{ ...write.sourceEvidence[0]!, sourceUri: "http://invalid.test", artifactSha256: "invalid" }] } as never)).rejects.toThrow("MEDICATION_SOURCE_EVIDENCE_INVALID");
     expect(rpc).not.toHaveBeenCalled();
   });
+
+  it("refuses reassuring or numeric outcomes until a governed medication package exists", async () => {
+    const rpc = vi.fn(async (_name: string, _args: Record<string, unknown>) => ({ data: null, error: null }));
+    const repository = createDoseValidationRepository({ rpc });
+
+    await expect(repository.save(scope(), { ...write, outcome: "within_reference_limits" })).rejects.toThrow("MEDICATION_GOVERNED_VALIDATION_UNAVAILABLE");
+    await expect(repository.save(scope(), { ...write, outcome: "outside_reference_limits" })).rejects.toThrow("MEDICATION_GOVERNED_VALIDATION_UNAVAILABLE");
+    await expect(repository.save(scope(), { ...write, packageVersion: "unapproved-package" })).rejects.toThrow("MEDICATION_GOVERNED_VALIDATION_UNAVAILABLE");
+    await expect(repository.save(scope(), { ...write, artifactSha256: "d".repeat(64) })).rejects.toThrow("MEDICATION_GOVERNED_VALIDATION_UNAVAILABLE");
+
+    expect(rpc).not.toHaveBeenCalled();
+  });
 });

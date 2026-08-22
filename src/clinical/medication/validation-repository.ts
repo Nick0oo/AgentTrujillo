@@ -36,6 +36,15 @@ export function createDoseValidationRepository(client: Readonly<{ rpc(name: stri
   return {
     async save(scope, input) {
       if (!hasPermission(scope, "record")) throw new Error("MEDICATION_SCOPE_DENIED");
+      const legacyOutcome = input.outcome === "insufficient_data" || input.outcome === "requires_professional_review";
+      if (!legacyOutcome
+        || input.packageVersion !== "unavailable"
+        || input.artifactSha256 !== null
+        || input.explanationCodes.length === 0
+        || input.algorithmVersion.length === 0
+        || input.vocabularyVersion.length === 0) {
+        throw new Error("MEDICATION_GOVERNED_VALIDATION_UNAVAILABLE");
+      }
       const sourceKinds = new Set(["identity", "label", "formulary", "algorithm"]);
       const sourcesValid = input.sourceEvidence.length > 0 && input.sourceEvidence.every((source) => {
         const keys = Object.keys(source).sort();

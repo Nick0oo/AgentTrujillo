@@ -104,6 +104,22 @@ describe("medication lifecycle services", () => {
     expect(JSON.stringify(summary)).not.toMatch(/blame|poor|noncompliant|safe/i);
   });
 
+  it("accepts only retrospective intake facts with state-consistent timestamps", async () => {
+    const store = createMemoryStore();
+    const planService = createMedicationPlanService(store, { now: () => new Date("2026-08-16T10:00:00Z") });
+    const plan = await planService.createDraft(scope, input(), { idempotencyKey: "plan-intake-time", digest: "caller" });
+    await planService.confirm(scope, plan.id, { idempotencyKey: "confirm-intake-time", digest: "caller" });
+    const schedule = await createMedicationScheduleService(store, { now: () => new Date("2026-08-16T10:00:00Z") }).materialize(scope, plan.id, { from: "2026-08-16T00:00:00Z", to: "2026-08-17T00:00:00Z", maxOccurrences: 10 }, { idempotencyKey: "schedule-intake-time", digest: "caller" });
+    const intakeService = createMedicationIntakeService(store, { now: () => new Date("2026-08-16T10:00:00Z") });
+    const futureOccurrence = schedule.occurrences.find((value) => value.scheduledFor === "2026-08-16T20:00:00.000Z")!;
+
+    await expect(intakeService.record(scope, { planId: plan.id, occurrenceId: futureOccurrence.occurrenceId, state: "unknown" }, { idempotencyKey: "future-occurrence", digest: "caller" })).rejects.toThrow("MEDICATION_FUTURE_INTAKE_DENIED");
+    await expect(intakeService.record(scope, { planId: plan.id, scheduledFor: "2026-08-16T11:00:00Z", state: "skipped" }, { idempotencyKey: "future-direct", digest: "caller" })).rejects.toThrow("MEDICATION_FUTURE_INTAKE_DENIED");
+    await expect(intakeService.record(scope, { planId: plan.id, scheduledFor: "invalid", state: "unknown" }, { idempotencyKey: "invalid-time", digest: "caller" })).rejects.toThrow("MEDICATION_INTAKE_TIME_INVALID");
+    await expect(intakeService.record(scope, { planId: plan.id, scheduledFor: "2026-08-16T08:00:00Z", state: "taken", takenAt: "2026-08-16T11:00:00Z" }, { idempotencyKey: "future-taken", digest: "caller" })).rejects.toThrow("MEDICATION_FUTURE_INTAKE_DENIED");
+    await expect(intakeService.record(scope, { planId: plan.id, scheduledFor: "2026-08-16T08:00:00Z", state: "skipped", takenAt: "2026-08-16T08:01:00Z" }, { idempotencyKey: "inconsistent-state", digest: "caller" })).rejects.toThrow("MEDICATION_TAKEN_AT_FORBIDDEN");
+  });
+
   it("denies a stale scope before any persistence call", async () => {
     const store = createMemoryStore();
     const service = createMedicationPlanService(store, { now: () => new Date("2026-08-17T00:00:00Z") });

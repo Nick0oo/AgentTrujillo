@@ -4383,10 +4383,10 @@ export type Database = {
           p_care_space_id: string
           p_child_id: string
           p_idempotency_key: string
-          p_input_digest: string
+          p_input_fingerprint: string
           p_input_payload: Json
           p_plan_id: string
-          p_status: string
+          p_target_status: string
         }
         Returns: {
           outcome: string

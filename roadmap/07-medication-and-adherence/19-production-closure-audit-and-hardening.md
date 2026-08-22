@@ -17,6 +17,7 @@ touches:
     - supabase/migrations/20260821190000_medication_production_hardening.sql
     - supabase/migrations/20260821190100_medication_replay_order_fix.sql
     - supabase/migrations/20260821190200_medication_correction_replay_order_fix.sql
+    - supabase/migrations/20260821190300_medication_trusted_write_and_concurrency.sql
     - supabase/tests/032_medication_production_hardening.test.sql
   modify:
     - src/clinical/medication/**
@@ -55,6 +56,7 @@ exclusive_paths:
   - supabase/migrations/20260821190000_medication_production_hardening.sql
   - supabase/migrations/20260821190100_medication_replay_order_fix.sql
   - supabase/migrations/20260821190200_medication_correction_replay_order_fix.sql
+  - supabase/migrations/20260821190300_medication_trusted_write_and_concurrency.sql
   - supabase/tests/032_medication_production_hardening.test.sql
   - roadmap/07-medication-and-adherence/**
   - docs/clinical/approval-record-2026-08-21.md
@@ -92,7 +94,7 @@ AT-07-03, explicit authority to inspect and mutate linked production, and the pr
 
 ## Scope
 
-Strict declared-input boundaries, exact decimal and unit handling, weight/formulary/rule fail-closed behavior, stable schedule materialization, lifecycle idempotency, normalized validation provenance, official source registration, linked Cloud behavior tests, generated type reconciliation, and honest roadmap evidence.
+Strict declared-input boundaries, exact decimal and unit handling, weight/formulary/rule fail-closed behavior, schedule-proof occurrence materialization, serialized lifecycle idempotency, retrospective intake enforcement, normalized validation provenance, official source registration, linked Cloud behavior and concurrency tests, generated type reconciliation, and honest roadmap evidence.
 
 ## Out of scope
 
