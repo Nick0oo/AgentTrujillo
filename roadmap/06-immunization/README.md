@@ -57,6 +57,7 @@ PAI `03` then ACIP `04` run sequentially because both own `package.json`; their 
 | [AT-06-14](14-immunization-fixtures-and-evals.md) | Prove PAI/ACIP correctness/isolation | no | no | `AT-06-13` |
 | [AT-06-15](15-production-closure-audit-and-hardening.md) | Audit and harden production closure | yes | yes | `AT-06-13` |
 | [AT-06-16](16-production-ledger-correction.md) | Correct production dependency statuses | no | no | `AT-06-07` |
+| [AT-06-17](17-basic-clinical-package-release.md) | Release conservative basic CO/US packages | yes | yes | `AT-03-12`, `AT-06-16` |
 
 ## Clinical boundary
 

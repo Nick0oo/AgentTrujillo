@@ -75,6 +75,7 @@ After shared types, schema, concept resolution, and verified-weight work may pro
 | [AT-07-17](17-adherence-summary-query.md) | Summarize factual adherence neutrally | no | yes | `AT-07-16` |
 | [AT-07-18](18-medication-fixtures-and-evals.md) | Prove arithmetic, safety, replay, isolation | no | no | `AT-07-13`, `AT-07-17` |
 | [AT-07-19](19-production-closure-audit-and-hardening.md) | Audit and harden production closure | yes | yes | `AT-07-03` |
+| [AT-07-20](20-minimal-clinical-package-release.md) | Release exact minimal CO/US formularies | yes | yes | `AT-03-12`, `AT-07-19` |
 
 ## Clinical boundary
 

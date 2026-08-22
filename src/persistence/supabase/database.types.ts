@@ -12,6 +12,31 @@ export type Database = {
   __InternalSupabase: {
     PostgrestVersion: "14.5"
   }
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json
+          operationName?: string
+          query?: string
+          variables?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
   public: {
     Tables: {
       agent_commands: {
@@ -820,12 +845,14 @@ export type Database = {
         Row: {
           algorithm_id: string
           algorithm_implementation_sha256: string
+          approval_provenance: string
           approver_name: string
           approver_role: string
-          approver_subject: string
+          approver_subject: string | null
           approver_user_id: string | null
           artifact_sha256: string
           attestation_version: number
+          conveyance_record_sha256: string | null
           created_at: string
           decided_at: string
           decision: string
@@ -840,12 +867,14 @@ export type Database = {
         Insert: {
           algorithm_id: string
           algorithm_implementation_sha256: string
+          approval_provenance?: string
           approver_name: string
           approver_role: string
-          approver_subject: string
+          approver_subject?: string | null
           approver_user_id?: string | null
           artifact_sha256: string
           attestation_version?: number
+          conveyance_record_sha256?: string | null
           created_at?: string
           decided_at?: string
           decision: string
@@ -860,12 +889,14 @@ export type Database = {
         Update: {
           algorithm_id?: string
           algorithm_implementation_sha256?: string
+          approval_provenance?: string
           approver_name?: string
           approver_role?: string
-          approver_subject?: string
+          approver_subject?: string | null
           approver_user_id?: string | null
           artifact_sha256?: string
           attestation_version?: number
+          conveyance_record_sha256?: string | null
           created_at?: string
           decided_at?: string
           decision?: string
@@ -4521,6 +4552,9 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
   public: {
     Enums: {},
   },

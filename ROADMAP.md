@@ -29,7 +29,7 @@ These facts do not close pending behavioral gates. Local schema parity, generate
 - Documentation implementation plan: `completed` at commit `2ba542b`.
 - Atomic roadmap authoring: modules `01` through `15` completed and cross-module verification passed; see [verification evidence](docs/verification/2026-08-16-agent-roadmap.md).
 - Product implementation: modules `01` through `05` completed with fresh runtime or Cloud evidence. Modules `06` and `07` have completed production hardening but remain clinically blocked because their real country packages, checksum-bound attestations, and approved golden suites do not exist.
-- Next active executable unit: none selected. Modules `06` immunization and `07` dose evaluation remain fail-closed; module `08` has only been compatibility-read and has not started implementation.
+- Next active executable unit: `AT-03-12`, followed by `AT-06-17` and `AT-07-20`. The user authorized conveyed approval without a personal signature and production Cloud publication of conservative basic packages.
 
 ## Module ledger
 
@@ -55,13 +55,13 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-No work unit is ready. Modules `06` and `07` remain at explicit external clinical-artifact gates; module `08` has not been selected.
+`AT-06-17` and `AT-07-20` are pending on the in-progress `AT-03-12` governance amendment. Module `08` has not been selected.
 
 ## Active workers
 
 | Worker | Work unit | Claimed paths | Started | State |
 |---|---|---|---|---|
-| None | — | — | — | — |
+| root | AT-03-12 | Governance approval types/repository/migration/tests/docs | 2026-08-22 | review |
 
 Future implementation workers use GPT-5.6 Luna with reasoning `max`. At most three may run concurrently after collision analysis.
 
@@ -69,8 +69,8 @@ Future implementation workers use GPT-5.6 Luna with reasoning `max`. At most thr
 
 | Blocker | Affected units | Resolution authority | State |
 |---|---|---|---|
-| No canonical approved PAI/ACIP rule-pack artifacts or real golden suites | AT-06-03, AT-06-04, and the dependent AT-06-08 through AT-06-15 clinical chain | Verified clinical attestation plus technical checksum/release gate | Active blocker |
-| No immutable medication catalogs, exact CO/US pediatric formulary packages, checksum-bound approval attestations, or real golden arithmetic suites | AT-07-04 through AT-07-15, AT-07-17, AT-07-18 and dose-validation exposure | Verified clinical artifact authorship, module 03 attestation, release, and acceptance suite | Active blocker |
+| No canonical approved PAI/ACIP rule-pack artifacts or real golden suites | AT-06-03, AT-06-04, and the dependent AT-06-08 through AT-06-15 clinical chain | AT-06-17 conservative source-backed release | Resolution in progress |
+| No immutable medication catalogs, exact CO/US pediatric formulary packages, checksum-bound approval attestations, or real golden arithmetic suites | AT-07-04 through AT-07-15, AT-07-17, AT-07-18 and dose-validation exposure | AT-07-20 exact minimal formularies | Resolution in progress |
 | OpenRouter has no parity evidence | Fallback activation | Module 14 evidence and user-approved rollout | Expected future gate |
 | United States production activation is not approved | Module 15 US activation | Clinical, legal, provider, and release evidence | Expected future gate |
 

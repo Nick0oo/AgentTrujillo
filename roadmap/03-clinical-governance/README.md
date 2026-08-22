@@ -1,6 +1,6 @@
 # Module 03 — Clinical Governance
 
-This module defines the evidence chain that makes a clinical package usable by Agent Trujillo. A database status, uploaded document, model assertion, or operator instruction is never sufficient: source provenance, canonical artifact bytes, checksums, algorithm identity, jurisdiction, effective dates, and Dr. Trujillo's approval must agree.
+This module defines the evidence chain that makes a clinical package usable by Agent Trujillo. A database status, uploaded document, or model assertion is never sufficient: source provenance, canonical artifact bytes, checksums, algorithm identity, jurisdiction, effective dates, and an explicit approval record must agree. A direct verified clinical approval and a product-owner-conveyed approval are distinct provenance modes; the latter is never represented as Dr. Trujillo's signature or electronic identity.
 
 ## Entry gate
 
@@ -12,7 +12,7 @@ This module defines the evidence chain that makes a clinical package usable by A
 
 ## Exit gate
 
-All eleven leaves are complete and fresh evidence proves:
+All twelve leaves are complete and fresh evidence proves:
 
 - every source has immutable provenance, retrieval time, jurisdiction, effective window, license/usage metadata, and artifact digest;
 - every rule pack is canonical JSON validated against a versioned schema and contains no executable code;
@@ -74,6 +74,7 @@ AT-03-11 <- AT-03-10 <- AT-03-09 <- AT-03-06 <---------------------------------+
 | [AT-03-09](09-clinical-package-release-workflow.md) | Promote packages through audited release | yes | yes | `AT-03-06` |
 | [AT-03-10](10-clinical-package-rollback.md) | Roll back to a verified known-good package | no | yes | `AT-03-09` |
 | [AT-03-11](11-clinical-governance-evals.md) | Prove governance cannot be bypassed | no | no | `AT-03-10` |
+| [AT-03-12](12-conveyed-approval-attestations.md) | Record conveyed approval without a personal signature | yes | yes | `AT-03-11` |
 
 ## Database migration ownership
 

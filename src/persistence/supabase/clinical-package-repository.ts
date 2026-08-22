@@ -85,10 +85,17 @@ function approvalFor(row: ApprovalRow, pack: PackRow, algorithmId: string, algor
   const algorithmImplementationSha256 = asSha256(row.algorithm_implementation_sha256);
   const sourceDigest = asSha256(row.source_set_sha256);
   const manifestSha256 = asSha256(row.manifest_sha256);
+  const conveyanceRecordSha256 = row.conveyance_record_sha256 === null ? null : asSha256(row.conveyance_record_sha256);
+  const approvalProvenance = row.approval_provenance === "verified_clinical_approver" || row.approval_provenance === "product_owner_conveyed"
+    ? row.approval_provenance
+    : null;
+  const validAuthority = approvalProvenance === "verified_clinical_approver"
+    ? row.approver_subject !== null && conveyanceRecordSha256 === null
+    : approvalProvenance === "product_owner_conveyed" && row.approver_subject === null && conveyanceRecordSha256 !== null;
   if (row.decision !== "approved" || row.withdrawal_of !== null || row.rule_pack_id !== pack.id
     || artifactSha256 !== pack.artifact_sha256 || row.algorithm_id !== algorithmId
     || algorithmImplementationSha256 !== algorithm.implementationSha256 || sourceDigest !== sourceSetSha256
-    || !manifestSha256 || !row.approver_subject || row.approver_role !== "clinical_approver" || !row.request_id) return null;
+    || !manifestSha256 || !approvalProvenance || !validAuthority || row.approver_role !== "clinical_approver" || !row.request_id) return null;
   return Object.freeze({
     attestationVersion: 1,
     rulePackId: row.rule_pack_id,
@@ -97,8 +104,10 @@ function approvalFor(row: ApprovalRow, pack: PackRow, algorithmId: string, algor
     algorithmImplementationSha256,
     sourceSetSha256: sourceDigest,
     manifestSha256,
+    approvalProvenance,
     approverSubject: row.approver_subject,
     approverRole: "clinical_approver",
+    conveyanceRecordSha256,
     decision: "approved",
     decidedAt: row.decided_at,
     requestId: row.request_id,

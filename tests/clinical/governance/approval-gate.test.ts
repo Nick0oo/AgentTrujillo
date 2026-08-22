@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import { describe, expect, it } from "vitest";
 
-import { buildApprovalManifest, hashApprovalManifest, verifyApproval, withdrawApproval, ApprovalPolicyError } from "../../../src/clinical/governance/approval-policy";
+import { buildApprovalManifest, hashApprovalManifest, verifyApproval, verifyConveyedApproval, withdrawApproval, ApprovalPolicyError } from "../../../src/clinical/governance/approval-policy";
 import type { Sha256Hex } from "../../../src/clinical/governance/source-types";
 
 const subject = "00000000-0000-4000-8000-000000000704";
@@ -15,7 +15,36 @@ describe("clinical approval gate", () => {
     const { manifestSha256, ...manifestInput } = manifest;
     expect(hashApprovalManifest(manifestInput)).toBe(manifestSha256);
     const attestation = verifyApproval(identity, manifest, { decision: "approved", requestId: "00000000-0000-4000-8000-000000000705", decidedAt: "2026-01-01T00:00:00.000Z", allowedSubjects: [subject] });
-    expect(attestation).toMatchObject({ approverSubject: subject, approverRole: "clinical_approver", artifactSha256: digest, decision: "approved" });
+    expect(attestation).toMatchObject({ approvalProvenance: "verified_clinical_approver", approverSubject: subject, approverRole: "clinical_approver", conveyanceRecordSha256: null, artifactSha256: digest, decision: "approved" });
+  });
+
+  it("records conveyed approval without inventing a personal signature", () => {
+    const conveyed = verifyConveyedApproval(manifest, {
+      decision: "approved",
+      requestId: "00000000-0000-4000-8000-000000000707",
+      decidedAt: "2026-08-22T12:00:00.000Z",
+      conveyanceRecordSha256: "b".repeat(64) as Sha256Hex,
+    });
+    expect(conveyed).toMatchObject({
+      approvalProvenance: "product_owner_conveyed",
+      approverSubject: null,
+      approverRole: "clinical_approver",
+      conveyanceRecordSha256: "b".repeat(64),
+      artifactSha256: digest,
+      algorithmImplementationSha256: digest,
+      sourceSetSha256: digest,
+      manifestSha256: manifest.manifestSha256,
+    });
+    expect(JSON.stringify(conveyed)).not.toMatch(/signature|signedBy|dr[.]?\s*trujillo/i);
+  });
+
+  it("rejects conveyed approval without an exact approval-record digest", () => {
+    expect(() => verifyConveyedApproval(manifest, {
+      decision: "approved",
+      requestId: "00000000-0000-4000-8000-000000000708",
+      decidedAt: "2026-08-22T12:00:00.000Z",
+      conveyanceRecordSha256: "not-a-digest" as Sha256Hex,
+    })).toThrowError(expect.objectContaining({ code: "APPROVAL_INVALID" }));
   });
 
   it("rejects subject/manifest/request mutations and additive withdrawal", () => {
