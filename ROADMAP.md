@@ -55,14 +55,13 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-Modules `01`–`07` have no remaining ready or active work. Foundation group `module-08-foundations` is active: `AT-08-02` completed at `2b00e58`; `AT-08-03` and `AT-08-09` are in progress with disjoint paths.
+Modules `01`–`07` have no remaining ready or active work. Foundation group `module-08-foundations` is active: `AT-08-02` completed at `2b00e58`, `AT-08-09` completed at `6862192`, and `AT-08-03` remains in review.
 
 ## Active workers
 
 | Worker | Work unit | Claimed paths | Started | State |
 |---|---|---|---|---|
 | `at_08_03_worker` | `AT-08-03` | `src/application/nutrition/food-reaction-query.ts`; `tests/application/nutrition/food-reaction-query.test.ts` | 2026-08-22 | `review` |
-| `at_08_09_worker` | `AT-08-09` | `src/clinical/development/types.ts`; `tests/clinical/development/types.test.ts` | 2026-08-22 | `review` |
 
 Future implementation workers use GPT-5.6 Luna with reasoning `max`. At most three may run concurrently after collision analysis.
 

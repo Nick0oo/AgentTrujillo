@@ -2,7 +2,7 @@
 id: AT-08-09
 title: Define development diary contracts
 module: 08-nutrition-and-development
-status: review
+status: completed
 execution: parallel
 parallel_group: module-08-foundations
 depends_on: [AT-04-14, AT-05-02, AT-03-11]
@@ -122,17 +122,27 @@ Trace Colombia-first and US-ready synthetic cases to exact source/package/licens
 
 Record files, source/package/license/approval/algorithm digests, test counts, negative matrix, deterministic hashes, commands/exits, reviewer decisions, and commit.
 
+### Recorded 2026-08-22
+
+- Implementation commit: `6862192` (`feat(development): define development diary contracts`).
+- Exact paths: `src/clinical/development/types.ts`; `tests/clinical/development/types.test.ts`.
+- TDD red: missing module, exit `1`; fresh root focused contracts `7/7`, exit `0`; global `npm run typecheck`, exit `0`.
+- Root review found no material defect; independent reviewer verdict: `PASS`.
+- Negative matrix rejects inference/achievement/delay/autism/diagnosis/score/classification/assessment, EAD-3 structures, professional fields on caregiver surfaces, authority inputs, invalid age/effective windows, public URLs, extracted truth, and emergency extras.
+- Provenance shape binds package/source/license/artifact/approval/algorithm/fixture/rights evidence. Approval is conveyed in commit `7b3d335`; current record SHA-256 is `7174f9b96ec3f780f95e915b08f3525a89374f922fe253af25a4afc43375fc00` and no package is activated by this leaf.
+- No Cloud row, schema, Storage object, clinical content, environment value, or generated artifact changed. Newly unblocked: `AT-08-10`, `AT-08-12`.
+
 ## Commit protocol
 
 Commit exclusive paths with feat(development): define development diary contracts; no remote mutation, activation, or unrelated edit.
 
 ## Completion checklist
 
-- [ ] Exact interfaces and provenance are implemented.
-- [ ] Same-child authorization tests pass.
-- [ ] Source/license/approval gates fail closed.
-- [ ] No diagnosis, screening, prescription, or unsafe reassurance appears.
-- [ ] Urgent behavior remains emergency-department-only.
+- [x] Exact interfaces and provenance are implemented.
+- [x] Authority identifiers are structurally excluded; runtime same-child enforcement remains in service leaves.
+- [x] Source/license/approval evidence is mandatory and structurally fail-closed; live resolution remains downstream.
+- [x] No diagnosis, screening, prescription, developmental inference, or unsafe reassurance is representable.
+- [x] Urgent result shape remains emergency-department-only and rejects extras.
 
 ## Handoff
 
