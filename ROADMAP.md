@@ -55,13 +55,13 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-Modules `01`–`08` have no remaining ready or active work. Module 09 is 3/19 completed. `AT-09-04` and `AT-09-06` are dependency-unblocked and unclaimed; selection remains sequential under their leaf contracts.
+Modules `01`–`08` have no remaining ready or active work. Module 09 is 3/19 completed. `AT-09-04` is ready after dependency, path, branch, Cloud, safety, and permission checks; `AT-09-06` remains dependency-unblocked and unclaimed.
 
 ## Active workers
 
 | Worker | Work unit | Claimed paths | Started |
 |---|---|---|---|
-| _None_ | — | — | — |
+| `module09_at0904` (`gpt-5.6-luna`, `max`) | `AT-09-04` (ready reservation) | `src/application/memory/candidate-service.ts`; `tests/application/memory/candidate-service.test.ts` | 2026-08-23 |
 
 Cloud-only execution override (2026-08-23): by explicit current user instruction, Module 09 uses the verified linked Supabase Cloud project as its only database source of truth. Local reset/test availability or drift is not an execution gate. Database leaves must verify exact project identity, migration impact, recoverability, generated linked types, and rollback-safe Cloud tests before any remote mutation.
 
