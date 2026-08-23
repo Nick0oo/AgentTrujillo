@@ -2,7 +2,7 @@
 id: AT-09-01
 title: Define clinical-memory contracts
 module: 09-clinical-memory-and-documents
-status: in_progress
+status: review
 execution: sequential
 parallel_group: null
 depends_on: [AT-02-16, AT-03-11, AT-04-14]
