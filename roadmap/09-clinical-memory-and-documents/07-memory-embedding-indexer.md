@@ -2,7 +2,7 @@
 id: AT-09-07
 title: Index confirmed memory deterministically
 module: 09-clinical-memory-and-documents
-status: in_progress
+status: review
 execution: sequential
 parallel_group: null
 depends_on: [AT-09-05, AT-09-06]
