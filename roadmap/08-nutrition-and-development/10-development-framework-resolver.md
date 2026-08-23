@@ -2,7 +2,7 @@
 id: AT-08-10
 title: Resolve caregiver-safe framework
 module: 08-nutrition-and-development
-status: in_progress
+status: review
 execution: parallel
 parallel_group: module-08-policy-branches
 depends_on: [AT-08-09, AT-03-11]
