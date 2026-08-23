@@ -55,7 +55,7 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-Modules `01`–`07` have no remaining ready or active work. Foundation and policy groups are complete. `AT-08-05` and `AT-08-11` are dependency-unblocked on disjoint content/query paths; sequential database leaf `AT-08-13` is also dependency-unblocked but cannot overlap schema/public-contract work.
+Modules `01`–`07` have no remaining ready or active work. Foundation and policy groups are complete. Parallel group `module-08-content-queries` has `AT-08-05` and `AT-08-11` ready after dependency, approval, later-contract, and exclusive-path verification. Sequential database leaf `AT-08-13` remains dependency-unblocked but cannot overlap this group.
 
 ## Active workers
 

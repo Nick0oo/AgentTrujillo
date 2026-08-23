@@ -2,9 +2,9 @@
 id: AT-08-05
 title: Package approved nutrition content
 module: 08-nutrition-and-development
-status: pending
-execution: sequential
-parallel_group: null
+status: ready
+execution: parallel
+parallel_group: module-08-content-queries
 depends_on: [AT-08-01, AT-03-11]
 blocks: [AT-08-06, AT-08-07, AT-08-08]
 worker:
