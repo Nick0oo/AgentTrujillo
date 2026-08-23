@@ -55,11 +55,15 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-Modules `01`–`08` have no remaining ready or active work. `AT-09-01` is ready after Cloud-only entry-gate verification; local Supabase is not an execution gate by explicit user instruction on 2026-08-23.
+Modules `01`–`08` have no remaining ready or active work. Module 09 has begun under the Cloud-only execution override recorded below.
 
 ## Active workers
 
-None.
+| Worker | Work unit | Claimed paths | Started |
+|---|---|---|---|
+| `module09_at0901` (`gpt-5.6-luna`, `max`) | `AT-09-01` | `src/clinical/memory/types.ts`; `tests/clinical/memory/types.test.ts` | 2026-08-23 |
+
+Cloud-only execution override (2026-08-23): by explicit current user instruction, Module 09 uses the verified linked Supabase Cloud project as its only database source of truth. Local reset/test availability or drift is not an execution gate. Database leaves must verify exact project identity, migration impact, recoverability, generated linked types, and rollback-safe Cloud tests before any remote mutation.
 
 The delegated Module 08 leaves used GPT-5.6 Luna with reasoning `max`. Per the explicit user instruction recorded on 2026-08-23, the root implemented and reviewed the remaining leaves directly; no additional subagents were dispatched. Collision and exclusive-path analysis remained in force.
 
