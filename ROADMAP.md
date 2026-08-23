@@ -55,7 +55,7 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-Modules `01`–`08` have no remaining ready or active work. Module 09 is 5/21 completed. `AT-09-04` and its amendment are `completed`; remote preflight found that `AT-09-05` requires the new `AT-09-05A` Cloud decision boundary before it can become ready.
+Modules `01`–`08` have no remaining ready or active work. Module 09 is 5/21 completed. `AT-09-05A` is `ready`: all dependencies and the module/Cloud entry gate passed, its paths are unclaimed, and it is the required decision boundary before `AT-09-05`.
 
 ## Active workers
 
