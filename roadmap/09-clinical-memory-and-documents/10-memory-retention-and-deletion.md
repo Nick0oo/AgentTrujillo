@@ -17,6 +17,7 @@ requires_clinical_approval: false
 touches:
   create:
     - supabase/migrations/20260823210000_memory_retention_deletion.sql
+    - supabase/migrations/20260823210100_memory_retention_replay_uniqueness.sql
     - supabase/tests/039_memory_retention_deletion.test.sql
     - src/application/memory/retention-service.ts
     - src/persistence/supabase/memory-retention-repository.ts
@@ -31,6 +32,7 @@ touches:
     - tests/persistence/memory-retention-repository.test.ts
 exclusive_paths:
   - supabase/migrations/20260823210000_memory_retention_deletion.sql
+  - supabase/migrations/20260823210100_memory_retention_replay_uniqueness.sql
   - supabase/tests/039_memory_retention_deletion.test.sql
   - src/application/memory/retention-service.ts
   - src/persistence/supabase/memory-retention-repository.ts
@@ -100,6 +102,8 @@ Authorization transaction marks ineligible immediately and emits cleanup work; w
 Use the single forward migration declared above; it is additive, clean/upgrade tested, composite-scoped, forced-RLS, least-privilege, replay/immutability safe, and followed by generated-type parity. Never apply remotely in this leaf.
 
 Cloud chronology and path amendment (2026-08-23): authoritative linked history is already applied through `20260823200000`, so root assigned the next forward-only migration `20260823210000`; the rollback-only test remains the unused planned `039`. The outcome and interface always required `MemoryRetentionService.requestDeletion`/`execute` plus a request-scoped Cloud boundary, but their source/test paths were missing from frontmatter; the four declared service/repository paths are added before selection. The Module 09 Cloud override governs the reviewed apply and supersedes the historical local-only sentence above.
+
+Forward replay correction (2026-08-23): root review after applying `20260823210000` found its partial open-request uniqueness allowed a new idempotency key after a deletion reached `completed`. The applied migration remains immutable. The same active leaf therefore owns additive `20260823210100_memory_retention_replay_uniqueness.sql`, which requires permanent composite item uniqueness after a zero-duplicate preflight; SQL test `039` gains the completed-item replay case before closure.
 
 ## Authorization and isolation
 
