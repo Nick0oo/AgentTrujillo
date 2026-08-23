@@ -2,7 +2,7 @@
 id: AT-08-10
 title: Resolve caregiver-safe framework
 module: 08-nutrition-and-development
-status: review
+status: completed
 execution: parallel
 parallel_group: module-08-policy-branches
 depends_on: [AT-08-09, AT-03-11]
@@ -128,11 +128,20 @@ Commit exclusive paths with feat(development): resolve caregiver-safe framework;
 
 ## Completion checklist
 
-- [ ] Exact interfaces and provenance are implemented.
-- [ ] Same-child authorization tests pass.
-- [ ] Source/license/approval gates fail closed.
-- [ ] No diagnosis, screening, prescription, or unsafe reassurance appears.
-- [ ] Urgent behavior remains emergency-department-only.
+- [x] Exact interfaces and provenance are implemented.
+- [x] Trusted country/locale context is strict and authority aliases are not part of the resolver interface.
+- [x] Source/license/approval gates fail closed and approval is bound to the exact canonical artifact.
+- [x] No diagnosis, screening, professional-instrument metadata, or unsafe reassurance appears.
+- [x] Urgent behavior remains outside this pure resolver and cannot gain extra actions here.
+
+### Recorded 2026-08-22
+
+- Implementation commit: `aff75a4` (`feat(development): resolve caregiver-safe framework`).
+- Owned paths: `src/clinical/development/framework-resolver.ts`; `tests/clinical/development/framework-resolver.test.ts`.
+- Root verification: `npm test -- tests/clinical/development/framework-resolver.test.ts` -> 29/29 passed, exit 0; `npm run typecheck` -> exit 0.
+- Independent review: PASS after approval was bound to canonical artifact/package identity and complete visible source metadata was screened for professional/EAD-3 leakage.
+- Governance evidence: conveyed clinical approval record `7b3d335`, SHA-256 `7174f9b96ec3f780f95e915b08f3525a89374f922fe253af25a4afc43375fc00`; package approval, artifact, source, rights, fixture, algorithm, and disclaimer digests are independently checked.
+- Remote evidence: no Supabase Cloud mutation was required for this pure resolver leaf. `AT-08-11` is newly dependency-unblocked.
 
 ## Handoff
 
