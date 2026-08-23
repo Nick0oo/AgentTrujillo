@@ -30,7 +30,7 @@ Execution amendment (2026-08-22): `AT-08-02`, `AT-08-03`, and `AT-08-09` form pa
 
 Execution amendment (2026-08-22): after the foundation commits, `AT-08-04`, `AT-08-10`, and `AT-08-12` form parallel group `module-08-policy-branches`. They consume separate completed contracts, own disjoint pure-policy paths, and change no shared type, schema, migration, generated contract, dependency, root configuration, or remote state. Conveyed clinical approval is recorded at `7b3d335`; exact runtime content still fails closed unless checksum/source/rights evidence resolves.
 
-Path amendment (2026-08-22): `AT-08-13` owns new migration `20260822130000_development_observation_idempotency.sql`, SQL test `036_development_observation_idempotency.test.sql`, and the repository's canonical generated-type file `src/persistence/supabase/database.types.ts`. The original leaf names collided with existing migration `20260816160000` and test `029`, and `src/generated/database.types.ts` is not this repository's generated-type contract. Existing applied migrations remain immutable.
+Path amendment (2026-08-22): `AT-08-13` owns new migration `20260822130000_development_observation_idempotency.sql`, SQL test `036_development_observation_idempotency.test.sql`, and both active generated-type contracts: `agent/lib/supabase/database.types.ts` and `src/persistence/supabase/database.types.ts`. The original leaf names collided with existing migration `20260816160000` and test `029`, and `src/generated/database.types.ts` does not exist. The follow-up addition of the `agent/` type path reflects the repository generator target and prevents its two Supabase consumers from drifting. Existing applied migrations remain immutable.
 
 ## Work-unit index
 

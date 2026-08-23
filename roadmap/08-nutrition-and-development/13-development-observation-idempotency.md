@@ -19,12 +19,14 @@ touches:
     - supabase/migrations/20260822130000_development_observation_idempotency.sql
     - supabase/tests/036_development_observation_idempotency.test.sql
   modify:
+    - agent/lib/supabase/database.types.ts
     - src/persistence/supabase/database.types.ts
   test:
     - supabase/tests/036_development_observation_idempotency.test.sql
 exclusive_paths:
   - supabase/migrations/20260822130000_development_observation_idempotency.sql
   - supabase/tests/036_development_observation_idempotency.test.sql
+  - agent/lib/supabase/database.types.ts
   - src/persistence/supabase/database.types.ts
 forbidden_paths:
   - .env
