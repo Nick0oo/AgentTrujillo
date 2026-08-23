@@ -2,7 +2,7 @@
 id: AT-09-18
 title: Keep document extraction untrusted and draft
 module: 09-clinical-memory-and-documents
-status: pending
+status: ready
 execution: sequential
 parallel_group: null
 depends_on: [AT-09-15, AT-09-16, AT-09-03]
