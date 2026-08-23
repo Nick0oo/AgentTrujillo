@@ -2072,6 +2072,89 @@ export type Database = {
           },
         ]
       }
+      document_callback_events: {
+        Row: {
+          care_space_id: string
+          child_id: string
+          created_at: string
+          document_id: string
+          event_type: string
+          failure_code: string | null
+          id: string
+          observed_bucket_id: string
+          observed_mime_type: string
+          observed_object_path: string
+          observed_sha256: string
+          observed_size_bytes: number
+          occurred_at: string
+          processed_at: string | null
+          provider: string
+          provider_event_id: string
+          raw_body_sha256: string
+          received_at: string
+          result_metadata: Json
+          scan_result: string | null
+          signature_key_id: string
+          status: string
+        }
+        Insert: {
+          care_space_id: string
+          child_id: string
+          created_at?: string
+          document_id: string
+          event_type: string
+          failure_code?: string | null
+          id?: string
+          observed_bucket_id: string
+          observed_mime_type: string
+          observed_object_path: string
+          observed_sha256: string
+          observed_size_bytes: number
+          occurred_at: string
+          processed_at?: string | null
+          provider: string
+          provider_event_id: string
+          raw_body_sha256: string
+          received_at?: string
+          result_metadata?: Json
+          scan_result?: string | null
+          signature_key_id: string
+          status: string
+        }
+        Update: {
+          care_space_id?: string
+          child_id?: string
+          created_at?: string
+          document_id?: string
+          event_type?: string
+          failure_code?: string | null
+          id?: string
+          observed_bucket_id?: string
+          observed_mime_type?: string
+          observed_object_path?: string
+          observed_sha256?: string
+          observed_size_bytes?: number
+          occurred_at?: string
+          processed_at?: string | null
+          provider?: string
+          provider_event_id?: string
+          raw_body_sha256?: string
+          received_at?: string
+          result_metadata?: Json
+          scan_result?: string | null
+          signature_key_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "document_callback_document_scope_fk"
+            columns: ["care_space_id", "child_id", "document_id"]
+            isOneToOne: false
+            referencedRelation: "documents"
+            referencedColumns: ["care_space_id", "child_id", "id"]
+          },
+        ]
+      }
       document_links: {
         Row: {
           created_at: string
