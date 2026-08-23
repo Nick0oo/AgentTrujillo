@@ -2,7 +2,7 @@
 id: AT-10-01
 title: Build immutable trusted tool context
 module: 10-eve-tools-and-presenters
-status: pending
+status: in_progress
 execution: sequential
 parallel_group: null
 depends_on: [AT-01-16, AT-02-16]
@@ -16,13 +16,13 @@ database_change: false
 requires_clinical_approval: false
 touches:
   create:
-    - agent/runtime/trusted-tool-context.ts
+    - agent/lib/runtime/trusted-tool-context.ts
     - tests/agent/runtime/trusted-tool-context.test.ts
   modify: []
   test:
     - tests/agent/runtime/trusted-tool-context.test.ts
 exclusive_paths:
-  - agent/runtime/trusted-tool-context.ts
+  - agent/lib/runtime/trusted-tool-context.ts
   - tests/agent/runtime/trusted-tool-context.test.ts
 forbidden_paths:
   - .env

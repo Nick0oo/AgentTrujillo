@@ -16,13 +16,13 @@ database_change: false
 requires_clinical_approval: false
 touches:
   create:
-    - agent/runtime/tool-audit.ts
+    - agent/lib/runtime/tool-audit.ts
     - tests/agent/runtime/tool-audit.test.ts
   modify: []
   test:
     - tests/agent/runtime/tool-audit.test.ts
 exclusive_paths:
-  - agent/runtime/tool-audit.ts
+  - agent/lib/runtime/tool-audit.ts
   - tests/agent/runtime/tool-audit.test.ts
 forbidden_paths:
   - .env

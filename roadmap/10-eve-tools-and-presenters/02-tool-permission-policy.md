@@ -16,13 +16,13 @@ database_change: false
 requires_clinical_approval: false
 touches:
   create:
-    - agent/runtime/tool-permission-policy.ts
+    - agent/lib/runtime/tool-permission-policy.ts
     - tests/agent/runtime/tool-permission-policy.test.ts
   modify: []
   test:
     - tests/agent/runtime/tool-permission-policy.test.ts
 exclusive_paths:
-  - agent/runtime/tool-permission-policy.ts
+  - agent/lib/runtime/tool-permission-policy.ts
   - tests/agent/runtime/tool-permission-policy.test.ts
 forbidden_paths:
   - .env

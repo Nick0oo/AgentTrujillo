@@ -15,6 +15,10 @@ This module is the only model-callable action surface. It wraps modules 02–09 
 
 To break the documented dependency cycle, current root authority permits only `AT-13-01` to enter early after its own dependency `AT-03-11` is verified. That leaf produces the provider-neutral catalog consumed by `AT-10-02`; it does not configure providers, inspect real accounts, mutate remote state, or open any other Module 13 leaf. The remaining Module 13 entry gate and leaves stay pending, and later Module 13 work reuses the same versioned catalog without a compatibility fork.
 
+Eve `0.27.13` reports any authored `agent/runtime/` directory as unsupported and fails the zero-warning discovery gate. The infrastructure helpers in `AT-10-01` through `AT-10-07` therefore live under the supported import-only `agent/lib/runtime/` slot. This is a path-only correction: it creates no model-callable tool, changes no public tool identity, and leaves their tests under `tests/agent/runtime/`.
+
+Current execution authority also resolves the README/frontmatter scheduling mismatch: the independent tool leaves may be queued by their declared contract groups, but the root closes one atomic leaf at a time; presenter leaves `AT-10-21` through `AT-10-31` follow their `execution: sequential` frontmatter and are likewise closed one at a time.
+
 ## Exit gate
 
 All 33 leaves are complete and prove exactly thirteen intended tools, no red-flag/shell/filesystem/network/delegation tools, correct wrapper order, explicit confirmation for effects, replay convergence, safe output projections, privacy-safe audit/errors, accessible versioned widgets, text-only professional/emergency boundaries, mobile compatibility, and zero critical authorization/clinical/action leakage.

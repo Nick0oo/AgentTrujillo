@@ -16,13 +16,13 @@ database_change: false
 requires_clinical_approval: false
 touches:
   create:
-    - agent/runtime/tool-idempotency.ts
+    - agent/lib/runtime/tool-idempotency.ts
     - tests/agent/runtime/tool-idempotency.test.ts
   modify: []
   test:
     - tests/agent/runtime/tool-idempotency.test.ts
 exclusive_paths:
-  - agent/runtime/tool-idempotency.ts
+  - agent/lib/runtime/tool-idempotency.ts
   - tests/agent/runtime/tool-idempotency.test.ts
 forbidden_paths:
   - .env

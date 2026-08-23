@@ -16,13 +16,13 @@ database_change: false
 requires_clinical_approval: false
 touches:
   create:
-    - agent/runtime/safe-to-model.ts
+    - agent/lib/runtime/safe-to-model.ts
     - tests/agent/runtime/safe-to-model.test.ts
   modify: []
   test:
     - tests/agent/runtime/safe-to-model.test.ts
 exclusive_paths:
-  - agent/runtime/safe-to-model.ts
+  - agent/lib/runtime/safe-to-model.ts
   - tests/agent/runtime/safe-to-model.test.ts
 forbidden_paths:
   - .env

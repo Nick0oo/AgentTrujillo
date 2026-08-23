@@ -57,11 +57,13 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-Modules `01`–`09` have no remaining ready or active work. Module 10 remains pending; no Module 10 work unit is selected or claimed by this completion.
+`AT-10-01` is ready after verified `AT-01-16` (`76883f2`), `AT-02-16` (`759ee06`), Eve `0.27.13` discovery, and the Module 10 entry gate. No other Module 10 or Module 13 leaf is active.
 
 ## Active workers
 
-None.
+| Work unit | Worker | Status | Claimed paths |
+|---|---|---|---|
+| `AT-10-01` | root | in_progress | `agent/lib/runtime/trusted-tool-context.ts`; `tests/agent/runtime/trusted-tool-context.test.ts` |
 
 Cloud-only execution override (2026-08-23): by explicit current user instruction, Module 09 uses the verified linked Supabase Cloud project as its only database source of truth. Local reset/test availability or drift is not an execution gate. Database leaves must verify exact project identity, migration impact, recoverability, generated linked types, and rollback-safe Cloud tests before any remote mutation.
 
