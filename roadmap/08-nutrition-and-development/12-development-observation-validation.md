@@ -2,7 +2,7 @@
 id: AT-08-12
 title: Validate caregiver observations
 module: 08-nutrition-and-development
-status: review
+status: completed
 execution: parallel
 parallel_group: module-08-policy-branches
 depends_on: [AT-08-09]
@@ -128,11 +128,20 @@ Commit exclusive paths with feat(development): validate caregiver observations; 
 
 ## Completion checklist
 
-- [ ] Exact interfaces and provenance are implemented.
-- [ ] Same-child authorization tests pass.
-- [ ] Source/license/approval gates fail closed.
-- [ ] No diagnosis, screening, prescription, or unsafe reassurance appears.
-- [ ] Urgent behavior remains emergency-department-only.
+- [x] Exact interfaces and provenance are implemented.
+- [x] Same-child authority fields are rejected and private attachment scope is bound through opaque proofs.
+- [x] Source/license/approval gates fail closed.
+- [x] No diagnosis, screening, prescription, or unsafe reassurance appears.
+- [x] Urgent behavior remains outside this pure validator and cannot gain extra actions here.
+
+### Recorded 2026-08-22
+
+- Implementation commit: `6592166` (`feat(development): validate caregiver observations`).
+- Owned paths: `src/clinical/development/observation-validation.ts`; `tests/clinical/development/observation-validation.test.ts`.
+- Root verification: `npm test -- tests/clinical/development/observation-validation.test.ts` -> 14/14 passed, exit 0; `npm run typecheck` -> exit 0.
+- Independent review: PASS after closing the explicit-diagnosis P1 with deterministic EN/ES rejection cases.
+- Governance evidence: conveyed clinical approval record `7b3d335`, SHA-256 `7174f9b96ec3f780f95e915b08f3525a89374f922fe253af25a4afc43375fc00`; released caregiver item, artifact, approval, private attachment, and confirmation digests remain separately bound.
+- Remote evidence: no Supabase Cloud mutation was required for this pure validation leaf. `AT-08-13` is newly dependency-unblocked and remains sequential because it owns migration, RPC/RLS, and generated-type contracts.
 
 ## Handoff
 
