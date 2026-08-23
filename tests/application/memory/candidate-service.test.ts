@@ -6,7 +6,6 @@ import {
   type MemoryCandidateRepository,
   type MemoryCandidateRepositoryRow,
   type MemoryCandidateSessionContext,
-  type MemoryCandidateTransactionPort,
 } from "../../../src/application/memory/candidate-service";
 import { DEFAULT_MEMORY_CONFIRMATION_POLICY } from "../../../src/clinical/memory/confirmation-policy";
 
@@ -121,18 +120,9 @@ function memoryRepository(): MemoryCandidateRepository {
   };
 }
 
-function transactionPort(): MemoryCandidateTransactionPort {
-  return {
-    async run(scopeValue, context, _cutoff, operation) {
-      return operation({ scope: scopeValue, sessionContext: context });
-    },
-  };
-}
-
 function service(repository = memoryRepository()) {
   return createMemoryCandidateService({
     policy: DEFAULT_MEMORY_CONFIRMATION_POLICY,
-    transaction: transactionPort(),
     repository,
   }, { now: () => new Date(CUTOFF) });
 }
@@ -218,7 +208,7 @@ describe("MemoryCandidateService", () => {
     expect(writes).toBe(0);
   });
 
-  it("denies an expired scope and never starts the transaction", async () => {
+  it("denies an expired scope and never calls the repository", async () => {
     const expiredScope = createAuthorizedChildScopeFromTrustedRow({
       actorUserId: ACTOR,
       careSpaceId: SPACE,
@@ -230,21 +220,24 @@ describe("MemoryCandidateService", () => {
       issuedAt: new Date("2026-08-23T11:56:00.000Z"),
       expiresAt: new Date("2026-08-23T11:59:00.000Z"),
     });
-    let transactions = 0;
-    const repository = memoryRepository();
+    let calls = 0;
+    const repository: MemoryCandidateRepository = {
+      async capturePending() {
+        calls += 1;
+        throw new Error("expired scope must not call repository");
+      },
+      async listPending() {
+        calls += 1;
+        return [];
+      },
+    };
     const result = await createMemoryCandidateService({
       policy: DEFAULT_MEMORY_CONFIRMATION_POLICY,
       repository,
-      transaction: {
-        async run(...args) {
-          transactions += 1;
-          return transactionPort().run(...args);
-        },
-      },
     }, { now: () => new Date(CUTOFF) }).capture(expiredScope, sessionContext(), input());
 
     expect(result).toEqual({ ok: false, status: "unavailable", code: "NOT_AUTHORIZED" });
-    expect(transactions).toBe(0);
+    expect(calls).toBe(0);
   });
 
   it("rejects missing context, oversized input, and injected authority fields", async () => {
@@ -383,7 +376,6 @@ describe("MemoryCandidateService", () => {
     };
     const result = await createMemoryCandidateService({
       policy: { ...DEFAULT_MEMORY_CONFIRMATION_POLICY, policySha256: "0".repeat(64) as typeof DEFAULT_MEMORY_CONFIRMATION_POLICY.policySha256 },
-      transaction: transactionPort(),
       repository,
     }, { now: () => new Date(CUTOFF) }).capture(scope, sessionContext(), input());
 
@@ -426,7 +418,7 @@ describe("MemoryCandidateService", () => {
     expect(results.map((result) => result.ok && result.outcome).sort()).toEqual(["created", "idempotent_replay"]);
   });
 
-  it("does not claim success when the scoped transaction rolls back", async () => {
+  it("does not claim success when the atomic repository call fails", async () => {
     let writes = 0;
     const repository: MemoryCandidateRepository = {
       async capturePending() {
@@ -440,18 +432,87 @@ describe("MemoryCandidateService", () => {
     const result = await createMemoryCandidateService({
       policy: DEFAULT_MEMORY_CONFIRMATION_POLICY,
       repository,
-      transaction: {
-        async run() {
-          throw new Error("rollback");
-        },
-      },
     }, { now: () => new Date(CUTOFF) }).capture(scope, sessionContext(), input());
 
     expect(result).toEqual({ ok: false, status: "unavailable", code: "STORAGE_UNAVAILABLE" });
-    expect(writes).toBe(0);
+    expect(writes).toBe(1);
   });
 
-  it("denies when reauthorization returns a revoked or changed session context", async () => {
+  it("accepts Cloud timestamp formatting differences when the instant is unchanged", async () => {
+    const repository: MemoryCandidateRepository = {
+      async capturePending(_context, write) {
+        const row = rowFromWrite({
+          ...write,
+          provenanceCapturedAt: "2026-08-23T06:59:00-05:00",
+        });
+        return { outcome: "created" as const, row };
+      },
+      async listPending() {
+        return [];
+      },
+    };
+
+    const result = await service(repository).capture(scope, sessionContext(), input());
+
+    expect(result).toEqual(expect.objectContaining({ ok: true, outcome: "created" }));
+  });
+
+  it("fails closed when Cloud returns an already-expired candidate", async () => {
+    const repository: MemoryCandidateRepository = {
+      async capturePending(_context, write) {
+        return {
+          outcome: "created" as const,
+          row: rowFromWrite({
+            ...write,
+            expiresAt: "2026-08-23T11:59:59.000Z",
+          }),
+        };
+      },
+      async listPending() {
+        return [];
+      },
+    };
+
+    const result = await service(repository).capture(scope, sessionContext(), input());
+
+    expect(result).toEqual({ ok: false, status: "unavailable", code: "STORAGE_UNAVAILABLE" });
+  });
+
+  it("fails closed instead of returning expired candidates from listPending", async () => {
+    const expired = rowFromWrite({
+      id: "00000000-0000-4000-8000-000000000099",
+      careSpaceId: SPACE,
+      childId: CHILD,
+      createdBy: ACTOR,
+      memoryType: "preference",
+      candidateText: SOURCE_TEXT,
+      provenanceSourceId: MESSAGE,
+      provenanceCapturedAt: "2026-08-23T11:59:00.000Z",
+      sourceSpanStart: 0,
+      sourceSpanEnd: SOURCE_TEXT.length,
+      sourceSessionId: SESSION,
+      sourceMessageId: MESSAGE,
+      extractionConfidence: 1,
+      sensitivity: "low",
+      inputSha256: "b".repeat(64),
+      idempotencyKey: "expired",
+      expiresAt: "2026-08-23T11:59:59.000Z",
+    });
+    const repository: MemoryCandidateRepository = {
+      async capturePending() {
+        return { outcome: "created" as const, row: expired };
+      },
+      async listPending() {
+        return [expired];
+      },
+    };
+
+    const result = await service(repository).listPending(scope, sessionContext());
+
+    expect(result).toEqual({ ok: false, status: "unavailable", code: "STORAGE_UNAVAILABLE" });
+  });
+
+  it("denies a changed session context before the atomic repository call", async () => {
     let writes = 0;
     const repository: MemoryCandidateRepository = {
       async capturePending() {
@@ -465,25 +526,7 @@ describe("MemoryCandidateService", () => {
     const result = await createMemoryCandidateService({
       policy: DEFAULT_MEMORY_CONFIRMATION_POLICY,
       repository,
-      transaction: {
-        async run(_scope, context, _cutoff, operation) {
-          return operation({
-            scope: createAuthorizedChildScopeFromTrustedRow({
-              actorUserId: ACTOR,
-              careSpaceId: SPACE,
-              childId: CHILD,
-              permissions: ["read", "record"],
-              countryOfCare: "CO",
-              timezone: "America/Bogota",
-              authorizationVersion: "m:1:a:2",
-              issuedAt: new Date("2026-08-23T11:56:00.000Z"),
-              expiresAt: new Date("2026-08-23T12:01:00.000Z"),
-            }),
-            sessionContext: { ...context, authorizationVersion: "m:1:a:2" },
-          });
-        },
-      },
-    }, { now: () => new Date(CUTOFF) }).capture(scope, sessionContext(), input());
+    }, { now: () => new Date(CUTOFF) }).capture(scope, sessionContext({ authorizationVersion: "m:1:a:2" }), input());
 
     expect(result).toEqual({ ok: false, status: "unavailable", code: "NOT_AUTHORIZED" });
     expect(writes).toBe(0);

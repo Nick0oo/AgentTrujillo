@@ -4381,6 +4381,49 @@ export type Database = {
           status: string
         }[]
       }
+      capture_memory_candidate: {
+        Args: {
+          p_authorization_version: string
+          p_candidate_id: string
+          p_candidate_text: string
+          p_care_space_id: string
+          p_child_id: string
+          p_cutoff_at: string
+          p_expires_at: string
+          p_extraction_confidence: number
+          p_idempotency_key: string
+          p_input_sha256: string
+          p_memory_type: string
+          p_sensitivity: string
+          p_session_id: string
+          p_source_message_id: string
+          p_source_span_end: number
+          p_source_span_start: number
+        }
+        Returns: {
+          candidate_text: string
+          care_space_id: string
+          child_id: string
+          created_at: string
+          created_by: string
+          expires_at: string
+          extraction_confidence: number
+          id: string
+          idempotency_key: string
+          input_sha256: string
+          lifecycle: string
+          memory_type: string
+          outcome: string
+          provenance_captured_at: string
+          provenance_source_id: string
+          provenance_type: string
+          sensitivity: string
+          source_message_id: string
+          source_session_id: string
+          source_span_end: number
+          source_span_start: number
+        }[]
+      }
       correct_medication_intake: {
         Args: {
           p_actual_quantity_lexeme: string
@@ -4422,6 +4465,37 @@ export type Database = {
           owner_user_id: string
           product_session_id: string
           status: string
+        }[]
+      }
+      list_pending_memory_candidates: {
+        Args: {
+          p_authorization_version: string
+          p_care_space_id: string
+          p_child_id: string
+          p_cutoff_at: string
+          p_session_id: string
+        }
+        Returns: {
+          candidate_text: string
+          care_space_id: string
+          child_id: string
+          created_at: string
+          created_by: string
+          expires_at: string
+          extraction_confidence: number
+          id: string
+          idempotency_key: string
+          input_sha256: string
+          lifecycle: string
+          memory_type: string
+          provenance_captured_at: string
+          provenance_source_id: string
+          provenance_type: string
+          sensitivity: string
+          source_message_id: string
+          source_session_id: string
+          source_span_end: number
+          source_span_start: number
         }[]
       }
       match_clinical_memory: {

@@ -6,7 +6,6 @@ import { z } from "zod";
 import {
   hasPermission,
   isAuthorizedChildScopeActive,
-  sameAuthorizedChildScope,
   type AuthorizedChildScope,
 } from "../../../agent/lib/access/authorized-child-scope.ts";
 import {
@@ -186,18 +185,7 @@ export interface MemoryCandidateRepository {
   listPending(context: MemoryCandidateTransactionContext): Promise<readonly MemoryCandidateRepositoryRow[]>;
 }
 
-export interface MemoryCandidateTransactionPort {
-  /** The adapter reauthorizes owner, membership, active child, and session inside one transaction. */
-  run<T>(
-    scope: AuthorizedChildScope,
-    sessionContext: MemoryCandidateSessionContext,
-    cutoffAt: string,
-    operation: (context: MemoryCandidateTransactionContext) => Promise<T>,
-  ): Promise<T | null>;
-}
-
 export type MemoryCandidateServiceDependencies = Readonly<{
-  transaction: MemoryCandidateTransactionPort;
   repository: MemoryCandidateRepository;
   policy?: MemoryConfirmationPolicy | null;
 }>;
@@ -267,6 +255,14 @@ function deterministicCandidateId(value: unknown): string {
 
 function validDate(value: unknown): value is Date {
   return value instanceof Date && Number.isFinite(value.getTime());
+}
+
+function sameInstant(left: string, right: string): boolean {
+  const leftDate = new Date(left);
+  const rightDate = new Date(right);
+  return Number.isFinite(leftDate.getTime())
+    && Number.isFinite(rightDate.getTime())
+    && leftDate.getTime() === rightDate.getTime();
 }
 
 function validScope(scope: AuthorizedChildScope, permission: "read" | "record", now: Date): boolean {
@@ -357,7 +353,7 @@ function rowMatchesWrite(row: MemoryCandidateRepositoryRow, write: MemoryCandida
     && row.candidateText === write.candidateText
     && row.provenanceType === write.provenanceType
     && row.provenanceSourceId === write.provenanceSourceId
-    && row.provenanceCapturedAt === write.provenanceCapturedAt
+    && sameInstant(row.provenanceCapturedAt, write.provenanceCapturedAt)
     && row.sourceSpanStart === write.sourceSpanStart
     && row.sourceSpanEnd === write.sourceSpanEnd
     && row.sourceSessionId === write.sourceSessionId
@@ -367,7 +363,7 @@ function rowMatchesWrite(row: MemoryCandidateRepositoryRow, write: MemoryCandida
     && row.inputSha256 === write.inputSha256
     && (allowDifferentIdempotencyKey || row.idempotencyKey === write.idempotencyKey)
     && row.lifecycle === "pending"
-    && row.expiresAt === write.expiresAt;
+    && sameInstant(row.expiresAt, write.expiresAt);
 }
 
 function projectCandidate(row: MemoryCandidateRepositoryRow): MemoryCandidate {
@@ -490,7 +486,7 @@ export class MemoryCandidateService {
       candidateText: text,
       provenanceType: "chat",
       provenanceSourceId: sessionContext.sourceMessage.id,
-      provenanceCapturedAt: sessionContext.sourceMessage.capturedAt,
+      provenanceCapturedAt: new Date(sessionContext.sourceMessage.capturedAt).toISOString(),
       sourceSpanStart: sourceSpan.start,
       sourceSpanEnd: sourceSpan.end,
       sourceSessionId: sessionContext.sessionId,
@@ -505,24 +501,22 @@ export class MemoryCandidateService {
     });
 
     try {
-      const result = await this.dependencies.transaction.run(scope, sessionContext, current.toISOString(), async (context) => {
-        if (!this.transactionContextIsBound(scope, sessionContext, context, current, "record", true)) return null;
-        const stored = await this.dependencies.repository.capturePending(context, write);
-        if (stored.outcome === "conflict") return this.failure("IDEMPOTENCY_CONFLICT");
-        const row = ROW.safeParse(stored.row);
-        if (!row.success || !rowMatchesWrite(row.data, write, stored.outcome === "source_replay")) return this.failure("STORAGE_UNAVAILABLE");
-        const candidate = projectCandidate(row.data);
-        const preview = confirmationPreview(candidate, classification, row.data.expiresAt);
-        if (!preview) return this.failure("POLICY_UNAVAILABLE");
-        return Object.freeze({
-          ok: true as const,
-          status: "pending" as const,
-          outcome: stored.outcome,
-          candidate,
-          confirmationPreview: preview,
-        });
+      const stored = await this.dependencies.repository.capturePending({ scope, sessionContext }, write);
+      if (stored.outcome === "conflict") return this.failure("IDEMPOTENCY_CONFLICT");
+      const row = ROW.safeParse(stored.row);
+      if (!row.success
+        || !rowMatchesWrite(row.data, write, stored.outcome === "source_replay")
+        || new Date(row.data.expiresAt) <= current) return this.failure("STORAGE_UNAVAILABLE");
+      const candidate = projectCandidate(row.data);
+      const preview = confirmationPreview(candidate, classification, row.data.expiresAt);
+      if (!preview) return this.failure("POLICY_UNAVAILABLE");
+      return Object.freeze({
+        ok: true as const,
+        status: "pending" as const,
+        outcome: stored.outcome,
+        candidate,
+        confirmationPreview: preview,
       });
-      return result ?? this.failure("NOT_AUTHORIZED");
     } catch {
       return this.failure("STORAGE_UNAVAILABLE");
     }
@@ -542,25 +536,21 @@ export class MemoryCandidateService {
       return this.failure("NOT_AUTHORIZED");
     }
     try {
-      const result = await this.dependencies.transaction.run(scope, sessionContext, current.toISOString(), async (context) => {
-        if (!this.transactionContextIsBound(scope, sessionContext, context, current, "read", false)) return null;
-        const rows = await this.dependencies.repository.listPending(context);
-        if (!Array.isArray(rows) || rows.length > 1_000) return this.failure("STORAGE_UNAVAILABLE");
-        const candidates: MemoryCandidate[] = [];
-        for (const rawRow of rows) {
-          const row = ROW.safeParse(rawRow);
-          if (!row.success
-            || row.data.careSpaceId !== scope.careSpaceId
-            || row.data.childId !== scope.childId
-            || row.data.lifecycle !== "pending"
-            || !Number.isFinite(new Date(row.data.expiresAt).getTime())
-            || new Date(row.data.expiresAt) <= new Date(sessionContext.cutoffAt)) return this.failure("STORAGE_UNAVAILABLE");
-          candidates.push(projectCandidate(row.data));
-        }
-        candidates.sort((left, right) => left.createdAt.localeCompare(right.createdAt) || left.id.localeCompare(right.id));
-        return Object.freeze({ ok: true as const, status: "available" as const, candidates: Object.freeze(candidates) });
-      });
-      return result ?? this.failure("NOT_AUTHORIZED");
+      const rows = await this.dependencies.repository.listPending({ scope, sessionContext });
+      if (!Array.isArray(rows) || rows.length > 1_000) return this.failure("STORAGE_UNAVAILABLE");
+      const candidates: MemoryCandidate[] = [];
+      for (const rawRow of rows) {
+        const row = ROW.safeParse(rawRow);
+        if (!row.success
+          || row.data.careSpaceId !== scope.careSpaceId
+          || row.data.childId !== scope.childId
+          || row.data.lifecycle !== "pending"
+          || !Number.isFinite(new Date(row.data.expiresAt).getTime())
+          || new Date(row.data.expiresAt) <= current) return this.failure("STORAGE_UNAVAILABLE");
+        candidates.push(projectCandidate(row.data));
+      }
+      candidates.sort((left, right) => left.createdAt.localeCompare(right.createdAt) || left.id.localeCompare(right.id));
+      return Object.freeze({ ok: true as const, status: "available" as const, candidates: Object.freeze(candidates) });
     } catch {
       return this.failure("STORAGE_UNAVAILABLE");
     }
@@ -573,29 +563,6 @@ export class MemoryCandidateService {
     } catch {
       return null;
     }
-  }
-
-  private transactionContextIsBound(
-    requestedScope: AuthorizedChildScope,
-    requestedSession: MemoryCandidateSessionContext,
-    context: MemoryCandidateTransactionContext,
-    current: Date,
-    permission: "read" | "record",
-    requireCurrentSource: boolean,
-  ): boolean {
-    return validScope(context.scope, permission, current)
-      && sameAuthorizedChildScope(requestedScope, context.scope)
-      && context.scope.actorUserId === requestedScope.actorUserId
-      && context.scope.careSpaceId === requestedScope.careSpaceId
-      && context.scope.childId === requestedScope.childId
-      && context.scope.authorizationVersion === requestedScope.authorizationVersion
-      && sameSessionContext(context.scope, context.sessionContext)
-      && trustedSourceIsBound(context.scope, context.sessionContext, current)
-      && context.sessionContext.sessionId === requestedSession.sessionId
-      && (!requireCurrentSource
-        || (canonicalize(context.sessionContext.sourceMessage) === canonicalize(requestedSession.sourceMessage)
-          && context.sessionContext.cutoffAt === requestedSession.cutoffAt
-          && canonicalize(context.sessionContext.safetyDecision) === canonicalize(requestedSession.safetyDecision)));
   }
 
   private failure(code: MemoryCandidateFailureCode): MemoryCandidateFailure {
