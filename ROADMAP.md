@@ -32,7 +32,7 @@ These facts do not close pending behavioral gates. Local schema parity, generate
 - Module 08 is **17/17 completed with 0 pending leaves**. Final boundary evidence is recorded at implementation commit `145b3b0` and `docs/verification/nutrition-development.md`.
 - Module 09 is **21/21 completed with 0 pending leaves**. Final isolation evidence is recorded at implementation commit `debbfcf` and `docs/verification/memory-documents.md`.
 - Module 10 execution uses the root-authorized 2026-08-23 contract reconciliation: Eve `0.27.13` supersedes its historical `0.27.1` references, and only `AT-13-01` may execute early after verified `AT-03-11` to supply the provider-neutral catalog required by `AT-10-02`. The rest of Module 13 remains pending behind its general entry gate.
-- Module 10 is **9/33 completed**. `AT-10-01` closed at `13ef49f`; `AT-10-02` at `f0ce01a`; `AT-10-03` at `73ad42a`; `AT-10-04` at `296fad3`; `AT-10-05` at `114b0c6`; `AT-10-06` at `783fc32`; `AT-10-07` at `4af8b5d`; `AT-10-09` at `71c8aeb` plus trusted/mobile compatibility correction `9271b9e`; and `AT-10-21` at `d34b07f`, after the Eve-supported runtime-helper correction in `2ada844`, the explicit replay-fingerprint amendments `43639a7`/`acdeadc`, the safe-error/audit amendment `a01db90`, and the discovery-identity correction `d5ff6e1`.
+- Module 10 is **10/33 completed**. `AT-10-01` closed at `13ef49f`; `AT-10-02` at `f0ce01a`; `AT-10-03` at `73ad42a`; `AT-10-04` at `296fad3`; `AT-10-05` at `114b0c6`; `AT-10-06` at `783fc32`; `AT-10-07` at `4af8b5d`; `AT-10-08` at `ae6988c`; `AT-10-09` at `71c8aeb` plus trusted/mobile compatibility correction `9271b9e`; and `AT-10-21` at `d34b07f`, after the Eve-supported runtime-helper correction in `2ada844`, the explicit replay-fingerprint amendments `43639a7`/`acdeadc`, the safe-error/audit amendment `a01db90`, and the discovery-identity correction `d5ff6e1`.
 - The early `AT-13-01` exception is completed at `eb82958` with a provider-neutral, synthetic-test-only catalog. It unblocks `AT-10-02`; all other Module 13 leaves remain pending behind the general Module 13 entry gate.
 
 ## Module ledger
@@ -59,7 +59,7 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-`AT-10-08` is the recommended next `eve-tools` dependency/clinical/path audit; once completed it unlocks sequential presenter `AT-10-22`. No leaf is currently claimed.
+`AT-10-22` is ready after `AT-10-08`; no other leaf is claimed while `AT-10-10` and `AT-10-11` remain `in_progress` in the explicitly user-authorized parallel `eve-tools` group.
 
 Root correction before `AT-10-09`: Eve's public tool context requires one shared fail-closed factory bridge to the branded request-scoped context, and branded safe errors must survive the idempotency wrapper. `AT-10-09` owns the explicitly added bridge/idempotency integration paths; no model authority, credential, per-user global state or new clinical behavior is authorized.
 
@@ -71,7 +71,8 @@ Post-closure Module 11/`AT-10-21` compatibility correction for `AT-10-09`: the f
 
 ## Active workers
 
-None.
+- Luna/max worker — `AT-10-10` — owns `agent/tools/suggest_pediatric_nutrition.ts` and `tests/agent/tools/suggest-pediatric-nutrition.test.ts`.
+- Luna/max worker — `AT-10-11` — owns `agent/tools/validate_declared_pediatric_dose.ts` and `tests/agent/tools/validate-declared-pediatric-dose.test.ts`.
 
 Cloud-only execution override (2026-08-23): by explicit current user instruction, Module 09 uses the verified linked Supabase Cloud project as its only database source of truth. Local reset/test availability or drift is not an execution gate. Database leaves must verify exact project identity, migration impact, recoverability, generated linked types, and rollback-safe Cloud tests before any remote mutation.
 
