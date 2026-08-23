@@ -55,7 +55,7 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-Modules `01`–`08` have no remaining ready or active work. Module 09 is 2/19 completed. `AT-09-02` is closed with 62/62 rollback-safe Cloud assertions; `AT-09-03` and `AT-09-06` remain dependency-unblocked and unclaimed.
+Modules `01`–`08` have no remaining ready or active work. Module 09 is 2/19 completed. `AT-09-03` is ready after dependency, safety-contract, conveyed clinical-approval, path-collision, and Cloud-state checks; `AT-09-06` remains dependency-unblocked and unclaimed.
 
 ## Active workers
 

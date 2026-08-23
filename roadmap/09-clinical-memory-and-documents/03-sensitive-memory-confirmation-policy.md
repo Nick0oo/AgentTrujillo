@@ -2,7 +2,7 @@
 id: AT-09-03
 title: Define sensitive-memory confirmation policy
 module: 09-clinical-memory-and-documents
-status: pending
+status: ready
 execution: sequential
 parallel_group: null
 depends_on: [AT-09-01, AT-04-10]
