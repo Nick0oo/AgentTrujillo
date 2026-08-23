@@ -18,12 +18,18 @@ touches:
   create:
     - tests/evals/memory-documents.eval.ts
     - docs/verification/memory-documents.md
-  modify: []
+  modify:
+    - supabase/tests/010_access_isolation.test.sql
+    - supabase/tests/036_development_observation_idempotency.test.sql
+    - supabase/tests/039_memory_retention_deletion.test.sql
   test:
     - docs/verification/memory-documents.md
 exclusive_paths:
   - tests/evals/memory-documents.eval.ts
   - docs/verification/memory-documents.md
+  - supabase/tests/010_access_isolation.test.sql
+  - supabase/tests/036_development_observation_idempotency.test.sql
+  - supabase/tests/039_memory_retention_deletion.test.sql
 forbidden_paths:
   - .env
   - agent/tools/**
@@ -84,6 +90,8 @@ Run pure and local-Supabase suites twice; use identical cross-child vectors to p
 ## Database and Storage contract
 
 No schema mutation. Use typed repositories/providers and existing private buckets only; derived artifacts retain source, model, policy, input, and output digests.
+
+Accumulated-fixture amendment (2026-08-23): the final Cloud gate proved historical SQL fixtures `010`, `036`, and `039` still inserted the pre-reservation `documents` shape. This leaf owns only their synthetic insert updates so accumulated isolation/development/retention gates exercise the current immutable reservation contract. No schema relaxation or production row mutation is allowed.
 
 ## Authorization and isolation
 
