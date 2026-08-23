@@ -16,16 +16,26 @@ database_change: true
 requires_clinical_approval: false
 touches:
   create:
-    - supabase/migrations/20260816190000_memory_retention_deletion.sql
+    - supabase/migrations/20260823210000_memory_retention_deletion.sql
     - supabase/tests/039_memory_retention_deletion.test.sql
+    - src/application/memory/retention-service.ts
+    - src/persistence/supabase/memory-retention-repository.ts
+    - tests/application/memory/retention-service.test.ts
+    - tests/persistence/memory-retention-repository.test.ts
   modify:
     - agent/lib/supabase/database.types.ts
     - src/persistence/supabase/database.types.ts
   test:
     - supabase/tests/039_memory_retention_deletion.test.sql
+    - tests/application/memory/retention-service.test.ts
+    - tests/persistence/memory-retention-repository.test.ts
 exclusive_paths:
-  - supabase/migrations/20260816190000_memory_retention_deletion.sql
+  - supabase/migrations/20260823210000_memory_retention_deletion.sql
   - supabase/tests/039_memory_retention_deletion.test.sql
+  - src/application/memory/retention-service.ts
+  - src/persistence/supabase/memory-retention-repository.ts
+  - tests/application/memory/retention-service.test.ts
+  - tests/persistence/memory-retention-repository.test.ts
   - agent/lib/supabase/database.types.ts
   - src/persistence/supabase/database.types.ts
 forbidden_paths:
@@ -88,6 +98,8 @@ Authorization transaction marks ineligible immediately and emits cleanup work; w
 ## Database and Storage contract
 
 Use the single forward migration declared above; it is additive, clean/upgrade tested, composite-scoped, forced-RLS, least-privilege, replay/immutability safe, and followed by generated-type parity. Never apply remotely in this leaf.
+
+Cloud chronology and path amendment (2026-08-23): authoritative linked history is already applied through `20260823200000`, so root assigned the next forward-only migration `20260823210000`; the rollback-only test remains the unused planned `039`. The outcome and interface always required `MemoryRetentionService.requestDeletion`/`execute` plus a request-scoped Cloud boundary, but their source/test paths were missing from frontmatter; the four declared service/repository paths are added before selection. The Module 09 Cloud override governs the reviewed apply and supersedes the historical local-only sentence above.
 
 ## Authorization and isolation
 
