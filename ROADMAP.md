@@ -32,7 +32,7 @@ These facts do not close pending behavioral gates. Local schema parity, generate
 - Module 08 is **17/17 completed with 0 pending leaves**. Final boundary evidence is recorded at implementation commit `145b3b0` and `docs/verification/nutrition-development.md`.
 - Module 09 is **21/21 completed with 0 pending leaves**. Final isolation evidence is recorded at implementation commit `debbfcf` and `docs/verification/memory-documents.md`.
 - Module 10 execution uses the root-authorized 2026-08-23 contract reconciliation: Eve `0.27.13` supersedes its historical `0.27.1` references, and only `AT-13-01` may execute early after verified `AT-03-11` to supply the provider-neutral catalog required by `AT-10-02`. The rest of Module 13 remains pending behind its general entry gate.
-- Module 10 is **5/33 completed**. `AT-10-01` closed at `13ef49f`; `AT-10-02` at `f0ce01a`; `AT-10-03` at `73ad42a`; `AT-10-04` at `296fad3`; and `AT-10-05` at `114b0c6`, after the Eve-supported runtime-helper correction in `2ada844` and the explicit replay-fingerprint amendments `43639a7`/`acdeadc`.
+- Module 10 is **6/33 completed**. `AT-10-01` closed at `13ef49f`; `AT-10-02` at `f0ce01a`; `AT-10-03` at `73ad42a`; `AT-10-04` at `296fad3`; `AT-10-05` at `114b0c6`; and `AT-10-06` at `783fc32`, after the Eve-supported runtime-helper correction in `2ada844`, the explicit replay-fingerprint amendments `43639a7`/`acdeadc`, and the safe-error/audit amendment `a01db90`.
 - The early `AT-13-01` exception is completed at `eb82958` with a provider-neutral, synthetic-test-only catalog. It unblocks `AT-10-02`; all other Module 13 leaves remain pending behind the general Module 13 entry gate.
 
 ## Module ledger
@@ -59,11 +59,11 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-No additional leaf is ready while sequential infrastructure leaf `AT-10-06` is in progress.
+`AT-10-07` is newly unblocked by completed `AT-10-06`; it remains unclaimed until its entry, paths and mandatory sources are checked.
 
 ## Active workers
 
-Root agent: `AT-10-06`; exclusive paths `agent/lib/runtime/safe-tool-errors.ts`, `tests/agent/runtime/safe-tool-errors.test.ts`, and the explicit branded-error integration in `agent/lib/runtime/tool-audit.ts` plus its test.
+None.
 
 Cloud-only execution override (2026-08-23): by explicit current user instruction, Module 09 uses the verified linked Supabase Cloud project as its only database source of truth. Local reset/test availability or drift is not an execution gate. Database leaves must verify exact project identity, migration impact, recoverability, generated linked types, and rollback-safe Cloud tests before any remote mutation.
 
