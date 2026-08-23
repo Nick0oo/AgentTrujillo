@@ -34,6 +34,8 @@ Execution amendment (2026-08-22): after `AT-08-10` completed, `AT-08-05` and `AT
 
 Path amendment (2026-08-22): `AT-08-13` owns new migration `20260822130000_development_observation_idempotency.sql`, SQL test `036_development_observation_idempotency.test.sql`, and both active generated-type contracts: `agent/lib/supabase/database.types.ts` and `src/persistence/supabase/database.types.ts`. The original leaf names collided with existing migration `20260816160000` and test `029`, and `src/generated/database.types.ts` does not exist. The follow-up addition of the `agent/` type path reflects the repository generator target and prevents its two Supabase consumers from drifting. Existing applied migrations remain immutable.
 
+Cloud execution amendment (2026-08-22): the current user instruction supersedes AT-08-13's earlier local-only wording and authorizes only its reviewed forward additive migration on verified linked project `yapjiinrjsrothzgzxsv` (`CreciendoApp`). The root must recheck project identity and dry-run plan, use the environment supplied from `main` without printing or copying secrets, never reset/delete/truncate data, generate both owned type contracts from the resulting schema, and record linked evidence plus a forward rollback plan. This does not authorize deployment, content activation, or any other remote mutation.
+
 ## Work-unit index
 
 | ID | Outcome | Depends on |

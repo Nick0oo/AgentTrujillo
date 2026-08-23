@@ -75,7 +75,7 @@ Only frontmatter paths; synthetic non-PHI fixtures and existing authorization/go
 
 ## Forbidden files and operations
 
-Never read .env, mutate applied migrations/remote state, bypass AuthorizedChildScope, source clinical truth from the model, reproduce unlicensed content, add consumer EAD-3, or emit diagnosis/prescription/emergency extras.
+Never edit or print `.env`, rewrite applied migrations, delete/reset/truncate remote data, bypass AuthorizedChildScope, source clinical truth from the model, reproduce unlicensed content, add consumer EAD-3, or emit diagnosis/prescription/emergency extras. Per the current user instruction, this leaf may apply only its reviewed forward-only additive migration to the exact verified linked Supabase Cloud project after dry-run/preflight.
 
 ## Interfaces and types
 
@@ -87,7 +87,7 @@ Atomic RPC claims key, inserts observation/attachments, stores result; identical
 
 ## Database and Storage contract
 
-Forward-only additive migration with composite scope, immutable replay behavior, forced RLS, least grants, generated types, and clean/upgrade local tests; no remote apply.
+Forward-only additive migration with composite scope, immutable replay behavior, forced RLS, least grants, generated types, and clean/upgrade verification. The current user instruction authorizes a reviewed Cloud apply to linked project `yapjiinrjsrothzgzxsv` (`CreciendoApp`) only: verify identity and migration plan immediately before apply, never delete/reset data, run rollback-safe verification, and record linked impact plus rollback instructions.
 
 ## Authorization and isolation
 
@@ -128,7 +128,7 @@ Record files, source/package/license/approval/algorithm digests, test counts, ne
 
 ## Commit protocol
 
-Commit exclusive paths with feat(development): make observation writes replay-safe; no remote mutation, activation, or unrelated edit.
+Commit exclusive paths with feat(development): make observation writes replay-safe; the only permitted remote mutation is the exact reviewed forward additive migration described above, with no data deletion, package activation, deployment, or unrelated edit.
 
 ## Completion checklist
 
