@@ -2,7 +2,7 @@
 id: AT-09-09
 title: Neutralize retrieved-memory prompt injection
 module: 09-clinical-memory-and-documents
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-09-08, AT-04-10]
@@ -128,12 +128,19 @@ Commit exclusive paths with feat(memory): neutralize retrieved-memory prompt inj
 
 ## Completion checklist
 
-- [ ] Composite child scope is structural and tested.
-- [ ] Confirmation/lifecycle/provenance are explicit.
-- [ ] Private URLs, secrets, and raw reasoning stay out of model/logs.
-- [ ] Draft extraction never becomes clinical truth automatically.
-- [ ] Replay, revocation, and deletion fail closed.
+- [x] Composite child scope is structural and tested.
+- [x] Confirmation/lifecycle/provenance are explicit.
+- [x] Private URLs, secrets, and raw reasoning stay out of model/logs.
+- [x] Draft extraction never becomes clinical truth automatically.
+- [x] Replay, revocation, and deletion fail closed.
+
+### Recorded 2026-08-23
+
+- Implementation commit: `aae3ac5c34a8991d2361939b84de129ce798f769` (`feat(memory): neutralize retrieved-memory prompt injection`). Source/test SHA-256 are `4994f336e2062cc66b1afc41e1d25c3e2a6139315a7dea32cd282f5a76b103ec` and `d45897976c31cfc6913d8a412c7d39d833d3041be6c3ee6cd23af5ddb953984f`; changed paths exactly match ownership.
+- TDD: the focused test first failed on the missing module, then an omission-order test proved the context digest was input-order dependent before the stable omission sort. Final focused suite passed `11/11`; accumulated memory/response-policy tests passed `53/53`; `npm run typecheck` exited `0`.
+- Boundary: every hit is revalidated for exact internal care-space/child scope, fixed cutoff, active/confirmed retrieval contract and bounded citation shape. Safe text is NFKC/control-normalized and JSON-quoted; role/tool/system overrides, bilingual instruction attacks, delimiter breaks, URLs, credential shapes, encoded blobs and suspicious labels/reference IDs are omitted with stable reasons. Selection, omission order, token budget and context SHA-256 are deterministic.
+- Clinical approval: the user's explicit conveyed approval for all medically reviewed Module 09 behavior covers this fail-closed boundary; it does not activate any clinical package or make retrieved text authoritative. Root reviewed the full diff, compatibility, safety and staged ownership; whitespace, secrets and forbidden artifacts were clean. No database, Cloud row, Storage, provider, deployment, push, merge or destructive mutation occurred.
 
 ## Handoff
 
-Only the frontmatter blocks IDs become eligible after fresh verification evidence and commit.
+`AT-09-19` now satisfies this dependency; it still requires `AT-09-10`, `AT-09-17`, and `AT-09-18`.
