@@ -2,7 +2,7 @@
 id: AT-08-07
 title: Enforce texture and choking policy
 module: 08-nutrition-and-development
-status: pending
+status: ready
 execution: sequential
 parallel_group: null
 depends_on: [AT-08-05, AT-08-06]
