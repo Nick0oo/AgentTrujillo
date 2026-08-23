@@ -2,7 +2,7 @@
 id: AT-09-14
 title: Issue short-lived private upload tickets
 module: 09-clinical-memory-and-documents
-status: ready
+status: in_progress
 execution: sequential
 parallel_group: null
 depends_on: [AT-09-12, AT-09-13]
@@ -84,6 +84,8 @@ Revalidate manage_documents permission; reserve first; request Supabase signed u
 ## Database and Storage contract
 
 No schema mutation. Use typed repositories/providers and existing private buckets only; derived artifacts retain source, model, policy, input, and output digests.
+
+Installed-provider compatibility note (2026-08-23): `@supabase/storage-js` documents raw signed upload URLs as fixed at two hours. This leaf does not mislabel that URL as a five-minute ticket. Its provider port must prove an expiry of at most five minutes or the service fails closed and cancels the reservation; a later concrete adapter may use an approved short-lived gateway, but raw two-hour URLs are not returned.
 
 ## Authorization and isolation
 
