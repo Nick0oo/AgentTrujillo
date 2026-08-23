@@ -907,6 +907,168 @@ export type Database = {
           },
         ]
       }
+      clinical_memory_candidate_decisions: {
+        Row: {
+          candidate_id: string
+          candidate_input_sha256: string
+          care_space_id: string
+          child_id: string
+          confirmation_sha256: string
+          decided_at: string
+          decided_by: string
+          decision: string
+          id: string
+          idempotency_key: string
+          memory_item_id: string | null
+        }
+        Insert: {
+          candidate_id: string
+          candidate_input_sha256: string
+          care_space_id: string
+          child_id: string
+          confirmation_sha256: string
+          decided_at?: string
+          decided_by: string
+          decision: string
+          id?: string
+          idempotency_key: string
+          memory_item_id?: string | null
+        }
+        Update: {
+          candidate_id?: string
+          candidate_input_sha256?: string
+          care_space_id?: string
+          child_id?: string
+          confirmation_sha256?: string
+          decided_at?: string
+          decided_by?: string
+          decision?: string
+          id?: string
+          idempotency_key?: string
+          memory_item_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clinical_memory_candidate_decisions_actor_fk"
+            columns: ["decided_by"]
+            isOneToOne: false
+            referencedRelation: "guardian_profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "clinical_memory_candidate_decisions_candidate_scope_fk"
+            columns: ["candidate_id", "care_space_id", "child_id"]
+            isOneToOne: false
+            referencedRelation: "clinical_memory_candidates"
+            referencedColumns: ["id", "care_space_id", "child_id"]
+          },
+          {
+            foreignKeyName: "clinical_memory_candidate_decisions_memory_scope_fk"
+            columns: ["memory_item_id", "care_space_id", "child_id"]
+            isOneToOne: false
+            referencedRelation: "clinical_memory_items"
+            referencedColumns: ["id", "care_space_id", "child_id"]
+          },
+        ]
+      }
+      clinical_memory_candidates: {
+        Row: {
+          candidate_text: string
+          care_space_id: string
+          child_id: string
+          created_at: string
+          created_by: string
+          expires_at: string
+          extraction_confidence: number
+          id: string
+          idempotency_key: string
+          input_sha256: string
+          lifecycle: string
+          memory_type: string
+          provenance_captured_at: string
+          provenance_source_id: string
+          provenance_type: string
+          sensitivity: string
+          source_message_id: string | null
+          source_session_id: string | null
+          source_span_end: number
+          source_span_start: number
+        }
+        Insert: {
+          candidate_text: string
+          care_space_id: string
+          child_id: string
+          created_at?: string
+          created_by: string
+          expires_at: string
+          extraction_confidence: number
+          id?: string
+          idempotency_key: string
+          input_sha256: string
+          lifecycle?: string
+          memory_type: string
+          provenance_captured_at: string
+          provenance_source_id: string
+          provenance_type: string
+          sensitivity: string
+          source_message_id?: string | null
+          source_session_id?: string | null
+          source_span_end: number
+          source_span_start: number
+        }
+        Update: {
+          candidate_text?: string
+          care_space_id?: string
+          child_id?: string
+          created_at?: string
+          created_by?: string
+          expires_at?: string
+          extraction_confidence?: number
+          id?: string
+          idempotency_key?: string
+          input_sha256?: string
+          lifecycle?: string
+          memory_type?: string
+          provenance_captured_at?: string
+          provenance_source_id?: string
+          provenance_type?: string
+          sensitivity?: string
+          source_message_id?: string | null
+          source_session_id?: string | null
+          source_span_end?: number
+          source_span_start?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clinical_memory_candidates_created_by_fk"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "guardian_profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "clinical_memory_candidates_scope_fk"
+            columns: ["care_space_id", "child_id"]
+            isOneToOne: false
+            referencedRelation: "children"
+            referencedColumns: ["care_space_id", "id"]
+          },
+          {
+            foreignKeyName: "clinical_memory_candidates_source_message_scope_fk"
+            columns: ["source_message_id", "care_space_id", "child_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["id", "care_space_id", "child_id"]
+          },
+          {
+            foreignKeyName: "clinical_memory_candidates_source_session_scope_fk"
+            columns: ["source_session_id", "care_space_id", "child_id"]
+            isOneToOne: false
+            referencedRelation: "agent_sessions"
+            referencedColumns: ["id", "care_space_id", "child_id"]
+          },
+        ]
+      }
       clinical_memory_embeddings: {
         Row: {
           care_space_id: string
@@ -962,16 +1124,29 @@ export type Database = {
         Row: {
           care_space_id: string
           child_id: string
+          confirmation_sha256: string
           confirmation_status: string
+          confirmed_at: string
+          content_sha256: string
           created_at: string
           created_by: string | null
+          extraction_confidence: number
           id: string
+          input_sha256: string
+          lifecycle: string
           memory_type: string
+          provenance_captured_at: string
+          provenance_source_id: string
           provenance_type: string
+          retrieval_eligibility: string
           searchable_text: string
+          sensitivity: string
           source_message_id: string | null
           source_session_id: string | null
+          source_span_end: number
+          source_span_start: number
           structured_content: Json
+          supersedes_id: string | null
           updated_at: string
           valid_from: string
           valid_until: string | null
@@ -979,16 +1154,29 @@ export type Database = {
         Insert: {
           care_space_id: string
           child_id: string
+          confirmation_sha256: string
           confirmation_status?: string
+          confirmed_at: string
+          content_sha256: string
           created_at?: string
           created_by?: string | null
+          extraction_confidence: number
           id?: string
+          input_sha256: string
+          lifecycle?: string
           memory_type: string
+          provenance_captured_at: string
+          provenance_source_id: string
           provenance_type: string
+          retrieval_eligibility?: string
           searchable_text: string
+          sensitivity: string
           source_message_id?: string | null
           source_session_id?: string | null
+          source_span_end: number
+          source_span_start: number
           structured_content: Json
+          supersedes_id?: string | null
           updated_at?: string
           valid_from?: string
           valid_until?: string | null
@@ -996,16 +1184,29 @@ export type Database = {
         Update: {
           care_space_id?: string
           child_id?: string
+          confirmation_sha256?: string
           confirmation_status?: string
+          confirmed_at?: string
+          content_sha256?: string
           created_at?: string
           created_by?: string | null
+          extraction_confidence?: number
           id?: string
+          input_sha256?: string
+          lifecycle?: string
           memory_type?: string
+          provenance_captured_at?: string
+          provenance_source_id?: string
           provenance_type?: string
+          retrieval_eligibility?: string
           searchable_text?: string
+          sensitivity?: string
           source_message_id?: string | null
           source_session_id?: string | null
+          source_span_end?: number
+          source_span_start?: number
           structured_content?: Json
+          supersedes_id?: string | null
           updated_at?: string
           valid_from?: string
           valid_until?: string | null
@@ -1044,6 +1245,13 @@ export type Database = {
             columns: ["source_session_id", "care_space_id", "child_id"]
             isOneToOne: false
             referencedRelation: "agent_sessions"
+            referencedColumns: ["id", "care_space_id", "child_id"]
+          },
+          {
+            foreignKeyName: "clinical_memory_items_supersedes_scope_fk"
+            columns: ["supersedes_id", "care_space_id", "child_id"]
+            isOneToOne: false
+            referencedRelation: "clinical_memory_items"
             referencedColumns: ["id", "care_space_id", "child_id"]
           },
         ]
