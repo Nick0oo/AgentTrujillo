@@ -55,7 +55,7 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-Modules `01`–`08` have no remaining ready or active work. Module 09 remains pending; no Module 09 work unit is selected or claimed by this completion.
+Modules `01`–`08` have no remaining ready or active work. `AT-09-01` is ready after Cloud-only entry-gate verification; local Supabase is not an execution gate by explicit user instruction on 2026-08-23.
 
 ## Active workers
 
