@@ -2,7 +2,7 @@
 id: AT-09-18
 title: Keep document extraction untrusted and draft
 module: 09-clinical-memory-and-documents
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-09-15, AT-09-16, AT-09-03]
@@ -128,11 +128,18 @@ Commit exclusive paths with feat(documents): keep document extraction untrusted 
 
 ## Completion checklist
 
-- [ ] Composite child scope is structural and tested.
-- [ ] Confirmation/lifecycle/provenance are explicit.
-- [ ] Private URLs, secrets, and raw reasoning stay out of model/logs.
-- [ ] Draft extraction never becomes clinical truth automatically.
-- [ ] Replay, revocation, and deletion fail closed.
+- [x] Composite child scope is structural and tested.
+- [x] Confirmation/lifecycle/provenance are explicit.
+- [x] Private URLs, secrets, and raw reasoning stay out of model/logs.
+- [x] Draft extraction never becomes clinical truth automatically.
+- [x] Replay, revocation, and deletion fail closed.
+
+### Recorded 2026-08-23
+
+- Implementation commit: `8d3fa23` (`feat(documents): keep document extraction untrusted and draft`). Source/test SHA-256: `4c4e911bfee83da62d1e2f91f90967a4ef83b2cb24f53b6843eb0297c253a7bc` / `951c97c7b5e8defc4b4dfdd6d0adfa2bb7274c7e56f2499222b19c60a4a2eec3`. The user conveyed full medical approval for Module 09 before selection.
+- TDD first failed on the missing policy. Final focused tests passed `10/10`; accumulated memory/document tests passed `161/161` across 15 files; typecheck exited `0`.
+- Review: only active clean documents and exact processor/document/schema/version/output digests pass. Page/span bounds, field-purpose allowlists, confidence, candidate count, Unicode normalization, deterministic ordering/ID and seven-day expiry are explicit. Hidden/direct-write/diagnosis/unsupported/low-confidence/forged output fails closed.
+- Prompt injection remains quoted untrusted text; urgent language adds a standard-safety-preflight warning but no alarm, contact, booking, clinician action or direct clinical write. Every candidate is `draft`, `untrusted`, confirmation-required and routed to a named domain confirmation workflow. No Cloud/object/schema, secret, environment, deployment, push or merge changed. `AT-09-19` is now fully unblocked.
 
 ## Handoff
 
