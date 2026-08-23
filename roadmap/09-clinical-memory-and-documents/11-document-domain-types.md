@@ -2,7 +2,7 @@
 id: AT-09-11
 title: Define private-document contracts
 module: 09-clinical-memory-and-documents
-status: pending
+status: ready
 execution: sequential
 parallel_group: null
 depends_on: [AT-02-16, AT-09-01]
