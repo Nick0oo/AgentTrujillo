@@ -2,7 +2,7 @@
 id: AT-08-01
 title: Define nutrition guidance contracts
 module: 08-nutrition-and-development
-status: pending
+status: review
 execution: sequential
 parallel_group: null
 depends_on: [AT-04-14, AT-05-02, AT-03-11]

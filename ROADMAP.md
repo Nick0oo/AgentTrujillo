@@ -29,7 +29,7 @@ These facts do not close pending behavioral gates. Local schema parity, generate
 - Documentation implementation plan: `completed` at commit `2ba542b`.
 - Atomic roadmap authoring: modules `01` through `15` completed and cross-module verification passed; see [verification evidence](docs/verification/2026-08-16-agent-roadmap.md).
 - Product implementation: modules `01` through `07` completed with fresh runtime and Cloud evidence. Module `07` exact minimal formularies were released in `54e615c`; conveyed approval is recorded without a personal signature.
-- Next candidate executable unit: `AT-08-01`. Module `08` has been read for compatibility but has not been selected or started.
+- Active executable unit: `AT-08-01`; module `08` compatibility and downstream contract preflight are complete.
 
 ## Module ledger
 
@@ -55,13 +55,13 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-Modules `01`–`07` have no remaining ready or active work. `AT-08-01` is the next candidate, but module `08` has not been selected.
+Modules `01`–`07` have no remaining ready or active work. `AT-08-01` is ready after dependency, downstream-contract, path-collision, and non-destructive Cloud-authority preflight.
 
 ## Active workers
 
 | Worker | Work unit | Claimed paths | Started | State |
 |---|---|---|---|---|
-| — | — | No active implementation worker | — | — |
+| `at_08_01_worker` | `AT-08-01` | `src/clinical/nutrition/types.ts`; `tests/clinical/nutrition/types.test.ts` | 2026-08-22 | `review` |
 
 Future implementation workers use GPT-5.6 Luna with reasoning `max`. At most three may run concurrently after collision analysis.
 
