@@ -2,7 +2,7 @@
 id: AT-09-03
 title: Define sensitive-memory confirmation policy
 module: 09-clinical-memory-and-documents
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-09-01, AT-04-10]
@@ -128,11 +128,24 @@ Commit exclusive paths with feat(memory): define sensitive-memory confirmation p
 
 ## Completion checklist
 
-- [ ] Composite child scope is structural and tested.
-- [ ] Confirmation/lifecycle/provenance are explicit.
-- [ ] Private URLs, secrets, and raw reasoning stay out of model/logs.
-- [ ] Draft extraction never becomes clinical truth automatically.
-- [ ] Replay, revocation, and deletion fail closed.
+- [x] Composite child scope is structural and tested.
+- [x] Confirmation/lifecycle/provenance are explicit.
+- [x] Private URLs, secrets, and raw reasoning stay out of model/logs.
+- [x] Draft extraction never becomes clinical truth automatically.
+- [x] Replay, revocation, and deletion fail closed.
+
+### Recorded 2026-08-23
+
+- Implementation commit: `132cd4a39b7e185509e549fb399db464836d0ff7` (`feat(memory): define sensitive-memory confirmation policy`).
+- Changed paths: `src/clinical/memory/confirmation-policy.ts` and `tests/clinical/memory/confirmation-policy.test.ts` only. File SHA-256 values: `221e92262e0f065d361672f5a5ab1ad173beda4d3c7a5e3589d604ea4ad9d3a6` and `600c1dee4f70a50fa6241f736cb2a38a1c1af326c794f1c2861e331aafcb7ff3`; policy digest: `8928650253620d5add60aa57a13c1f04607c6e03cb4c074ffe2ba9ddf48f0155`.
+- TDD evidence: the initial focused run failed because the policy module did not exist. Root review then required RED/GREEN corrections for non-canonical Cloud-incompatible categories, candidate-content digest substitution, authority-key variants, and overbroad diagnosis-word blocking; the final worker correction recorded 1 expected failure before the attributed-history case passed.
+- Fresh root verification: `npm test -- --run tests/clinical/memory/confirmation-policy.test.ts tests/clinical/memory/types.test.ts` passed 34/34 tests across 2 files (exit 0); `npm run typecheck` exited 0.
+- Contract evidence: every allowed category uses the canonical `MemoryType`; health-sensitive categories require digest-bound explicit confirmation; changed content cannot reuse a candidate digest; policy revocation, digest drift, safety preflight failure, urgent text, inferred diagnosis, medication recommendation, dose authorization, secrets, operational abuse, irrelevant third-party data, and model authority fields fail closed.
+- Clinical approval: the current user conveyed 100% approval for all medical approval required by Module 09. The approval is recorded without attributing a personal cryptographic signature.
+- Cloud evidence: linked Supabase project `yapjiinrjsrothzgzxsv` (`CreciendoApp`) remained the source of truth. This pure policy leaf made no schema, data, Storage, deployment, or other remote mutation.
+- Root review: complete implementation and test files, canonical Module 09 types, Cloud schema compatibility, downstream AT-09-04/05 and Module 10 consumers, staged ownership, whitespace, forbidden paths, secret patterns, and artifact patterns were reviewed. Staged checks were clean.
+- Residual risk: session authorization, transactional persistence, replay, confirmation-token consumption, revocation races, and retention deletion remain intentionally owned by later leaves; this policy performs no effects.
+- Newly dependency-unblocked: `AT-09-04`; `AT-09-06` remains independently unblocked.
 
 ## Handoff
 
