@@ -2,9 +2,9 @@
 id: AT-08-04
 title: Evaluate nutrition eligibility
 module: 08-nutrition-and-development
-status: pending
-execution: sequential
-parallel_group: null
+status: in_progress
+execution: parallel
+parallel_group: module-08-policy-branches
 depends_on: [AT-08-01, AT-08-02, AT-08-03]
 blocks: [AT-08-06]
 worker:

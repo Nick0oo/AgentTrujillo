@@ -2,9 +2,9 @@
 id: AT-08-12
 title: Validate caregiver observations
 module: 08-nutrition-and-development
-status: pending
-execution: sequential
-parallel_group: null
+status: in_progress
+execution: parallel
+parallel_group: module-08-policy-branches
 depends_on: [AT-08-09]
 blocks: [AT-08-13]
 worker:

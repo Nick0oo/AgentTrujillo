@@ -16,16 +16,16 @@ database_change: true
 requires_clinical_approval: false
 touches:
   create:
-    - supabase/migrations/20260816160000_development_observation_idempotency.sql
-    - supabase/tests/029_development_observation_idempotency.test.sql
-    - src/generated/database.types.ts
-  modify: []
+    - supabase/migrations/20260822130000_development_observation_idempotency.sql
+    - supabase/tests/036_development_observation_idempotency.test.sql
+  modify:
+    - src/persistence/supabase/database.types.ts
   test:
-    - supabase/tests/029_development_observation_idempotency.test.sql
+    - supabase/tests/036_development_observation_idempotency.test.sql
 exclusive_paths:
-  - supabase/migrations/20260816160000_development_observation_idempotency.sql
-  - supabase/tests/029_development_observation_idempotency.test.sql
-  - src/generated/database.types.ts
+  - supabase/migrations/20260822130000_development_observation_idempotency.sql
+  - supabase/tests/036_development_observation_idempotency.test.sql
+  - src/persistence/supabase/database.types.ts
 forbidden_paths:
   - .env
   - agent/tools/**

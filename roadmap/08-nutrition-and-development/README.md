@@ -28,6 +28,10 @@ Nutrition profile/reaction queries and approved-content packaging are parallel-s
 
 Execution amendment (2026-08-22): `AT-08-02`, `AT-08-03`, and `AT-08-09` form parallel group `module-08-foundations`. Their dependencies are complete, their exact paths and public contracts are disjoint, and none changes schema, generated types, packages, root configuration, or remote state. This makes the existing parallel-safe module declaration explicit in leaf frontmatter; later leaves retain their declared execution mode unless separately proven and recorded.
 
+Execution amendment (2026-08-22): after the foundation commits, `AT-08-04`, `AT-08-10`, and `AT-08-12` form parallel group `module-08-policy-branches`. They consume separate completed contracts, own disjoint pure-policy paths, and change no shared type, schema, migration, generated contract, dependency, root configuration, or remote state. Conveyed clinical approval is recorded at `7b3d335`; exact runtime content still fails closed unless checksum/source/rights evidence resolves.
+
+Path amendment (2026-08-22): `AT-08-13` owns new migration `20260822130000_development_observation_idempotency.sql`, SQL test `036_development_observation_idempotency.test.sql`, and the repository's canonical generated-type file `src/persistence/supabase/database.types.ts`. The original leaf names collided with existing migration `20260816160000` and test `029`, and `src/generated/database.types.ts` is not this repository's generated-type contract. Existing applied migrations remain immutable.
+
 ## Work-unit index
 
 | ID | Outcome | Depends on |

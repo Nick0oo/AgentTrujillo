@@ -55,13 +55,15 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-Modules `01`–`07` have no remaining ready or active work. Foundation group `module-08-foundations` is complete: `AT-08-02` at `2b00e58`, `AT-08-03` at `c726952`, and `AT-08-09` at `6862192`. `AT-08-04`, `AT-08-10`, and `AT-08-12` are newly unblocked candidates.
+Modules `01`–`07` have no remaining ready or active work. Foundation group `module-08-foundations` is complete. Parallel group `module-08-policy-branches` is active with `AT-08-04`, `AT-08-10`, and `AT-08-12`; dependencies, approval, public-contract, and exact-path checks passed.
 
 ## Active workers
 
 | Worker | Work unit | Claimed paths | Started | State |
 |---|---|---|---|---|
-| — | — | No active implementation worker | — | — |
+| `at_08_04_worker` | `AT-08-04` | `src/clinical/nutrition/eligibility.ts`; `tests/clinical/nutrition/eligibility.test.ts` | 2026-08-22 | `in_progress` |
+| `at_08_10_worker` | `AT-08-10` | `src/clinical/development/framework-resolver.ts`; `tests/clinical/development/framework-resolver.test.ts` | 2026-08-22 | `in_progress` |
+| `at_08_12_worker` | `AT-08-12` | `src/clinical/development/observation-validation.ts`; `tests/clinical/development/observation-validation.test.ts` | 2026-08-22 | `in_progress` |
 
 Future implementation workers use GPT-5.6 Luna with reasoning `max`. At most three may run concurrently after collision analysis.
 
