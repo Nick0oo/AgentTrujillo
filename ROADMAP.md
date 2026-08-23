@@ -33,6 +33,7 @@ These facts do not close pending behavioral gates. Local schema parity, generate
 - Module 09 is **21/21 completed with 0 pending leaves**. Final isolation evidence is recorded at implementation commit `debbfcf` and `docs/verification/memory-documents.md`.
 - Module 10 execution uses the root-authorized 2026-08-23 contract reconciliation: Eve `0.27.13` supersedes its historical `0.27.1` references, and only `AT-13-01` may execute early after verified `AT-03-11` to supply the provider-neutral catalog required by `AT-10-02`. The rest of Module 13 remains pending behind its general entry gate.
 - Module 10 is **1/33 completed**. `AT-10-01` closed at implementation commit `13ef49f` after the Eve-supported runtime-helper path correction in `2ada844`.
+- The early `AT-13-01` exception is completed at `eb82958` with a provider-neutral, synthetic-test-only catalog. It unblocks `AT-10-02`; all other Module 13 leaves remain pending behind the general Module 13 entry gate.
 
 ## Module ledger
 
@@ -58,7 +59,7 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-`AT-13-01` is the next eligible leaf under the root-authorized early-execution exception after verified `AT-03-11`; it is not yet claimed. `AT-10-02` remains pending until that catalog leaf closes.
+`AT-10-02` is the next eligible leaf after completed `AT-10-01` (`13ef49f`) and early `AT-13-01` (`eb82958`); it is not yet claimed.
 
 ## Active workers
 
