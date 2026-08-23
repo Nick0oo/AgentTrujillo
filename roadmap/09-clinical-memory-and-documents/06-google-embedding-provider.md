@@ -2,7 +2,7 @@
 id: AT-09-06
 title: Implement pinned Google embedding provider
 module: 09-clinical-memory-and-documents
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-09-01, AT-01-03]
@@ -128,12 +128,22 @@ Commit exclusive paths with feat(memory): implement pinned google embedding prov
 
 ## Completion checklist
 
-- [ ] Composite child scope is structural and tested.
-- [ ] Confirmation/lifecycle/provenance are explicit.
-- [ ] Private URLs, secrets, and raw reasoning stay out of model/logs.
-- [ ] Draft extraction never becomes clinical truth automatically.
-- [ ] Replay, revocation, and deletion fail closed.
+- [x] Composite child scope is structural and tested.
+- [x] Confirmation/lifecycle/provenance are explicit.
+- [x] Private URLs, secrets, and raw reasoning stay out of model/logs.
+- [x] Draft extraction never becomes clinical truth automatically.
+- [x] Replay, revocation, and deletion fail closed.
+
+### Recorded 2026-08-23
+
+- Implementation commit: `05b603d080be9ccc38429d7ecd20124462eb40b3` (`feat(memory): implement pinned google embedding provider`). The two changed files exactly match `exclusive_paths`. Provider SHA-256: `79fc688e6baca30390b856440f85e5413c8d661177376cb3513b051f32e149fa`; test SHA-256: `646ae381f542fadaf6054dbdc7d77e8ead2831f464d834d7885ab577d7e66683`.
+- Capability evidence: installed AI SDK `7.0.35` and `@ai-sdk/google` `4.0.44` docs/types explicitly list stable `gemini-embedding-2`, custom `outputDimensionality`, and `RETRIEVAL_DOCUMENT`/`RETRIEVAL_QUERY`. The adapter pins direct provider `google.generative-ai`, exact model `gemini-embedding-2`, `768` dimensions, L2 normalization, cosine metric, and compatibility version `google.gemini-embedding-2.768.l2.cosine.v1`; preview/latest/Gateway/OpenRouter/Anthropic route scan is clean.
+- TDD: focused test first failed with the expected missing-module error and `0` tests. Final focused suite passed `14/14`, exit `0`, covering model/task/options, deterministic canonical input/vector hashes, finite/dimension/zero-norm drift, single/batch order and partial batch, bounded input, timeout, abort, rate limit, no fallback, and PHI-safe observer data.
+- Live direct-Google smoke used only synthetic text and existing environment key without printing or modifying it. Document and query calls both returned `768` finite values with the correct task types and post-normalization norms `0.9999999999999998`; a live two-item identical batch produced equal input and vector hashes. No vector, input text or credential was printed.
+- Provider compatibility finding: the live Google/AI SDK path returns `usage.tokens` as `NaN` despite its TypeScript `number` contract. The adapter records this as explicit `null` rather than inventing usage; unit tests cover `undefined`, `null`, and `NaN`. Vector/task/dimension drift remains a hard failure.
+- Privacy/resilience: AI SDK telemetry is disabled with `recordInputs:false` and `recordOutputs:false`; the optional observer receives only operation/task/status/count/duration/bounded tokens/failure class and cannot break calls. Timeout, external abort, retry count, sequential batch execution and maximum input/batch sizes are explicit; errors expose bounded codes without provider messages.
+- Fresh gates: provider/runtime/clinical-memory suites passed `51/51` across `4` files; `npm run typecheck` and Eve build exited `0`; staged ownership, full diff, whitespace, secrets and forbidden artifacts passed. Root implemented/reviewed directly per user direction. No database, Supabase row, Storage, deployment, push, merge, seed or destructive mutation occurred.
 
 ## Handoff
 
-Only the frontmatter blocks IDs become eligible after fresh verification evidence and commit.
+`AT-09-07` now satisfies both prerequisites and may consume only this pinned document identity; `AT-09-08` also satisfies its provider prerequisite but still depends on `AT-09-07`.
