@@ -13,6 +13,10 @@ This module gives Agent Trujillo a guardian-controlled, provenance-rich clinical
 
 All nineteen original leaves plus the AT-09-04A and AT-09-05A Cloud-boundary amendments are complete and prove candidates require policy plus explicit confirmation, only active confirmed memory is indexed/retrieved, Google model/task/dimension identity is pinned, composite care-space/child predicates execute before vector ordering, retrieved text cannot inject instructions, revocation/deletion prevents resurrection, uploads/downloads use minimal-purpose short-lived tickets, callbacks are authenticated/idempotent, extraction stays draft, and critical leakage/public-access/direct-write failures are zero.
 
+## Completion
+
+Completed 2026-08-23: **21/21 leaves completed, 0 pending**. Final implementation commit `debbfcf` proves the exit gate with 16/16 deterministic adversarial cases, 1065/1065 accumulated tests, and 156/156 linked Supabase Cloud pgTAP assertions. Full evidence is recorded in [memory and document verification](../../docs/verification/memory-documents.md).
+
 ## Dependency graph
 
 ```text

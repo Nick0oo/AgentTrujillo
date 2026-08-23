@@ -2,7 +2,7 @@
 id: AT-09-19
 title: Prove memory and document isolation
 module: 09-clinical-memory-and-documents
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-09-09, AT-09-10, AT-09-17, AT-09-18]
@@ -136,11 +136,21 @@ Commit exclusive paths with feat(documents): prove memory and document isolation
 
 ## Completion checklist
 
-- [ ] Composite child scope is structural and tested.
-- [ ] Confirmation/lifecycle/provenance are explicit.
-- [ ] Private URLs, secrets, and raw reasoning stay out of model/logs.
-- [ ] Draft extraction never becomes clinical truth automatically.
-- [ ] Replay, revocation, and deletion fail closed.
+- [x] Composite child scope is structural and tested.
+- [x] Confirmation/lifecycle/provenance are explicit.
+- [x] Private URLs, secrets, and raw reasoning stay out of model/logs.
+- [x] Draft extraction never becomes clinical truth automatically.
+- [x] Replay, revocation, and deletion fail closed.
+
+### Recorded 2026-08-23
+
+- Implementation commit: `debbfcf` (`feat(documents): prove memory and document isolation`). Changed paths: `tests/evals/memory-documents.eval.ts`, `docs/verification/memory-documents.md`, and rollback-only fixture updates `supabase/tests/010_access_isolation.test.sql`, `036_development_observation_idempotency.test.sql`, and `039_memory_retention_deletion.test.sql`.
+- Deterministic evidence: two fresh eval runs passed `16/16` with zero failed cases, critical discrepancies, isolation failures, or leakage findings and identical digest `4e23a14b02237320f22e4c45f09761404f4703db5aef30cdd719dcd1a7a49d2d`. Eval/report SHA-256: `8879b72e60ebb5c17ff1391de553fdc5ba692e423c10a088f183e4ac615d66e4` / `fa1ef6fa89586dd5bce6fa0e78b927835b39e6076deaa8bd775440e1679a1257`.
+- Fresh accumulated gates: `npm test` passed 124 files and 1065 tests with 1 skipped; typecheck, build, Eve baseline, discovery, linked generated-type parity, and Cloud lint at error level all exited `0`. Discovery returned ready with zero errors/warnings. Generated-type checksum is `7d92b41901afedbd42d9f1f4b30221b34e9ce38dec45a4164dcbedb0e9c24160`.
+- Supabase Cloud: verified linked project `yapjiinrjsrothzgzxsv` / `CreciendoApp`, PostgreSQL 17, `ACTIVE_HEALTHY`; migrations have local/remote parity through `20260823230000`. Six rollback-only pgTAP files passed `156/156`. Postflight remained 0 documents, links, callbacks, memory candidates/items/embeddings/deletion requests and preserved all 4 pre-existing Storage objects.
+- Root review: scope-prefiltered vector retrieval, confirmed-active memory, prompt-injection handling, immutable composite scope, private ticket limits, callback authentication, same-child linking, clean-only download, draft-only extraction, revocation/deletion and replay denial were reviewed. Staged ownership, whitespace, secret, artifact, forbidden-path, and complete diff checks passed before commit.
+- Residual boundary: the raw installed Storage SDK's two-hour upload URL is deliberately rejected by the five-minute application contract; production upload still needs an approved short-lived gateway/provider adapter. Existing download tickets have a bounded 120-second revocation window. No public URL, unsafe ticket, real object mutation, data deletion, reset, deployment, push, or merge occurred.
+- Full evidence: `docs/verification/memory-documents.md`. `AT-10-17`, `AT-10-18`, and `AT-10-19` are newly dependency-unblocked; Module 09 is 21/21 complete.
 
 ## Handoff
 
