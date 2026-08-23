@@ -2,7 +2,7 @@
 id: AT-09-05A
 title: Add authorized Cloud memory-decision persistence
 module: 09-clinical-memory-and-documents
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-09-02, AT-09-03, AT-09-04, AT-09-04A]
@@ -140,12 +140,24 @@ Commit only the exclusive paths with `feat(memory): add authorized confirmation 
 
 ## Completion checklist
 
-- [ ] Guardian decisions use request-scoped authorized RPCs only.
-- [ ] Fact, decision, supersession/revocation, and opaque outbox converge atomically.
-- [ ] Composite scope/session/version and negative isolation are Cloud-tested.
-- [ ] Existing data and Storage objects are preserved; fixtures roll back.
-- [ ] Direct writes and public/anon execution remain denied.
+- [x] Guardian decisions use request-scoped authorized RPCs only.
+- [x] Fact, decision, supersession/revocation, and opaque outbox converge atomically.
+- [x] Composite scope/session/version and negative isolation are Cloud-tested.
+- [x] Existing data and Storage objects are preserved; fixtures roll back.
+- [x] Direct writes and public/anon execution remain denied.
+
+### Recorded 2026-08-23
+
+- Implementation commit: `d053064fd42cdc38adce277ab94b17205160859d` (`feat(memory): add authorized confirmation cloud persistence`). Its changed paths are exactly the six declared exclusive paths. Migration SHA-256: `63ae5f323f5b98926612beeb454f2c0c9c1a0a71f5e78b8db32d53a8b0119c90`; SQL test SHA-256: `43191b9acffb9b56cf5e9dc991e784910c13738209ed2bf7f91de7b06cb8b6ef`.
+- Cloud preflight: the exact linked project was reverified as `yapjiinrjsrothzgzxsv` (`CreciendoApp`, PostgreSQL `17.6.1.104`, `ACTIVE_HEALTHY`). Counts were `0` candidates, `0` decisions, `0` memory items, and `4` Storage objects. `npx supabase db push --linked --include-all --skip-vault --dry-run` exited `0` and listed only `20260823190000_memory_confirmation_rpc.sql`, with empty seeds and roles.
+- Safe apply: the full DDL first executed successfully inside a Cloud transaction that rolled back. A combined migration-plus-fixture rehearsal then produced `39/39 ok` and rolled back. `npx supabase db push --linked --include-all --skip-vault --yes` exited `0` and applied exactly `20260823190000`; migration history matches local/remote through that version.
+- Linked behavior: `npx supabase db query --linked --file supabase/tests/044_memory_confirmation_rpc.test.sql` exited `0`, produced `39/39 ok`, `0 not ok`, and rolled back all synthetic fixtures. It proves request-scoped confirm/reject/correct/revoke/read/list, unchanged and changed replay, post-expiry revocation, correction supersession, immediate ineligibility, terminal-list exclusion, server content digest, fixed search path, explicit ACLs, forced RLS, denied direct writes, opaque outbox, and revoked-access denial.
+- Cloud postflight: product counts remain `0` candidates, `0` decisions, `0` memory items, and `0` outbox events; `storage.objects` remains `4`. The outbox has RLS plus `FORCE RLS`; authenticated execute is true and anonymous execute is false. `npx supabase db lint --linked --level error` exited `0` with zero findings. One earlier concurrent lint attempt received temporary-role authentication error `28P01`; the immediate isolated rerun passed and no schema/data change resulted.
+- Linked types: generation and verification used `SUPABASE_TYPES_SOURCE=linked`; both active files are byte-identical at `165976` bytes with SHA-256 `e5bb9434e492e90f9155c4a759bd15fa57a5d577a7bd0602d807ed4600a3ef05`.
+- Fresh application gates: the repository unit passed `8/8`; the affected access/persistence/memory suite passed `300` with `1` skipped across `23` files; `npm run typecheck` exited `0`; Eve build exited `0` using existing environment aliases mapped only in-process without printing or editing values.
+- Root review: the complete migration, SQL fixture, repository, tests, generated contracts, Cloud impact, grants, lifecycle/replay behavior, staged diff, path ownership, whitespace, secrets, forbidden artifacts, and data preservation were personally reviewed. The user explicitly directed root-only completion and no further workers; no push, merge, deployment, seed, reset, delete, truncate, fabricated clinical fact, or Storage mutation occurred.
+- Forward rollback: route callers away, revoke exact function execution, then remove functions/table only in a new reviewed forward migration while retaining audit evidence as required. Residual risk is limited to later multi-connection load testing and outbox publishing, which belong to downstream leaves; current transactional serialization, eligibility and isolation behavior are proven.
 
 ## Handoff
 
-After fresh Cloud/root verification and the focused commit, AT-09-05 may use this repository contract. AT-09-07/AT-12-07 consume only opaque eligible-memory event references and must recheck current eligibility.
+`AT-09-05` is now eligible to use this repository contract. AT-09-07/AT-12-07 consume only opaque eligible-memory event references and must recheck current eligibility.

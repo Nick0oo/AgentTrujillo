@@ -55,13 +55,13 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-Modules `01`–`08` have no remaining ready or active work. Module 09 is 5/21 completed. `AT-09-05A` is in root `review` at implementation commit `d053064`; `AT-09-05` remains dependency-blocked until that review is recorded complete.
+Modules `01`–`08` have no remaining ready or active work. Module 09 is 6/21 completed. `AT-09-05A` completed at implementation commit `d053064`; `AT-09-05` is newly dependency-eligible and awaits its explicit `ready` transition.
 
 ## Active workers
 
 | Worker | Work unit | Claimed paths | Started |
 |---|---|---|---|
-| `root` | `AT-09-05A` review | implementation commit `d053064`; Cloud, security, isolation, type, test, build, and staged-diff evidence | 2026-08-23; user-directed direct completion after workers were stopped |
+| _None_ | — | — | — |
 
 Cloud-only execution override (2026-08-23): by explicit current user instruction, Module 09 uses the verified linked Supabase Cloud project as its only database source of truth. Local reset/test availability or drift is not an execution gate. Database leaves must verify exact project identity, migration impact, recoverability, generated linked types, and rollback-safe Cloud tests before any remote mutation.
 
@@ -74,7 +74,7 @@ The delegated Module 08 leaves used GPT-5.6 Luna with reasoning `max`. Per the e
 | OpenRouter has no parity evidence | Fallback activation | Module 14 evidence and user-approved rollout | Expected future gate |
 | United States production activation is not approved | Module 15 US activation | Clinical, legal, provider, and release evidence | Expected future gate |
 | Cloud has no authorized clinical-memory candidate capture RPC or request-scoped adapter | `AT-09-04`, `AT-09-05`, and dependent Module 09 leaves | `AT-09-04A` forward amendment with Cloud migration/test/types/adapter evidence | Resolved by commit `17940ef` and linked Cloud evidence 2026-08-23 |
-| Cloud has no authorized memory decision/revocation RPC or request-scoped adapter | `AT-09-05`, `AT-09-07`, `AT-09-10`, and dependent leaves | `AT-09-05A` forward amendment with Cloud migration/test/types/adapter/outbox evidence | Confirmed by linked catalog and zero-row preflight 2026-08-23; amendment pending |
+| Cloud has no authorized memory decision/revocation RPC or request-scoped adapter | `AT-09-05`, `AT-09-07`, `AT-09-10`, and dependent leaves | `AT-09-05A` forward amendment with Cloud migration/test/types/adapter/outbox evidence | Resolved by commit `d053064` and linked Cloud evidence 2026-08-23 |
 
 Expected future gates are not roadmap defects. Their work units define safe `RULE_UNAVAILABLE`, disabled, or blocked behavior until evidence exists.
 
