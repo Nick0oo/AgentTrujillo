@@ -32,6 +32,7 @@ These facts do not close pending behavioral gates. Local schema parity, generate
 - Module 08 is **17/17 completed with 0 pending leaves**. Final boundary evidence is recorded at implementation commit `145b3b0` and `docs/verification/nutrition-development.md`.
 - Module 09 is **21/21 completed with 0 pending leaves**. Final isolation evidence is recorded at implementation commit `debbfcf` and `docs/verification/memory-documents.md`.
 - Module 10 execution uses the root-authorized 2026-08-23 contract reconciliation: Eve `0.27.13` supersedes its historical `0.27.1` references, and only `AT-13-01` may execute early after verified `AT-03-11` to supply the provider-neutral catalog required by `AT-10-02`. The rest of Module 13 remains pending behind its general entry gate.
+- Module 10 is **1/33 completed**. `AT-10-01` closed at implementation commit `13ef49f` after the Eve-supported runtime-helper path correction in `2ada844`.
 
 ## Module ledger
 
@@ -57,13 +58,11 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-`AT-10-01` is ready after verified `AT-01-16` (`76883f2`), `AT-02-16` (`759ee06`), Eve `0.27.13` discovery, and the Module 10 entry gate. No other Module 10 or Module 13 leaf is active.
+`AT-13-01` is the next eligible leaf under the root-authorized early-execution exception after verified `AT-03-11`; it is not yet claimed. `AT-10-02` remains pending until that catalog leaf closes.
 
 ## Active workers
 
-| Work unit | Worker | Status | Claimed paths |
-|---|---|---|---|
-| `AT-10-01` | root | in_progress | `agent/lib/runtime/trusted-tool-context.ts`; `tests/agent/runtime/trusted-tool-context.test.ts` |
+None.
 
 Cloud-only execution override (2026-08-23): by explicit current user instruction, Module 09 uses the verified linked Supabase Cloud project as its only database source of truth. Local reset/test availability or drift is not an execution gate. Database leaves must verify exact project identity, migration impact, recoverability, generated linked types, and rollback-safe Cloud tests before any remote mutation.
 

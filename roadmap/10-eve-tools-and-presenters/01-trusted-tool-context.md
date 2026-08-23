@@ -2,7 +2,7 @@
 id: AT-10-01
 title: Build immutable trusted tool context
 module: 10-eve-tools-and-presenters
-status: in_progress
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-01-16, AT-02-16]
@@ -119,7 +119,24 @@ Inspect Eve discovery and one real synthetic invocation/event stream for allowed
 
 ## Completion evidence
 
-Record tool/widget ID and schema version, files, discovery diff, domain/package/approval digests, test/eval counts, negative matrix, output/log scans, commands/exits, reviewers, and commit.
+Recorded by root implementer/reviewer on 2026-08-23:
+
+- Outcome: added a request-only, opaque `TrustedToolContext` constructed exclusively from `GuardedSession`, with defensive active-child scope reconstruction, actor/session/locale/entitlement/trace/cancellation accessors, typed service ports, lease checks, deep-frozen data snapshots, non-serialization, and no ambient async state.
+- Non-goals preserved: no Eve tool/widget, clinical calculation or copy, permission decision, approval/replay/effect, database/Storage access, provider call, model schema, migration, remote mutation, deploy, or clinician operation was added.
+- Contract correction: Eve `0.27.13` rejected the originally declared `agent/runtime/` directory with `discover/unsupported-directory`; root documented the supported import-only `agent/lib/runtime/` correction in commit `2ada844` before continuing.
+- Implementation commit: `13ef49fdaa9e1e83c308f2c69411d4e7e5db3d94` (`feat(runtime): build immutable trusted tool context`).
+- Owned files: `agent/lib/runtime/trusted-tool-context.ts`; `tests/agent/runtime/trusted-tool-context.test.ts`.
+- TDD evidence: the initial missing-module test run exited `1`; the first implementation passed `14/14`; a strict-boundary test then failed `1/15` for an unknown forged `childId`; review adversarial tests failed `2/15` for reflected service state and a partial guard escaping as `TypeError`; the cancellation-accessor contract test failed `1/15`; each failure was corrected before the final run.
+- Fresh narrow verification: `npm test -- tests/agent/runtime/trusted-tool-context.test.ts` exited `0` with `1` file and `15/15` tests passed.
+- Fresh affected verification: `npm test -- tests/agent tests/access tests/runtime` exited `0` with `30/30` files, `287` passed and `1` pre-existing skip (`288` total).
+- Fresh gates: `npm run typecheck`, synthetic-config `npm run build`, and `npm run verify:discovery` each exited `0`; discovery was `ready` with `0` errors, `0` warnings, provider `google.generative-ai`, model `gemini-3.6-flash`, and `authoredTools: []` as required before the thirteen tool leaves.
+- Self-review: all declared interfaces and threat cases were traced to tests; findings for strict top-level fields, partial guards, reflected services, unsupported Eve path, and cancellation propagation were corrected.
+- Technical/security review: sibling and concurrent contexts remain isolated; bearer tokens are validated only at the trusted boundary and never stored or serialized; forged authority, guardian/session/child/runtime-session/locale/entitlement mismatches, terminal sessions, duplicate capabilities, expiry, cancellation, unknown fields, and unregistered contexts fail closed without enumeration.
+- Clinical review: this leaf reuses only the already verified access contracts and introduces no clinical behavior, rule, package, medication/vaccine logic, claim, or wording; `requires_clinical_approval: false` and no personal approval/signature is asserted.
+- Staged review: only the two owned implementation paths were staged; `git diff --cached --check`, forbidden-path/artifact scan, secret/bearer/signed-URL/log/network scan, and full staged-diff review exited clean before commit.
+- Cloud/database evidence: `database_change: false`; no Supabase client, schema operation, direct write, Cloud clinical test effect, or remote mutation occurred.
+- Tool/widget/schema version and event-stream cases: not applicable because this infrastructure leaf intentionally creates no model-callable surface or mobile event. Approval, replay, effects, model output, and clinical wording remain gated by later leaves.
+- Residual integration gate: dynamic revocation continues to be reauthorized by the existing route guard for every request; later wrappers must call `requireActiveChildScope` before permission, approval, replay, or effect. `AT-10-02` is unblocked by this leaf but still waits for `AT-13-01`.
 
 ## Commit protocol
 
@@ -127,11 +144,11 @@ Commit exclusive paths with feat(runtime): build immutable trusted tool context;
 
 ## Completion checklist
 
-- [ ] Model schemas contain no authority or clinical-result claims.
-- [ ] Policy order and effects are deterministic and tested.
-- [ ] Tool-to-model output is explicit and privacy-safe.
-- [ ] No diagnosis, prescription, clinician operation, or urgent extra exists.
-- [ ] Eve discovery contains exactly the intended surface.
+- [x] Model schemas contain no authority or clinical-result claims.
+- [x] Policy order and effects are deterministic and tested.
+- [x] Tool-to-model output is explicit and privacy-safe.
+- [x] No diagnosis, prescription, clinician operation, or urgent extra exists.
+- [x] Eve discovery contains exactly the intended surface.
 
 ## Handoff
 
