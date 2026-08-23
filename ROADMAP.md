@@ -32,7 +32,7 @@ These facts do not close pending behavioral gates. Local schema parity, generate
 - Module 08 is **17/17 completed with 0 pending leaves**. Final boundary evidence is recorded at implementation commit `145b3b0` and `docs/verification/nutrition-development.md`.
 - Module 09 is **21/21 completed with 0 pending leaves**. Final isolation evidence is recorded at implementation commit `debbfcf` and `docs/verification/memory-documents.md`.
 - Module 10 execution uses the root-authorized 2026-08-23 contract reconciliation: Eve `0.27.13` supersedes its historical `0.27.1` references, and only `AT-13-01` may execute early after verified `AT-03-11` to supply the provider-neutral catalog required by `AT-10-02`. The rest of Module 13 remains pending behind its general entry gate.
-- Module 10 is **4/33 completed**. `AT-10-01` closed at `13ef49f`; `AT-10-02` at `f0ce01a`; `AT-10-03` at `73ad42a`; and `AT-10-04` at `296fad3`, after the Eve-supported runtime-helper correction in `2ada844` and the explicit replay-fingerprint amendments `43639a7`/`acdeadc`.
+- Module 10 is **5/33 completed**. `AT-10-01` closed at `13ef49f`; `AT-10-02` at `f0ce01a`; `AT-10-03` at `73ad42a`; `AT-10-04` at `296fad3`; and `AT-10-05` at `114b0c6`, after the Eve-supported runtime-helper correction in `2ada844` and the explicit replay-fingerprint amendments `43639a7`/`acdeadc`.
 - The early `AT-13-01` exception is completed at `eb82958` with a provider-neutral, synthetic-test-only catalog. It unblocks `AT-10-02`; all other Module 13 leaves remain pending behind the general Module 13 entry gate.
 
 ## Module ledger
@@ -59,7 +59,7 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-`AT-10-05` is the next eligible sequential infrastructure leaf after completed `AT-10-04` (`296fad3`); it is not yet claimed.
+`AT-10-06` is the next eligible sequential infrastructure leaf after completed `AT-10-05` (`114b0c6`); it is not yet claimed.
 
 ## Active workers
 
