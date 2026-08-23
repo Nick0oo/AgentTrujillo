@@ -2,7 +2,7 @@
 id: AT-08-03
 title: Load confirmed food-reaction history
 module: 08-nutrition-and-development
-status: review
+status: completed
 execution: parallel
 parallel_group: module-08-foundations
 depends_on: [AT-08-01, AT-02-16]
@@ -122,17 +122,26 @@ Trace Colombia-first and US-ready synthetic cases to exact source/package/licens
 
 Record files, source/package/license/approval/algorithm digests, test counts, negative matrix, deterministic hashes, commands/exits, reviewer decisions, and commit.
 
+### Recorded 2026-08-22
+
+- Implementation commit: `c726952` (`feat(nutrition): load confirmed food-reaction history`).
+- Exact paths: `src/application/nutrition/food-reaction-query.ts`; `tests/application/nutrition/food-reaction-query.test.ts`.
+- TDD red: missing module, exit `1`; fresh root focused matrix `21/21`, exit `0`; global `npm run typecheck`, exit `0`.
+- Root review corrected local-calendar cutoff handling for `observed_on`. Independent review found non-versioned historical edits could be silently omitted; the final query now denies pre-cutoff rows updated after cutoff while omitting only rows created later. Re-review verdict: `PASS`.
+- Matrix proves current-time revocation, no permission widening, identity/version/country/timezone drift denial, composite row isolation, minimal projection, stable digest/order, lifecycle separation, future-date handling, duplicate/conflict/supersession uncertainty, and zero diagnostic/challenge/reintroduction claims.
+- No clinical package, schema, Cloud row, Storage object, environment value, or generated artifact changed. Newly unblocked: `AT-08-04`.
+
 ## Commit protocol
 
 Commit exclusive paths with feat(nutrition): load confirmed food-reaction history; no remote mutation, activation, or unrelated edit.
 
 ## Completion checklist
 
-- [ ] Exact interfaces and provenance are implemented.
-- [ ] Same-child authorization tests pass.
-- [ ] Source/license/approval gates fail closed.
-- [ ] No diagnosis, screening, prescription, or unsafe reassurance appears.
-- [ ] Urgent behavior remains emergency-department-only.
+- [x] Exact interfaces and provenance are implemented.
+- [x] Same-child authorization, revocation, and mixed-row tests pass.
+- [x] This query emits evidence only; governed content resolution remains fail-closed downstream.
+- [x] No diagnosis, screening, prescription, challenge/reintroduction, or unsafe reassurance appears.
+- [x] The query emits no urgent content or side effect; emergency behavior remains owned by preflight.
 
 ## Handoff
 
