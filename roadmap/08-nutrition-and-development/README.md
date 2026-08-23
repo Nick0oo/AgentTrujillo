@@ -36,6 +36,8 @@ Path amendment (2026-08-22): `AT-08-13` owns new migration `20260822130000_devel
 
 Cloud execution amendment (2026-08-22): the current user instruction supersedes AT-08-13's earlier local-only wording and authorizes only its reviewed forward additive migration on verified linked project `yapjiinrjsrothzgzxsv` (`CreciendoApp`). The root must recheck project identity and dry-run plan, use the environment supplied from `main` without printing or copying secrets, never reset/delete/truncate data, generate both owned type contracts from the resulting schema, and record linked evidence plus a forward rollback plan. This does not authorize deployment, content activation, or any other remote mutation.
 
+Execution override (2026-08-23): by explicit current user instruction, `AT-08-13` through `AT-08-17` and the remaining nutrition chain are implemented and reviewed directly by the root agent without subagents. The root retains exclusive-path checks, test-first evidence where behavior changes, fresh diff review, Cloud safeguards, focused commits, and roadmap evidence. This user-authorized exception supersedes the default worker configuration only for the remaining Module 08 session.
+
 ## Work-unit index
 
 | ID | Outcome | Depends on |
