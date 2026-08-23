@@ -2,7 +2,7 @@
 id: AT-09-02
 title: Harden memory candidate persistence
 module: 09-clinical-memory-and-documents
-status: pending
+status: ready
 execution: sequential
 parallel_group: null
 depends_on: [AT-09-01, AT-02-05]

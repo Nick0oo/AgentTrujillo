@@ -55,7 +55,7 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-Modules `01`–`08` have no remaining ready or active work. Module 09 is 1/19 completed; `AT-09-02`, `AT-09-03`, and `AT-09-06` are dependency-unblocked, with the next leaf selected only after its entry gates are recorded.
+Modules `01`–`08` have no remaining ready or active work. Module 09 is 1/19 completed. `AT-09-02` is ready after dependency, path-collision, linked-project, migration-parity, current-schema, and Cloud lint checks; `AT-09-03` and `AT-09-06` remain dependency-unblocked but unclaimed.
 
 ## Active workers
 
