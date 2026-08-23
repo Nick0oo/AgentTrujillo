@@ -73,11 +73,12 @@ values
 insert into public.child_access (care_space_id, child_id, user_id, permissions, status)
 values ('80000000-0000-4000-8000-000000000002', '80000000-0000-4000-8000-000000000003', '80000000-0000-4000-8000-000000000001', array['read', 'record'], 'active');
 insert into public.documents (
-  id, care_space_id, child_id, bucket_id, object_path, document_type, detected_mime_type,
-  size_bytes, sha256, processing_status, retention_until, provenance_type, uploaded_by
+  id,care_space_id,child_id,bucket_id,object_path,document_type,original_filename,declared_mime_type,detected_mime_type,
+  size_bytes,expected_size_bytes,sha256,expected_sha256,purpose,retention_class,storage_status,processing_status,
+  reservation_nonce_sha256,reservation_idempotency_key,reservation_request_sha256,reserved_at,reservation_expires_at,retention_until,provenance_type,uploaded_by
 ) values
-  ('80000000-0000-4000-8000-000000000005', '80000000-0000-4000-8000-000000000002', '80000000-0000-4000-8000-000000000003', 'clinical-attachments', 'development/fixture-a.txt', 'development_observation', 'text/plain', 12, repeat('a', 64), 'clean', '2027-08-23', 'guardian', '80000000-0000-4000-8000-000000000001'),
-  ('80000000-0000-4000-8000-000000000006', '80000000-0000-4000-8000-000000000002', '80000000-0000-4000-8000-000000000004', 'clinical-attachments', 'development/fixture-b.txt', 'development_observation', 'text/plain', 12, repeat('b', 64), 'clean', '2027-08-23', 'guardian', '80000000-0000-4000-8000-000000000001');
+  ('80000000-0000-4000-8000-000000000005','80000000-0000-4000-8000-000000000002','80000000-0000-4000-8000-000000000003','clinical-attachments','80000000-0000-4000-8000-000000000002/80000000-0000-4000-8000-000000000003/80000000-0000-4000-8000-000000000005/v1','development_observation','fixture-a.txt','text/plain','text/plain',12,12,repeat('a',64),repeat('a',64),'clinical_attachment','child_record','active','clean',repeat('1',64),'development-doc-a',repeat('2',64),now(),now()+interval '5 minutes','2027-08-23','guardian','80000000-0000-4000-8000-000000000001'),
+  ('80000000-0000-4000-8000-000000000006','80000000-0000-4000-8000-000000000002','80000000-0000-4000-8000-000000000004','clinical-attachments','80000000-0000-4000-8000-000000000002/80000000-0000-4000-8000-000000000004/80000000-0000-4000-8000-000000000006/v1','development_observation','fixture-b.txt','text/plain','text/plain',12,12,repeat('b',64),repeat('b',64),'clinical_attachment','child_record','active','clean',repeat('3',64),'development-doc-b',repeat('4',64),now(),now()+interval '5 minutes','2027-08-23','guardian','80000000-0000-4000-8000-000000000001');
 
 set local role authenticated;
 select set_config('request.jwt.claim.sub', '80000000-0000-4000-8000-000000000001', true);
