@@ -2,7 +2,7 @@
 id: AT-09-05A
 title: Add authorized Cloud memory-decision persistence
 module: 09-clinical-memory-and-documents
-status: in_progress
+status: review
 execution: sequential
 parallel_group: null
 depends_on: [AT-09-02, AT-09-03, AT-09-04, AT-09-04A]
