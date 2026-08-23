@@ -108,6 +108,7 @@ function context(overrides: Readonly<{
   childId?: string;
   productSessionId?: string;
   controller?: AbortController;
+  scopeIssuedAt?: Date;
   scopeExpiresAt?: Date;
   entitlementExpiresAt?: Date;
   locale?: TrustedToolLocale;
@@ -123,7 +124,7 @@ function context(overrides: Readonly<{
     countryOfCare: "CO",
     timezone: "America/Bogota",
     authorizationVersion: "m:2:a:7",
-    issuedAt: new Date("2026-08-23T11:59:00.000Z"),
+    issuedAt: overrides.scopeIssuedAt ?? new Date("2026-08-23T11:59:00.000Z"),
     expiresAt: overrides.scopeExpiresAt ?? new Date("2026-08-23T12:04:00.000Z"),
   });
   const guardian: AuthenticatedGuardian = Object.freeze({
@@ -276,6 +277,31 @@ describe("tool approval policy", () => {
       policyVersion: "tool-approval.v1",
       code: "TOOL_APPROVAL_DENIED",
     });
+  });
+
+  it("keeps the action digest stable when a fresh token receives a later expiry", async () => {
+    const firstPort = new FakeApprovalPort();
+    const first = await previewFor(firstPort);
+    const secondPort = new FakeApprovalPort();
+    secondPort.current = new Date("2026-08-23T12:01:00.000Z");
+    const secondContext = context({
+      port: secondPort,
+      scopeIssuedAt: new Date("2026-08-23T12:00:00.000Z"),
+      scopeExpiresAt: new Date("2026-08-23T12:05:00.000Z"),
+      entitlementExpiresAt: new Date("2026-08-23T12:05:00.000Z"),
+    });
+    const pending = await verifyToolApproval(secondContext, "register_anthropometry", request(PAYLOAD));
+    expect(pending).toMatchObject({ allowed: false, status: "approval_required" });
+    if (pending.allowed || pending.status !== "approval_required") throw new Error("preview expected");
+    const second = pending.preview;
+    expect(second.expiresAt).not.toBe(first.expiresAt);
+    expect(second.approvalDigest).toBe(first.approvalDigest);
+    secondPort.issue("ui-token-fresh", second);
+    expect(await verifyToolApproval(
+      secondContext,
+      "register_anthropometry",
+      request(PAYLOAD, { preview: second, token: "ui-token-fresh" }),
+    )).toMatchObject({ allowed: true, status: "approved", approvalDigest: first.approvalDigest });
   });
 
   it("never treats auto-confirm language or a model-generated token as approval", async () => {

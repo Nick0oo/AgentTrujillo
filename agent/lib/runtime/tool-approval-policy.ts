@@ -354,7 +354,6 @@ function buildPreview(
       authorizationVersion: session.authorizationVersion,
       entitlementRevision: entitlements.revision,
       locale,
-      expiresAt,
       validatedInput,
     });
     return Object.freeze({
