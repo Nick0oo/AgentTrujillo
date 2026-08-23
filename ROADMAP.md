@@ -55,7 +55,7 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-Modules `01`–`07` have no remaining ready or active work. `AT-08-14` is complete at implementation commit `37a7aa5`. `AT-08-06`, `AT-08-15`, and `AT-08-16` are dependency-ready; the root will take one sequential leaf at a time.
+Modules `01`–`07` have no remaining ready or active work. `AT-08-14` is complete at implementation commit `37a7aa5`. `AT-08-06`, `AT-08-15`, and `AT-08-16` are ready; the root will take one sequential leaf at a time.
 
 ## Active workers
 

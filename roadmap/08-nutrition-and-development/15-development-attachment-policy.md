@@ -2,7 +2,7 @@
 id: AT-08-15
 title: Enforce private attachment policy
 module: 08-nutrition-and-development
-status: pending
+status: ready
 execution: sequential
 parallel_group: null
 depends_on: [AT-08-14]
