@@ -55,12 +55,13 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-Modules `01`–`07` have no remaining ready or active work. The content-query group is complete. `AT-08-06` is dependency-ready. Sequential database leaf `AT-08-13` is `ready` and selected next because its reviewed Cloud migration unlocks the observation persistence chain.
+Modules `01`–`07` have no remaining ready or active work. The content-query group is complete. `AT-08-06` is dependency-ready. Sequential database leaf `AT-08-13` is active because its reviewed Cloud migration unlocks the observation persistence chain.
 
 ## Active workers
 
 | Worker | Work unit | Claimed paths | Started | State |
 |---|---|---|---|---|
+| `root` | `AT-08-13` | `supabase/migrations/20260822130000_development_observation_idempotency.sql`; `supabase/tests/036_development_observation_idempotency.test.sql`; `agent/lib/supabase/database.types.ts`; `src/persistence/supabase/database.types.ts` | 2026-08-23 | `in_progress` |
 
 The completed delegated leaves used GPT-5.6 Luna with reasoning `max`. Per the explicit user instruction recorded on 2026-08-23, the root implements and reviews the remaining Module 08 leaves directly; no new subagents are dispatched. Collision and exclusive-path analysis still applies.
 

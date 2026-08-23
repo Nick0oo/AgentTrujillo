@@ -2,7 +2,7 @@
 id: AT-08-13
 title: Make observation writes replay-safe
 module: 08-nutrition-and-development
-status: ready
+status: in_progress
 execution: sequential
 parallel_group: null
 depends_on: [AT-08-12, AT-02-05]
