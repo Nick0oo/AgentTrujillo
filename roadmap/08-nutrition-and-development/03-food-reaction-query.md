@@ -2,7 +2,7 @@
 id: AT-08-03
 title: Load confirmed food-reaction history
 module: 08-nutrition-and-development
-status: in_progress
+status: review
 execution: parallel
 parallel_group: module-08-foundations
 depends_on: [AT-08-01, AT-02-16]
