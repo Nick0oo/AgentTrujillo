@@ -2,7 +2,7 @@
 id: AT-09-11
 title: Define private-document contracts
 module: 09-clinical-memory-and-documents
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-02-16, AT-09-01]
@@ -128,11 +128,18 @@ Commit exclusive paths with feat(documents): define private-document contracts; 
 
 ## Completion checklist
 
-- [ ] Composite child scope is structural and tested.
-- [ ] Confirmation/lifecycle/provenance are explicit.
-- [ ] Private URLs, secrets, and raw reasoning stay out of model/logs.
-- [ ] Draft extraction never becomes clinical truth automatically.
-- [ ] Replay, revocation, and deletion fail closed.
+- [x] Composite child scope is structural and tested.
+- [x] Confirmation/lifecycle/provenance are explicit.
+- [x] Private URLs, secrets, and raw reasoning stay out of model/logs.
+- [x] Draft extraction never becomes clinical truth automatically.
+- [x] Replay, revocation, and deletion fail closed.
+
+### Recorded 2026-08-23
+
+- Implementation commit: `53dad30` (`feat(documents): define private-document contracts`). Changed `src/clinical/documents/types.ts` (SHA-256 `129e60529063687ab3268873a24408e66ac9e810af5a9a33e8041570389d1132`) and `tests/clinical/documents/types.test.ts` (SHA-256 `a217a586b7c8145294dfaacaafe7f5bc37930a74b4f2e7816d720171c31efb2f`).
+- TDD: the focused suite first failed because the contract module did not exist. Final focused verification passed `5/5`; accumulated clinical memory/document verification passed `50/50` across four files; `npm run typecheck` exited `0`.
+- Review: schemas are strict and composite-scoped; private bucket/path exist only in trusted document contracts; upload/download URLs are five-minute transport tickets and are absent from documents, callbacks, links, and drafts. Active documents require a clean scan, lifecycle transitions are monotonic, and extracted candidates remain untrusted drafts requiring confirmation.
+- Staged paths, whitespace, full diff, secret patterns, forbidden paths, and artifacts were reviewed. No database, Cloud data, Storage object, environment file, deployment, push, or merge changed. Residual risk: provider ticket/callback mechanics remain intentionally unavailable until `AT-09-14`/`AT-09-15`.
 
 ## Handoff
 
