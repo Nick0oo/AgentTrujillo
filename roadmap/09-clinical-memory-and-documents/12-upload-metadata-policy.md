@@ -2,7 +2,7 @@
 id: AT-09-12
 title: Validate document upload metadata
 module: 09-clinical-memory-and-documents
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-09-11]
@@ -128,11 +128,18 @@ Commit exclusive paths with feat(documents): validate document upload metadata; 
 
 ## Completion checklist
 
-- [ ] Composite child scope is structural and tested.
-- [ ] Confirmation/lifecycle/provenance are explicit.
-- [ ] Private URLs, secrets, and raw reasoning stay out of model/logs.
-- [ ] Draft extraction never becomes clinical truth automatically.
-- [ ] Replay, revocation, and deletion fail closed.
+- [x] Composite child scope is structural and tested.
+- [x] Confirmation/lifecycle/provenance are explicit.
+- [x] Private URLs, secrets, and raw reasoning stay out of model/logs.
+- [x] Draft extraction never becomes clinical truth automatically.
+- [x] Replay, revocation, and deletion fail closed.
+
+### Recorded 2026-08-23
+
+- Implementation commit: `cfa759e` (`feat(documents): validate document upload metadata`). Source/test SHA-256: `49e1108f07b8dc80a21ddfe3f43947a047918b309c45133e451ad4870ce1076c` / `13fcc139b4356ffab80f906c71a59ba8192a430aaa7c0b04cd973545bf96abdd`.
+- TDD first failed on the missing policy module. Final document tests passed `17/17`; accumulated clinical memory/document tests passed `62/62` across five files; typecheck exited `0`.
+- Review verified strict caller input, no authority/bucket/path claims, NFKC display-name normalization, traversal/control/double-extension denial, MIME-extension agreement, exact positive size, SHA-256 intent, explicit consent, retention allowlists, private bucket assignment, and fail-closed policy windows/revocation.
+- No Cloud mutation was needed. Staged ownership, whitespace, full diff, secret patterns, forbidden paths, and artifacts were clean. `AT-09-13` and `AT-09-14` now satisfy this dependency; no residual behavior is enabled before server reservation.
 
 ## Handoff
 
