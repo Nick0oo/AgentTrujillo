@@ -59,13 +59,15 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-`AT-10-08`–`AT-10-20` are dependency-unblocked as the `eve-tools` group, but each remains unclaimed until its own domain/clinical/path gates are checked. The recommended next claim is `AT-10-09` to unlock `AT-10-21` early.
+No additional work unit is ready while `AT-10-09` is in progress. Other `eve-tools` leaves remain unclaimed.
 
 Root correction before `AT-10-09`: Eve's public tool context requires one shared fail-closed factory bridge to the branded request-scoped context, and branded safe errors must survive the idempotency wrapper. `AT-10-09` owns the explicitly added bridge/idempotency integration paths; no model authority, credential, per-user global state or new clinical behavior is authorized.
 
+Fresh Eve `0.27.13` discovery correction for `AT-10-09`: the implementation path uses `agent/tools/get_growth_summary.ts` so filesystem-derived identity is exactly `get_growth_summary`; the earlier hyphenated path produced the non-contractual name `get-growth-summary`. Schema, policy and clinical behavior are unchanged.
+
 ## Active workers
 
-None.
+Root agent — `AT-10-09` — owns `agent/lib/runtime/eve-tool-context.ts`, `agent/tools/get_growth_summary.ts`, `tests/agent/runtime/eve-tool-context.test.ts`, `tests/agent/tools/get-growth-summary.test.ts`, `agent/lib/runtime/tool-idempotency.ts`, and `tests/agent/runtime/tool-idempotency.test.ts`.
 
 Cloud-only execution override (2026-08-23): by explicit current user instruction, Module 09 uses the verified linked Supabase Cloud project as its only database source of truth. Local reset/test availability or drift is not an execution gate. Database leaves must verify exact project identity, migration impact, recoverability, generated linked types, and rollback-safe Cloud tests before any remote mutation.
 

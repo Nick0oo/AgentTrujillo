@@ -2,7 +2,7 @@
 id: AT-10-09
 title: Expose reproducible growth summary
 module: 10-eve-tools-and-presenters
-status: pending
+status: in_progress
 execution: parallel
 parallel_group: eve-tools
 depends_on: [AT-10-07, AT-05-15]
@@ -17,7 +17,7 @@ requires_clinical_approval: true
 touches:
   create:
     - agent/lib/runtime/eve-tool-context.ts
-    - agent/tools/get-growth-summary.ts
+    - agent/tools/get_growth_summary.ts
     - tests/agent/runtime/eve-tool-context.test.ts
     - tests/agent/tools/get-growth-summary.test.ts
   modify:
@@ -28,7 +28,7 @@ touches:
     - tests/agent/tools/get-growth-summary.test.ts
 exclusive_paths:
   - agent/lib/runtime/eve-tool-context.ts
-  - agent/tools/get-growth-summary.ts
+  - agent/tools/get_growth_summary.ts
   - tests/agent/runtime/eve-tool-context.test.ts
   - tests/agent/tools/get-growth-summary.test.ts
   - agent/lib/runtime/tool-idempotency.ts
@@ -94,6 +94,8 @@ Authorize, resolve exact released dataset/algorithm, query confirmed non-superse
 Eve `0.27.13` supplies an authored tool with a public `ToolContext`; it does not carry this repository's branded `TrustedToolContext` or request-scoped domain services. This first concrete tool therefore owns one shared import-only bridge under `agent/lib/runtime/`: an application composition installs exactly one frozen factory, and each execution asks that factory for a fresh trusted context using the current Eve session, call, auth and abort metadata. The bridge independently verifies active scope, actor, Eve session ID, tool call ID and abort-signal identity before returning the context. It stores no child context, token or per-request service globally; absence, replacement, mismatch or malformed output fails closed. Module 11 must install the production factory from its authenticated route/service composition without putting authority in model schemas or durable Eve attributes.
 
 Root review also found that `withToolIdempotency` catches every handler exception, including the registry-branded `SafeToolError` introduced by `AT-10-06`, and replaces it with a generic idempotency-unavailable error. The narrow integration change owned here rethrows only a branded safe error unchanged so the outer audit records its bounded public code. Raw/domain/provider errors and structural lookalikes remain caught and fail closed exactly as before.
+
+Fresh Eve `0.27.13` discovery proved that the originally declared hyphenated path would register the runtime name `get-growth-summary`, while the binding Module 10 surface requires `get_growth_summary`. Because Eve identity is filesystem-first, this leaf's owned implementation path is corrected explicitly to `agent/tools/get_growth_summary.ts`; the leaf Markdown filename and test filename remain hyphenated because they do not determine discovery identity. This changes no input, output, clinical, permission or effect contract.
 
 ## Database and Storage contract
 

@@ -21,6 +21,8 @@ Current execution authority also resolves the README/frontmatter scheduling mism
 
 Installed Eve passes only its public `ToolContext` to authored tools. The first concrete tool, `AT-10-09`, owns a shared import-only execution bridge that accepts one immutable application factory and resolves a fresh branded `TrustedToolContext` plus typed request-scoped services for every tool call. It validates Eve session/call/actor/abort binding after resolution, keeps no per-user context or credential globally, and fails closed until Module 11's authenticated composition installs the production factory. The same correction preserves only registry-branded safe errors through the idempotency wrapper; arbitrary thrown values remain private and fail closed.
 
+Eve `0.27.13` derives the authored tool name literally from the filename slug. The binding underscore-based surface therefore uses underscore implementation filenames (for example, `agent/tools/get_growth_summary.ts`); hyphenated roadmap/test filenames are documentation identifiers only. This discovery-identity correction is path-only and does not alter tool schemas or policy.
+
 ## Exit gate
 
 All 33 leaves are complete and prove exactly thirteen intended tools, no red-flag/shell/filesystem/network/delegation tools, correct wrapper order, explicit confirmation for effects, replay convergence, safe output projections, privacy-safe audit/errors, accessible versioned widgets, text-only professional/emergency boundaries, mobile compatibility, and zero critical authorization/clinical/action leakage.
