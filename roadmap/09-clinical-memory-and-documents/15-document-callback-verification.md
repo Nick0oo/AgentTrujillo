@@ -2,7 +2,7 @@
 id: AT-09-15
 title: Verify upload and processing callbacks
 module: 09-clinical-memory-and-documents
-status: ready
+status: in_progress
 execution: sequential
 parallel_group: null
 depends_on: [AT-09-14]
