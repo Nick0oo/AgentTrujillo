@@ -2,7 +2,7 @@
 id: AT-09-04A
 title: Add the authorized Cloud boundary for memory candidates
 module: 09-clinical-memory-and-documents
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-09-02, AT-09-03]
@@ -166,11 +166,23 @@ Stage only `exclusive_paths`; inspect the staged diff; run `git diff --cached --
 
 ## Completion checklist
 
-- [ ] Request-scoped capture/list work against the linked Cloud schema.
-- [ ] Authorization, session/message binding, replay, concurrency, and minimal grants are proven.
-- [ ] Direct table writes remain denied and candidates remain pending only.
-- [ ] Existing Cloud data and Storage objects are unchanged; SQL fixtures roll back.
-- [ ] Linked types, focused tests, accumulated memory tests, and typecheck pass freshly.
+- [x] Request-scoped capture/list work against the linked Cloud schema.
+- [x] Authorization, session/message binding, replay, concurrency, and minimal grants are proven.
+- [x] Direct table writes remain denied and candidates remain pending only.
+- [x] Existing Cloud data and Storage objects are unchanged; SQL fixtures roll back.
+- [x] Linked types, focused tests, accumulated memory tests, and typecheck pass freshly.
+
+### Recorded 2026-08-23
+
+- Implementation commit: `17940ef9028be82aef5c011f18f8a8faf7f52ca1` (`feat(memory): add authorized candidate cloud persistence`). Changed paths are exactly the eight declared exclusive paths. Migration SHA-256: `b64f40d87ae0a5231eacbc6689c8b76aaa32f35bfce5e7713397a917ae08fefa`; SQL test SHA-256: `7d49e6fd46290d4e5707f0f9f32521869bb99eb2f3d9939cbef5350fc902dec7`.
+- Git/Cloud preflight: after `git fetch origin --prune`, local `main` was `0` behind and `25` ahead of `origin/main` before the implementation commit. `npx supabase projects list` verified linked project `yapjiinrjsrothzgzxsv` (`CreciendoApp`, PostgreSQL 17, `ACTIVE_HEALTHY`). Remote migrations matched through `20260822130100`; dry-run listed only `20260823180000_memory_candidate_capture_rpc.sql`, with empty seeds and roles.
+- Cloud preservation baseline: before apply, `auth.users`, guardian/child/session/message tables, and all candidate/decision/item tables contained `0` rows; `storage.objects` contained `4`. `npx supabase db push --linked --include-all --skip-vault --yes` applied exactly migration `20260823180000` (exit `0`) and migration history then matched local/remote through it.
+- Linked behavior: `npx supabase db query --linked --file supabase/tests/043_memory_candidate_capture_rpc.test.sql` produced `30/30 ok`, `0 not ok`, exit `0`, and rolled back every synthetic fixture. It proves create/replay/conflict/list, 365-day bound, session/lease/source/revocation/version denials, fixed `search_path`, advisory serialization, minimal function ACLs, and denied direct writes. The initial post-apply run exposed a linked Management-API harness incompatibility when directly invoking a denied public function after `SET ROLE anon`; catalog ACL assertions replaced that call and the equivalent denial is now verified without dropping the connection.
+- Cloud postflight: all audited row counts remained `0`, `storage.objects` remained `4`, direct authenticated `INSERT/UPDATE/DELETE` remained false, authenticated execute on the two RPCs is true, and anonymous execute is false. `npx supabase db lint --linked --level error` returned `0` findings.
+- Generated types: `SUPABASE_TYPES_SOURCE=linked npm run generate:database-types`, copy to the second active contract, and `npm run verify:database-types` passed. Both files are byte-identical at `158529` bytes and SHA-256 `b9536e0a4c69d7d83519a057a511450ee7c8af61c15de34b6f8dfed58a2bf7f8`.
+- Fresh application gates: affected memory/access suite passed `271` with `1` skipped across `17` files; `npm run typecheck` exited `0`. `eve build` exited `0` when the existing `.env` aliases were mapped in-process to runtime names and `APP_ENV=development`; no value was printed or modified.
+- Review/security evidence: root reviewed the complete service, adapter, SQL, tests, generated contracts, staged paths, whitespace, forbidden artifacts, and secret patterns. The first silent worker was replaced with zero diff; the implementation worker used `gpt-5.6-luna` with reasoning `max`. No secret, forbidden artifact, deployment, push, merge, seed, reset, delete, truncate, or Storage mutation occurred.
+- Forward rollback plan: route callers off the RPCs, revoke execute, and drop the two functions in a new forward migration. Existing candidate tables and all rows remain intact; no destructive rollback is approved. Residual risk is limited to multi-connection load stress, while transaction advisory locking and deterministic replay are structurally and behaviorally proven here and the final isolation leaf owns broader stress evidence.
 
 ## Handoff
 
