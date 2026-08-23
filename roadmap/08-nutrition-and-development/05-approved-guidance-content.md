@@ -2,7 +2,7 @@
 id: AT-08-05
 title: Package approved nutrition content
 module: 08-nutrition-and-development
-status: review
+status: completed
 execution: parallel
 parallel_group: module-08-content-queries
 depends_on: [AT-08-01, AT-03-11]
@@ -128,11 +128,20 @@ Commit exclusive paths with feat(nutrition): package approved nutrition content;
 
 ## Completion checklist
 
-- [ ] Exact interfaces and provenance are implemented.
-- [ ] Same-child authorization tests pass.
-- [ ] Source/license/approval gates fail closed.
-- [ ] No diagnosis, screening, prescription, or unsafe reassurance appears.
-- [ ] Urgent behavior remains emergency-department-only.
+- [x] Exact interfaces and provenance are implemented.
+- [x] Same-child authorization tests pass.
+- [x] Source/license/approval gates fail closed.
+- [x] No diagnosis, screening, prescription, or unsafe reassurance appears.
+- [x] Urgent behavior remains emergency-department-only.
+
+### Recorded 2026-08-23
+
+- Implementation commit: `6c6bbf1`.
+- Changed paths: `src/clinical/nutrition/content-loader.ts` and `tests/clinical/nutrition/content-loader.test.ts`.
+- Clinical approval provenance: `docs/clinical/approval-record-2026-08-21.md`, record SHA-256 `7174f9b96ec3f780f95e915b08f3525a89374f922fe253af25a4afc43375fc00`.
+- Fresh root verification: focused content-loader tests 28/28, nutrition module tests 45/45, and `npm run typecheck`; all exited 0.
+- Independent review initially found release-lifecycle, unsafe-text, hostile-context, and source-provenance gaps. Root review resolved all four and added exact EN/ES bypass, primary-authority, date-drift, and no-throw fixtures before verification.
+- No Supabase Cloud data or other remote state was mutated by this leaf. `AT-08-06` is newly dependency-unblocked.
 
 ## Handoff
 
