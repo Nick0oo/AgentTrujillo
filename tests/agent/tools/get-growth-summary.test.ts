@@ -288,9 +288,9 @@ describe("get_growth_summary Eve tool", () => {
     expect(result).toMatchObject({ status: "succeeded", outcome: "no_effect" });
     if (result.status !== "succeeded") throw new Error("unexpected result");
     expect(result.result).toEqual({
-      kind: "tool_result",
+      kind: "trusted_tool_result",
       toolId: "get_growth_summary",
-      schemaVersion: "get_growth_summary.model.v1",
+      schemaVersion: "get_growth_summary.trusted.v1",
       data: {
         cutoffAt: NOW.toISOString(),
         points: [{
@@ -306,15 +306,40 @@ describe("get_growth_summary Eve tool", () => {
           percentile: "54.973",
           interpretation: "within_expected",
           warnings: [],
-          citationHandles: [expect.stringMatching(/^citation:v1:[a-f0-9]{64}$/u)],
+          provenance: {
+            standardKey: "who-0-5",
+            standardVersion: "2025.1",
+            referenceCode: "WHO-GROWTH-0-5",
+            citationHandle: expect.stringMatching(/^citation:v1:[a-f0-9]{64}$/u),
+          },
         }],
       },
     });
     const modelOutput = await getGrowthSummaryTool.toModelOutput?.(result);
-    expect(modelOutput).toEqual({ type: "json", value: result.result });
+    expect(modelOutput).toEqual({
+      type: "json",
+      value: {
+        kind: "tool_result",
+        toolId: "get_growth_summary",
+        schemaVersion: "get_growth_summary.model.v1",
+        data: {
+          cutoffAt: NOW.toISOString(),
+          points: [expect.objectContaining({
+            occurredAt: "2026-08-22T15:00:00.000Z",
+            value: "10.25",
+            citationHandles: [expect.stringMatching(/^citation:v1:[a-f0-9]{64}$/u)],
+          })],
+        },
+      },
+    });
+    expect(JSON.stringify(modelOutput)).not.toContain("standardKey");
+    expect(JSON.stringify(modelOutput)).not.toContain("standardVersion");
+    expect(JSON.stringify(modelOutput)).not.toContain("referenceCode");
     const serialized = JSON.stringify(modelOutput);
+    const trustedSerialized = JSON.stringify(result.result);
     for (const forbidden of [ACTOR, SPACE, CHILD, MEASUREMENT_ID, ASSESSMENT_ID, DATASET_DIGEST]) {
       expect(serialized).not.toContain(forbidden);
+      expect(trustedSerialized).not.toContain(forbidden);
     }
     expect(fixture.audit.events).toHaveLength(1);
     expect(fixture.audit.events[0]).toMatchObject({

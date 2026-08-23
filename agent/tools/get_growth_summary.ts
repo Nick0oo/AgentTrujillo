@@ -7,7 +7,6 @@ import { mapToolError } from "../lib/runtime/safe-tool-errors";
 import {
   createCitationHandle,
   projectToolResult,
-  TOOL_SAFE_RESULT_SCHEMAS,
   type ToolSafeProjectionMap,
 } from "../lib/runtime/safe-to-model";
 import { withToolAudit } from "../lib/runtime/tool-audit";
@@ -35,6 +34,8 @@ const TOOL_SCHEMA_VERSION = "get-growth-summary.v1" as const;
 const MAX_POINTS = 48;
 const DEFAULT_POINTS = 24;
 const HASH = z.string().regex(/^[a-f0-9]{64}$/u);
+const CITATION_HANDLE = z.string().regex(/^citation:v1:[a-f0-9]{64}$/u);
+const DECIMAL = z.string().regex(/^-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?$/u).max(64);
 const INSTANT = z.string().datetime({ offset: true });
 const OPAQUE_CODE = z.string().min(1).max(128).regex(/^[A-Za-z0-9][A-Za-z0-9._-]*$/u);
 const GROWTH_INDICATOR = z.enum([
@@ -127,11 +128,55 @@ export interface GrowthSummaryPackagePort {
   resolve(request: GrowthSummaryPackageRequest): Promise<GrowthSummaryPackageResolution>;
 }
 
-type GrowthSummaryResult = ToolSafeProjectionMap[typeof TOOL_ID];
+type GrowthSummaryModelResult = ToolSafeProjectionMap[typeof TOOL_ID];
+const TRUSTED_PROVENANCE_SCHEMA = z.object({
+  standardKey: OPAQUE_CODE,
+  standardVersion: OPAQUE_CODE,
+  referenceCode: OPAQUE_CODE,
+  citationHandle: CITATION_HANDLE,
+}).strict();
+const TRUSTED_POINT_COMMON = {
+  occurredAt: INSTANT,
+  measurementType: z.enum(["weight", "recumbent_length", "standing_height", "head_circumference"]),
+  value: DECIMAL,
+  unit: z.enum(["kg", "cm"]),
+  indicator: GROWTH_INDICATOR,
+  ageBasis: z.enum(["chronological", "corrected"]),
+  ageDays: z.number().int().nonnegative().max(10_000),
+  interpretation: z.enum(["within_expected", "review_required", "urgent_review", "unavailable"]),
+  warnings: z.array(GROWTH_WARNING).max(12),
+  provenance: TRUSTED_PROVENANCE_SCHEMA,
+} as const;
+const TRUSTED_POINT_SCHEMA = z.union([
+  z.object({
+    status: z.literal("calculated"),
+    ...TRUSTED_POINT_COMMON,
+    zScore: DECIMAL,
+    percentile: DECIMAL,
+  }).strict(),
+  z.object({
+    status: z.enum(["rule_unavailable", "insufficient_data", "excluded"]),
+    ...TRUSTED_POINT_COMMON,
+    zScore: z.null(),
+    percentile: z.null(),
+  }).strict(),
+]);
+
+export const GROWTH_SUMMARY_TRUSTED_RESULT_SCHEMA = z.object({
+  kind: z.literal("trusted_tool_result"),
+  toolId: z.literal(TOOL_ID),
+  schemaVersion: z.literal(`${TOOL_ID}.trusted.v1`),
+  data: z.object({
+    cutoffAt: INSTANT,
+    points: z.array(TRUSTED_POINT_SCHEMA).max(MAX_POINTS),
+  }).strict(),
+}).strict();
+export type GrowthSummaryTrustedResult = Readonly<z.infer<typeof GROWTH_SUMMARY_TRUSTED_RESULT_SCHEMA>>;
+
 export const GET_GROWTH_SUMMARY_OUTPUT_SCHEMA = z.object({
   status: z.literal("succeeded"),
   outcome: z.literal("no_effect"),
-  result: TOOL_SAFE_RESULT_SCHEMAS.get_growth_summary,
+  result: GROWTH_SUMMARY_TRUSTED_RESULT_SCHEMA,
   idempotencyKey: z.null(),
   requestSha256: HASH,
   approvalSha256: z.null(),
@@ -150,7 +195,7 @@ const IDEMPOTENCY_DEFINITION = Object.freeze({
   effect: "read_only" as const,
   operation: "no_effect",
   inputSchema: GET_GROWTH_SUMMARY_INPUT_SCHEMA,
-  resultSchema: TOOL_SAFE_RESULT_SCHEMAS.get_growth_summary,
+  resultSchema: GROWTH_SUMMARY_TRUSTED_RESULT_SCHEMA,
 });
 
 const AUDIT_DEFINITION = Object.freeze({
@@ -278,11 +323,15 @@ function validateSeriesContract(
   }
 }
 
-function modelPoint(
+function trustedPoint(
   point: GrowthSeriesPoint,
   measurement: ConfirmedMeasurement,
   dataset: GrowthSummaryPackageDataset,
-): GrowthSummaryResult["data"]["points"][number] {
+): GrowthSummaryTrustedResult["data"]["points"][number] {
+  const citationHandle = createCitationHandle(TOOL_ID, {
+    sourceDigest: dataset.datasetDigest,
+    referenceCode: dataset.referenceCode,
+  });
   const common = {
     occurredAt: point.occurredAt,
     measurementType: point.measurementType,
@@ -293,10 +342,12 @@ function modelPoint(
     ageDays: ageDays(point),
     interpretation: point.interpretation as "within_expected" | "review_required" | "urgent_review" | "unavailable",
     warnings: [...point.warnings] as GrowthWarning[],
-    citationHandles: [createCitationHandle(TOOL_ID, {
-      sourceDigest: dataset.datasetDigest,
+    provenance: {
+      standardKey: dataset.standardKey,
+      standardVersion: dataset.standardVersion,
       referenceCode: dataset.referenceCode,
-    })],
+      citationHandle,
+    },
   };
   return point.resultStatus === "calculated"
     ? Object.freeze({
@@ -311,6 +362,23 @@ function modelPoint(
       zScore: null,
       percentile: null,
     });
+}
+
+export function projectGrowthSummaryForModel(raw: unknown): GrowthSummaryModelResult {
+  const parsed = GROWTH_SUMMARY_TRUSTED_RESULT_SCHEMA.safeParse(raw);
+  if (!parsed.success) return safeFailure("PERSISTENCE_UNAVAILABLE");
+  return projectToolResult(TOOL_ID, {
+    kind: "tool_result",
+    toolId: TOOL_ID,
+    schemaVersion: `${TOOL_ID}.model.v1`,
+    data: {
+      cutoffAt: parsed.data.data.cutoffAt,
+      points: parsed.data.data.points.map(({ provenance, ...point }) => ({
+        ...point,
+        citationHandles: [provenance.citationHandle],
+      })),
+    },
+  });
 }
 
 const invokeIdempotently = withToolIdempotency(
@@ -368,7 +436,7 @@ const invokeIdempotently = withToolIdempotency(
     }
     validateSeriesContract(series.points, input, cutoffAt);
 
-    const projected = [] as GrowthSummaryResult["data"]["points"][number][];
+    const trustedPoints = [] as GrowthSummaryTrustedResult["data"]["points"][number][];
     for (const point of series.points) {
       const dataset = validPoint(point, datasets, cutoff.getTime());
       let stored: unknown;
@@ -384,16 +452,17 @@ const invokeIdempotently = withToolIdempotency(
         return safeFailure("PERSISTENCE_UNAVAILABLE");
       }
       if (!exactMeasurement(stored, point, runtime.scope)) return safeFailure("ACCESS_DENIED");
-      projected.push(modelPoint(point, stored, dataset));
+      trustedPoints.push(trustedPoint(point, stored, dataset));
     }
 
-    const result = projectToolResult(TOOL_ID, {
-      kind: "tool_result",
+    const parsedResult = GROWTH_SUMMARY_TRUSTED_RESULT_SCHEMA.safeParse({
+      kind: "trusted_tool_result",
       toolId: TOOL_ID,
-      schemaVersion: `${TOOL_ID}.model.v1`,
-      data: { cutoffAt, points: projected },
+      schemaVersion: `${TOOL_ID}.trusted.v1`,
+      data: { cutoffAt, points: trustedPoints },
     });
-    return Object.freeze({ status: "no_effect" as const, result });
+    if (!parsedResult.success) return safeFailure("PERSISTENCE_UNAVAILABLE");
+    return Object.freeze({ status: "no_effect" as const, result: parsedResult.data });
   },
 );
 
@@ -434,6 +503,6 @@ export default defineTool({
     }
   },
   toModelOutput(output) {
-    return toolOutput.json(output.result);
+    return toolOutput.json(projectGrowthSummaryForModel(output.result));
   },
 });
