@@ -97,6 +97,10 @@ Root review also found that `withToolIdempotency` catches every handler exceptio
 
 Fresh Eve `0.27.13` discovery proved that the originally declared hyphenated path would register the runtime name `get-growth-summary`, while the binding Module 10 surface requires `get_growth_summary`. Because Eve identity is filesystem-first, this leaf's owned implementation path is corrected explicitly to `agent/tools/get_growth_summary.ts`; the leaf Markdown filename and test filename remain hyphenated because they do not determine discovery identity. This changes no input, output, clinical, permission or effect contract.
 
+### Root compatibility correction — trusted mobile result versus model projection
+
+The post-closure read of `AT-10-21`, Module 11 event mapping and the binding user instruction found that the first implementation used the privacy-safe `get_growth_summary.model.v1` projection as the full Eve result. That erased the standard/version/reference provenance required by the trusted mobile presenter and failed to make the mobile/model separation structural. The completed leaf is therefore corrected in its already owned tool and test paths: `execute` returns a strict `get_growth_summary.trusted.v1` result with bounded non-authority standard/version/reference provenance, while `toModelOutput` alone produces the existing exhaustive `get_growth_summary.model.v1` projection. Dataset digests, package internals and child/session authority remain absent from both outputs. No measurement, assessment, rule, calculation, clinical status or wording changes.
+
 ## Database and Storage contract
 
 No schema change. Tools call the already verified domain repositories/services and their atomic idempotency transactions; presenters are pure. Storage tickets travel only in trusted channel events, never tool-to-model output.

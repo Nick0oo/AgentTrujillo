@@ -59,15 +59,17 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-`AT-10-21` is dependency-unblocked by completed `AT-10-09` and is the recommended next sequential claim. Other `eve-tools` leaves remain unclaimed pending their individual domain, clinical and path checks.
+No additional work unit is claimed while the root applies the documented `AT-10-09` mobile/model result-separation correction. `AT-10-21` remains dependency-unblocked but unclaimed.
 
 Root correction before `AT-10-09`: Eve's public tool context requires one shared fail-closed factory bridge to the branded request-scoped context, and branded safe errors must survive the idempotency wrapper. `AT-10-09` owns the explicitly added bridge/idempotency integration paths; no model authority, credential, per-user global state or new clinical behavior is authorized.
 
 Fresh Eve `0.27.13` discovery correction for `AT-10-09`: the implementation path uses `agent/tools/get_growth_summary.ts` so filesystem-derived identity is exactly `get_growth_summary`; the earlier hyphenated path produced the non-contractual name `get-growth-summary`. Schema, policy and clinical behavior are unchanged.
 
+Post-closure Module 11/`AT-10-21` compatibility correction for `AT-10-09`: the full Eve result must be strict trusted mobile data with bounded standard/version/reference provenance, and `toModelOutput` must separately emit the smaller `get_growth_summary.model.v1` projection. The correction changes no clinical value, calculation, authority, effect or wording and is confined to the completed leaf's owned tool/test paths.
+
 ## Active workers
 
-None.
+Root agent — documented `AT-10-09` compatibility correction — owns `agent/tools/get_growth_summary.ts` and `tests/agent/tools/get-growth-summary.test.ts`; no roadmap leaf is simultaneously `in_progress`.
 
 Cloud-only execution override (2026-08-23): by explicit current user instruction, Module 09 uses the verified linked Supabase Cloud project as its only database source of truth. Local reset/test availability or drift is not an execution gate. Database leaves must verify exact project identity, migration impact, recoverability, generated linked types, and rollback-safe Cloud tests before any remote mutation.
 

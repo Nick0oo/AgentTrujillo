@@ -23,6 +23,8 @@ Installed Eve passes only its public `ToolContext` to authored tools. The first 
 
 Eve `0.27.13` derives the authored tool name literally from the filename slug. The binding underscore-based surface therefore uses underscore implementation filenames (for example, `agent/tools/get_growth_summary.ts`); hyphenated roadmap/test filenames are documentation identifiers only. This discovery-identity correction is path-only and does not alter tool schemas or policy.
 
+Module 10 tools expose two deliberately different result contracts: a strict trusted result consumed by mobile presenters/events and a smaller explicit `*.model.v1` projection returned only by Eve `toModelOutput`. Trusted results may carry bounded version/reference provenance needed by a presenter; neither contract carries model-supplied authority, raw identifiers, package digests or generic payloads. The `AT-10-09` compatibility correction established this seam before `AT-10-21` was claimed.
+
 ## Exit gate
 
 All 33 leaves are complete and prove exactly thirteen intended tools, no red-flag/shell/filesystem/network/delegation tools, correct wrapper order, explicit confirmation for effects, replay convergence, safe output projections, privacy-safe audit/errors, accessible versioned widgets, text-only professional/emergency boundaries, mobile compatibility, and zero critical authorization/clinical/action leakage.
