@@ -1256,6 +1256,95 @@ export type Database = {
           },
         ]
       }
+      clinical_memory_outbox_events: {
+        Row: {
+          candidate_id: string
+          candidate_input_sha256: string
+          care_space_id: string
+          child_id: string
+          confirmation_sha256: string
+          content_sha256: string | null
+          decided_by: string
+          decision_id: string
+          event_kind: string
+          event_payload_sha256: string
+          event_version: number
+          id: string
+          idempotency_key: string
+          memory_item_id: string | null
+          occurred_at: string
+          policy_sha256: string
+          published_at: string | null
+        }
+        Insert: {
+          candidate_id: string
+          candidate_input_sha256: string
+          care_space_id: string
+          child_id: string
+          confirmation_sha256: string
+          content_sha256?: string | null
+          decided_by: string
+          decision_id: string
+          event_kind: string
+          event_payload_sha256: string
+          event_version?: number
+          id?: string
+          idempotency_key: string
+          memory_item_id?: string | null
+          occurred_at?: string
+          policy_sha256: string
+          published_at?: string | null
+        }
+        Update: {
+          candidate_id?: string
+          candidate_input_sha256?: string
+          care_space_id?: string
+          child_id?: string
+          confirmation_sha256?: string
+          content_sha256?: string | null
+          decided_by?: string
+          decision_id?: string
+          event_kind?: string
+          event_payload_sha256?: string
+          event_version?: number
+          id?: string
+          idempotency_key?: string
+          memory_item_id?: string | null
+          occurred_at?: string
+          policy_sha256?: string
+          published_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clinical_memory_outbox_candidate_scope_fk"
+            columns: ["candidate_id", "care_space_id", "child_id"]
+            isOneToOne: false
+            referencedRelation: "clinical_memory_candidates"
+            referencedColumns: ["id", "care_space_id", "child_id"]
+          },
+          {
+            foreignKeyName: "clinical_memory_outbox_decision_scope_fk"
+            columns: ["decision_id", "care_space_id", "child_id"]
+            isOneToOne: false
+            referencedRelation: "clinical_memory_candidate_decisions"
+            referencedColumns: ["id", "care_space_id", "child_id"]
+          },
+          {
+            foreignKeyName: "clinical_memory_outbox_events_decided_by_fkey"
+            columns: ["decided_by"]
+            isOneToOne: false
+            referencedRelation: "guardian_profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "clinical_memory_outbox_memory_scope_fk"
+            columns: ["memory_item_id", "care_space_id", "child_id"]
+            isOneToOne: false
+            referencedRelation: "clinical_memory_items"
+            referencedColumns: ["id", "care_space_id", "child_id"]
+          },
+        ]
+      }
       clinical_package_releases: {
         Row: {
           action: string
@@ -4465,6 +4554,144 @@ export type Database = {
           owner_user_id: string
           product_session_id: string
           status: string
+        }[]
+      }
+      decide_memory_candidate: {
+        Args: {
+          p_authorization_version: string
+          p_candidate_id: string
+          p_candidate_input_sha256: string
+          p_care_space_id: string
+          p_child_id: string
+          p_confirmation_sha256: string
+          p_content_sha256: string
+          p_cutoff_at: string
+          p_decision: string
+          p_extraction_confidence: number
+          p_idempotency_key: string
+          p_memory_item_id: string
+          p_memory_type: string
+          p_policy_sha256: string
+          p_provenance_captured_at: string
+          p_provenance_source_id: string
+          p_provenance_type: string
+          p_searchable_text: string
+          p_sensitivity: string
+          p_session_id: string
+          p_source_message_id: string
+          p_source_session_id: string
+          p_source_span_end: number
+          p_source_span_start: number
+          p_structured_content: Json
+          p_supersedes_id: string
+          p_valid_from: string
+          p_valid_until: string
+        }
+        Returns: {
+          candidate_id: string
+          candidate_input_sha256: string
+          care_space_id: string
+          child_id: string
+          confirmation_sha256: string
+          confirmed_at: string
+          content_sha256: string
+          decision_id: string
+          event_id: string
+          event_kind: string
+          event_payload_sha256: string
+          event_version: number
+          extraction_confidence: number
+          input_sha256: string
+          lifecycle: string
+          memory_item_id: string
+          memory_type: string
+          outcome: string
+          policy_sha256: string
+          provenance_captured_at: string
+          provenance_source_id: string
+          provenance_type: string
+          retrieval_eligibility: string
+          searchable_text: string
+          sensitivity: string
+          source_message_id: string
+          source_session_id: string
+          source_span_end: number
+          source_span_start: number
+          structured_content: Json
+          supersedes_id: string
+          valid_from: string
+          valid_until: string
+        }[]
+      }
+      get_confirmed_memory: {
+        Args: {
+          p_authorization_version: string
+          p_care_space_id: string
+          p_child_id: string
+          p_cutoff_at: string
+          p_memory_item_id: string
+          p_session_id: string
+        }
+        Returns: {
+          care_space_id: string
+          child_id: string
+          confirmation_sha256: string
+          confirmed_at: string
+          content_sha256: string
+          extraction_confidence: number
+          id: string
+          input_sha256: string
+          lifecycle: string
+          memory_type: string
+          provenance_captured_at: string
+          provenance_source_id: string
+          provenance_type: string
+          retrieval_eligibility: string
+          searchable_text: string
+          sensitivity: string
+          source_message_id: string
+          source_session_id: string
+          source_span_end: number
+          source_span_start: number
+          structured_content: Json
+          supersedes_id: string
+          valid_from: string
+          valid_until: string
+        }[]
+      }
+      list_confirmed_memory: {
+        Args: {
+          p_authorization_version: string
+          p_care_space_id: string
+          p_child_id: string
+          p_cutoff_at: string
+          p_session_id: string
+        }
+        Returns: {
+          care_space_id: string
+          child_id: string
+          confirmation_sha256: string
+          confirmed_at: string
+          content_sha256: string
+          extraction_confidence: number
+          id: string
+          input_sha256: string
+          lifecycle: string
+          memory_type: string
+          provenance_captured_at: string
+          provenance_source_id: string
+          provenance_type: string
+          retrieval_eligibility: string
+          searchable_text: string
+          sensitivity: string
+          source_message_id: string
+          source_session_id: string
+          source_span_end: number
+          source_span_start: number
+          structured_content: Json
+          supersedes_id: string
+          valid_from: string
+          valid_until: string
         }[]
       }
       list_pending_memory_candidates: {
