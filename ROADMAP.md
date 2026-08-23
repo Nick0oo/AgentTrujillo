@@ -61,7 +61,7 @@ Modules `01`–`08` have no remaining ready or active work. Module 09 is 3/20 co
 
 | Worker | Work unit | Claimed paths | Started |
 |---|---|---|---|
-| `module09_at0904a` | `AT-09-04A` | migration `20260823180000`, SQL test `043`, request-scoped memory candidate adapter/test, candidate service/test, two active generated types | 2026-08-23 |
+| `module09_at0904a_retry` | `AT-09-04A` | migration `20260823180000`, SQL test `043`, request-scoped memory candidate adapter/test, candidate service/test, two active generated types | 2026-08-23; replaces silent worker with zero diff |
 
 Cloud-only execution override (2026-08-23): by explicit current user instruction, Module 09 uses the verified linked Supabase Cloud project as its only database source of truth. Local reset/test availability or drift is not an execution gate. Database leaves must verify exact project identity, migration impact, recoverability, generated linked types, and rollback-safe Cloud tests before any remote mutation.
 
