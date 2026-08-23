@@ -2,7 +2,7 @@
 id: AT-09-04A
 title: Add the authorized Cloud boundary for memory candidates
 module: 09-clinical-memory-and-documents
-status: in_progress
+status: review
 execution: sequential
 parallel_group: null
 depends_on: [AT-09-02, AT-09-03]
