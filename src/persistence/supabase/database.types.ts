@@ -12,31 +12,6 @@ export type Database = {
   __InternalSupabase: {
     PostgrestVersion: "14.5"
   }
-  graphql_public: {
-    Tables: {
-      [_ in never]: never
-    }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      graphql: {
-        Args: {
-          extensions?: Json
-          operationName?: string
-          query?: string
-          variables?: Json
-        }
-        Returns: Json
-      }
-    }
-    Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
-  }
   public: {
     Tables: {
       agent_commands: {
@@ -2132,18 +2107,30 @@ export type Database = {
           care_space_id: string
           child_id: string | null
           created_at: string
+          declared_mime_type: string
           deleted_at: string | null
-          detected_mime_type: string
+          detected_mime_type: string | null
           document_type: string
+          expected_sha256: string
+          expected_size_bytes: number
           extraction_metadata: Json
           id: string
           object_path: string
           original_filename: string | null
           processing_status: string
           provenance_type: string
+          purpose: string
+          reservation_cancelled_at: string | null
+          reservation_expires_at: string
+          reservation_idempotency_key: string
+          reservation_nonce_sha256: string
+          reservation_request_sha256: string
+          reserved_at: string
+          retention_class: string
           retention_until: string | null
           sha256: string
           size_bytes: number
+          storage_status: string
           updated_at: string
           uploaded_by: string
         }
@@ -2152,18 +2139,30 @@ export type Database = {
           care_space_id: string
           child_id?: string | null
           created_at?: string
+          declared_mime_type: string
           deleted_at?: string | null
-          detected_mime_type: string
+          detected_mime_type?: string | null
           document_type: string
+          expected_sha256: string
+          expected_size_bytes: number
           extraction_metadata?: Json
           id?: string
           object_path: string
           original_filename?: string | null
           processing_status?: string
           provenance_type: string
+          purpose: string
+          reservation_cancelled_at?: string | null
+          reservation_expires_at: string
+          reservation_idempotency_key: string
+          reservation_nonce_sha256: string
+          reservation_request_sha256: string
+          reserved_at: string
+          retention_class: string
           retention_until?: string | null
           sha256: string
           size_bytes: number
+          storage_status: string
           updated_at?: string
           uploaded_by: string
         }
@@ -2172,18 +2171,30 @@ export type Database = {
           care_space_id?: string
           child_id?: string | null
           created_at?: string
+          declared_mime_type?: string
           deleted_at?: string | null
-          detected_mime_type?: string
+          detected_mime_type?: string | null
           document_type?: string
+          expected_sha256?: string
+          expected_size_bytes?: number
           extraction_metadata?: Json
           id?: string
           object_path?: string
           original_filename?: string | null
           processing_status?: string
           provenance_type?: string
+          purpose?: string
+          reservation_cancelled_at?: string | null
+          reservation_expires_at?: string
+          reservation_idempotency_key?: string
+          reservation_nonce_sha256?: string
+          reservation_request_sha256?: string
+          reserved_at?: string
+          retention_class?: string
           retention_until?: string | null
           sha256?: string
           size_bytes?: number
+          storage_status?: string
           updated_at?: string
           uploaded_by?: string
         }
@@ -5184,6 +5195,35 @@ export type Database = {
           status: string
         }[]
       }
+      reserve_document_object: {
+        Args: {
+          p_authorization_version: string
+          p_care_space_id: string
+          p_child_id: string
+          p_cutoff_at: string
+          p_declared_mime_type: string
+          p_display_name: string
+          p_expected_sha256: string
+          p_expected_size_bytes: number
+          p_idempotency_key: string
+          p_purpose: string
+          p_request_sha256: string
+          p_retention_class: string
+          p_session_id: string
+        }
+        Returns: {
+          bucket_id: string
+          declared_mime_type: string
+          document_id: string
+          expected_sha256: string
+          expected_size_bytes: number
+          object_path: string
+          outcome: string
+          reservation_expires_at: string
+          reservation_nonce_sha256: string
+          storage_status: string
+        }[]
+      }
       resolve_authorized_child_scope: {
         Args: { p_child_id: string; p_required_permissions: string[] }
         Returns: {
@@ -5361,9 +5401,6 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
-  graphql_public: {
-    Enums: {},
-  },
   public: {
     Enums: {},
   },
