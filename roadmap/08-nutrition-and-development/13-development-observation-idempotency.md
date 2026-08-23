@@ -2,7 +2,7 @@
 id: AT-08-13
 title: Make observation writes replay-safe
 module: 08-nutrition-and-development
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-08-12, AT-02-05]
@@ -134,11 +134,22 @@ Commit exclusive paths with feat(development): make observation writes replay-sa
 
 ## Completion checklist
 
-- [ ] Exact interfaces and provenance are implemented.
-- [ ] Same-child authorization tests pass.
-- [ ] Source/license/approval gates fail closed.
-- [ ] No diagnosis, screening, prescription, or unsafe reassurance appears.
-- [ ] Urgent behavior remains emergency-department-only.
+- [x] Exact interfaces and provenance are implemented.
+- [x] Same-child authorization tests pass.
+- [x] Source/license/approval gates fail closed.
+- [x] No diagnosis, screening, prescription, or unsafe reassurance appears.
+- [x] Urgent behavior remains emergency-department-only.
+
+### Recorded 2026-08-23
+
+- Implementation commit: `ea410b7`.
+- Changed paths: forward migrations `20260822130000` and `20260822130100`, SQL test `036`, and both owned generated Supabase type contracts.
+- Red evidence: the linked Cloud test failed before implementation because the RPC did not exist. The first applied RPC then exposed invalid qualified `COALESCE` syntax; its test transaction rolled back, the applied migration remained immutable, and forward fix `20260822130100` corrected only the installed definition.
+- Linked impact: exact healthy project `yapjiinrjsrothzgzxsv` (`CreciendoApp`, PostgreSQL 17) received additive columns, composite constraints, partial uniqueness, immutable guards, a fixed-search-path `SECURITY DEFINER` RPC, and least-privilege grants. No reset, delete, truncate, deployment, package activation, or unrelated mutation occurred.
+- Fresh Cloud evidence: the 35/35 pgTAP file passed through `supabase db query --linked --file` with `finish(true)` because `supabase test db --linked` required unavailable Docker. Its transaction rolled back all fixtures; follow-up counts confirmed zero fixture users/observations and no persisted pgTAP extension. Cloud lint had zero errors and only four pre-existing medication warnings.
+- Generated contracts are byte-identical at SHA-256 `955B5A8D8A93FE2C8E4FBE6F56C7677DA4A708225E846D9839AAE9C4931C2082`; `npm run typecheck` exited 0 and a post-commit dry-run reported the remote database up to date.
+- Non-destructive rollback plan: ship a forward migration that first revokes RPC execution and routes callers off, then replaces the RPC with the last known-good definition while retaining additive columns, rows, and document links. Dropping columns or observations is intentionally excluded because it would delete data.
+- `AT-08-14` is newly unblocked.
 
 ## Handoff
 
