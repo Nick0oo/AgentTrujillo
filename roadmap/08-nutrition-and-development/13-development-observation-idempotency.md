@@ -2,7 +2,7 @@
 id: AT-08-13
 title: Make observation writes replay-safe
 module: 08-nutrition-and-development
-status: in_progress
+status: review
 execution: sequential
 parallel_group: null
 depends_on: [AT-08-12, AT-02-05]
@@ -17,6 +17,7 @@ requires_clinical_approval: false
 touches:
   create:
     - supabase/migrations/20260822130000_development_observation_idempotency.sql
+    - supabase/migrations/20260822130100_development_observation_coalesce_fix.sql
     - supabase/tests/036_development_observation_idempotency.test.sql
   modify:
     - agent/lib/supabase/database.types.ts
@@ -25,6 +26,7 @@ touches:
     - supabase/tests/036_development_observation_idempotency.test.sql
 exclusive_paths:
   - supabase/migrations/20260822130000_development_observation_idempotency.sql
+  - supabase/migrations/20260822130100_development_observation_coalesce_fix.sql
   - supabase/tests/036_development_observation_idempotency.test.sql
   - agent/lib/supabase/database.types.ts
   - src/persistence/supabase/database.types.ts
