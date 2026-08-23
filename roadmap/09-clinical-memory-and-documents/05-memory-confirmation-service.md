@@ -5,7 +5,7 @@ module: 09-clinical-memory-and-documents
 status: pending
 execution: sequential
 parallel_group: null
-depends_on: [AT-09-02, AT-09-03, AT-09-04]
+depends_on: [AT-09-02, AT-09-03, AT-09-04, AT-09-05A]
 blocks: [AT-09-07, AT-09-10]
 worker:
   model: gpt-5.6-luna
@@ -48,7 +48,7 @@ Guardians can review and control remembered facts and private documents. The sys
 
 ## Prerequisites
 
-AT-09-02, AT-09-03, AT-09-04 plus the current schema, provider capability, and policies named below.
+AT-09-02, AT-09-03, AT-09-04, AT-09-05A plus the current schema, provider capability, and policies named below.
 
 ## Mandatory reading
 
