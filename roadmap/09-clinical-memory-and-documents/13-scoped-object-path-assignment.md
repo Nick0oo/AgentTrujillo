@@ -2,7 +2,7 @@
 id: AT-09-13
 title: Assign opaque child-scoped object paths
 module: 09-clinical-memory-and-documents
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-09-11, AT-09-12]
@@ -142,11 +142,19 @@ Commit exclusive paths with feat(documents): assign opaque child-scoped object p
 
 ## Completion checklist
 
-- [ ] Composite child scope is structural and tested.
-- [ ] Confirmation/lifecycle/provenance are explicit.
-- [ ] Private URLs, secrets, and raw reasoning stay out of model/logs.
-- [ ] Draft extraction never becomes clinical truth automatically.
-- [ ] Replay, revocation, and deletion fail closed.
+- [x] Composite child scope is structural and tested.
+- [x] Confirmation/lifecycle/provenance are explicit.
+- [x] Private URLs, secrets, and raw reasoning stay out of model/logs.
+- [x] Draft extraction never becomes clinical truth automatically.
+- [x] Replay, revocation, and deletion fail closed.
+
+### Recorded 2026-08-23
+
+- Implementation commit: `26dddac` (`feat(documents): assign opaque child-scoped object paths`). Migration SHA-256 values: `390e0ee5a834b8b42aaa9ee5bd188009c149e8320c7bf24b7be8fd714d56cda4`, `58ff0e98890afab3b5de11c1afad33d2f6f2cb6343168a609ab5f5feb7a8b764`, `995fd74f0d7f1d6816962d40310010d04c587e07eaa2227022810be75279f2a1`; SQL test SHA-256 `23204aaffadbd4b40dc87e4aca0c6d5c460b5db46ff0dde71b1fa0ba156002a6`; both generated types are byte-identical SHA-256 `ba567b9f994b8c0455ae10c8e257602144f332a0d8b017e5f788d63106771f1c`.
+- TDD/review: SQL `041` first failed on the missing RPC. After apply it exposed the ambiguous timestamp variable; root review then exposed caller-digest replay and purpose-specific MIME checks. Forward-only corrections fixed both without rewriting applied history. Final Cloud fixture passed `20/20` within `BEGIN/ROLLBACK`; affected TypeScript tests passed `122/122` across 10 files; typecheck and linked type parity exited `0`.
+- Cloud: verified `yapjiinrjsrothzgzxsv` / `CreciendoApp` healthy and `origin/main...main = 0/84` before mutation. Dry-runs named only `20260823220000`, `20260823220100`, and `20260823220200`; all three are recorded remotely. Linked lint introduced no new warning; existing unrelated warnings remain. Post-run state is 0 documents, 0 links and the original 4 Storage objects.
+- Behavior/security: only a current session owner with `manage_documents` can reserve. Server assigns private bucket, random document ID, exact composite path and five-minute reservation; all identity and expected metadata are immutable. Exact replay compares stored metadata and caller digest, changed replay conflicts, direct table/Storage upload fails through grants/RLS, and revocation/cross-child requests return no existence signal.
+- The first push attempt hit a syntax error and rolled back before migration recording; no data changed. No seed, reset, truncate, existing object, deployment, push, merge, or environment file changed. Recovery is forward-only; residual provider-ticket behavior remains disabled until `AT-09-14`.
 
 ## Handoff
 
