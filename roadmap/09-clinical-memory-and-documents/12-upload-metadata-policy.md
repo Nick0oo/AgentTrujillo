@@ -2,7 +2,7 @@
 id: AT-09-12
 title: Validate document upload metadata
 module: 09-clinical-memory-and-documents
-status: pending
+status: ready
 execution: sequential
 parallel_group: null
 depends_on: [AT-09-11]
