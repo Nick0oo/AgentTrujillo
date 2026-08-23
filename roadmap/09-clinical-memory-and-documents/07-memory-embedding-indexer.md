@@ -2,7 +2,7 @@
 id: AT-09-07
 title: Index confirmed memory deterministically
 module: 09-clinical-memory-and-documents
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-09-05, AT-09-06]
@@ -128,12 +128,21 @@ Commit exclusive paths with feat(memory): index confirmed memory deterministical
 
 ## Completion checklist
 
-- [ ] Composite child scope is structural and tested.
-- [ ] Confirmation/lifecycle/provenance are explicit.
-- [ ] Private URLs, secrets, and raw reasoning stay out of model/logs.
-- [ ] Draft extraction never becomes clinical truth automatically.
-- [ ] Replay, revocation, and deletion fail closed.
+- [x] Composite child scope is structural and tested.
+- [x] Confirmation/lifecycle/provenance are explicit.
+- [x] Private URLs, secrets, and raw reasoning stay out of model/logs.
+- [x] Draft extraction never becomes clinical truth automatically.
+- [x] Replay, revocation, and deletion fail closed.
+
+### Recorded 2026-08-23
+
+- Implementation commit: `ba4859f1f825be23aafb56f9c538061fc13b9e7a` (`feat(memory): index confirmed memory deterministically`). Changed files exactly match both exclusive paths. Indexer SHA-256: `78d9a28ae29393556fec59c0d765d09ce4f94b18f93b5304c275e0a6ebb0b922`; test SHA-256: `f9bb553466ab686fd73c7225274f15e71d0b295b9af6e232eb3437ad8d7c2c4d`.
+- TDD: focused test first failed with the expected missing-module error and `0` tests. Final focused suite passed `9/9`, exit `0`; accumulated access/application-memory/provider/clinical-memory suite passed `294` with `1` skipped across `19` files.
+- Eligibility/isolation: the indexer requires a frozen active `record` scope, exact memory/version IDs, same composite scope, `active` lifecycle, `eligible` retrieval state, valid content digest, confirmation time, and live validity window before any provider call. Foreign, revoked, superseded and expired facts call neither provider nor replace transaction.
+- Determinism: one bounded semantic-safe chunk uses version `memory-single-chunk.v1`; text, chunk, embedding and vector digests plus deterministic UUIDs, pinned provider identity and immutable confirmation timestamp form the replacement payload. Retries at different clocks produced byte-equal row sets and converged to `idempotent_replay`.
+- Race behavior: the repository port must recheck content digest and eligibility atomically in `replaceIfEligible`; a revocation/correction race returns `MEMORY_NOT_ELIGIBLE` and commits no rows. Removal uses the same trusted scope/version and converges idempotently. Provider/model/task/dimension/normalization/vector/input drift fails closed.
+- Fresh gates: `npm run typecheck` and Eve build exited `0`; staged ownership, full diff, whitespace, secret and forbidden-artifact scans were clean. Root implemented/reviewed directly per user direction. No Cloud/database row, Storage, provider configuration, deployment, push, merge, seed or destructive mutation occurred; the concrete Cloud repository/workflow remains downstream-owned.
 
 ## Handoff
 
-Only the frontmatter blocks IDs become eligible after fresh verification evidence and commit.
+`AT-09-08` and `AT-12-07` now satisfy this dependency; each must still honor its remaining schema/authorization/workflow prerequisites.
