@@ -29,7 +29,7 @@ These facts do not close pending behavioral gates. Local schema parity, generate
 - Documentation implementation plan: `completed` at commit `2ba542b`.
 - Atomic roadmap authoring: modules `01` through `15` completed and cross-module verification passed; see [verification evidence](docs/verification/2026-08-16-agent-roadmap.md).
 - Product implementation: modules `01` through `07` completed with fresh runtime and Cloud evidence. Module `07` exact minimal formularies were released in `54e615c`; conveyed approval is recorded without a personal signature.
-- Module 08 has completed `AT-08-01`–`AT-08-05` and `AT-08-09`–`AT-08-14`; six leaves remain.
+- Module 08 has completed `AT-08-01`–`AT-08-05` and `AT-08-09`–`AT-08-15`; five leaves remain.
 
 ## Module ledger
 
@@ -55,13 +55,13 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-Modules `01`–`07` have no remaining ready or active work. `AT-08-14` is complete at implementation commit `37a7aa5`. `AT-08-06` and `AT-08-16` are ready; `AT-08-15` is active.
+Modules `01`–`07` have no remaining ready or active work. `AT-08-15` is complete at implementation commit `fe0f329`. `AT-08-06` and `AT-08-16` are ready; the root will take one sequential leaf at a time.
 
 ## Active workers
 
 | Worker | Work unit | Claimed paths | Started | State |
 |---|---|---|---|---|
-| `root` | `AT-08-15` | `src/clinical/development/attachment-policy.ts`; `tests/clinical/development/attachment-policy.test.ts` | 2026-08-23 | `in_progress` |
+| — | — | — | — | No active leaf |
 
 The completed delegated leaves used GPT-5.6 Luna with reasoning `max`. Per the explicit user instruction recorded on 2026-08-23, the root implements and reviews the remaining Module 08 leaves directly; no new subagents are dispatched. Collision and exclusive-path analysis still applies.
 
