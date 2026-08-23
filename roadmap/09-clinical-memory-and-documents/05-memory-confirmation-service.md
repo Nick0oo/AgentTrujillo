@@ -2,7 +2,7 @@
 id: AT-09-05
 title: Confirm, reject, correct, and revoke memories
 module: 09-clinical-memory-and-documents
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-09-02, AT-09-03, AT-09-04, AT-09-05A]
@@ -128,12 +128,22 @@ Commit exclusive paths with feat(memory): confirm, reject, correct, and revoke m
 
 ## Completion checklist
 
-- [ ] Composite child scope is structural and tested.
-- [ ] Confirmation/lifecycle/provenance are explicit.
-- [ ] Private URLs, secrets, and raw reasoning stay out of model/logs.
-- [ ] Draft extraction never becomes clinical truth automatically.
-- [ ] Replay, revocation, and deletion fail closed.
+- [x] Composite child scope is structural and tested.
+- [x] Confirmation/lifecycle/provenance are explicit.
+- [x] Private URLs, secrets, and raw reasoning stay out of model/logs.
+- [x] Draft extraction never becomes clinical truth automatically.
+- [x] Replay, revocation, and deletion fail closed.
+
+### Recorded 2026-08-23
+
+- Implementation commit: `e15aad4fb27f83d35694f13f4aa3c114007f2b10` (`feat(memory): confirm, reject, correct, and revoke memories`). The two changed files exactly match `exclusive_paths`. Service SHA-256: `c26f11acfd82b173a11032809b445719a0f05aefaa70aa1106dd82e3a028293c`; test SHA-256: `0362c4dd732ccc1d58c54cb27ae32f25b98b2a6e655d82f904971802de73b0de`.
+- TDD evidence: `npm test -- --run tests/application/memory/confirmation-service.test.ts` first failed with the expected missing-module error and `0` tests. After implementation and root fixes, the focused suite passed `10/10`, exit `0`.
+- Behavior: immutable trusted scope plus owner/session/version/cutoff is rechecked before every operation; strict inputs exclude actor, care-space, child, permission, lifecycle and eligibility authority. Confirmations re-evaluate the pinned policy/safety result, candidate/preview/confirmation digests and bounded expiry. Corrections are freshly classified and construct only bounded `{text}` content; rejection and revocation remain available without a live policy. Memory item IDs are deterministic, exact post-expiry replay reaches Cloud for convergence, changed replay fails closed, and same-scope output validation prevents mixed evidence.
+- Lifecycle/provenance: confirm creates an eligible fact through the atomic repository, correct supersedes the named fact with original candidate provenance, reject returns no fact, and revoke requires synchronous `ineligible` projection. `get` and `list` require read permission, reject foreign-scope projections, cap at `1000`, and sort deterministically.
+- Fresh gates: access/persistence/application-memory/clinical-memory suites passed `310` with `1` skipped across `24` files; `npm run typecheck` exited `0`; Eve build exited `0` using existing environment aliases mapped only in-process. Staged paths, whitespace, complete diff, secrets and forbidden artifacts were reviewed cleanly.
+- Cloud: this leaf made no schema, row, Storage, deployment or provider mutation. It uses the already Cloud-proven request-scoped repository from `AT-09-05A`; linked state remains `0` candidates, `0` decisions, `0` items, `0` outbox events and `4` Storage objects as recorded there.
+- User-directed execution: root completed and reviewed the leaf directly without another worker. No push, merge, deployment, seed, reset, delete, truncate, fabricated clinical fact, public URL, credential or raw reasoning was added. Residual multi-connection load and asynchronous outbox consumption remain owned by downstream leaves, not this service.
 
 ## Handoff
 
-Only the frontmatter blocks IDs become eligible after fresh verification evidence and commit.
+`AT-09-07` and `AT-09-10` satisfy this dependency; each still waits for its remaining declared prerequisites.
