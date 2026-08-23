@@ -2,7 +2,7 @@
 id: AT-08-11
 title: Query caregiver-safe milestones
 module: 08-nutrition-and-development
-status: review
+status: completed
 execution: parallel
 parallel_group: module-08-content-queries
 depends_on: [AT-08-10]
@@ -128,11 +128,20 @@ Commit exclusive paths with feat(development): query caregiver-safe milestones; 
 
 ## Completion checklist
 
-- [ ] Exact interfaces and provenance are implemented.
-- [ ] Same-child authorization tests pass.
-- [ ] Source/license/approval gates fail closed.
-- [ ] No diagnosis, screening, prescription, or unsafe reassurance appears.
-- [ ] Urgent behavior remains emergency-department-only.
+- [x] Exact interfaces and provenance are implemented.
+- [x] Same-child authorization tests pass.
+- [x] Source/license/approval gates fail closed.
+- [x] No diagnosis, screening, prescription, or unsafe reassurance appears.
+- [x] Urgent behavior remains emergency-department-only.
+
+### Recorded 2026-08-23
+
+- Implementation commit: `d122286`.
+- Changed paths: `src/application/development/milestone-query.ts` and `tests/application/development/milestone-query.test.ts`.
+- Clinical approval provenance: `docs/clinical/approval-record-2026-08-21.md`, record SHA-256 `7174f9b96ec3f780f95e915b08f3525a89374f922fe253af25a4afc43375fc00`.
+- Fresh root verification: focused/development tests 31/31, combined active-leaf tests 59/59, and `npm run typecheck`; all exited 0.
+- Independent review initially found caller-authoritative age evidence and incomplete EN/ES professional markers. Root review added a trusted scope-bound age-evidence port, exact evidence equality, corrected-policy verification, and plural screening/scoring/delay fixtures before verification.
+- No Supabase Cloud data or other remote state was mutated by this leaf. `AT-08-17` still waits for `AT-08-08`, `AT-08-15`, and `AT-08-16`.
 
 ## Handoff
 

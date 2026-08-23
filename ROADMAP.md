@@ -55,13 +55,12 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-Modules `01`–`07` have no remaining ready or active work. `AT-08-05` is completed and dependency-unblocks `AT-08-06`; selection waits for the active content-query group to close. `AT-08-11` remains active. Sequential database leaf `AT-08-13` remains dependency-unblocked but cannot overlap this group.
+Modules `01`–`07` have no remaining ready or active work. The content-query group is complete. `AT-08-06` and sequential database leaf `AT-08-13` are dependency-ready; `AT-08-13` is selected next because its reviewed Cloud migration unlocks the observation persistence chain.
 
 ## Active workers
 
 | Worker | Work unit | Claimed paths | Started | State |
 |---|---|---|---|---|
-| `at_08_11_worker` | `AT-08-11` | `src/application/development/milestone-query.ts`; `tests/application/development/milestone-query.test.ts` | 2026-08-22 | `review` |
 
 Future implementation workers use GPT-5.6 Luna with reasoning `max`. At most three may run concurrently after collision analysis.
 
