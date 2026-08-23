@@ -2,7 +2,7 @@
 id: AT-09-01
 title: Define clinical-memory contracts
 module: 09-clinical-memory-and-documents
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-02-16, AT-03-11, AT-04-14]
@@ -128,11 +128,23 @@ Commit exclusive paths with feat(memory): define clinical-memory contracts; no r
 
 ## Completion checklist
 
-- [ ] Composite child scope is structural and tested.
-- [ ] Confirmation/lifecycle/provenance are explicit.
-- [ ] Private URLs, secrets, and raw reasoning stay out of model/logs.
-- [ ] Draft extraction never becomes clinical truth automatically.
-- [ ] Replay, revocation, and deletion fail closed.
+- [x] Composite child scope is structural and tested.
+- [x] Confirmation/lifecycle/provenance are explicit.
+- [x] Private URLs, secrets, and raw reasoning stay out of model/logs.
+- [x] Draft extraction never becomes clinical truth automatically.
+- [x] Replay, revocation, and deletion fail closed.
+
+### Recorded 2026-08-23
+
+- Implementation commit: `348649a08c59d1103f6bf2c7bacd38e3c8570630` (`feat(memory): define clinical-memory contracts`).
+- Changed paths: `src/clinical/memory/types.ts` and `tests/clinical/memory/types.test.ts` only.
+- TDD evidence: the first run failed because the implementation module did not exist; the correction round then ran 6 tests with 3 expected failures before the lifecycle, embedding-task, timestamp, untrusted-input, and source-span contracts were fixed.
+- Fresh root verification: `npm test -- tests/clinical/memory/types.test.ts` passed 6/6 tests in 1 file (exit 0); `npm run typecheck` exited 0.
+- Contract evidence: untrusted candidate/query inputs omit authority, sensitivity decisions, digests, embedding parameters, thresholds, and scope; confirmed facts, lifecycle, provenance, composite scope, retrieval eligibility, Google 768-dimension identity, citations, and bounded prompt context are structurally distinct.
+- Cloud evidence: linked Supabase project `yapjiinrjsrothzgzxsv` (`CreciendoApp`) remained the verified source of truth. This leaf made no schema, data, Storage, deployment, or other remote mutation.
+- Root review: the complete diff, downstream AT-10-17/18 and AT-12 consumers, staged paths, whitespace, forbidden paths, secret patterns, and generated-artifact patterns were reviewed. The focused staged scan was clean.
+- Residual risk: database constraints, authorization rechecks, replay convergence, revocation races, provider calls, and vector deletion are intentionally owned by later AT-09 leaves; the types fail closed without implementing those effects.
+- Newly dependency-unblocked: `AT-09-02`, `AT-09-03`, and `AT-09-06`.
 
 ## Handoff
 

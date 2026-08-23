@@ -55,7 +55,7 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-Modules `01`–`08` have no remaining ready or active work. `AT-09-01` is in root review under the Cloud-only execution override recorded below.
+Modules `01`–`08` have no remaining ready or active work. Module 09 is 1/19 completed; `AT-09-02`, `AT-09-03`, and `AT-09-06` are dependency-unblocked, with the next leaf selected only after its entry gates are recorded.
 
 ## Active workers
 
