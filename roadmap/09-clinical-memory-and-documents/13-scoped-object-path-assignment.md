@@ -2,7 +2,7 @@
 id: AT-09-13
 title: Assign opaque child-scoped object paths
 module: 09-clinical-memory-and-documents
-status: in_progress
+status: review
 execution: sequential
 parallel_group: null
 depends_on: [AT-09-11, AT-09-12]
