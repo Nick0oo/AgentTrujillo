@@ -2,7 +2,7 @@
 id: AT-08-11
 title: Query caregiver-safe milestones
 module: 08-nutrition-and-development
-status: in_progress
+status: review
 execution: parallel
 parallel_group: module-08-content-queries
 depends_on: [AT-08-10]
