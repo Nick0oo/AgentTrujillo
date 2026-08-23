@@ -4,10 +4,16 @@ This module is the only model-callable action surface. It wraps modules 02–09 
 
 ## Entry gate
 
-- Eve 0.27.1 discovery and Gemini runtime gates pass.
+- Eve 0.27.13 discovery and Gemini runtime gates pass.
 - Modules 02–09 authorization, governance, safety, clinical engines, persistence, memory, and documents pass for each exposed capability.
 - Deterministic red-flag preflight remains outside Eve tool calling.
 - Model-facing schemas contain no care-space, child, guardian, country, permission, entitlement, package, approval, or clinical result truth.
+
+### Authorized contract reconciliation — 2026-08-23
+
+`AT-01-18`, the root `AGENTS.md`, the installed package, and the lockfile supersede the historical `0.27.1` references in this module. Every Module 10 leaf targets Eve `0.27.13` and its bundled documentation; no remembered or web-only `0.27.1` API is authoritative.
+
+To break the documented dependency cycle, current root authority permits only `AT-13-01` to enter early after its own dependency `AT-03-11` is verified. That leaf produces the provider-neutral catalog consumed by `AT-10-02`; it does not configure providers, inspect real accounts, mutate remote state, or open any other Module 13 leaf. The remaining Module 13 entry gate and leaves stay pending, and later Module 13 work reuses the same versioned catalog without a compatibility fork.
 
 ## Exit gate
 

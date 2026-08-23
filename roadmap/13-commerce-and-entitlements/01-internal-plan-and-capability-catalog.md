@@ -49,6 +49,8 @@ A care space receives consistent Free/Premium capabilities across supported purc
 
 AT-03-11 plus current official Stripe, Apple, Google, store-policy, catalog, and schema documentation. AT-10-02 consumes this provider-neutral catalog after it exists.
 
+Current root authority grants this leaf a narrow early-entry exception after `AT-03-11` verification to break the `AT-10-02`/Modules 11–13 cycle. The exception changes no dependency and grants no authority to execute `AT-13-02`–`AT-13-13`, configure providers, inspect real accounts, or mutate remote state. The released catalog remains the single forward-compatible provider-neutral input for later Module 13 projection and reconciliation leaves.
+
 ## Mandatory reading
 
 - Module 13 README and commerce source baseline

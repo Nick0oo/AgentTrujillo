@@ -47,13 +47,13 @@ The active guardian receives one bounded, accessible, child-specific operation o
 
 ## Prerequisites
 
-AT-10-07, AT-06-14, AT-10-03 and the exact Eve 0.27.1/AI SDK/domain contracts named below.
+AT-10-07, AT-06-14, AT-10-03 and the exact Eve 0.27.13/AI SDK/domain contracts named below.
 
 ## Mandatory reading
 
 - Module 10 README and direct prerequisite leaves
 - Root AGENTS clinical/tool/channel rules
-- Installed Eve 0.27.1 skill/tool/channel documentation and AI SDK schemas
+- Installed Eve 0.27.13 skill/tool/channel documentation and AI SDK schemas
 - Modules 02–09 domain authorization, governance, safety, persistence, and eval evidence
 
 ## Scope

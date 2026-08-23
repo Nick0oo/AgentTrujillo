@@ -9,6 +9,10 @@ This module verifies Stripe, Apple App Store, and Google Play evidence; normaliz
 - Current store rules and legal review decide which purchase UI/channel is permitted; this backend does not assume Stripe can sell all mobile digital subscriptions.
 - Raw provider bodies, JWS, purchase tokens, secrets, customer IDs, and payment data are excluded from model and ordinary telemetry.
 
+### Authorized early exception — 2026-08-23
+
+Only `AT-13-01` may execute before the general Module 13 entry gate after its direct dependency `AT-03-11` is verified. The exception exists solely to provide the versioned provider-neutral plan/capability catalog required by `AT-10-02`; it owns only `src/commerce/catalog.ts` and `tests/commerce/catalog.test.ts`, uses synthetic identifiers, and performs no provider lookup, account access, schema change, or remote mutation. All other Module 13 leaves remain pending until the general entry gate passes. Their future implementations must consume this catalog rather than create a competing provider-specific access model.
+
 ## Exit gate
 
 All thirteen leaves prove cryptographic/authenticated ingress, immutable inbox, authoritative provider lookup, exact environment/account/product mapping, provider-neutral lifecycle/order, append-only purchases, care-space entitlements, atomic usage, durable reconciliation, flag separation, event permutation convergence, RLS isolation, and permanent availability of urgent/professional safety guidance.
