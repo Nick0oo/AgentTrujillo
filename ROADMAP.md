@@ -55,13 +55,13 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-Modules `01`–`07` have no remaining ready or active work. `AT-08-14` is complete at implementation commit `37a7aa5`. `AT-08-06`, `AT-08-15`, and `AT-08-16` are ready; the root will take one sequential leaf at a time.
+Modules `01`–`07` have no remaining ready or active work. `AT-08-14` is complete at implementation commit `37a7aa5`. `AT-08-06` and `AT-08-16` are ready; `AT-08-15` is active.
 
 ## Active workers
 
 | Worker | Work unit | Claimed paths | Started | State |
 |---|---|---|---|---|
-| — | — | — | — | No active leaf |
+| `root` | `AT-08-15` | `src/clinical/development/attachment-policy.ts`; `tests/clinical/development/attachment-policy.test.ts` | 2026-08-23 | `in_progress` |
 
 The completed delegated leaves used GPT-5.6 Luna with reasoning `max`. Per the explicit user instruction recorded on 2026-08-23, the root implements and reviews the remaining Module 08 leaves directly; no new subagents are dispatched. Collision and exclusive-path analysis still applies.
 
