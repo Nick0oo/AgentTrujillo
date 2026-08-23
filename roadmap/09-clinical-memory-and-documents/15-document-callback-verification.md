@@ -2,7 +2,7 @@
 id: AT-09-15
 title: Verify upload and processing callbacks
 module: 09-clinical-memory-and-documents
-status: pending
+status: ready
 execution: sequential
 parallel_group: null
 depends_on: [AT-09-14]
@@ -16,16 +16,20 @@ database_change: true
 requires_clinical_approval: false
 touches:
   create:
-    - supabase/migrations/20260816210000_document_callback_ledger.sql
+    - supabase/migrations/20260823230000_document_callback_ledger.sql
     - supabase/tests/042_document_callback_ledger.test.sql
+    - src/application/documents/callback-service.ts
+    - tests/application/documents/callback-service.test.ts
   modify:
     - agent/lib/supabase/database.types.ts
     - src/persistence/supabase/database.types.ts
   test:
     - supabase/tests/042_document_callback_ledger.test.sql
 exclusive_paths:
-  - supabase/migrations/20260816210000_document_callback_ledger.sql
+  - supabase/migrations/20260823230000_document_callback_ledger.sql
   - supabase/tests/042_document_callback_ledger.test.sql
+  - src/application/documents/callback-service.ts
+  - tests/application/documents/callback-service.test.ts
   - agent/lib/supabase/database.types.ts
   - src/persistence/supabase/database.types.ts
 forbidden_paths:
@@ -88,6 +92,8 @@ Capture exact raw body, verify configured signature/key and timestamp before par
 ## Database and Storage contract
 
 Use the single forward migration declared above; it is additive, clean/upgrade tested, composite-scoped, forced-RLS, least-privilege, replay/immutability safe, and followed by generated-type parity. Never apply remotely in this leaf.
+
+Cloud/path amendment (2026-08-23): linked history is already applied through `20260823220200`, so this leaf owns forward migration `20260823230000_document_callback_ledger.sql`. Its stated interface also requires `DocumentCallbackService.ingest`/`process`; the omitted source/test paths are added before selection. The explicit Cloud-only user direction authorizes reviewed apply after dry-run and data verification.
 
 ## Authorization and isolation
 
