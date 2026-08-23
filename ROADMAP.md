@@ -55,13 +55,13 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-Modules `01`–`07` have no remaining ready or active work. `AT-08-07` is complete at implementation commit `fc7a8b7`; `AT-08-08` is ready under the recorded conveyed Module 08 clinical approval.
+Modules `01`–`07` have no remaining ready or active work. `AT-08-07` is complete at implementation commit `fc7a8b7`; `AT-08-08` is active under the recorded conveyed Module 08 clinical approval.
 
 ## Active workers
 
 | Worker | Work unit | Claimed paths | Started | State |
 |---|---|---|---|---|
-| — | — | — | — | No active worker |
+| `root` | `AT-08-08` | `src/clinical/nutrition/abstention.ts`; `tests/clinical/nutrition/abstention.test.ts` | 2026-08-23 | `in_progress` |
 
 The completed delegated leaves used GPT-5.6 Luna with reasoning `max`. Per the explicit user instruction recorded on 2026-08-23, the root implements and reviews the remaining Module 08 leaves directly; no new subagents are dispatched. Collision and exclusive-path analysis still applies.
 

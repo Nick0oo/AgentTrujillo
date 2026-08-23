@@ -2,7 +2,7 @@
 id: AT-08-08
 title: Apply nutrition abstention policy
 module: 08-nutrition-and-development
-status: ready
+status: in_progress
 execution: sequential
 parallel_group: null
 depends_on: [AT-08-05, AT-08-07, AT-04-10]
