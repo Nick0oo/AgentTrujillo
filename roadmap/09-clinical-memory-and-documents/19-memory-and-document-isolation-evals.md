@@ -2,7 +2,7 @@
 id: AT-09-19
 title: Prove memory and document isolation
 module: 09-clinical-memory-and-documents
-status: ready
+status: in_progress
 execution: sequential
 parallel_group: null
 depends_on: [AT-09-09, AT-09-10, AT-09-17, AT-09-18]
