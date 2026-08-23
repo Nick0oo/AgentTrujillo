@@ -55,7 +55,7 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-Modules `01`–`08` have no remaining ready or active work. Module 09 is 11/21 completed. `AT-09-10` and `AT-09-11` are unblocked and await selection.
+Modules `01`–`08` have no remaining ready or active work. Module 09 is 11/21 completed. `AT-09-10` is `ready`; `AT-09-11` remains unblocked.
 
 ## Active workers
 
