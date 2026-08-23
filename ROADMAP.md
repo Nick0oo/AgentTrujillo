@@ -55,7 +55,7 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-Modules `01`–`08` have no remaining ready or active work. Module 09 is 4/20 completed. `AT-09-04` is in root `review` after its Cloud-boundary amendment and worker compatibility pass completed; `AT-09-05` remains dependency-blocked. No later leaf is claimed until AT-09-04 completes.
+Modules `01`–`08` have no remaining ready or active work. Module 09 is 5/20 completed. `AT-09-04` and its Cloud-boundary amendment are `completed`; `AT-09-05` is newly unblocked and awaits its entry-gate review before worker dispatch.
 
 ## Active workers
 

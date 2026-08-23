@@ -2,7 +2,7 @@
 id: AT-09-04
 title: Capture memory candidates safely
 module: 09-clinical-memory-and-documents
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-09-02, AT-09-03, AT-09-04A]
@@ -128,11 +128,11 @@ Commit exclusive paths with feat(memory): capture memory candidates safely; no r
 
 ## Completion checklist
 
-- [ ] Composite child scope is structural and tested.
-- [ ] Confirmation/lifecycle/provenance are explicit.
-- [ ] Private URLs, secrets, and raw reasoning stay out of model/logs.
-- [ ] Draft extraction never becomes clinical truth automatically.
-- [ ] Replay, revocation, and deletion fail closed.
+- [x] Composite child scope is structural and tested.
+- [x] Confirmation/lifecycle/provenance are explicit.
+- [x] Private URLs, secrets, and raw reasoning stay out of model/logs.
+- [x] Draft extraction never becomes clinical truth automatically.
+- [x] Replay, revocation, and deletion fail closed.
 
 ## Handoff
 
@@ -146,3 +146,19 @@ Only the frontmatter blocks IDs become eligible after fresh verification evidenc
 - Impact: no request-scoped guardian client can execute the service's `capturePending` port. Using a generic service-role write would violate the repository authorization contract, so passing unit tests cannot prove the stated Cloud behavior.
 - Required correction: a root-approved amendment must own a new forward migration, rollback-safe Cloud SQL test, regenerated linked types, and a request-scoped Supabase adapter. The RPC must use fixed `search_path`, `auth.uid()`, current same-child `record` permission, active owner-pinned session/message validation, exact idempotency/source convergence, minimal grants, and no public table write grant.
 - No corrective migration, Cloud mutation, push, merge, or deployment was attempted. `AT-09-05` remains dependency-blocked.
+
+## Completion evidence — 2026-08-23
+
+- Focused application commit: `6dfec8189752428305bea2ab025e132bdab5a1e2` (`feat(memory): capture memory candidates safely`), changing only `src/application/memory/candidate-service.ts` and `tests/application/memory/candidate-service.test.ts`.
+- Root-approved Cloud amendment commit: `17940ef9028be82aef5c011f18f8a8faf7f52ca1` (`feat(memory): add authorized candidate cloud persistence`). It added the request-scoped repository, forward RPC migration, rollback-safe SQL tests and regenerated linked types; `AT-09-04A` completion evidence is committed at `df654399ba26f765f97c9b7767780746a8d3d679`.
+- Amendment paths: `supabase/migrations/20260823180000_memory_candidate_capture_rpc.sql`, `supabase/tests/043_memory_candidate_capture_rpc.test.sql`, `src/persistence/supabase/memory-candidate-repository.ts`, `tests/persistence/memory-candidate-repository.test.ts`, both database type files, and the two AT-09-04 service/test paths required for adapter compatibility.
+- Migration SHA-256: `b64f40d87ae0a5231eacbc6689c8b76aaa32f35bfce5e7713397a917ae08fefa`; SQL test SHA-256: `7d49e6fd46290d4e5707f0f9f32521869bb99eb2f3d9939cbef5350fc902dec7`; linked generated-type SHA-256: `b9536e0a4c69d7d83519a057a511450ee7c8af61c15de34b6f8dfed58a2bf7f8` in both byte-identical files.
+- Linked Cloud project `yapjiinrjsrothzgzxsv` (`CreciendoApp`, PostgreSQL 17, `ACTIVE_HEALTHY`) is authoritative. `npx supabase db push --linked --include-all --skip-vault --yes` applied only forward migration `20260823180000` (exit 0); no seed, role, destructive DDL or existing-row DML ran.
+- Persistent-data checks before and after the migration/test were unchanged: `auth.users`, guardian profiles, care spaces, children, sessions, messages, candidates, candidate decisions and memory items each remained at 0; existing Storage objects remained at 4. SQL fixtures run inside `BEGIN`/`ROLLBACK`.
+- Final root verification: `npm test -- --run tests/application/memory/candidate-service.test.ts tests/persistence/memory-candidate-repository.test.ts tests/clinical/memory` passed 80/80 across 4 files (exit 0); `npm run typecheck` exited 0.
+- Accumulated affected verification after linked type generation: 17 files passed, 271 passed and 1 skipped; the environment-mapped Eve build exited 0 without changing or printing `.env` values.
+- Final Cloud verification: `npx supabase db query --linked --file supabase/tests/043_memory_candidate_capture_rpc.test.sql` passed 30/30 TAP assertions and rolled back; `npx supabase db lint --linked --level error` returned zero findings; `npx supabase migration list --linked` exited 0 with local/remote parity through `20260823180000`.
+- Security evidence: authenticated direct candidate insert/update/delete/truncate remains denied; only authenticated capture/list RPC execution is granted; anon/public execution is denied; both `SECURITY DEFINER` RPCs fix `search_path` and revalidate actor, access, session, child scope, source, authorization version, replay and retention.
+- Worker `module09_at0904` performed the final compatibility pass with no diff and independently reported 80/80 tests plus typecheck exit 0. Root reviewed the complete application/amendment diff, generated contracts, staged paths, whitespace, secrets and forbidden artifacts.
+- Accepted residual: an authorization-denied RPC returning no row is surfaced by the adapter as a generic storage failure. It fails closed without a write or existence leak and does not affect the public service outcome.
+- No push, merge or deployment occurred. Newly unblocked: `AT-09-05`.
