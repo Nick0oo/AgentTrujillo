@@ -2,7 +2,7 @@
 id: AT-09-05
 title: Confirm, reject, correct, and revoke memories
 module: 09-clinical-memory-and-documents
-status: ready
+status: in_progress
 execution: sequential
 parallel_group: null
 depends_on: [AT-09-02, AT-09-03, AT-09-04, AT-09-05A]
