@@ -141,6 +141,7 @@ Recorded by root implementer/reviewer on 2026-08-23:
 - Staged review: only the two exclusive owned paths were staged. `git diff --cached --check`, forbidden/artifact/secret/high-entropy credential and unsafe-output scans passed with zero findings.
 - Cloud/database evidence: `database_change: false`; no Supabase client/query/write, Cloud clinical test effect, schema change or other remote mutation occurred.
 - Manual exception/risk: this infrastructure leaf owns no discoverable Eve tool or mobile channel event, so no real Eve event stream exists yet. Its synthetic direct invocations prove required/approved/replayed/denied/cancelled states; Modules 11/12 must provide a durable one-time `ToolApprovalPort`, and tool leaves must carry only its digest into domain idempotency. Completion unblocks only `AT-10-04`.
+- Additive supersession from `AT-10-04` implementation `296fad3e1eaa15432738225e10bc329ebefada9c`: the statement above that the stable preview/action digest binds token expiry is corrected. Expiry remains capped, displayed, verified against the trusted UI token/receipt and rejected when stale, but is not part of the stable action digest. This preserves all child/session/payload/locale bindings while allowing a newly issued token to reauthorize an identical durable replay. Regression coverage now passes `15/15` approval cases.
 
 ## Commit protocol
 
