@@ -18,14 +18,19 @@ touches:
   create:
     - supabase/migrations/20260823200000_child_scoped_vector_search.sql
     - supabase/tests/045_child_scoped_vector_search.test.sql
+    - src/persistence/supabase/memory-search-repository.ts
+    - tests/persistence/memory-search-repository.test.ts
   modify:
     - agent/lib/supabase/database.types.ts
     - src/persistence/supabase/database.types.ts
   test:
     - supabase/tests/045_child_scoped_vector_search.test.sql
+    - tests/persistence/memory-search-repository.test.ts
 exclusive_paths:
   - supabase/migrations/20260823200000_child_scoped_vector_search.sql
   - supabase/tests/045_child_scoped_vector_search.test.sql
+  - src/persistence/supabase/memory-search-repository.ts
+  - tests/persistence/memory-search-repository.test.ts
   - agent/lib/supabase/database.types.ts
   - src/persistence/supabase/database.types.ts
 forbidden_paths:
@@ -90,6 +95,8 @@ SQL WHERE applies care_space_id and child_id to item and embedding plus active/c
 Use the single forward migration declared above; it is additive, Cloud-upgrade tested, composite-scoped, forced-RLS, least-privilege, replay/immutability safe, and followed by linked generated-type parity. By the Module 09 Cloud override, apply only after exact project/count/dry-run verification and rollback-safe rehearsal.
 
 Cloud chronology amendment (2026-08-23): the original planned filename `20260816180000` predates the authoritative linked migration history now applied through `20260823190000`; test `038` also predates the current Module 09 SQL sequence. Root therefore assigned the next forward-only identifiers `20260823200000` and `045` before task selection. No implementation, history rewrite, or remote mutation is part of this contract correction.
+
+Repository-path amendment (2026-08-23): the leaf outcome and interface have always required a request-scoped `search(scope, query, policy)` repository, but the original frontmatter omitted its implementation and test paths. Root added `src/persistence/supabase/memory-search-repository.ts` and `tests/persistence/memory-search-repository.test.ts` before implementation; this narrows the RPC behind the trusted application boundary without expanding behavior or remote authority.
 
 ## Authorization and isolation
 
