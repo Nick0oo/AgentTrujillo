@@ -2,7 +2,7 @@
 id: AT-08-09
 title: Define development diary contracts
 module: 08-nutrition-and-development
-status: in_progress
+status: review
 execution: parallel
 parallel_group: module-08-foundations
 depends_on: [AT-04-14, AT-05-02, AT-03-11]

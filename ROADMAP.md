@@ -61,8 +61,8 @@ Modules `01`–`07` have no remaining ready or active work. Foundation group `mo
 
 | Worker | Work unit | Claimed paths | Started | State |
 |---|---|---|---|---|
-| `at_08_03_worker` | `AT-08-03` | `src/application/nutrition/food-reaction-query.ts`; `tests/application/nutrition/food-reaction-query.test.ts` | 2026-08-22 | `in_progress` |
-| `at_08_09_worker` | `AT-08-09` | `src/clinical/development/types.ts`; `tests/clinical/development/types.test.ts` | 2026-08-22 | `in_progress` |
+| `at_08_03_worker` | `AT-08-03` | `src/application/nutrition/food-reaction-query.ts`; `tests/application/nutrition/food-reaction-query.test.ts` | 2026-08-22 | `review` |
+| `at_08_09_worker` | `AT-08-09` | `src/clinical/development/types.ts`; `tests/clinical/development/types.test.ts` | 2026-08-22 | `review` |
 
 Future implementation workers use GPT-5.6 Luna with reasoning `max`. At most three may run concurrently after collision analysis.
 
