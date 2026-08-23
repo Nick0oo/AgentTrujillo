@@ -2,7 +2,7 @@
 id: AT-09-04
 title: Capture memory candidates safely
 module: 09-clinical-memory-and-documents
-status: review
+status: blocked
 execution: sequential
 parallel_group: null
 depends_on: [AT-09-02, AT-09-03]
@@ -137,3 +137,12 @@ Commit exclusive paths with feat(memory): capture memory candidates safely; no r
 ## Handoff
 
 Only the frontmatter blocks IDs become eligible after fresh verification evidence and commit.
+
+## Blocked evidence — 2026-08-23
+
+- Partial application commit: `6dfec8189752428305bea2ab025e132bdab5a1e2` (`feat(memory): capture memory candidates safely`) implements and tests the pure service/transaction/repository ports in the two exclusive paths, but is not completion evidence.
+- Fresh verification: `npm test -- --run tests/application/memory/candidate-service.test.ts tests/clinical/memory` passed 67/67 tests across 3 files (exit 0); `npm run typecheck` exited 0.
+- Verified Cloud blocker on linked project `yapjiinrjsrothzgzxsv`: `authenticated` has `SELECT=true` and `INSERT=false`, `UPDATE=false`, `DELETE=false` on `public.clinical_memory_candidates`. Catalog inspection found no callable candidate-capture RPC; the only matching functions are four `app_private` trigger/validation functions.
+- Impact: no request-scoped guardian client can execute the service's `capturePending` port. Using a generic service-role write would violate the repository authorization contract, so passing unit tests cannot prove the stated Cloud behavior.
+- Required correction: a root-approved amendment must own a new forward migration, rollback-safe Cloud SQL test, regenerated linked types, and a request-scoped Supabase adapter. The RPC must use fixed `search_path`, `auth.uid()`, current same-child `record` permission, active owner-pinned session/message validation, exact idempotency/source convergence, minimal grants, and no public table write grant.
+- No corrective migration, Cloud mutation, push, merge, or deployment was attempted. `AT-09-05` remains dependency-blocked.
