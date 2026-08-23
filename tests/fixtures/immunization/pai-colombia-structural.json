@@ -4,6 +4,8 @@
   "countryCode": "CO",
   "sourceSet": "official-source-manifest.json#CO",
   "requiredRuleKinds": ["routine", "catch_up", "special_population", "campaign", "outbreak", "review_only"],
-  "activation": "blocked_pending_external_clinical_approval",
-  "containsActionableSchedule": false
+  "activation": "active_exact_basic_subset",
+  "containsActionableSchedule": true,
+  "canonicalArtifact": "src/clinical/immunization/data/pai-colombia-basic-2026.json",
+  "approvalProvenance": "product_owner_conveyed"
 }

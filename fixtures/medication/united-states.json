@@ -1,15 +1,17 @@
 {
-  "schemaVersion": "medication-eval-v1",
+  "schemaVersion": "medication-eval-v2",
   "country": "US",
   "package": {
-    "id": "us-pediatric-reference-pending",
-    "version": "unapproved",
-    "approvalState": "blocked",
-    "sourceIds": ["RxNorm-identity", "DailyMed-label"]
+    "id": "70000000-0000-4000-8000-000000009002",
+    "version": "2024.11.07.basic.1",
+    "artifactSha256": "7877724c3978955e9e44e92b6d5bacec49464fbe52190b4dbe16e389d05d5db0",
+    "approvalState": "approved"
   },
   "cases": [
-    { "id": "US-MISSING-PACKAGE", "kind": "declared-dose", "expectedOutcome": "requires_professional_review", "critical": true },
-    { "id": "US-AMBIGUOUS-PRESENTATION", "kind": "presentation", "expectedOutcome": "insufficient_data", "critical": true },
-    { "id": "US-FACTUAL-ADHERENCE", "kind": "adherence", "expectedOutcome": "descriptive_only", "critical": false }
+    { "id": "US-LOWER-BOUNDARY", "ageDays": 1825, "weightKg": "10.88621688", "quantityMl": "5", "frequency": { "kind": "interval", "everyHours": "6" }, "expectedOutcome": "within_reference_limits" },
+    { "id": "US-UPPER-BOUNDARY", "ageDays": 1825, "weightKg": "43.09127515", "quantityMl": "15", "frequency": { "kind": "interval", "everyHours": "6" }, "expectedOutcome": "within_reference_limits" },
+    { "id": "US-OUTSIDE-DECLARATION", "ageDays": 1825, "weightKg": "10.88621688", "quantityMl": "7.5", "frequency": { "kind": "interval", "everyHours": "6" }, "expectedOutcome": "outside_reference_limits" },
+    { "id": "US-SOURCE-GAP", "ageDays": 1825, "weightKg": "16", "quantityMl": "5", "frequency": { "kind": "interval", "everyHours": "6" }, "expectedOutcome": "insufficient_data" },
+    { "id": "US-PRN", "ageDays": 1825, "weightKg": "10.88621688", "quantityMl": "5", "frequency": { "kind": "as_needed", "label": "as declared when needed" }, "expectedOutcome": "requires_professional_review" }
   ]
 }

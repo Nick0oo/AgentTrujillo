@@ -1,6 +1,7 @@
 import type { Sha256Hex } from "./source-types.ts";
 
 export type ApprovalDecision = "approved" | "rejected" | "withdrawn";
+export type ApprovalProvenance = "verified_clinical_approver" | "product_owner_conveyed";
 export type ClinicalApproverIdentity = Readonly<{
   subject: string;
   role: "clinical_approver";
@@ -30,8 +31,10 @@ export type ApprovalAttestation = Readonly<{
   algorithmImplementationSha256: Sha256Hex;
   sourceSetSha256: Sha256Hex;
   manifestSha256: Sha256Hex;
-  approverSubject: string;
+  approvalProvenance: ApprovalProvenance;
+  approverSubject: string | null;
   approverRole: "clinical_approver";
+  conveyanceRecordSha256: Sha256Hex | null;
   decision: ApprovalDecision;
   decidedAt: string;
   requestId: string;

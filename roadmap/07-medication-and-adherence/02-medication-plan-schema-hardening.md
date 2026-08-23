@@ -2,7 +2,7 @@
 id: AT-07-02
 title: Harden medication plan persistence
 module: 07-medication-and-adherence
-status: blocked
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-07-01]
@@ -130,11 +130,11 @@ Commit only the exclusive paths with `feat(medication): harden plan schema`; att
 
 ## Completion checklist
 
-- [ ] Only a forward migration changes schema.
-- [ ] Clinical facts use supersession, not silent edit.
-- [ ] All relationships are composite child-scoped.
-- [ ] Forced RLS and least privilege are tested.
-- [ ] Exact dose/unit/provenance fields are enforced.
+- [x] Only a forward migration changes schema.
+- [x] Clinical facts use supersession, not silent edit.
+- [x] All relationships are composite child-scoped.
+- [x] Forced RLS and least privilege are tested.
+- [x] Exact dose/unit/provenance fields are enforced.
 
 ## Handoff
 

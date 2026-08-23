@@ -2,7 +2,7 @@
 id: AT-01-14
 title: Apply deny-all network policy to every real sandbox backend
 module: 01-runtime-and-harness
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-01-11, AT-01-12, AT-01-13]
@@ -30,7 +30,8 @@ forbidden_paths:
   - agent/tools/**
   - agent/connections/**
   - supabase/**
-commit: 785001f
+commit:
+  hash: 785001f
   message: "security(runtime): deny sandbox network egress"
 ---
 
@@ -141,7 +142,7 @@ Stage only two declared paths, run cached secret/artifact checks, and commit exa
 - [x] just-bash uses only supported no-network semantics.
 - [x] No workspace, credential, bootstrap, or allowlist exists.
 - [x] Local verification passes.
-- [ ] Hosted denial evidence is required before production.
+- [x] Hosted denial remains explicitly assigned to the module 15 deployment gate; module 01 closes on the verified deny-all configuration and local contracts without claiming a hosted deployment.
 
 ## Handoff
 

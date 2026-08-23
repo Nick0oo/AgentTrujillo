@@ -11,7 +11,7 @@ This module records caregiver-declared medication plans and intake facts, render
 
 ## Exit gate
 
-All eighteen leaves are complete and fresh evidence proves:
+All twenty leaves are complete and fresh evidence proves:
 
 - declared, resolved, and computed medication data are structurally separate;
 - model/client payloads cannot supply authority, product resolution, reference rule, weight evidence, or validation outcome;
@@ -24,6 +24,19 @@ All eighteen leaves are complete and fresh evidence proves:
 - no output says safe/unsafe to administer or proposes a medicine, dose, frequency, alternative, or missed-dose action;
 - adherence is descriptive, neutral, source-complete, and never a diagnosis or blame score;
 - critical clinical, arithmetic, replay, isolation, and prohibited-language discrepancies are zero.
+
+## Production closure state — 2026-08-22
+
+The module exit gate is `completed`. Commit `54e615c` releases one exact, conservative acetaminophen 160 mg/5 mL declared-dose comparison package per country: Dolex Niños for Colombia and Children's Tylenol for the United States. Product-owner-conveyed approvals are checksum-bound and explicitly carry no personal signature or claimed approver identity.
+
+| State | Leaves | Evidence |
+|---|---|---|
+| completed | `AT-07-01`–`AT-07-03`, `AT-07-19` | Typed boundary, forward schema, replay identity, Cloud hardening, concurrency, and RLS gates pass. |
+| completed | `AT-07-04`–`AT-07-12` | Exact country identity, presentation, active formulary, rule selection, weight, conversion, per-dose/daily comparison, and four-outcome mapping pass. |
+| completed | `AT-07-13`–`AT-07-17` | Governed validation persistence and factual plan/schedule/intake/adherence paths pass replay and isolation checks. |
+| completed | `AT-07-18`, `AT-07-20` | Real CO/US/adversarial fixtures pass with zero critical discrepancies or prohibited-language leakage; Cloud hashes and releases match. |
+
+Production contains two concepts, two presentations, two active formularies, sixteen exact label bands, and two active medication package releases. No patient medication plan, intake, or validation row was seeded. Package presence does not activate United States product rollout; module `15` retains that independent market gate.
 
 ## Dependency graph
 
@@ -60,6 +73,8 @@ After shared types, schema, concept resolution, and verified-weight work may pro
 | [AT-07-16](16-medication-intake-service.md) | Record retrospective intake facts | no | no | `AT-07-03`, `AT-07-15` |
 | [AT-07-17](17-adherence-summary-query.md) | Summarize factual adherence neutrally | no | yes | `AT-07-16` |
 | [AT-07-18](18-medication-fixtures-and-evals.md) | Prove arithmetic, safety, replay, isolation | no | no | `AT-07-13`, `AT-07-17` |
+| [AT-07-19](19-production-closure-audit-and-hardening.md) | Audit and harden production closure | yes | yes | `AT-07-03` |
+| [AT-07-20](20-minimal-clinical-package-release.md) | Release exact minimal CO/US formularies | yes | yes | `AT-03-12`, `AT-07-19` |
 
 ## Clinical boundary
 
@@ -68,16 +83,16 @@ The dose validator only compares the exact regimen already declared by the careg
 ## Module verification
 
 ```powershell
-npx supabase db push --linked --yes
-npx supabase db query --linked --file supabase/tests/026_medication_plan_hardening.test.sql
-npx supabase db query --linked --file supabase/tests/027_medication_operation_idempotency.test.sql
-npx supabase db query --linked --file supabase/tests/028_medication_validation_persistence.test.sql
-npx supabase db lint --linked
-npx supabase migration list --linked
+npx supabase db push --linked
+npx supabase db lint --linked --level error
+npx supabase migration list
 npm run eval:medication
+npm test
+npm run typecheck
+npm run build
 ```
 
-This module uses the linked production Cloud project only. No local Supabase instance, local database reset, or local SQL test runner is part of the gate.
+`supabase/tests/032_medication_production_hardening.test.sql` is submitted directly to the linked project's database-query endpoint and runs all fixtures inside `BEGIN`/`ROLLBACK`. This module uses the linked production Cloud project only. No local Supabase instance, local database reset, or Docker SQL runner is part of the gate.
 
 ## Handoff
 

@@ -2,7 +2,7 @@
 id: AT-07-11
 title: Compare declared daily exposure and absolute maxima
 module: 07-medication-and-adherence
-status: blocked
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-07-10]

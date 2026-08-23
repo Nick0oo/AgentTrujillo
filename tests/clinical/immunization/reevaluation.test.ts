@@ -31,6 +31,7 @@ describe("country-change reevaluation", () => {
       fromCountry: "US" as const,
       toCountry: "CO" as const,
       asOfDate: "2026-08-16" as never,
+      childDateOfBirth: "2026-01-01" as never,
       rulePack: { packageId: "co-pai", version: "2026.1", countryCode: "CO" as const, activation: "active" as const, sourceDigest: "a".repeat(64) as never },
       rules: [rule],
       confirmedAdministrations: [{ id: "admin-1" as never, administeredOn: "2026-08-01" as never, countryCode: "CO" as const, antigenIds: ["hep-b" as never] }],
@@ -48,6 +49,7 @@ describe("country-change reevaluation", () => {
   it("requires review when a foreign fact would otherwise cross jurisdiction", () => {
     const result = reevaluateCountry({
       childId: "child-1", careSpaceId: "space-1", fromCountry: "CO", toCountry: "US", asOfDate: "2026-08-16" as never,
+      childDateOfBirth: "2026-01-01" as never,
       rulePack: { packageId: "us-acip", version: "2026.1", countryCode: "US" as const, activation: "active" as const, sourceDigest: "b".repeat(64) as never },
       rules: [{ ...rule, countryCode: "US", code: "US-HEP-B-1" }],
       confirmedAdministrations: [{ id: "admin-1" as never, administeredOn: "2026-08-01" as never, countryCode: "CO" as const, antigenIds: ["hep-b" as never] }],
@@ -56,9 +58,22 @@ describe("country-change reevaluation", () => {
     expect(result.assessments[0].status).toBe("review_required");
   });
 
+  it("does not apply one administration to every dose in the same antigen series", () => {
+    const second = { ...rule, id: "rule-2" as never, code: "CO-HEP-B-2", doseCode: "D2", doseNumber: 2, minimumAge: null, minimumInterval: { unit: "days" as const, value: 28 } };
+    const result = reevaluateCountry({
+      childId: "child-1", careSpaceId: "space-1", fromCountry: "CO", toCountry: "CO", childDateOfBirth: "2026-01-01" as never, asOfDate: "2026-08-16" as never,
+      rulePack: { packageId: "co-pai", version: "2026.1", countryCode: "CO", activation: "active", sourceDigest: "a".repeat(64) as never },
+      rules: [rule, second], confirmedAdministrations: [{ id: "admin-1" as never, administeredOn: "2026-08-01" as never, countryCode: "CO", antigenIds: ["hep-b" as never] }],
+      algorithmId: "immunization-status-v1", assessedAt: "2026-08-16T12:00:00.000Z",
+    });
+    expect(result.assessments.map((assessment) => assessment.status)).toEqual(["applied", "upcoming"]);
+    expect(result.assessments[1].dueFrom).toBe("2026-08-29");
+  });
+
   it("orchestrates a trusted country event through the repository and converges replay", async () => {
     const saveCountryChangeRun = vi.fn().mockResolvedValue({ outcome: "created", runId: "run-1", assessmentIds: ["assessment-1"] });
     const deps = {
+      loadChildDateOfBirth: vi.fn().mockResolvedValue("2026-01-01"),
       loadConfirmedAdministrations: vi.fn().mockResolvedValue([{ id: "admin-1" as never, administeredOn: "2026-08-01" as never, countryCode: "CO" as const, antigenIds: ["hep-b" as never] }]),
       resolveTargetPackage: vi.fn().mockResolvedValue({ packageId: "us-acip", version: "2026.1", countryCode: "US" as const, activation: "active" as const, sourceDigest: "d".repeat(64), scheduleId: "schedule-1", databaseRulePackId: "00000000-0000-4000-8000-000000000020", databaseAlgorithmId: "00000000-0000-4000-8000-000000000021", rules: [{ ...rule, countryCode: "US", code: "US-HEP-B-1" }] }),
       saveCountryChangeRun,

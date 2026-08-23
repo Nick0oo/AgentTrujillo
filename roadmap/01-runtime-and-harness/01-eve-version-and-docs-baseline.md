@@ -2,7 +2,7 @@
 id: AT-01-01
 title: Pin and record the installed Eve baseline
 module: 01-runtime-and-harness
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: []
@@ -34,7 +34,8 @@ forbidden_paths:
   - agent/**
   - supabase/**
   - node_modules/**
-commit: 72cf8cf
+commit:
+  hash: 72cf8cf
   message: "build(runtime): pin Eve documentation baseline"
 ---
 

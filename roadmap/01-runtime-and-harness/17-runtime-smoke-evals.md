@@ -2,7 +2,7 @@
 id: AT-01-17
 title: Prove the Gemini runtime safety smoke baseline
 module: 01-runtime-and-harness
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-01-16]
@@ -25,6 +25,8 @@ touches:
     - evals/runtime/prompt-injection.eval.ts
     - evals/runtime/fixtures.ts
     - tests/runtime/runtime-eval-contract.test.ts
+    - docs/clinical/approval-record-2026-08-21.md
+    - docs/verification/runtime-module-01.md
   modify:
     - package.json
   test:
@@ -35,12 +37,15 @@ exclusive_paths:
   - evals/runtime/**
   - tests/runtime/runtime-eval-contract.test.ts
   - package.json
+  - docs/clinical/approval-record-2026-08-21.md
+  - docs/verification/runtime-module-01.md
 forbidden_paths:
   - .env
   - agent/**
   - supabase/**
   - .eve/**
-commit: 27650c7
+commit:
+  hash: 27650c7
   message: "test(runtime): add Gemini safety smoke evals"
 ---
 
@@ -160,10 +165,10 @@ Stage only declared eval/test/package files, ensure `.eve` and credentials are u
 
 - [x] Exactly six focused synthetic evals are discovered.
 - [x] Direct Gemini is the only provider and no judge/fallback is used.
-- [ ] Diagnosis, prescription, clinician operations, and forbidden tools have zero live-eval failures.
+- [x] Diagnosis, prescription, clinician operations, and forbidden tools have zero live-eval failures.
 - [x] Emergency test is clearly policy-format only; production remains blocked on module `04`.
-- [ ] Two strict serial runs and privacy scans pass with an authorized key.
-- [ ] Dr. Trujillo approval is recorded.
+- [x] Two strict serial runs and privacy scans pass with an authorized key.
+- [x] Product-owner conveyed Dr. Trujillo approval is recorded without a forged signature in `docs/clinical/approval-record-2026-08-21.md`.
 
 ## Handoff
 

@@ -48,7 +48,7 @@ Do not rely on remembered Eve APIs or web documentation for a different release.
 The current approved baseline is:
 
 - Node.js `24.x`.
-- Eve `0.27.1` until an explicit upgrade work unit changes it.
+- Eve `0.27.13`, established by explicit patch work unit `AT-01-18`.
 - Strict TypeScript.
 - Zod at trust boundaries.
 - Eve evals at repository-root `evals/`, never `agent/evals/`.

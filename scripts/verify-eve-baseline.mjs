@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 
-const EXPECTED_EVE_VERSION = "0.27.1";
+const EXPECTED_EVE_VERSION = "0.27.13";
 const EXPECTED_NODE_MAJOR = 24;
 
 function readJson(path) {

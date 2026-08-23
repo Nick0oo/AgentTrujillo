@@ -97,6 +97,11 @@ export type ConfirmedAdministration = Readonly<{
   product: VaccineProductIdentity | null;
   antigenIds: readonly AntigenId[];
   doseLabel: string | null;
+  lotNumber: string | null;
+  administrationSite: string | null;
+  providerName: string | null;
+  catalogVersion: string;
+  catalogDigest: Sha256Hex;
   provenanceType: VaccineEvidence["sourceType"];
   sourceDigest: Sha256Hex;
   confirmationDigest: Sha256Hex;

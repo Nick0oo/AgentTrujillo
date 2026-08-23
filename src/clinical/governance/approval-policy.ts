@@ -39,8 +39,43 @@ export function verifyApproval(identity: ClinicalApproverIdentity, manifest: App
     attestationVersion: 1, rulePackId: manifest.rulePackId, artifactSha256: manifest.artifactSha256,
     algorithmId: manifest.algorithmId, algorithmImplementationSha256: manifest.algorithmImplementationSha256,
     sourceSetSha256: manifest.sourceSetSha256, manifestSha256: manifest.manifestSha256,
-    approverSubject: identity.subject, approverRole: identity.role, decision: input.decision,
+    approvalProvenance: "verified_clinical_approver", approverSubject: identity.subject, approverRole: identity.role,
+    conveyanceRecordSha256: null, decision: input.decision,
     decidedAt: input.decidedAt, requestId: input.requestId, withdrawalOf,
+  };
+}
+
+export function verifyConveyedApproval(manifest: ApprovalManifest, input: Readonly<{
+  decision: ApprovalDecision;
+  requestId: string;
+  decidedAt: string;
+  conveyanceRecordSha256: Sha256Hex;
+  withdrawalOf?: string | null;
+}>): ApprovalAttestation {
+  const { manifestSha256: _manifestSha256, ...manifestInput } = manifest;
+  if (manifest.manifestSha256 !== hashApprovalManifest(manifestInput)) throw new ApprovalPolicyError("MANIFEST_MISMATCH");
+  if (!DIGEST.test(manifest.artifactSha256) || !DIGEST.test(manifest.algorithmImplementationSha256)
+    || !DIGEST.test(manifest.sourceSetSha256) || !DIGEST.test(manifest.manifestSha256)
+    || !DIGEST.test(input.conveyanceRecordSha256) || !UUID.test(input.requestId)
+    || !Number.isFinite(Date.parse(input.decidedAt))) throw new ApprovalPolicyError("APPROVAL_INVALID");
+  const withdrawalOf = input.withdrawalOf ?? null;
+  if ((input.decision === "withdrawn") !== (withdrawalOf !== null)) throw new ApprovalPolicyError("APPROVAL_INVALID");
+  return {
+    attestationVersion: 1,
+    rulePackId: manifest.rulePackId,
+    artifactSha256: manifest.artifactSha256,
+    algorithmId: manifest.algorithmId,
+    algorithmImplementationSha256: manifest.algorithmImplementationSha256,
+    sourceSetSha256: manifest.sourceSetSha256,
+    manifestSha256: manifest.manifestSha256,
+    approvalProvenance: "product_owner_conveyed",
+    approverSubject: null,
+    approverRole: "clinical_approver",
+    conveyanceRecordSha256: input.conveyanceRecordSha256,
+    decision: input.decision,
+    decidedAt: input.decidedAt,
+    requestId: input.requestId,
+    withdrawalOf,
   };
 }
 

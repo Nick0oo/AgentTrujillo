@@ -10,7 +10,7 @@ export function createClinicalApprovalRepository(client: SupabaseClient<Database
       const { data, error } = await client.from("clinical_approvals").insert({
         rule_pack_id: attestation.rulePackId,
         artifact_sha256: attestation.artifactSha256,
-        approver_name: "verified-clinical-approver",
+        approver_name: attestation.approvalProvenance,
         approver_user_id: attestation.approverSubject,
         decision: attestation.decision,
         notes: null,
@@ -22,6 +22,8 @@ export function createClinicalApprovalRepository(client: SupabaseClient<Database
         manifest_sha256: attestation.manifestSha256,
         approver_subject: attestation.approverSubject,
         approver_role: attestation.approverRole,
+        approval_provenance: attestation.approvalProvenance,
+        conveyance_record_sha256: attestation.conveyanceRecordSha256,
         withdrawal_of: attestation.withdrawalOf,
         request_id: attestation.requestId,
       }).select().single();

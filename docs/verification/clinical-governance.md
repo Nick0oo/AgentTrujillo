@@ -18,3 +18,11 @@ Evidence recorded for module 03:
 
 Residual repository-wide check: `npm run build` remains blocked by the existing `ENV_INVALID` environment validation; the unrelated
 pre-existing CRLF failure in `agent/tools/bash.ts` remains untouched.
+
+## Cloud closure revalidation — 2026-08-21
+
+The accumulated production project remains migration-aligned through module 07. The three governance SQL fixtures (`020`, `021`, and `022`) were rerun directly through the linked Management API and completed with rollback. Focused governance tests passed 11 files and 70 tests; typecheck passed. With the authorized environment mapping and direct Gemini 3.6 Flash, `governance/clinical-governance` now passes 18/18 live gates. The local queue's teardown-only HTTP 503 occurred after Eve reported success and exit code 0.
+
+The final accumulated Cloud snapshot after modules `05`–`07` contains 38 reviewed clinical source records: WHO 8, CDC/NCHS 9, Minsalud PAI 8, CDC/ACIP 7, INVIMA 2, NLM RxNorm 2, NLM DailyMed 1, and FDA 1. It contains one draft immunization algorithm and zero rule packs, pack-source links, approvals, releases, or clinical-source Storage objects. The larger source count reflects reviewed provenance/reference locators populated by the owning modules; it does not activate a clinical package. The empty package ledger is not schema failure: none of the repository candidates yet combines canonical artifact bytes, exact source digests, algorithm identity, clinical attestation, and release evidence. The product-owner conveyed approval in `docs/clinical/approval-record-2026-08-21.md` is recorded without forging a signature and cannot by itself substitute for the exact append-only module-03 database attestation. Package population is therefore performed by the owning module only after its artifact is compiled and checksum-verified.
+
+The stale historical `ENV_INVALID` and build statements above are superseded for the current branch by module-01 closure evidence in `docs/verification/runtime-module-01.md`.

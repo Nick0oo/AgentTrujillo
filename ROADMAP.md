@@ -18,7 +18,7 @@ The following foundation exists and is not module `00`:
 - Five private Storage buckets documented.
 - pgvector enabled.
 - Legacy migrations quarantined under `supabase/legacy-reference/`.
-- Eve `0.27.1`, Node.js `24.x`, AI SDK, Zod, and strict TypeScript installed.
+- Eve `0.27.13`, Node.js `24.x`, AI SDK, Zod, and strict TypeScript installed.
 - Current scaffold passes typecheck and build.
 
 These facts do not close pending behavioral gates. Local schema parity, generated types, negative RLS testing, session ownership, idempotency gaps, vector scope hardening, and Realtime hardening remain explicit module `02` work.
@@ -28,20 +28,20 @@ These facts do not close pending behavioral gates. Local schema parity, generate
 - Documentation design: `completed` at commit `08ed71a`.
 - Documentation implementation plan: `completed` at commit `2ba542b`.
 - Atomic roadmap authoring: modules `01` through `15` completed and cross-module verification passed; see [verification evidence](docs/verification/2026-08-16-agent-roadmap.md).
-- Product implementation: modules `02` and `03` completed with Cloud evidence; module `04` has its deterministic contracts, Cloud persistence hardening, and synthetic boundary evidence implemented, with clinical-approval and Eve-runtime gates explicitly in review.
-- Next active executable unit: module `04` review/activation gates; no real clinical package is active.
+- Product implementation: modules `01` through `07` completed with fresh runtime and Cloud evidence. Module `07` exact minimal formularies were released in `54e615c`; conveyed approval is recorded without a personal signature.
+- Next candidate executable unit: `AT-08-01`. Module `08` has been read for compatibility but has not been selected or started.
 
 ## Module ledger
 
 | Module | Purpose | Documentation | Product implementation | Exit gate | Index |
 |---|---|---:|---:|---|---|
-| 01 | Runtime and harness | completed | pending | Safe Eve surface with Gemini baseline and discovery gate | [Module 01](roadmap/01-runtime-and-harness/README.md) |
+| 01 | Runtime and harness | completed | completed | Safe Eve surface with Gemini baseline and discovery gate | [Module 01](roadmap/01-runtime-and-harness/README.md) |
 | 02 | Access and session isolation | completed | completed | Zero cross-space, cross-child, and cross-session access | [Module 02](roadmap/02-access-and-session-isolation/README.md) |
 | 03 | Clinical governance | completed | completed | Only approved, versioned, checksum-matching packages resolve | [Module 03](roadmap/03-clinical-governance/README.md) |
-| 04 | Safety and emergency boundary | completed | review | Critical red flags bypass the LLM and emit approved emergency-only copy | [Module 04](roadmap/04-safety-and-emergency-boundary/README.md) |
-| 05 | Anthropometry and growth | completed | pending | Reproducible age, Z-score, percentile, and growth-series results | [Module 05](roadmap/05-anthropometry-and-growth/README.md) |
-| 06 | Immunization | completed | pending | PAI and ACIP evaluations are separate, reproducible, and source-traceable | [Module 06](roadmap/06-immunization/README.md) |
-| 07 | Medication and adherence | completed | pending | Declared-dose validation is conservative and plans/intakes are idempotent | [Module 07](roadmap/07-medication-and-adherence/README.md) |
+| 04 | Safety and emergency boundary | completed | completed | Critical red flags bypass the LLM and emit approved emergency-only copy | [Module 04](roadmap/04-safety-and-emergency-boundary/README.md) |
+| 05 | Anthropometry and growth | completed | completed | Reproducible age, Z-score, percentile, and growth-series results | [Module 05](roadmap/05-anthropometry-and-growth/README.md) |
+| 06 | Immunization | completed | completed | PAI and ACIP evaluations are separate, reproducible, and source-traceable | [Module 06](roadmap/06-immunization/README.md) |
+| 07 | Medication and adherence | completed | completed | Declared-dose validation is conservative and plans/intakes are idempotent | [Module 07](roadmap/07-medication-and-adherence/README.md) |
 | 08 | Nutrition and development | completed | pending | Guidance stays educational and EAD-3 remains professional-only | [Module 08](roadmap/08-nutrition-and-development/README.md) |
 | 09 | Clinical memory and documents | completed | pending | Retrieval and Storage remain private and child-scoped | [Module 09](roadmap/09-clinical-memory-and-documents/README.md) |
 | 10 | Eve tools and presenters | completed | pending | Every tool is typed, scoped, policy-gated, idempotent, and safely rendered | [Module 10](roadmap/10-eve-tools-and-presenters/README.md) |
@@ -55,19 +55,13 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-The documentation gate is complete. The initial product implementation candidate is:
-
-| ID | Work unit | Required before dispatch |
-|---|---|---|
-| — | No module-03 leaf remains | Module 03 exit evidence recorded in `docs/verification/clinical-governance.md` |
-
-The root agent recalculates readiness from leaf frontmatter before every dispatch.
+Modules `01`–`07` have no remaining ready or active work. `AT-08-01` is the next candidate, but module `08` has not been selected.
 
 ## Active workers
 
 | Worker | Work unit | Claimed paths | Started | State |
 |---|---|---|---|---|
-| None | None | None | — | Roadmap authoring is owned by the root agent |
+| — | — | No active implementation worker | — | — |
 
 Future implementation workers use GPT-5.6 Luna with reasoning `max`. At most three may run concurrently after collision analysis.
 
@@ -75,7 +69,6 @@ Future implementation workers use GPT-5.6 Luna with reasoning `max`. At most thr
 
 | Blocker | Affected units | Resolution authority | State |
 |---|---|---|---|
-| No approved production clinical rule-pack artifacts yet | Clinical engines and activation gates | Dr. Trujillo approval plus technical checksum gate | Expected future gate |
 | OpenRouter has no parity evidence | Fallback activation | Module 14 evidence and user-approved rollout | Expected future gate |
 | United States production activation is not approved | Module 15 US activation | Clinical, legal, provider, and release evidence | Expected future gate |
 

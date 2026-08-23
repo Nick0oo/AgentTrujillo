@@ -128,6 +128,8 @@ Commit only the exclusive paths with `feat(medication): record intake facts`; at
 
 ## Completion checklist
 
+Production audit correction (2026-08-21): the implementation and Cloud persistence evidence below are technically verified, but root status is `blocked` because declared dependency `AT-07-15` is not completed. The checked criteria are evidence of implemented behavior, not permission to bypass the dependency gate.
+
 - [x] Intakes are retrospective caregiver-declared facts.
 - [x] Confirmation and idempotency are enforced.
 - [x] Corrections preserve history.

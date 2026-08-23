@@ -2,7 +2,7 @@
 id: AT-07-06
 title: Resolve approved pediatric formulary version
 module: 07-medication-and-adherence
-status: blocked
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-07-05, AT-03-11]

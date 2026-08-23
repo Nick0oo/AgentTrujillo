@@ -2,7 +2,7 @@
 id: AT-01-03
 title: Replace the Anthropic scaffold with direct Gemini
 module: 01-runtime-and-harness
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-01-04]
@@ -32,13 +32,14 @@ forbidden_paths:
   - agent/channels/**
   - agent/tools/**
   - supabase/**
-commit: b519ae2
+commit:
+  hash: b519ae2
   message: "feat(runtime): use Gemini through the direct Google API"
 ---
 
 ## Outcome
 
-Eve receives a provider-authored Google `LanguageModel` for stable provider-native model ID `gemini-3.7-flash`; the scaffold string `anthropic/claude-sonnet-5` is absent and OpenRouter remains disabled.
+Eve receives a provider-authored Google `LanguageModel` for provider-native model ID `gemini-3.6-flash`; the scaffold string `anthropic/claude-sonnet-5` is absent and OpenRouter remains disabled.
 
 ## Why this exists
 
@@ -51,8 +52,8 @@ Authorized future conversations use Gemini as their only generative provider. Mi
 ## Prerequisites
 
 - `AT-01-04` provides `loadRuntimeConfig` and validated `googleApiKey`.
-- `@ai-sdk/google@4.0.44`, `ai@7.0.35`, and Eve `0.27.1` are installed.
-- Official Google model catalog checked on 2026-08-16 lists `gemini-3.7-flash` as a stable endpoint; implementation rechecks availability before pinning.
+- `@ai-sdk/google@4.0.44`, `ai@7.0.35`, and the amended Eve `0.27.13` baseline are installed.
+- The product owner approved `gemini-3.6-flash` on 2026-08-21 after the 3.7 candidate failed the installed Eve evaluation path.
 
 ## Mandatory reading
 
@@ -61,12 +62,12 @@ Authorized future conversations use Gemini as their only generative provider. Mi
 - `node_modules/ai/docs/08-migration-guides/23-migration-guide-7-0.mdx`, Google Provider section
 - `agent/lib/config/env.ts`
 - `agent/agent.ts`
-- [Google Gemini API model catalog](https://ai.google.dev/gemini-api/docs/models), which listed `gemini-3.7-flash` as stable and was last updated 2026-08-14 when this roadmap was authored
+- [Google Gemini API model catalog](https://ai.google.dev/gemini-api/docs/models), rechecked when the model baseline changes
 - [Google Gemini model deprecations](https://ai.google.dev/gemini-api/docs/deprecations)
 
 ## Scope
 
-- Export `PRIMARY_GOOGLE_MODEL_ID` as the literal `"gemini-3.7-flash"`.
+- Export `PRIMARY_GOOGLE_MODEL_ID` as the literal `"gemini-3.6-flash"`.
 - Export `createPrimaryGoogleModel(config: RuntimeConfig): LanguageModel` using AI SDK 7 `createGoogle({ apiKey })` and `provider(PRIMARY_GOOGLE_MODEL_ID)`.
 - Pass that `LanguageModel` to `defineAgent`.
 - Remove every Anthropic/Gateway model reference from runtime source.
@@ -87,7 +88,7 @@ Do not read or print `.env`, call a live model during unit tests, add a Gateway 
 ## Interfaces and types
 
 ```ts
-export const PRIMARY_GOOGLE_MODEL_ID = "gemini-3.7-flash" as const;
+export const PRIMARY_GOOGLE_MODEL_ID = "gemini-3.6-flash" as const;
 export type PrimaryGoogleModelId = typeof PRIMARY_GOOGLE_MODEL_ID;
 export function createPrimaryGoogleModel(config: RuntimeConfig): LanguageModel;
 ```
@@ -120,7 +121,7 @@ Gemini is a language orchestrator only. It is not a diagnostic or clinical-calcu
 
 ## Implementation sequence
 
-1. Write tests expecting provider `google.generative-ai`, model ID `gemini-3.7-flash`, and no forbidden strings; observe failure against the scaffold.
+1. Write tests expecting provider `google.generative-ai`, model ID `gemini-3.6-flash`, and no forbidden strings; observe failure against the scaffold.
 2. Recheck official model status and `@ai-sdk/google` local type exports.
 3. Implement the provider factory with an inert fake key in unit tests.
 4. Replace `agent.ts` model configuration.

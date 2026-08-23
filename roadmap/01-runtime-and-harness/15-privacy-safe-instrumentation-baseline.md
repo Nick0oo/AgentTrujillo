@@ -2,7 +2,7 @@
 id: AT-01-15
 title: Establish privacy-safe Eve instrumentation defaults
 module: 01-runtime-and-harness
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-01-05]
@@ -32,7 +32,8 @@ forbidden_paths:
   - agent/tools/**
   - agent/instructions.md
   - supabase/**
-commit: b49f1b3
+commit:
+  hash: b49f1b3
   message: "security(observability): disable sensitive trace recording"
 ---
 

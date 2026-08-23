@@ -11,7 +11,7 @@ This module records confirmed vaccine administration facts and evaluates a child
 
 ## Exit gate
 
-All fourteen leaves are complete and fresh evidence proves:
+The clinical chain and its production amendments close only when fresh evidence proves:
 
 - domain inputs/results contain no model-controlled authority or schedule identity;
 - product/antigen registry is versioned, jurisdiction-aware, and unambiguous;
@@ -32,6 +32,7 @@ AT-04-14 + AT-05-02 + AT-03-11 -> AT-06-01 -> AT-06-02 -+-> AT-06-03 -+
                                                           +-> AT-06-05 -> AT-06-06 -> AT-06-07 -+
                                                                                                       |
 AT-06-14 <- AT-06-13 <- AT-06-12 <- AT-06-11 <- AT-06-10 <- AT-06-09 <-------------------------------+
+AT-06-07 -> AT-06-16 (independent production-ledger correction)
 ```
 
 PAI `03` then ACIP `04` run sequentially because both own `package.json`; their country-specific packages remain independent. Evidence-draft policy `05` may run in parallel after the shared registry. Rule engines are sequential because they share dose validity and dependency semantics.
@@ -54,6 +55,9 @@ PAI `03` then ACIP `04` run sequentially because both own `package.json`; their 
 | [AT-06-12](12-vaccination-assessment-persistence.md) | Persist facts/assessments atomically | yes | no | `AT-06-11` |
 | [AT-06-13](13-country-change-reevaluation.md) | Reevaluate after country/package change | no | yes | `AT-06-12` |
 | [AT-06-14](14-immunization-fixtures-and-evals.md) | Prove PAI/ACIP correctness/isolation | no | no | `AT-06-13` |
+| [AT-06-15](15-production-closure-audit-and-hardening.md) | Audit and harden production closure | yes | yes | `AT-06-13` |
+| [AT-06-16](16-production-ledger-correction.md) | Correct production dependency statuses | no | no | `AT-06-07` |
+| [AT-06-17](17-basic-clinical-package-release.md) | Release conservative basic CO/US packages | yes | yes | `AT-03-12`, `AT-06-16` |
 
 ## Clinical boundary
 
@@ -73,7 +77,16 @@ $envLines = Get-Content .env | Where-Object { $_ -match '^[A-Za-z_][A-Za-z0-9_]*
 
 ## Implementation state
 
-AT-06-01, AT-06-02, AT-06-03, AT-06-04, AT-06-05, AT-06-07, AT-06-09, AT-06-11, and AT-06-12 have executable contracts, tests, offline importers, and evidence. AT-06-13 now has the deterministic pure reevaluation core plus the authorized repository adapter, Cloud one-child-scoped indexes, atomic RPC, and replay contract. The official CO/US source manifest, current-status checks, reviewed Cloud source baseline, and draft algorithm identity support AT-06-03/04/14 traceability, while exact compiled artifacts and independent clinical approvals remain explicit activation gates for AT-06-03/04/06/08/14. Synthetic fixtures intentionally report `blocked` rather than inventing clinical approval.
+The root production audit implemented in commit `2e7eeba` verified the technical foundation, administration boundary, deterministic helpers, authenticated replay-safe Cloud persistence, current source registry, versioned 24-antigen reference catalog, generated types, tests, typecheck, build, migration parity, and Cloud lint. The product-owner-conveyed approval closes the behavior boundary in AT-06-06 without creating a signature or artifact-specific attestation.
+
+The 2026-08-22 conservative release resolves the prior package blockers without widening unsupported clinical behavior:
+
+| State | Leaves | Evidence or blocker |
+|---|---|---|
+| completed | `AT-06-01`, `AT-06-02`, `AT-06-05`–`AT-06-07`, `AT-06-16` | Domain, reference identities, factual administration boundary, antigen resolution, and independent ledger correction `f448444` pass. |
+| completed | `AT-06-03`, `AT-06-04`, `AT-06-08`–`AT-06-15`, `AT-06-17` | Exact basic CO/US artifacts, active Cloud releases, conveyed hash-bound approvals, real evals, SQL verification, typecheck, and build pass in `453032e`. |
+
+Production contains two active basic packages and schedules: 49 CO rules and 6 US rules. Routine-age comparison is informational; campaign, outbreak, catch-up, special-population, contraindication, and uncertain branches remain `review_required`. No administration or assessment rows were invented or deleted. See [fresh production evidence](../../docs/verification/immunization.md).
 
 ## Handoff
 

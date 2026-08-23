@@ -2,7 +2,7 @@
 id: AT-07-13
 title: Persist reproducible dose-validation decisions
 module: 07-medication-and-adherence
-status: blocked
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-07-03, AT-07-12]
@@ -137,11 +137,13 @@ Commit only the exclusive paths with `feat(medication): persist dose validation`
 
 ## Completion checklist
 
-- [ ] Every decision is append-only and reproducible.
-- [ ] Intermediate values and evidence are retained.
-- [ ] Idempotency and domain writes are atomic.
-- [ ] Composite RLS/FKs prevent cross-child evidence.
-- [ ] No prescription/safe/alternative-dose data is stored.
+- [x] Every decision is append-only and reproducible.
+- [x] Intermediate values and evidence are retained.
+- [x] Idempotency and domain writes are atomic.
+- [x] Composite RLS/FKs prevent cross-child evidence.
+- [x] No prescription/safe/alternative-dose data is stored.
+
+The persistence contract is technically verified in Cloud by `AT-07-19`, including normalized source and ingredient rows. This leaf remains `blocked` because its declared dependency `AT-07-12` cannot complete without an exact released medication package and approved real arithmetic fixtures.
 
 ## Handoff
 

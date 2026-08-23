@@ -7,15 +7,15 @@ This module replaces the permissive Eve scaffold with the smallest production-sa
 - Root roadmap documentation is complete at commit `804b2da`.
 - The worktree is clean before `AT-01-01` starts.
 - Node.js resolves to `24.x`.
-- Eve `0.27.1` is installed and its bundled docs are readable.
+- Eve `0.27.13` is installed and its bundled docs are readable.
 - No production provider, Vercel, or Supabase mutation is required to implement this module.
 
 ## Exit gate
 
-All seventeen leaves are completed and fresh evidence proves:
+All eighteen leaves, including the Eve ESM patch amendment, are completed and fresh evidence proves:
 
 - Eve and AI SDK dependencies are exactly pinned and the installed documentation baseline is recorded;
-- `agent/agent.ts` receives a direct `LanguageModel` created by `@ai-sdk/google`, using provider-native stable model ID `gemini-3.7-flash`;
+- `agent/agent.ts` receives a direct `LanguageModel` created by `@ai-sdk/google`, using provider-native stable model ID `gemini-3.6-flash`;
 - required environment values fail closed without exposing secrets;
 - session limits and compaction are explicit and tested;
 - permanent instructions and three runtime skills preserve the clinical product boundary;
@@ -28,6 +28,14 @@ All seventeen leaves are completed and fresh evidence proves:
 
 OpenRouter, Supabase access, Creciendo authentication, clinical calculations, tools, workflows, and production deployment are not part of this module.
 
+### Approved model amendment — 2026-08-21
+
+The product owner selected `gemini-3.6-flash` after the `gemini-3.7-flash` candidate failed the installed Eve runtime evaluation path. Code, discovery fixtures, tests, and live evidence must therefore use `gemini-3.6-flash`. This amendment does not enable fallback or a model alias.
+
+### Eve patch amendment — 2026-08-21
+
+`AT-01-18` advances the framework from `0.27.1` to `0.27.13`. This patch retains upstream ESM fix `25c12d3`, Windows package-resolution fix `0755e97`, and Undici 8 security upgrade `9df880e`. The amendment changes no authored runtime interface and does not authorize a later Eve minor or major upgrade.
+
 ## Dependency graph
 
 ```text
@@ -37,13 +45,13 @@ AT-01-01 -> AT-01-02 -> AT-01-04 -> AT-01-03 -> AT-01-05 -> AT-01-06
                                                             |       +--> AT-01-08 --+--> AT-01-16 -> AT-01-17
                                                             |       +--> AT-01-09 --+
                                                             |       +--> AT-01-10 --+
-                                                            +----------> AT-01-15 --+
+                                                            +----------> AT-01-15 -> AT-01-18 --+
 AT-01-02 -> AT-01-11 --+
          -> AT-01-12 --+--> AT-01-14 -----------------------+
          -> AT-01-13 --+
 ```
 
-`AT-01-03` follows environment validation because direct-provider construction consumes the validated key. `AT-01-16` follows every discovered-surface change. `AT-01-17` is the only module completion gate.
+`AT-01-03` follows environment validation because direct-provider construction consumes the validated key. `AT-01-18` is the explicit patch amendment for upstream Eve issue `#935`; it must complete before discovery and live evals. `AT-01-17` is the final module completion gate.
 
 ## Approved future parallel groups
 
@@ -73,6 +81,7 @@ All other leaves execute sequentially. A parallel group loses parallel eligibili
 | [AT-01-13](13-disable-runtime-delegation.md) | Remove root self-delegation | parallel | medium | `AT-01-02` |
 | [AT-01-14](14-sandbox-deny-all-policy.md) | Deny sandbox network egress | sequential | high | `AT-01-11`, `AT-01-12`, `AT-01-13` |
 | [AT-01-15](15-privacy-safe-instrumentation-baseline.md) | Disable prompt/output tracing | sequential | high | `AT-01-05` |
+| [AT-01-18](18-eve-esm-runtime-patch.md) | Apply the Eve 0.27 ESM runtime patch | sequential | low | `AT-01-15` |
 | [AT-01-16](16-eve-info-discovery-gate.md) | Enforce the compiled Eve surface | sequential | high | `AT-01-07`–`AT-01-15` |
 | [AT-01-17](17-runtime-smoke-evals.md) | Prove the runtime safety baseline | sequential | critical | `AT-01-16` |
 
@@ -92,3 +101,7 @@ The exit gate additionally runs `npm run verify:discovery` and `npx eve eval run
 ## Handoff
 
 Completion unblocks `AT-02-01`, `AT-10-01`, `AT-11-01`, and `AT-14-01`. Those modules may extend the runtime only through typed, authenticated, child-scoped surfaces; they may not re-enable capabilities removed here.
+
+## Closure evidence — 2026-08-21
+
+All eighteen leaf ledgers are reconciled to `completed`. Fresh runtime, build, repeated discovery, security-audit, privacy-scan, and two-run live Gemini evidence is recorded in `docs/verification/runtime-module-01.md`; conveyed clinical wording approval is recorded in `docs/clinical/approval-record-2026-08-21.md` without creating or attributing a signature.

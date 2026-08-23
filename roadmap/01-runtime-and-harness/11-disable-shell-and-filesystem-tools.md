@@ -2,7 +2,7 @@
 id: AT-01-11
 title: Disable shell and filesystem tools in the root harness
 module: 01-runtime-and-harness
-status: pending
+status: completed
 execution: parallel
 parallel_group: default-tool-lockdown
 depends_on: [AT-01-02]
@@ -38,7 +38,8 @@ forbidden_paths:
   - agent/sandbox.ts
   - agent/skills/**
   - supabase/**
-commit: 215d91b
+commit:
+  hash: 215d91b
   message: "security(runtime): disable shell and filesystem tools"
 ---
 
@@ -154,7 +155,7 @@ Stage only six declared files, run cached checks, and commit exactly `security(r
 - [x] All five default slugs use sentinels.
 - [x] None is advertised or executable.
 - [x] No equivalent alias/import exists.
-- [ ] Live evals pass; static contracts, discovery, build, and scans pass.
+- [x] Live evals, static contracts, discovery, build, and scans pass.
 
 ## Handoff
 

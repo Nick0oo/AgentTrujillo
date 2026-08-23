@@ -19,7 +19,9 @@ touches:
     - src/clinical/anthropometry/z-score.ts
     - src/clinical/anthropometry/interpolation.ts
     - src/clinical/anthropometry/numerical-policy.ts
+    - src/clinical/anthropometry/extended-bmi.ts
     - tests/clinical/anthropometry/z-score.test.ts
+    - tests/clinical/anthropometry/extended-bmi.test.ts
   modify: []
   test:
     - tests/clinical/anthropometry/z-score.test.ts
@@ -27,7 +29,9 @@ exclusive_paths:
   - src/clinical/anthropometry/z-score.ts
   - src/clinical/anthropometry/interpolation.ts
   - src/clinical/anthropometry/numerical-policy.ts
+  - src/clinical/anthropometry/extended-bmi.ts
   - tests/clinical/anthropometry/z-score.test.ts
+  - tests/clinical/anthropometry/extended-bmi.test.ts
 forbidden_paths:
   - .env
   - agent/tools/**
@@ -121,6 +125,8 @@ Model cannot supply/change coefficients, formula, standard, rounding, or Z-score
 Compare broad stratified fixture set against WHO Anthro/R and CDC documented/independent implementation within explicitly approved decimal tolerance; investigate every discrepancy.
 
 ## Completion evidence
+
+- The CDC 2022 extended-BMI half-normal algorithm matches the official 50.5-month example (`BMI 22.6`, `P95 17.8219`, `sigma 2.3983`) and is selected only after the standard BMI result exceeds the approved eligibility threshold.
 
 - LMS interpolation, L=0/log branch, invalid-domain fail-closed behavior, and pinned `lms-zscore.v1` vectors pass.
 

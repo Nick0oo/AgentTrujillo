@@ -32,7 +32,7 @@ describe("Supabase clinical package repository", () => {
     const link = { rule_pack_id: "pack-1", source_id: "source-1", purpose: "normative" };
     const release = { id: "release-1", rule_pack_id: "pack-1", artifact_sha256: artifactSha256, algorithm_id: "algorithm-1", approval_id: "approval-1", domain: "immunization", country_code: "CO", locale: "es-CO", action: "release", status: "active", activation_at: "2026-08-15T00:00:00.000Z", previous_release_id: null, evidence_sha256: "c".repeat(64), preview_sha256: "d".repeat(64), requester_subject: "00000000-0000-4000-8000-000000000001", request_id: "00000000-0000-4000-8000-000000000002", created_at: "2026-08-15T00:00:00.000Z" };
     const algorithm = { id: "algorithm-1", algorithm_key: "immunization-v1", version: "1.0.0", domain: "immunization", implementation_sha256: "e".repeat(64), test_vector_sha256: "f".repeat(64), artifact_schema_versions: ["v1"], entrypoint: "immunization", runtime: "node24", status: "active" };
-    const approval = { id: "approval-1", rule_pack_id: "pack-1", artifact_sha256: artifactSha256, algorithm_id: "algorithm-1", algorithm_implementation_sha256: algorithm.implementation_sha256, source_set_sha256: sourceSetSha256, manifest_sha256: "1".repeat(64), approver_subject: "00000000-0000-4000-8000-000000000003", approver_role: "clinical_approver", decision: "approved", decided_at: "2026-08-15T00:00:00.000Z", request_id: "00000000-0000-4000-8000-000000000004", withdrawal_of: null };
+    const approval = { id: "approval-1", rule_pack_id: "pack-1", artifact_sha256: artifactSha256, algorithm_id: "algorithm-1", algorithm_implementation_sha256: algorithm.implementation_sha256, source_set_sha256: sourceSetSha256, manifest_sha256: "1".repeat(64), approval_provenance: "verified_clinical_approver", approver_subject: "00000000-0000-4000-8000-000000000003", approver_role: "clinical_approver", conveyance_record_sha256: null, decision: "approved", decided_at: "2026-08-15T00:00:00.000Z", request_id: "00000000-0000-4000-8000-000000000004", withdrawal_of: null };
     const values: Record<string, unknown> = {
       clinical_rule_packs: [pack], clinical_rule_pack_sources: [link], clinical_sources: [source],
       clinical_package_releases: [release], clinical_algorithms: [algorithm], clinical_approvals: [approval],
@@ -54,5 +54,21 @@ describe("Supabase clinical package repository", () => {
     };
     const repository = createClinicalPackageRepository({ from: (table: string) => queryFor(values[table]) } as never);
     await expect(repository.findCandidates({ domain: "immunization", countryCode: "US", locale: "en-US", referenceDate: "2026-08-16", artifactSchemaVersion: "v1" })).resolves.toEqual([]);
+  });
+
+  it("resolves a released medication package from its medication authority and storage path", async () => {
+    const sourceSet = createHash("sha256").update(canonicalize([{ id: "med-source", artifactSha256: sourceArtifactSha256, status: "approved" }])).digest("hex");
+    const values: Record<string, unknown> = {
+      clinical_rule_packs: [{ id: "med-pack", domain: "medication", country_code: "CO", version: "2026.basic.1", locale: "es-CO", status: "active", effective_from: "2026-08-22", effective_until: null, artifact_sha256: artifactSha256 }],
+      clinical_rule_pack_sources: [{ rule_pack_id: "med-pack", source_id: "med-source", purpose: "label" }],
+      clinical_sources: [{ id: "med-source", authority: "INVIMA", jurisdiction: "CO", title: "INVIMA label", source_uri: "https://www.invima.gov.co/label", citation: null, published_at: null, retrieved_at: "2026-08-22T13:00:00.000Z", effective_from: null, effective_until: null, license: "official", artifact_sha256: sourceArtifactSha256, status: "approved" }],
+      clinical_package_releases: [{ id: "med-release", rule_pack_id: "med-pack", artifact_sha256: artifactSha256, algorithm_id: "med-algorithm", approval_id: "med-approval", domain: "medication", country_code: "CO", locale: "es-CO", action: "release", status: "active" }],
+      clinical_algorithms: [{ id: "med-algorithm", algorithm_key: "medication-declared-dose-basic", version: "1.0.0", domain: "medication", implementation_sha256: "e".repeat(64), test_vector_sha256: "f".repeat(64), artifact_schema_versions: ["v1"], entrypoint: "medication.compareDeclaredDose", runtime: "node24", status: "active" }],
+      clinical_approvals: [{ id: "med-approval", rule_pack_id: "med-pack", artifact_sha256: artifactSha256, algorithm_id: "med-algorithm", algorithm_implementation_sha256: "e".repeat(64), source_set_sha256: sourceSet, manifest_sha256: "1".repeat(64), approval_provenance: "product_owner_conveyed", approver_subject: null, approver_role: "clinical_approver", conveyance_record_sha256: "2".repeat(64), decision: "approved", decided_at: "2026-08-22T13:00:00.000Z", request_id: "00000000-0000-4000-8000-000000000004", withdrawal_of: null }],
+    };
+    const repository = createClinicalPackageRepository({ from: (table: string) => queryFor(values[table]) } as never);
+    const result = await repository.findCandidates({ domain: "medication", countryCode: "CO", locale: "es-CO", referenceDate: "2026-08-22", artifactSchemaVersion: "v1" });
+    expect(result).toHaveLength(1);
+    expect(result[0]?.location.path).toBe(`v1/medication/CO/${artifactSha256}.json`);
   });
 });

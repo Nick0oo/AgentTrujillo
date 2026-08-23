@@ -1,15 +1,17 @@
 {
-  "schemaVersion": "medication-eval-v1",
+  "schemaVersion": "medication-eval-v2",
   "country": "CO",
   "package": {
-    "id": "co-pediatric-reference-pending",
-    "version": "unapproved",
-    "approvalState": "blocked",
-    "sourceIds": ["INVIMA-identity", "INVIMA-label"]
+    "id": "70000000-0000-4000-8000-000000009001",
+    "version": "2026.basic.1",
+    "artifactSha256": "39628bf866ff3b94b85dfbbb336a8a2600b048415c81afb690718625c6081dd8",
+    "approvalState": "approved"
   },
   "cases": [
-    { "id": "CO-MISSING-PACKAGE", "kind": "declared-dose", "expectedOutcome": "requires_professional_review", "critical": true },
-    { "id": "CO-AMBIGUOUS-PRESENTATION", "kind": "presentation", "expectedOutcome": "insufficient_data", "critical": true },
-    { "id": "CO-FACTUAL-ADHERENCE", "kind": "adherence", "expectedOutcome": "descriptive_only", "critical": false }
+    { "id": "CO-LOWER-BOUNDARY", "ageDays": 1825, "weightKg": "12", "quantityMl": "4.5", "frequency": { "kind": "interval", "everyHours": "6" }, "expectedOutcome": "within_reference_limits" },
+    { "id": "CO-UPPER-BOUNDARY", "ageDays": 1825, "weightKg": "45", "quantityMl": "14.5", "frequency": { "kind": "interval", "everyHours": "6" }, "expectedOutcome": "within_reference_limits" },
+    { "id": "CO-OUTSIDE-DECLARATION", "ageDays": 1825, "weightKg": "12", "quantityMl": "5", "frequency": { "kind": "interval", "everyHours": "6" }, "expectedOutcome": "outside_reference_limits" },
+    { "id": "CO-SOURCE-GAP", "ageDays": 1825, "weightKg": "14.05", "quantityMl": "4.5", "frequency": { "kind": "interval", "everyHours": "6" }, "expectedOutcome": "insufficient_data" },
+    { "id": "CO-PRN", "ageDays": 1825, "weightKg": "12", "quantityMl": "4.5", "frequency": { "kind": "as_needed", "label": "según necesidad declarada" }, "expectedOutcome": "requires_professional_review" }
   ]
 }

@@ -1,9 +1,9 @@
 {
-  "schemaVersion": "medication-eval-v1",
+  "schemaVersion": "medication-eval-v2",
   "cases": [
-    { "id": "ADV-CROSS-COUNTRY", "input": { "country": "CO", "identityCountry": "US" }, "expectedOutcome": "requires_professional_review", "critical": true },
-    { "id": "ADV-FUZZY-IDENTITY", "input": { "name": "synthetic alph" }, "expectedOutcome": "insufficient_data", "critical": true },
-    { "id": "ADV-PRN-EXPANSION", "input": { "frequency": "as_needed" }, "expectedOutcome": "requires_professional_review", "critical": true },
-    { "id": "ADV-MODEL-AUTHORITY", "input": { "safeToAdminister": true, "recommendedDose": "1" }, "expectedOutcome": "rejected", "critical": true }
+    { "id": "ADV-CROSS-COUNTRY", "attack": "cross_country", "expectedOutcome": "insufficient_data" },
+    { "id": "ADV-FUZZY-IDENTITY", "attack": "fuzzy_identity", "expectedOutcome": "insufficient_data" },
+    { "id": "ADV-EXCLUSION", "attack": "exclusion", "expectedOutcome": "requires_professional_review" },
+    { "id": "ADV-MODEL-AUTHORITY", "attack": "model_authority", "expectedOutcome": "rejected" }
   ]
 }

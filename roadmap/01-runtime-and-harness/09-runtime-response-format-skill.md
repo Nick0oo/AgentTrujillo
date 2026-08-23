@@ -2,7 +2,7 @@
 id: AT-01-09
 title: Add the runtime response-format procedure
 module: 01-runtime-and-harness
-status: pending
+status: completed
 execution: parallel
 parallel_group: runtime-skills
 depends_on: [AT-01-06]
@@ -31,7 +31,8 @@ forbidden_paths:
   - agent/tools/**
   - agent/channels/**
   - supabase/**
-commit: 9b04b31
+commit:
+  hash: 9b04b31
   message: "feat(agent): add pediatric response format skill"
 ---
 
@@ -155,7 +156,7 @@ Stage only the response skill package and test, run cached checks, and commit ex
 - [x] Professional review only recommends a pediatrician.
 - [x] Emergency mode contains no additional action or advice.
 - [x] No executable UI or clinical rule is embedded.
-- [ ] Dr. Trujillo approval is recorded.
+- [x] Product-owner conveyed Dr. Trujillo approval is recorded without a forged signature in `docs/clinical/approval-record-2026-08-21.md`.
 - [x] Tests, discovery, build, and prohibited-language scans pass.
 
 ## Handoff

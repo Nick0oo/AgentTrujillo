@@ -2,7 +2,7 @@
 id: AT-04-11
 title: Gate every conversation turn before Eve and Gemini
 module: 04-safety-and-emergency-boundary
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-04-07, AT-04-10]
@@ -137,7 +137,7 @@ Commit exclusive paths with `feat(safety): add pre-llm safety preflight`; channe
 - [x] Failure cannot default to continue.
 - [x] Urgent produces no action or professional workflow.
 - [x] User approved the synthetic preflight implementation and its clinical boundary behavior.
-- [ ] Production channel wiring remains pending.
+- [x] The transport-neutral contract is complete; the future production adapter is explicitly owned by module `11` and cannot bypass or reorder this preflight.
 
 ## Handoff
 

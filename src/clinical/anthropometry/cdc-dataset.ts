@@ -33,7 +33,7 @@ export type CdcDatasetManifest = Readonly<{
 type Dataset = Readonly<{
   manifest: CdcDatasetManifest;
   rows: readonly CdcLmsRow[];
-  lookup: (input: Readonly<{ indicator: string; sex: CdcLmsRow["sex"]; ageMonths?: string | number; coordinateKind?: CdcLmsRow["coordinateKind"]; coordinateValue?: string | number }>) => CdcLmsRow | null;
+  lookup: (input: Readonly<{ indicator: string; sex: CdcLmsRow["sex"]; ageMonths?: string | number; coordinateKind?: CdcLmsRow["coordinateKind"]; coordinateValue?: string | number; sourceFile?: string }>) => CdcLmsRow | null;
 }>;
 
 export type CdcGrowthDataset = Dataset & Readonly<{ extendedBmi: Dataset }>;
@@ -43,15 +43,30 @@ function digest(value: Uint8Array): string {
 }
 
 function createLookup(rows: readonly CdcLmsRow[]) {
-  const map = new Map(rows.map((row) => [`${row.indicator}|${row.sex}|${row.coordinateKind}|${row.coordinateValue}`, row]));
-  return (input: Readonly<{ indicator: string; sex: CdcLmsRow["sex"]; ageMonths?: string | number; coordinateKind?: CdcLmsRow["coordinateKind"]; coordinateValue?: string | number }>) => {
+  const logical = new Map<string, CdcLmsRow[]>();
+  const exact = new Map<string, CdcLmsRow>();
+  for (const row of rows) {
+    const key = `${row.indicator}|${row.sex}|${row.coordinateKind}|${row.coordinateValue}`;
+    logical.set(key, [...(logical.get(key) ?? []), row]);
+    exact.set(`${key}|${row.sourceFile}`, row);
+  }
+  return (input: Readonly<{ indicator: string; sex: CdcLmsRow["sex"]; ageMonths?: string | number; coordinateKind?: CdcLmsRow["coordinateKind"]; coordinateValue?: string | number; sourceFile?: string }>) => {
     const coordinateKind = input.coordinateKind ?? "age_months";
     const coordinateValue = String(input.coordinateValue ?? input.ageMonths ?? "");
-    return map.get(`${input.indicator}|${input.sex}|${coordinateKind}|${coordinateValue}`) ?? null;
+    const key = `${input.indicator}|${input.sex}|${coordinateKind}|${coordinateValue}`;
+    if (input.sourceFile) return exact.get(`${key}|${input.sourceFile}`) ?? null;
+    const candidates = logical.get(key) ?? [];
+    return candidates.length === 1 ? candidates[0] : null;
   };
 }
 
 function makeDataset(manifest: CdcDatasetManifest, rows: readonly CdcLmsRow[]): Dataset {
+  const exactKeys = new Set<string>();
+  for (const row of rows) {
+    const key = `${row.indicator}|${row.sex}|${row.coordinateKind}|${row.coordinateValue}|${row.sourceFile}`;
+    if (exactKeys.has(key)) throw new Error("CDC_DATASET_DUPLICATE_ROW");
+    exactKeys.add(key);
+  }
   const frozenRows = deepFreeze([...rows]);
   return deepFreeze({ manifest, rows: frozenRows, lookup: createLookup(frozenRows) });
 }

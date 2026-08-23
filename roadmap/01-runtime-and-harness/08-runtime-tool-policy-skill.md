@@ -2,7 +2,7 @@
 id: AT-01-08
 title: Add the runtime tool and confirmation policy
 module: 01-runtime-and-harness
-status: pending
+status: completed
 execution: parallel
 parallel_group: runtime-skills
 depends_on: [AT-01-06]
@@ -31,7 +31,8 @@ forbidden_paths:
   - agent/tools/**
   - agent/channels/**
   - supabase/**
-commit: 86f7e06
+commit:
+  hash: 86f7e06
   message: "feat(agent): add runtime tool execution policy"
 ---
 

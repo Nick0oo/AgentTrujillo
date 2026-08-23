@@ -12,6 +12,31 @@ export type Database = {
   __InternalSupabase: {
     PostgrestVersion: "14.5"
   }
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json
+          operationName?: string
+          query?: string
+          variables?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
   public: {
     Tables: {
       agent_commands: {
@@ -179,16 +204,16 @@ export type Database = {
       }
       anthropometric_measurements: {
         Row: {
-          care_space_id: string
-          child_id: string
-          created_at: string
-          device: string | null
           capture_policy_id: string | null
           capture_policy_version: string | null
+          care_space_id: string
+          child_id: string
+          confirmation_sha256: string | null
           confirmed_at: string | null
           confirmed_by: string | null
-          confirmation_sha256: string | null
           conversion_version: string | null
+          created_at: string
+          device: string | null
           exclusion_reason: string | null
           hmac_key_id: string | null
           id: string
@@ -215,16 +240,16 @@ export type Database = {
           validation_status: string
         }
         Insert: {
-          care_space_id: string
-          child_id: string
-          created_at?: string
-          device?: string | null
           capture_policy_id?: string | null
           capture_policy_version?: string | null
+          care_space_id: string
+          child_id: string
+          confirmation_sha256?: string | null
           confirmed_at?: string | null
           confirmed_by?: string | null
-          confirmation_sha256?: string | null
           conversion_version?: string | null
+          created_at?: string
+          device?: string | null
           exclusion_reason?: string | null
           hmac_key_id?: string | null
           id?: string
@@ -251,16 +276,16 @@ export type Database = {
           validation_status?: string
         }
         Update: {
-          care_space_id?: string
-          child_id?: string
-          created_at?: string
-          device?: string | null
           capture_policy_id?: string | null
           capture_policy_version?: string | null
+          care_space_id?: string
+          child_id?: string
+          confirmation_sha256?: string | null
           confirmed_at?: string | null
           confirmed_by?: string | null
-          confirmation_sha256?: string | null
           conversion_version?: string | null
+          created_at?: string
+          device?: string | null
           exclusion_reason?: string | null
           hmac_key_id?: string | null
           id?: string
@@ -287,6 +312,20 @@ export type Database = {
           validation_status?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "anthropometric_measurements_supersedes_measurement_id_fkey"
+            columns: ["supersedes_measurement_id"]
+            isOneToOne: false
+            referencedRelation: "anthropometric_measurements"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "anthropometric_measurements_supersedes_measurement_id_fkey"
+            columns: ["supersedes_measurement_id"]
+            isOneToOne: false
+            referencedRelation: "growth_series_points"
+            referencedColumns: ["superseded_by_measurement_id"]
+          },
           {
             foreignKeyName: "anthropometry_child_fk"
             columns: ["care_space_id", "child_id"]
@@ -806,12 +845,14 @@ export type Database = {
         Row: {
           algorithm_id: string
           algorithm_implementation_sha256: string
+          approval_provenance: string
           approver_name: string
           approver_role: string
-          approver_subject: string
+          approver_subject: string | null
           approver_user_id: string | null
           artifact_sha256: string
           attestation_version: number
+          conveyance_record_sha256: string | null
           created_at: string
           decided_at: string
           decision: string
@@ -826,12 +867,14 @@ export type Database = {
         Insert: {
           algorithm_id: string
           algorithm_implementation_sha256: string
+          approval_provenance?: string
           approver_name: string
           approver_role: string
-          approver_subject: string
+          approver_subject?: string | null
           approver_user_id?: string | null
           artifact_sha256: string
           attestation_version?: number
+          conveyance_record_sha256?: string | null
           created_at?: string
           decided_at?: string
           decision: string
@@ -846,12 +889,14 @@ export type Database = {
         Update: {
           algorithm_id?: string
           algorithm_implementation_sha256?: string
+          approval_provenance?: string
           approver_name?: string
           approver_role?: string
-          approver_subject?: string
+          approver_subject?: string | null
           approver_user_id?: string | null
           artifact_sha256?: string
           attestation_version?: number
+          conveyance_record_sha256?: string | null
           created_at?: string
           decided_at?: string
           decision?: string
@@ -1714,50 +1759,185 @@ export type Database = {
           },
         ]
       }
-      dose_validations: {
+      dose_validation_ingredients: {
         Row: {
+          arithmetic_trace: Json
+          care_space_id: string
+          child_id: string
+          converted_amount_lexeme: string | null
+          converted_unit: string | null
+          created_at: string
+          declared_amount_lexeme: string | null
+          declared_unit: string | null
+          id: string
+          ingredient_code: string
+          validation_id: string
+        }
+        Insert: {
+          arithmetic_trace?: Json
+          care_space_id: string
+          child_id: string
+          converted_amount_lexeme?: string | null
+          converted_unit?: string | null
+          created_at?: string
+          declared_amount_lexeme?: string | null
+          declared_unit?: string | null
+          id?: string
+          ingredient_code: string
+          validation_id: string
+        }
+        Update: {
+          arithmetic_trace?: Json
+          care_space_id?: string
+          child_id?: string
+          converted_amount_lexeme?: string | null
+          converted_unit?: string | null
+          created_at?: string
+          declared_amount_lexeme?: string | null
+          declared_unit?: string | null
+          id?: string
+          ingredient_code?: string
+          validation_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dose_validation_ingredient_scope_fk"
+            columns: ["care_space_id", "child_id", "validation_id"]
+            isOneToOne: false
+            referencedRelation: "dose_validations"
+            referencedColumns: ["care_space_id", "child_id", "id"]
+          },
+          {
+            foreignKeyName: "dose_validation_ingredients_validation_id_fkey"
+            columns: ["validation_id"]
+            isOneToOne: false
+            referencedRelation: "dose_validations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      dose_validation_sources: {
+        Row: {
+          artifact_sha256: string
           care_space_id: string
           child_id: string
           created_at: string
+          id: string
+          source_id: string
+          source_kind: string
+          source_uri: string
+          source_version: string
+          validation_id: string
+        }
+        Insert: {
+          artifact_sha256: string
+          care_space_id: string
+          child_id: string
+          created_at?: string
+          id?: string
+          source_id: string
+          source_kind: string
+          source_uri: string
+          source_version: string
+          validation_id: string
+        }
+        Update: {
+          artifact_sha256?: string
+          care_space_id?: string
+          child_id?: string
+          created_at?: string
+          id?: string
+          source_id?: string
+          source_kind?: string
+          source_uri?: string
+          source_version?: string
+          validation_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dose_validation_source_scope_fk"
+            columns: ["care_space_id", "child_id", "validation_id"]
+            isOneToOne: false
+            referencedRelation: "dose_validations"
+            referencedColumns: ["care_space_id", "child_id", "id"]
+          },
+          {
+            foreignKeyName: "dose_validation_sources_validation_id_fkey"
+            columns: ["validation_id"]
+            isOneToOne: false
+            referencedRelation: "dose_validations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      dose_validations: {
+        Row: {
+          algorithm_version: string | null
+          artifact_sha256: string | null
+          care_space_id: string
+          child_id: string
+          created_at: string
+          decision_digest: string | null
           declared_input: Json
           dose_limit_id: string | null
           explanation_codes: string[]
           formulary_version_id: string | null
           id: string
+          input_digest: string | null
           medication_concept_id: string | null
+          package_version: string | null
           request_id: string
           result: string
+          source_evidence: Json
           validated_at: string
+          validated_by: string | null
+          vocabulary_version: string | null
           weight_measurement_id: string | null
         }
         Insert: {
+          algorithm_version?: string | null
+          artifact_sha256?: string | null
           care_space_id: string
           child_id: string
           created_at?: string
+          decision_digest?: string | null
           declared_input: Json
           dose_limit_id?: string | null
           explanation_codes?: string[]
           formulary_version_id?: string | null
           id?: string
+          input_digest?: string | null
           medication_concept_id?: string | null
+          package_version?: string | null
           request_id: string
           result: string
+          source_evidence: Json
           validated_at?: string
+          validated_by?: string | null
+          vocabulary_version?: string | null
           weight_measurement_id?: string | null
         }
         Update: {
+          algorithm_version?: string | null
+          artifact_sha256?: string | null
           care_space_id?: string
           child_id?: string
           created_at?: string
+          decision_digest?: string | null
           declared_input?: Json
           dose_limit_id?: string | null
           explanation_codes?: string[]
           formulary_version_id?: string | null
           id?: string
+          input_digest?: string | null
           medication_concept_id?: string | null
+          package_version?: string | null
           request_id?: string
           result?: string
+          source_evidence?: Json
           validated_at?: string
+          validated_by?: string | null
+          vocabulary_version?: string | null
           weight_measurement_id?: string | null
         }
         Relationships: [
@@ -1795,6 +1975,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "anthropometric_measurements"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dose_validations_weight_measurement_id_fkey"
+            columns: ["weight_measurement_id"]
+            isOneToOne: false
+            referencedRelation: "growth_series_points"
+            referencedColumns: ["superseded_by_measurement_id"]
           },
         ]
       }
@@ -1860,14 +2047,16 @@ export type Database = {
       }
       growth_assessments: {
         Row: {
-          algorithm_id: string
           age_basis: string | null
           age_policy_id: string | null
           age_policy_version: string | null
+          algorithm_id: string
+          algorithm_version: string | null
           assessed_at: string
           care_space_id: string
           child_id: string
           chronological_age_days: number
+          companion_measurement_id: string | null
           corrected_age_days: number | null
           correction_applied: boolean
           created_at: string
@@ -1875,12 +2064,12 @@ export type Database = {
           decision_digest: string | null
           id: string
           indicator: string
-          measurement_input_fingerprint: string | null
           input_digest: string | null
-          algorithm_version: string | null
           interpretation: string | null
           measurement_id: string
+          measurement_input_fingerprint: string | null
           percentile: number | null
+          percentile_lexeme: string | null
           result_status: string
           rule_pack_id: string
           standard_key: string
@@ -1889,17 +2078,18 @@ export type Database = {
           warnings: string[]
           z_score: number | null
           z_score_lexeme: string | null
-          percentile_lexeme: string | null
         }
         Insert: {
-          algorithm_id: string
           age_basis?: string | null
           age_policy_id?: string | null
           age_policy_version?: string | null
+          algorithm_id: string
+          algorithm_version?: string | null
           assessed_at?: string
           care_space_id: string
           child_id: string
           chronological_age_days: number
+          companion_measurement_id?: string | null
           corrected_age_days?: number | null
           correction_applied?: boolean
           created_at?: string
@@ -1907,12 +2097,12 @@ export type Database = {
           decision_digest?: string | null
           id?: string
           indicator: string
-          measurement_input_fingerprint?: string | null
           input_digest?: string | null
-          algorithm_version?: string | null
           interpretation?: string | null
           measurement_id: string
+          measurement_input_fingerprint?: string | null
           percentile?: number | null
+          percentile_lexeme?: string | null
           result_status: string
           rule_pack_id: string
           standard_key: string
@@ -1921,17 +2111,18 @@ export type Database = {
           warnings?: string[]
           z_score?: number | null
           z_score_lexeme?: string | null
-          percentile_lexeme?: string | null
         }
         Update: {
-          algorithm_id?: string
           age_basis?: string | null
           age_policy_id?: string | null
           age_policy_version?: string | null
+          algorithm_id?: string
+          algorithm_version?: string | null
           assessed_at?: string
           care_space_id?: string
           child_id?: string
           chronological_age_days?: number
+          companion_measurement_id?: string | null
           corrected_age_days?: number | null
           correction_applied?: boolean
           created_at?: string
@@ -1939,12 +2130,12 @@ export type Database = {
           decision_digest?: string | null
           id?: string
           indicator?: string
-          measurement_input_fingerprint?: string | null
           input_digest?: string | null
-          algorithm_version?: string | null
           interpretation?: string | null
           measurement_id?: string
+          measurement_input_fingerprint?: string | null
           percentile?: number | null
+          percentile_lexeme?: string | null
           result_status?: string
           rule_pack_id?: string
           standard_key?: string
@@ -1953,7 +2144,6 @@ export type Database = {
           warnings?: string[]
           z_score?: number | null
           z_score_lexeme?: string | null
-          percentile_lexeme?: string | null
         }
         Relationships: [
           {
@@ -1964,6 +2154,20 @@ export type Database = {
             referencedColumns: ["care_space_id", "id"]
           },
           {
+            foreignKeyName: "growth_assessment_companion_scope_fk"
+            columns: ["care_space_id", "companion_measurement_id"]
+            isOneToOne: false
+            referencedRelation: "anthropometric_measurements"
+            referencedColumns: ["care_space_id", "id"]
+          },
+          {
+            foreignKeyName: "growth_assessment_measurement_scope_fk"
+            columns: ["care_space_id", "measurement_id"]
+            isOneToOne: false
+            referencedRelation: "anthropometric_measurements"
+            referencedColumns: ["care_space_id", "id"]
+          },
+          {
             foreignKeyName: "growth_assessments_algorithm_id_fkey"
             columns: ["algorithm_id"]
             isOneToOne: false
@@ -1971,11 +2175,32 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "growth_assessments_companion_measurement_id_fkey"
+            columns: ["companion_measurement_id"]
+            isOneToOne: false
+            referencedRelation: "anthropometric_measurements"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "growth_assessments_companion_measurement_id_fkey"
+            columns: ["companion_measurement_id"]
+            isOneToOne: false
+            referencedRelation: "growth_series_points"
+            referencedColumns: ["superseded_by_measurement_id"]
+          },
+          {
             foreignKeyName: "growth_assessments_measurement_id_fkey"
             columns: ["measurement_id"]
             isOneToOne: false
             referencedRelation: "anthropometric_measurements"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "growth_assessments_measurement_id_fkey"
+            columns: ["measurement_id"]
+            isOneToOne: false
+            referencedRelation: "growth_series_points"
+            referencedColumns: ["superseded_by_measurement_id"]
           },
           {
             foreignKeyName: "growth_assessments_rule_pack_id_fkey"
@@ -2216,12 +2441,15 @@ export type Database = {
           created_at: string
           id: string
           idempotency_key: string
+          input_fingerprint: string | null
           medication_plan_id: string
           medication_schedule_id: string | null
+          medication_schedule_occurrence_id: string | null
           notes: string | null
           recorded_by: string
           scheduled_for: string | null
           status: string
+          supersedes_intake_id: string | null
           taken_at: string | null
           updated_at: string
         }
@@ -2233,12 +2461,15 @@ export type Database = {
           created_at?: string
           id?: string
           idempotency_key: string
+          input_fingerprint?: string | null
           medication_plan_id: string
           medication_schedule_id?: string | null
+          medication_schedule_occurrence_id?: string | null
           notes?: string | null
           recorded_by: string
           scheduled_for?: string | null
           status: string
+          supersedes_intake_id?: string | null
           taken_at?: string | null
           updated_at?: string
         }
@@ -2250,12 +2481,15 @@ export type Database = {
           created_at?: string
           id?: string
           idempotency_key?: string
+          input_fingerprint?: string | null
           medication_plan_id?: string
           medication_schedule_id?: string | null
+          medication_schedule_occurrence_id?: string | null
           notes?: string | null
           recorded_by?: string
           scheduled_for?: string | null
           status?: string
+          supersedes_intake_id?: string | null
           taken_at?: string | null
           updated_at?: string
         }
@@ -2266,6 +2500,24 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "children"
             referencedColumns: ["care_space_id", "id"]
+          },
+          {
+            foreignKeyName: "medication_intake_occurrence_scope_fk"
+            columns: [
+              "care_space_id",
+              "child_id",
+              "medication_schedule_occurrence_id",
+            ]
+            isOneToOne: false
+            referencedRelation: "medication_schedule_occurrences"
+            referencedColumns: ["care_space_id", "child_id", "id"]
+          },
+          {
+            foreignKeyName: "medication_intake_plan_scope_fk"
+            columns: ["care_space_id", "child_id", "medication_plan_id"]
+            isOneToOne: false
+            referencedRelation: "medication_plans"
+            referencedColumns: ["care_space_id", "child_id", "id"]
           },
           {
             foreignKeyName: "medication_intakes_medication_plan_id_fkey"
@@ -2281,59 +2533,90 @@ export type Database = {
             referencedRelation: "medication_schedules"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "medication_intakes_supersedes_intake_id_fkey"
+            columns: ["supersedes_intake_id"]
+            isOneToOne: false
+            referencedRelation: "medication_intakes"
+            referencedColumns: ["id"]
+          },
         ]
       }
       medication_plans: {
         Row: {
           care_space_id: string
           child_id: string
+          confirmed_at: string | null
+          confirmed_by: string | null
           created_at: string
           declared_indication: string | null
           display_name: string
           ends_at: string | null
           id: string
+          input_fingerprint: string | null
           medication_concept_id: string
           medication_presentation_id: string | null
           prescriber_name: string | null
           provenance_type: string
           recorded_by: string
+          source_artifact_sha256: string | null
+          source_version: string | null
           starts_at: string
           status: string
+          supersedes_plan_id: string | null
+          supersession_reason: string | null
           updated_at: string
+          version: number
         }
         Insert: {
           care_space_id: string
           child_id: string
+          confirmed_at?: string | null
+          confirmed_by?: string | null
           created_at?: string
           declared_indication?: string | null
           display_name: string
           ends_at?: string | null
           id?: string
+          input_fingerprint?: string | null
           medication_concept_id: string
           medication_presentation_id?: string | null
           prescriber_name?: string | null
           provenance_type: string
           recorded_by: string
+          source_artifact_sha256?: string | null
+          source_version?: string | null
           starts_at: string
           status?: string
+          supersedes_plan_id?: string | null
+          supersession_reason?: string | null
           updated_at?: string
+          version?: number
         }
         Update: {
           care_space_id?: string
           child_id?: string
+          confirmed_at?: string | null
+          confirmed_by?: string | null
           created_at?: string
           declared_indication?: string | null
           display_name?: string
           ends_at?: string | null
           id?: string
+          input_fingerprint?: string | null
           medication_concept_id?: string
           medication_presentation_id?: string | null
           prescriber_name?: string | null
           provenance_type?: string
           recorded_by?: string
+          source_artifact_sha256?: string | null
+          source_version?: string | null
           starts_at?: string
           status?: string
+          supersedes_plan_id?: string | null
+          supersession_reason?: string | null
           updated_at?: string
+          version?: number
         }
         Relationships: [
           {
@@ -2355,6 +2638,13 @@ export type Database = {
             columns: ["medication_presentation_id"]
             isOneToOne: false
             referencedRelation: "medication_presentations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "medication_plans_supersedes_plan_id_fkey"
+            columns: ["supersedes_plan_id"]
+            isOneToOne: false
+            referencedRelation: "medication_plans"
             referencedColumns: ["id"]
           },
         ]
@@ -2473,50 +2763,132 @@ export type Database = {
           },
         ]
       }
+      medication_schedule_occurrences: {
+        Row: {
+          care_space_id: string
+          child_id: string
+          created_at: string
+          id: string
+          local_date: string
+          medication_plan_id: string
+          medication_schedule_id: string | null
+          occurrence_key: string
+          plan_version: number
+          scheduled_for: string
+          source: string
+          time_zone: string
+        }
+        Insert: {
+          care_space_id: string
+          child_id: string
+          created_at?: string
+          id?: string
+          local_date: string
+          medication_plan_id: string
+          medication_schedule_id?: string | null
+          occurrence_key: string
+          plan_version: number
+          scheduled_for: string
+          source: string
+          time_zone: string
+        }
+        Update: {
+          care_space_id?: string
+          child_id?: string
+          created_at?: string
+          id?: string
+          local_date?: string
+          medication_plan_id?: string
+          medication_schedule_id?: string | null
+          occurrence_key?: string
+          plan_version?: number
+          scheduled_for?: string
+          source?: string
+          time_zone?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "medication_occurrence_plan_scope_fk"
+            columns: ["care_space_id", "child_id", "medication_plan_id"]
+            isOneToOne: false
+            referencedRelation: "medication_plans"
+            referencedColumns: ["care_space_id", "child_id", "id"]
+          },
+          {
+            foreignKeyName: "medication_occurrence_schedule_scope_fk"
+            columns: ["care_space_id", "child_id", "medication_schedule_id"]
+            isOneToOne: false
+            referencedRelation: "medication_schedules"
+            referencedColumns: ["care_space_id", "child_id", "id"]
+          },
+        ]
+      }
       medication_schedules: {
         Row: {
+          care_space_id: string
+          child_id: string
           created_at: string
           dose_quantity: number
           dose_unit: string
           frequency_kind: string
           id: string
+          idempotency_key: string | null
+          input_fingerprint: string | null
           instructions: string | null
           interval_hours: number | null
           medication_plan_id: string
+          plan_version: number
           route: string
           time_zone: string
           times_of_day: string[]
           updated_at: string
         }
         Insert: {
+          care_space_id: string
+          child_id: string
           created_at?: string
           dose_quantity: number
           dose_unit: string
           frequency_kind: string
           id?: string
+          idempotency_key?: string | null
+          input_fingerprint?: string | null
           instructions?: string | null
           interval_hours?: number | null
           medication_plan_id: string
+          plan_version: number
           route: string
           time_zone: string
           times_of_day?: string[]
           updated_at?: string
         }
         Update: {
+          care_space_id?: string
+          child_id?: string
           created_at?: string
           dose_quantity?: number
           dose_unit?: string
           frequency_kind?: string
           id?: string
+          idempotency_key?: string | null
+          input_fingerprint?: string | null
           instructions?: string | null
           interval_hours?: number | null
           medication_plan_id?: string
+          plan_version?: number
           route?: string
           time_zone?: string
           times_of_day?: string[]
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "medication_schedule_plan_scope_fk"
+            columns: ["care_space_id", "child_id", "medication_plan_id"]
+            isOneToOne: false
+            referencedRelation: "medication_plans"
+            referencedColumns: ["care_space_id", "child_id", "id"]
+          },
           {
             foreignKeyName: "medication_schedules_medication_plan_id_fkey"
             columns: ["medication_plan_id"]
@@ -3201,59 +3573,148 @@ export type Database = {
           },
         ]
       }
-      vaccination_assessments: {
+      vaccination_assessment_evidence: {
         Row: {
-          as_of_date: string
-          assessed_at: string
           care_space_id: string
           child_id: string
           created_at: string
+          vaccination_assessment_id: string
+          vaccine_administration_id: string
+        }
+        Insert: {
+          care_space_id: string
+          child_id: string
+          created_at?: string
+          vaccination_assessment_id: string
+          vaccine_administration_id: string
+        }
+        Update: {
+          care_space_id?: string
+          child_id?: string
+          created_at?: string
+          vaccination_assessment_id?: string
+          vaccine_administration_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vaccination_assessment_evidence_administration_fk"
+            columns: ["care_space_id", "child_id", "vaccine_administration_id"]
+            isOneToOne: false
+            referencedRelation: "vaccine_administrations"
+            referencedColumns: ["care_space_id", "child_id", "id"]
+          },
+          {
+            foreignKeyName: "vaccination_assessment_evidence_assessment_fk"
+            columns: ["care_space_id", "child_id", "vaccination_assessment_id"]
+            isOneToOne: false
+            referencedRelation: "vaccination_assessments"
+            referencedColumns: ["care_space_id", "child_id", "id"]
+          },
+        ]
+      }
+      vaccination_assessments: {
+        Row: {
+          algorithm_id: string | null
+          as_of_date: string
+          assessed_at: string
+          assessment_run_id: string | null
+          care_space_id: string
+          child_id: string
+          country_change_event_id: string | null
+          country_code: string | null
+          created_at: string
+          decision_digest: string | null
           due_from: string | null
           due_until: string | null
           evidence_administration_ids: string[]
           explanation_code: string
           id: string
+          input_digest: string | null
+          input_fingerprint: string | null
+          reevaluates_run_id: string | null
+          reevaluation_run_id: string | null
           rule_id: string
+          rule_pack_id: string | null
+          rule_pack_version: string | null
           schedule_id: string
+          source_digest: string | null
           status: string
         }
         Insert: {
+          algorithm_id?: string | null
           as_of_date: string
           assessed_at?: string
+          assessment_run_id?: string | null
           care_space_id: string
           child_id: string
+          country_change_event_id?: string | null
+          country_code?: string | null
           created_at?: string
+          decision_digest?: string | null
           due_from?: string | null
           due_until?: string | null
           evidence_administration_ids?: string[]
           explanation_code: string
           id?: string
+          input_digest?: string | null
+          input_fingerprint?: string | null
+          reevaluates_run_id?: string | null
+          reevaluation_run_id?: string | null
           rule_id: string
+          rule_pack_id?: string | null
+          rule_pack_version?: string | null
           schedule_id: string
+          source_digest?: string | null
           status: string
         }
         Update: {
+          algorithm_id?: string | null
           as_of_date?: string
           assessed_at?: string
+          assessment_run_id?: string | null
           care_space_id?: string
           child_id?: string
+          country_change_event_id?: string | null
+          country_code?: string | null
           created_at?: string
+          decision_digest?: string | null
           due_from?: string | null
           due_until?: string | null
           evidence_administration_ids?: string[]
           explanation_code?: string
           id?: string
+          input_digest?: string | null
+          input_fingerprint?: string | null
+          reevaluates_run_id?: string | null
+          reevaluation_run_id?: string | null
           rule_id?: string
+          rule_pack_id?: string | null
+          rule_pack_version?: string | null
           schedule_id?: string
+          source_digest?: string | null
           status?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "vaccination_assessment_algorithm_fk"
+            columns: ["algorithm_id"]
+            isOneToOne: false
+            referencedRelation: "clinical_algorithms"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "vaccination_assessment_child_fk"
             columns: ["care_space_id", "child_id"]
             isOneToOne: false
             referencedRelation: "children"
             referencedColumns: ["care_space_id", "id"]
+          },
+          {
+            foreignKeyName: "vaccination_assessment_rule_pack_fk"
+            columns: ["rule_pack_id"]
+            isOneToOne: false
+            referencedRelation: "clinical_rule_packs"
+            referencedColumns: ["id"]
           },
           {
             foreignKeyName: "vaccination_assessments_rule_id_fkey"
@@ -3274,14 +3735,20 @@ export type Database = {
       vaccine_administration_antigens: {
         Row: {
           antigen_id: string
+          care_space_id: string
+          child_id: string
           vaccine_administration_id: string
         }
         Insert: {
           antigen_id: string
+          care_space_id: string
+          child_id: string
           vaccine_administration_id: string
         }
         Update: {
           antigen_id?: string
+          care_space_id?: string
+          child_id?: string
           vaccine_administration_id?: string
         }
         Relationships: [
@@ -3291,6 +3758,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "vaccine_antigens"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vaccine_administration_antigens_scope_fk"
+            columns: ["care_space_id", "child_id", "vaccine_administration_id"]
+            isOneToOne: false
+            referencedRelation: "vaccine_administrations"
+            referencedColumns: ["care_space_id", "child_id", "id"]
           },
           {
             foreignKeyName: "vaccine_administration_antigens_vaccine_administration_id_fkey"
@@ -3306,17 +3780,27 @@ export type Database = {
           administered_on: string
           administration_site: string | null
           care_space_id: string
+          catalog_digest: string | null
+          catalog_version: string | null
           child_id: string
+          confirmation_sha256: string | null
           confirmation_status: string
+          confirmed_at: string | null
+          confirmed_by: string | null
           country_code: string
           created_at: string
           dose_label: string | null
           id: string
           idempotency_key: string
+          input_fingerprint: string | null
           lot_number: string | null
           provenance_type: string
           provider_name: string | null
           recorded_by: string
+          scope_fingerprint: string | null
+          source_digest: string | null
+          supersedes_administration_id: string | null
+          supersession_reason: string | null
           updated_at: string
           vaccine_product_id: string | null
         }
@@ -3324,17 +3808,27 @@ export type Database = {
           administered_on: string
           administration_site?: string | null
           care_space_id: string
+          catalog_digest?: string | null
+          catalog_version?: string | null
           child_id: string
+          confirmation_sha256?: string | null
           confirmation_status?: string
+          confirmed_at?: string | null
+          confirmed_by?: string | null
           country_code: string
           created_at?: string
           dose_label?: string | null
           id?: string
           idempotency_key: string
+          input_fingerprint?: string | null
           lot_number?: string | null
           provenance_type: string
           provider_name?: string | null
           recorded_by: string
+          scope_fingerprint?: string | null
+          source_digest?: string | null
+          supersedes_administration_id?: string | null
+          supersession_reason?: string | null
           updated_at?: string
           vaccine_product_id?: string | null
         }
@@ -3342,17 +3836,27 @@ export type Database = {
           administered_on?: string
           administration_site?: string | null
           care_space_id?: string
+          catalog_digest?: string | null
+          catalog_version?: string | null
           child_id?: string
+          confirmation_sha256?: string | null
           confirmation_status?: string
+          confirmed_at?: string | null
+          confirmed_by?: string | null
           country_code?: string
           created_at?: string
           dose_label?: string | null
           id?: string
           idempotency_key?: string
+          input_fingerprint?: string | null
           lot_number?: string | null
           provenance_type?: string
           provider_name?: string | null
           recorded_by?: string
+          scope_fingerprint?: string | null
+          source_digest?: string | null
+          supersedes_administration_id?: string | null
+          supersession_reason?: string | null
           updated_at?: string
           vaccine_product_id?: string | null
         }
@@ -3363,6 +3867,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "children"
             referencedColumns: ["care_space_id", "id"]
+          },
+          {
+            foreignKeyName: "vaccine_administration_supersedes_fk"
+            columns: ["supersedes_administration_id"]
+            isOneToOne: false
+            referencedRelation: "vaccine_administrations"
+            referencedColumns: ["id"]
           },
           {
             foreignKeyName: "vaccine_administrations_vaccine_product_id_fkey"
@@ -3377,29 +3888,41 @@ export type Database = {
         Row: {
           active: boolean
           antigen_code: string
+          catalog_version: string
           created_at: string
           disease_group: string | null
           display_name_en: string
           display_name_es: string
+          effective_from: string
+          effective_until: string | null
           id: string
+          source_digest: string
         }
         Insert: {
           active?: boolean
           antigen_code: string
+          catalog_version: string
           created_at?: string
           disease_group?: string | null
           display_name_en: string
           display_name_es: string
+          effective_from: string
+          effective_until?: string | null
           id?: string
+          source_digest: string
         }
         Update: {
           active?: boolean
           antigen_code?: string
+          catalog_version?: string
           created_at?: string
           disease_group?: string | null
           display_name_en?: string
           display_name_es?: string
+          effective_from?: string
+          effective_until?: string | null
           id?: string
+          source_digest?: string
         }
         Relationships: []
       }
@@ -3436,36 +3959,51 @@ export type Database = {
       vaccine_products: {
         Row: {
           active: boolean
+          aliases: string[]
           brand_name: string | null
+          catalog_version: string
           country_code: string
           created_at: string
+          effective_from: string
+          effective_until: string | null
           id: string
           manufacturer: string | null
           presentation: string | null
           product_code: string
           regulatory_identifier: string | null
+          source_digest: string
         }
         Insert: {
           active?: boolean
+          aliases?: string[]
           brand_name?: string | null
+          catalog_version: string
           country_code: string
           created_at?: string
+          effective_from: string
+          effective_until?: string | null
           id?: string
           manufacturer?: string | null
           presentation?: string | null
           product_code: string
           regulatory_identifier?: string | null
+          source_digest: string
         }
         Update: {
           active?: boolean
+          aliases?: string[]
           brand_name?: string | null
+          catalog_version?: string
           country_code?: string
           created_at?: string
+          effective_from?: string
+          effective_until?: string | null
           id?: string
           manufacturer?: string | null
           presentation?: string | null
           product_code?: string
           regulatory_identifier?: string | null
+          source_digest?: string
         }
         Relationships: []
       }
@@ -3473,34 +4011,63 @@ export type Database = {
     Views: {
       growth_series_points: {
         Row: {
-          assessment_id: string
-          assessed_at: string
           age_basis: string | null
-          care_space_id: string
-          child_id: string
-          chronological_age_days: number
+          assessed_at: string | null
+          assessment_id: string | null
+          care_space_id: string | null
+          child_id: string | null
+          chronological_age_days: number | null
           corrected_age_days: number | null
-          correction_applied: boolean
+          correction_applied: boolean | null
           dataset_digest: string | null
-          indicator: string
+          indicator: string | null
           interpretation: string | null
-          measurement_id: string
+          measurement_id: string | null
           measurement_method: string | null
-          measurement_type: string
-          occurred_at: string
+          measurement_type: string | null
+          occurred_at: string | null
           percentile: number | null
           percentile_lexeme: string | null
-          result_status: string
-          standard_key: string
+          result_status: string | null
+          standard_key: string | null
           standard_version: string | null
           superseded_by_measurement_id: string | null
           transition_reason: string | null
-          validation_status: string
-          warnings: string[]
+          validation_status: string | null
+          warnings: string[] | null
           z_score: number | null
           z_score_lexeme: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "growth_assessment_child_fk"
+            columns: ["care_space_id", "child_id"]
+            isOneToOne: false
+            referencedRelation: "children"
+            referencedColumns: ["care_space_id", "id"]
+          },
+          {
+            foreignKeyName: "growth_assessment_measurement_scope_fk"
+            columns: ["care_space_id", "measurement_id"]
+            isOneToOne: false
+            referencedRelation: "anthropometric_measurements"
+            referencedColumns: ["care_space_id", "id"]
+          },
+          {
+            foreignKeyName: "growth_assessments_measurement_id_fkey"
+            columns: ["measurement_id"]
+            isOneToOne: false
+            referencedRelation: "anthropometric_measurements"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "growth_assessments_measurement_id_fkey"
+            columns: ["measurement_id"]
+            isOneToOne: false
+            referencedRelation: "growth_series_points"
+            referencedColumns: ["superseded_by_measurement_id"]
+          },
+        ]
       }
     }
     Functions: {
@@ -3522,6 +4089,27 @@ export type Database = {
           owner_user_id: string
           product_session_id: string
           status: string
+        }[]
+      }
+      correct_medication_intake: {
+        Args: {
+          p_actual_quantity_lexeme: string
+          p_actual_unit: string
+          p_care_space_id: string
+          p_child_id: string
+          p_idempotency_key: string
+          p_input_fingerprint: string
+          p_input_payload: Json
+          p_medication_plan_id: string
+          p_medication_schedule_occurrence_id: string
+          p_original_intake_id: string
+          p_scheduled_for: string
+          p_status: string
+          p_taken_at: string
+        }
+        Returns: {
+          intake_id: string
+          outcome: string
         }[]
       }
       create_owned_agent_session: {
@@ -3561,6 +4149,52 @@ export type Database = {
           structured_content: Json
         }[]
       }
+      persist_country_change_reassessment: {
+        Args: {
+          p_assessments: Json
+          p_care_space_id: string
+          p_child_id: string
+          p_country_change_event_id: string
+          p_country_code: string
+          p_database_algorithm_id: string
+          p_database_rule_pack_id: string
+          p_input_fingerprint: string
+          p_reevaluates_run_id: string
+          p_reevaluation_run_id: string
+          p_schedule_id: string
+        }
+        Returns: {
+          assessment_ids: string[]
+          outcome: string
+          reevaluation_run_id: string
+        }[]
+      }
+      persist_vaccination_assessment: {
+        Args: {
+          p_algorithm_id: string
+          p_as_of_date: string
+          p_care_space_id: string
+          p_child_id: string
+          p_country_code: string
+          p_decision_digest: string
+          p_due_from: string
+          p_due_until: string
+          p_evidence_administration_ids: string[]
+          p_explanation_code: string
+          p_input_digest: string
+          p_input_fingerprint: string
+          p_rule_id: string
+          p_rule_pack_id: string
+          p_rule_pack_version: string
+          p_schedule_id: string
+          p_source_digest: string
+          p_status: string
+        }
+        Returns: {
+          assessment_id: string
+          outcome: string
+        }[]
+      }
       record_confirmed_anthropometry: {
         Args: {
           p_assessments: Json
@@ -3593,6 +4227,107 @@ export type Database = {
           assessment_ids: string[]
           measurement_id: string
           outcome: string
+        }[]
+      }
+      record_confirmed_vaccine_administration: {
+        Args: {
+          p_administered_on: string
+          p_administration_site: string
+          p_antigen_ids: Json
+          p_care_space_id: string
+          p_child_id: string
+          p_confirmation_sha256: string
+          p_country_code: string
+          p_dose_label: string
+          p_idempotency_key: string
+          p_input_fingerprint: string
+          p_lot_number: string
+          p_provenance_type: string
+          p_provider_name: string
+          p_source_digest: string
+          p_supersedes_administration_id?: string
+          p_supersession_reason?: string
+          p_vaccine_product_id: string
+        }
+        Returns: {
+          administration_id: string
+          outcome: string
+        }[]
+      }
+      record_dose_validation: {
+        Args: {
+          p_algorithm_version: string
+          p_artifact_sha256: string
+          p_care_space_id: string
+          p_child_id: string
+          p_decision_digest: string
+          p_declared_input: Json
+          p_explanation_codes: string[]
+          p_ingredients: Json
+          p_input_digest: string
+          p_package_version: string
+          p_request_id: string
+          p_result: string
+          p_source_evidence: Json
+          p_vocabulary_version: string
+        }
+        Returns: {
+          outcome: string
+          validation_id: string
+        }[]
+      }
+      record_medication_intake: {
+        Args: {
+          p_actual_quantity_lexeme: string
+          p_actual_unit: string
+          p_care_space_id: string
+          p_child_id: string
+          p_idempotency_key: string
+          p_input_fingerprint: string
+          p_input_payload: Json
+          p_medication_plan_id: string
+          p_medication_schedule_occurrence_id: string
+          p_scheduled_for: string
+          p_status: string
+          p_taken_at: string
+        }
+        Returns: {
+          intake_id: string
+          outcome: string
+        }[]
+      }
+      record_medication_plan: {
+        Args: {
+          p_care_space_id: string
+          p_child_id: string
+          p_declared_indication: string
+          p_display_name: string
+          p_ends_at: string
+          p_idempotency_key: string
+          p_input_fingerprint: string
+          p_input_payload: Json
+          p_medication_concept_id: string
+          p_medication_presentation_id: string
+          p_starts_at: string
+        }
+        Returns: {
+          outcome: string
+          plan_id: string
+        }[]
+      }
+      record_medication_schedule_occurrences: {
+        Args: {
+          p_care_space_id: string
+          p_child_id: string
+          p_idempotency_key: string
+          p_input_digest: string
+          p_medication_plan_id: string
+          p_occurrences: Json
+          p_plan_version: number
+        }
+        Returns: {
+          outcome: string
+          saved_count: number
         }[]
       }
       record_safety_evaluation: {
@@ -3652,6 +4387,41 @@ export type Database = {
           membership_version: number
           permissions: string[]
           timezone: string
+        }[]
+      }
+      supersede_medication_plan: {
+        Args: {
+          p_care_space_id: string
+          p_child_id: string
+          p_declared_indication: string
+          p_display_name: string
+          p_ends_at: string
+          p_idempotency_key: string
+          p_input_fingerprint: string
+          p_input_payload: Json
+          p_medication_concept_id: string
+          p_medication_presentation_id: string
+          p_plan_id: string
+          p_starts_at: string
+        }
+        Returns: {
+          outcome: string
+          plan_id: string
+        }[]
+      }
+      transition_medication_plan: {
+        Args: {
+          p_care_space_id: string
+          p_child_id: string
+          p_idempotency_key: string
+          p_input_fingerprint: string
+          p_input_payload: Json
+          p_plan_id: string
+          p_target_status: string
+        }
+        Returns: {
+          outcome: string
+          plan_id: string
         }[]
       }
     }
@@ -3782,6 +4552,9 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
   public: {
     Enums: {},
   },

@@ -2,7 +2,7 @@
 id: AT-01-06
 title: Establish the always-on clinical identity and boundaries
 module: 01-runtime-and-harness
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-01-05]
@@ -30,7 +30,8 @@ forbidden_paths:
   - agent/skills/**
   - agent/tools/**
   - supabase/**
-commit: ffa88c0
+commit:
+  hash: ffa88c0
   message: "feat(agent): establish pediatric guidance identity"
 ---
 
@@ -144,7 +145,7 @@ Stage only two allowed paths, verify approval evidence exists outside secrets, r
 - [x] Diagnosis, prescription, calculations, and clinician operations are prohibited.
 - [x] Professional and urgent outputs match the specified boundaries.
 - [x] Isolation, untrusted-content, and fail-closed rules are permanent.
-- [ ] Dr. Trujillo approval is recorded.
+- [x] Product-owner conveyed Dr. Trujillo approval is recorded without a forged signature in `docs/clinical/approval-record-2026-08-21.md`.
 - [x] Contract tests, typecheck, discovery, info, and build verification are recorded.
 
 ## Handoff

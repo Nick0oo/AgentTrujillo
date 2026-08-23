@@ -45,7 +45,7 @@ describe("immunization evidence boundary", () => {
     const draft = createAdministrationDraft(scope, evidence, extraction);
     const snapshot = buildAdministrationConfirmationSnapshot(draft);
     const valid = validateAdministration(snapshot, { now: "2026-08-16T12:00:00.000Z", dateOfBirth: "2026-01-01", expectedScope: scope, expectedConfirmationDigest: snapshot.confirmationDigest }, catalog);
-    expect(valid.outcome).toBe("valid");
+    expect(valid).toMatchObject({ outcome: "valid", candidate: { catalogVersion: "catalog-1", catalogDigest: catalog.sourceDigest } });
     const changed = { ...snapshot, extracted: { ...snapshot.extracted, administeredOn: "2026-08-11" as never } };
     expect(validateAdministration(changed, { now: "2026-08-16T12:00:00.000Z", dateOfBirth: "2026-01-01", expectedScope: scope, expectedConfirmationDigest: snapshot.confirmationDigest }, catalog).outcome).toBe("rejected");
   });
@@ -53,5 +53,43 @@ describe("immunization evidence boundary", () => {
   it("resolves product antigens from the historical catalog and reviews mismatch", () => {
     expect(resolveAdministrationAntigens({ productId: "product-1" as never, explicitAntigenIds: [], catalogVersion: "catalog-1" }, catalog).outcome).toBe("resolved");
     expect(resolveAdministrationAntigens({ productId: "product-1" as never, explicitAntigenIds: ["other" as never], catalogVersion: "catalog-1" }, catalog).outcome).toBe("review_required");
+  });
+
+  it("accepts an exact guardian-confirmed antigen-only fact only when policy allows it", () => {
+    const antigenOnly = buildAdministrationConfirmationSnapshot(createAdministrationDraft(scope, evidence, {
+      ...extraction,
+      product: {},
+      antigenCodes: ["HEP_B"],
+    }));
+    const context = { now: "2026-08-16T12:00:00.000Z", dateOfBirth: "2026-01-01", expectedScope: scope, expectedConfirmationDigest: antigenOnly.confirmationDigest };
+    expect(validateAdministration(antigenOnly, context, catalog).outcome).toBe("review_required");
+    const allowed = validateAdministration(antigenOnly, context, catalog, { requireResolvedProduct: false, allowAntigenOnlyConfirmed: true });
+    expect(allowed).toMatchObject({ outcome: "valid", candidate: { product: null, antigenIds: ["antigen-1"] } });
+  });
+
+  it("returns stable rejections instead of throwing for invalid dates and mismatched observed scope", () => {
+    const invalidDate = buildAdministrationConfirmationSnapshot(createAdministrationDraft(scope, evidence, { ...extraction, administeredOn: "2026-02-30" as never }));
+    const invalidContext = { now: "2026-08-16T12:00:00.000Z", dateOfBirth: "2026-01-01", expectedScope: scope, expectedConfirmationDigest: invalidDate.confirmationDigest };
+    expect(() => validateAdministration(invalidDate, invalidContext, catalog)).not.toThrow();
+    expect(validateAdministration(invalidDate, invalidContext, catalog)).toMatchObject({ outcome: "rejected", reasonCode: "ADMINISTRATION_DATE_INVALID" });
+
+    const foreignEvidence = { ...evidence, observedScope: { childId: "child-2", countryCode: "CO" as const } };
+    const foreign = buildAdministrationConfirmationSnapshot(createAdministrationDraft(scope, foreignEvidence, extraction));
+    const foreignContext = { ...invalidContext, expectedConfirmationDigest: foreign.confirmationDigest };
+    expect(validateAdministration(foreign, foreignContext, catalog)).toMatchObject({ outcome: "rejected", reasonCode: "EVIDENCE_SCOPE_MISMATCH" });
+  });
+
+  it("rejects evidence provenance, expiry, digest, and extraction-time drift", () => {
+    const contextFor = (snapshot: ReturnType<typeof buildAdministrationConfirmationSnapshot>) => ({ now: "2026-08-16T12:00:00.000Z", dateOfBirth: "2026-01-01", expectedScope: scope, expectedConfirmationDigest: snapshot.confirmationDigest });
+    const provenance = buildAdministrationConfirmationSnapshot(createAdministrationDraft(scope, evidence, { ...extraction, provenanceType: "guardian" }));
+    expect(validateAdministration(provenance, contextFor(provenance), catalog)).toMatchObject({ outcome: "rejected", reasonCode: "EVIDENCE_PROVENANCE_MISMATCH" });
+    const expiry = { ...buildAdministrationConfirmationSnapshot(createAdministrationDraft(scope, evidence, extraction)), expiresAt: null };
+    expect(validateAdministration(expiry, contextFor(expiry), catalog)).toMatchObject({ outcome: "rejected", reasonCode: "EVIDENCE_EXPIRY_MISMATCH" });
+    const badDigestEvidence = { ...evidence, sourceDigest: "not-a-digest" as never };
+    const badDigest = buildAdministrationConfirmationSnapshot(createAdministrationDraft(scope, badDigestEvidence, extraction));
+    expect(validateAdministration(badDigest, contextFor(badDigest), catalog)).toMatchObject({ outcome: "rejected", reasonCode: "EVIDENCE_SOURCE_DIGEST_INVALID" });
+    const futureEvidence = { ...evidence, extractedAt: "2026-08-16T12:00:01.000Z" };
+    const future = buildAdministrationConfirmationSnapshot(createAdministrationDraft(scope, futureEvidence, extraction));
+    expect(validateAdministration(future, contextFor(future), catalog)).toMatchObject({ outcome: "rejected", reasonCode: "EVIDENCE_EXTRACTION_TIME_INVALID" });
   });
 });

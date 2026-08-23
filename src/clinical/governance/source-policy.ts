@@ -48,6 +48,10 @@ const PRIMARY_AUTHORITY_POLICY: Readonly<Record<ClinicalAuthority, Readonly<Part
   WHO: {
     GLOBAL: ["growth", "immunization", "development", "nutrition", "emergency"],
   },
+  INVIMA: { CO: ["medication"] },
+  NLM_DAILYMED: { US: ["medication"] },
+  NLM_RXNORM: { US: ["medication"] },
+  FDA: { US: ["medication"] },
 };
 
 const AUTHORITY_ALIASES: Readonly<Record<string, ClinicalAuthority>> = {
@@ -60,12 +64,22 @@ const AUTHORITY_ALIASES: Readonly<Record<string, ClinicalAuthority>> = {
   CDC_ACIP: "CDC_ACIP",
   WHO: "WHO",
   WORLD_HEALTH_ORGANIZATION: "WHO",
+  INVIMA: "INVIMA",
+  NLM_DAILYMED: "NLM_DAILYMED",
+  DAILYMED: "NLM_DAILYMED",
+  NLM_RXNORM: "NLM_RXNORM",
+  RXNORM: "NLM_RXNORM",
+  FDA: "FDA",
 };
 
 const AUTHORITY_HOSTS: Readonly<Record<ClinicalAuthority, readonly string[]>> = {
   MINSALUD_PAI: ["minsalud.gov.co"],
   CDC_ACIP: ["cdc.gov"],
   WHO: ["who.int"],
+  INVIMA: ["invima.gov.co"],
+  NLM_DAILYMED: ["dailymed.nlm.nih.gov"],
+  NLM_RXNORM: ["nlm.nih.gov", "lhncbc.nlm.nih.gov"],
+  FDA: ["fda.gov"],
 };
 
 function asRecord(candidate: unknown): Record<string, unknown> | null {

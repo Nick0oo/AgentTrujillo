@@ -2,10 +2,10 @@
 id: AT-01-16
 title: Enforce the compiled Eve runtime surface
 module: 01-runtime-and-harness
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
-depends_on: [AT-01-07, AT-01-08, AT-01-09, AT-01-10, AT-01-14, AT-01-15]
+depends_on: [AT-01-07, AT-01-08, AT-01-09, AT-01-10, AT-01-14, AT-01-15, AT-01-18]
 blocks: [AT-01-17]
 worker:
   model: gpt-5.6-luna
@@ -33,7 +33,8 @@ forbidden_paths:
   - agent/**
   - supabase/**
   - .eve/**
-commit: 76883f2
+commit:
+  hash: 76883f2
   message: "test(runtime): enforce Eve discovery surface"
 ---
 
@@ -90,7 +91,7 @@ type ExpectedEveSurface = Readonly<{
   status: "ready";
   diagnostics: { errors: 0; warnings: 0 };
   provider: "google.generative-ai";
-  modelId: "gemini-3.7-flash";
+  modelId: "gemini-3.6-flash";
   instructions: "instructions.md";
   skills: readonly ["clinical-safety", "response-format", "tool-policy"];
   authoredTools: readonly [];
@@ -104,7 +105,7 @@ The script exports pure `extractJson`, `projectSurface`, and `compareSurface` fu
 
 ## Technical design
 
-Invoke local `node_modules/.bin/eve` through `process.execPath`/resolved CLI rather than an unpinned global binary. Sort arrays by stable keys. Split Eve's direct-model identity into provider and model components using the actual `0.27.1` output captured during implementation; never infer Gateway syntax. The expected channel route list contains the five scaffold `/eve/v1` info/create/continue/cancel/stream routes and is explicitly replaced by module `11` through a new fixture revision.
+Invoke local `node_modules/.bin/eve` through `process.execPath`/resolved CLI rather than an unpinned global binary. Sort arrays by stable keys. Split Eve's direct-model identity into provider and model components using the actual `0.27.13` output captured during implementation; never infer Gateway syntax. The expected channel route list contains the six scaffold `/eve/v1` info/create/reset/continue/cancel/stream routes and is explicitly replaced by module `11` through a new fixture revision. The reset route is framework-owned, requires Eve route authentication plus the current continuation token, and is not the guardian-facing Creciendo reset contract; module `11` must keep its own ownership and authorization checks.
 
 ## Database and Storage contract
 

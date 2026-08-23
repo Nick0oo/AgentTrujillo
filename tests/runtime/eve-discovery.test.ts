@@ -21,6 +21,7 @@ const sampleInfo = {
     { name: "eve", kind: "http", method: "GET", urlPath: "/eve/v1/info" },
     { name: "eve", kind: "http", method: "GET", urlPath: "/eve/v1/session/:sessionId/stream" },
     { name: "eve", kind: "http", method: "POST", urlPath: "/eve/v1/session" },
+    { name: "eve", kind: "http", method: "POST", urlPath: "/eve/v1/session/reset" },
     { name: "eve", kind: "http", method: "POST", urlPath: "/eve/v1/session/:sessionId" },
     { name: "eve", kind: "http", method: "POST", urlPath: "/eve/v1/session/:sessionId/cancel" },
   ],
@@ -33,8 +34,8 @@ const sampleInfo = {
 
 describe("Eve discovery gate", () => {
   it("extracts the first JSON object after the Eve banner", () => {
-    expect(discovery.extractJson("☰eve v0.27.1\n{\"status\":\"ready\"}\n")).toEqual({ status: "ready" });
-    expect(() => discovery.extractJson("☰eve v0.27.1\nnot-json")).toThrow();
+    expect(discovery.extractJson("☰eve v0.27.13\n{\"status\":\"ready\"}\n")).toEqual({ status: "ready" });
+    expect(() => discovery.extractJson("☰eve v0.27.13\nnot-json")).toThrow();
   });
 
   it("canonicalizes provider, model, paths, sorted lists, and routes", () => {
@@ -75,5 +76,11 @@ describe("Eve discovery gate", () => {
     expect(fixture.authoredTools).toEqual([]);
     expect(fixture.subagents).toEqual([]);
     expect(fixture.schedules).toEqual([]);
+    expect(fixture.channels).toContainEqual({
+      name: "eve",
+      kind: "http",
+      method: "POST",
+      urlPath: "/eve/v1/session/reset",
+    });
   });
 });

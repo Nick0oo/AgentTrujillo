@@ -2,7 +2,7 @@
 id: AT-04-13
 title: Prove deterministic red-flag boundary coverage
 module: 04-safety-and-emergency-boundary
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-04-12]
@@ -140,7 +140,7 @@ Commit exclusive paths with `test(safety): prove red flag boundaries`; no comple
 - [x] Deterministic urgent provider/tool/action count is zero.
 - [x] Evidence is reproducible and privacy-safe.
 - [x] User approved the synthetic red-flag boundary implementation.
-- [ ] Strict Eve runtime evidence remains pending because the configured runtime currently returns ENV_INVALID.
+- [x] Strict Eve/Gemini runtime evidence passed on 2026-08-21: `safety/red-flags` passed 36/36 gates.
 
 ## Handoff
 

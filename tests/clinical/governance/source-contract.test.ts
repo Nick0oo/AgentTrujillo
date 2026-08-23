@@ -46,6 +46,20 @@ describe("clinical source provenance contract", () => {
       jurisdiction: "GLOBAL",
       sourceUri: "https://www.who.int/teams/immunization-vaccines-and-biologicals/policies/who-recommendations-for-routine-immunization---summary-tables",
     }],
+    ["INVIMA medication label", {
+      ...baseCandidate,
+      authority: "INVIMA",
+      jurisdiction: "CO",
+      domain: "medication",
+      sourceUri: "https://www.invima.gov.co/consulta-registros-sanitarios",
+    }],
+    ["DailyMed medication label", {
+      ...baseCandidate,
+      authority: "NLM_DAILYMED",
+      jurisdiction: "US",
+      domain: "medication",
+      sourceUri: "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=fixture",
+    }],
   ])("accepts a traceable primary %s source", (_label, candidate) => {
     const result = validate(candidate);
 

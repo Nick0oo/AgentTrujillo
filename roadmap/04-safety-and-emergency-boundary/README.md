@@ -4,7 +4,7 @@ This module creates the synchronous deterministic gate that evaluates every guar
 
 ## Current implementation status
 
-The branch implements all fourteen deterministic contracts, synthetic boundary fixtures, and the Cloud-only redacted persistence migration. User approval is recorded for the implemented safety behavior; leaves that still require production artifacts, channel wiring, or runtime evidence remain in `review`. No real Colombia/US package or urgent copy is activated. Strict Eve evals are authored and discoverable, but the current runtime environment reports `ENV_INVALID` before execution.
+All fourteen deterministic contracts, synthetic boundary fixtures, and the Cloud-only redacted persistence migration are complete. The product-owner-conveyed clinical approval covers the implemented fail-closed behavior and synthetic boundary expectations without impersonating or signing for Dr. Trujillo. On 2026-08-21, 62 focused safety tests passed (including the maximum-pack latency gate), the linked Cloud SQL fixture passed and rolled back, and both strict Gemini/Eve evals passed 66/66 gates. No real Colombia/US package or urgent copy is activated; production correctly resolves no unverified clinical content.
 
 ## Entry gate
 
@@ -108,3 +108,5 @@ Evidence stores synthetic text or corpus case IDs only. Real messages, child ide
 ## Handoff
 
 Module `11` must call `SafetyPreflight.evaluate` before every new/continued turn. Modules `05`–`10` reuse approved response policy but cannot change emergency behavior.
+
+The module `11` channel adapter is a downstream integration consumer, not unfinished module `04` scope. It must preserve the completed preflight contract and is still a release prerequisite before guardian traffic is enabled.

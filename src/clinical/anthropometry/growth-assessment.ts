@@ -7,11 +7,13 @@ import { calculatePercentile } from "./percentile.ts";
 import { classifyGrowthResult, DEFAULT_GROWTH_ASSESSMENT_POLICY, type GrowthAssessmentPolicy } from "./assessment-policy.ts";
 import { loadCdcDataset, type CdcLmsRow } from "./cdc-dataset.ts";
 import type { CorrectedAgeResult } from "./corrected-age.ts";
+import { calculateExtendedBmi, EXTENDED_BMI_ALGORITHM_VERSION } from "./extended-bmi.ts";
 import { interpolateLms, type LmsCoefficientRow } from "./interpolation.ts";
 import { calculateLmsZScore } from "./z-score.ts";
-import { selectGrowthStandard, type GrowthStandardSelection } from "./standard-selector.ts";
+import { promoteToExtendedBmi, selectGrowthStandard, type GrowthStandardSelection } from "./standard-selector.ts";
 import { loadWhoDataset, type WhoReferenceRow } from "./who-dataset.ts";
 import type { GrowthAgeContext, GrowthAssessmentResult, GrowthIndicator, GrowthInterpretation, GrowthSex, GrowthWarning, MeasurementType } from "./types.ts";
+import { createExactClinicalDecimal } from "./value-objects.ts";
 
 const EMPTY_DIGEST = createSha256Hex(createHash("sha256").update("").digest("hex"));
 
@@ -30,7 +32,9 @@ export type GrowthAssessmentInput = Readonly<{
   sex: GrowthSex;
   countryCode: string;
   chronologicalAgeDays: number;
+  chronologicalCompletedMonths?: number;
   correctedAge: CorrectedAgeResult | null;
+  correctedCompletedMonths?: number;
   ageBasis?: "chronological" | "corrected";
   companion?: GrowthCompanion;
   occurredAt: string;
@@ -66,7 +70,9 @@ function provenance(input: GrowthAssessmentInput, selection: GrowthStandardSelec
   return {
     measurementId: input.measurementId,
     rulePackId: input.rulePackId ?? "growth-assessment.v1",
-    algorithmId: "lms-zscore.v1|normal-cdf.v1|lms-interpolation.v1",
+    algorithmId: selection.datasetKey === "CDC_2022_EXTENDED_BMI"
+      ? `lms-interpolation.v1|${EXTENDED_BMI_ALGORITHM_VERSION}|normal-cdf.v1`
+      : "lms-zscore.v1|normal-cdf.v1|lms-interpolation.v1",
     datasetDigest: selection.standard?.sourceDigest ?? EMPTY_DIGEST,
     inputDigest: digestJson(input),
     decisionDigest: digestJson({ status, warnings, zScore, selection }),
@@ -99,7 +105,7 @@ function asLmsRows(selection: GrowthStandardSelection, sex: GrowthSex): readonly
   }
   const cdc = loadCdcDataset();
   const rows: readonly CdcLmsRow[] = selection.datasetKey === "CDC_2022_EXTENDED_BMI" ? cdc.extendedBmi.rows : cdc.rows;
-  return rows.filter((row) => row.indicator === selection.indicator && row.sex === sex && row.coordinateKind === selection.coordinateKind);
+  return rows.filter((row) => row.indicator === selection.indicator && row.sex === sex && row.coordinateKind === selection.coordinateKind && row.sourceFile === selection.datasetSourceFile);
 }
 
 function valueForAssessment(input: GrowthAssessmentInput): { value: string; coordinate: number | null; missingCompanion: boolean } {
@@ -121,7 +127,7 @@ function valueForAssessment(input: GrowthAssessmentInput): { value: string; coor
 
 export function assessGrowth(input: GrowthAssessmentInput): GrowthAssessmentResult {
   const indicator = input.indicator ?? defaultIndicator(input.measurementType);
-  const selection = selectGrowthStandard({ ...input, indicator });
+  let selection = selectGrowthStandard({ ...input, indicator });
   if (input.measurementStatus === "excluded") return failure(input, selection, "excluded", ["measurement_excluded", ...selection.warnings]);
   if (selection.status !== "selected") return failure(input, selection, "rule_unavailable", selection.warnings);
 
@@ -136,14 +142,29 @@ export function assessGrowth(input: GrowthAssessmentInput): GrowthAssessmentResu
   if (z.status !== "calculated" || !z.zScore) return failure(input, selection, "rule_unavailable", [...z.warnings, ...selection.warnings]);
   const percentile = calculatePercentile(z.zScore);
   if (percentile.status !== "calculated" || !percentile.percentile) return failure(input, selection, "rule_unavailable", [...percentile.warnings, ...selection.warnings]);
-  const numericZ = Number(z.zScore.canonical);
-  const numericPercentile = Number(percentile.percentile.canonical);
-  const warnings = [...selection.warnings, ...z.warnings, ...percentile.warnings, ...(lms.interpolated ? [] : [])];
+  let zScore = z.zScore;
+  let percentileValue = percentile.percentile;
+  let extraWarnings: readonly GrowthWarning[] = [];
+
+  if (selection.datasetKey === "CDC_2000" && selection.indicator === "bmi_for_age" && Number(percentileValue.canonical) > 97 && selection.ageMonths !== null) {
+    const extendedSelection = promoteToExtendedBmi(selection);
+    const extendedLms = interpolateLms(asLmsRows(extendedSelection, input.sex), selection.ageMonths);
+    const extended = extendedLms ? calculateExtendedBmi({ bmi: Number(value.value), ageMonths: selection.ageMonths, sex: input.sex, l: extendedLms.l, m: extendedLms.m, s: extendedLms.s }) : null;
+    if (!extended || extended.status !== "calculated" || extended.zScore === null || extended.percentile === null) return failure(input, extendedSelection, "rule_unavailable", ["dataset_unavailable", ...selection.warnings]);
+    selection = extendedSelection;
+    zScore = createExactClinicalDecimal(decimalNumber(extended.zScore));
+    percentileValue = createExactClinicalDecimal(extended.percentile.toFixed(8).replace(/0+$/, "").replace(/\.$/, ""));
+    extraWarnings = extended.percentile >= 100 ? ["precision_limited"] : [];
+  }
+
+  const numericZ = Number(zScore.canonical);
+  const numericPercentile = Number(percentileValue.canonical);
+  const warnings = [...selection.warnings, ...z.warnings, ...percentile.warnings, ...extraWarnings, ...(lms.interpolated ? [] : [])];
   const interpretation = classifyGrowthResult(numericZ, numericPercentile, input.policy ?? DEFAULT_GROWTH_ASSESSMENT_POLICY);
   return Object.freeze({
-    ...common(input, selection, warnings, interpretation, "calculated", z.zScore.canonical),
+    ...common(input, selection, warnings, interpretation, "calculated", zScore.canonical),
     status: "calculated",
-    zScore: z.zScore,
-    percentile: percentile.percentile,
+    zScore,
+    percentile: percentileValue,
   });
 }

@@ -2,7 +2,7 @@
 id: AT-01-07
 title: Add the runtime clinical safety procedure
 module: 01-runtime-and-harness
-status: pending
+status: completed
 execution: parallel
 parallel_group: runtime-skills
 depends_on: [AT-01-06]
@@ -31,7 +31,8 @@ forbidden_paths:
   - agent/tools/**
   - agent/subagents/**
   - supabase/**
-commit: fcf1dd1
+commit:
+  hash: fcf1dd1
   message: "feat(agent): add clinical safety runtime skill"
 ---
 
@@ -144,7 +145,7 @@ Stage only `agent/skills/clinical-safety/**` and its test, run cached checks, an
 - [x] Deterministic authority and trust order are explicit.
 - [x] Emergency and professional modes have no operational escalation.
 - [x] No clinical rule or model calculation is embedded.
-- [ ] Dr. Trujillo clinical approval is recorded.
+- [x] Product-owner conveyed Dr. Trujillo approval is recorded without a forged signature in `docs/clinical/approval-record-2026-08-21.md`.
 - [x] Tests, discovery, build, and prohibited-language scans pass.
 
 ## Handoff

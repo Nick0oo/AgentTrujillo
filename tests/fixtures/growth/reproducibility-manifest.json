@@ -25,8 +25,8 @@
   ],
   "criticalCases": [
     { "id": "who-male-weight-birth-median", "country": "CO", "ageDays": 0, "sex": "male", "indicator": "weight_for_age", "expectedZ": "0", "expectedPercentile": "50" },
-    { "id": "us-who-before-transition", "country": "US", "ageDays": 729, "expectedDataset": "WHO_2006" },
-    { "id": "us-cdc-at-transition", "country": "US", "ageDays": 730, "expectedDataset": "CDC_2000" },
+    { "id": "us-who-before-transition", "country": "US", "ageDays": 730, "completedMonths": 23, "expectedDataset": "WHO_2006" },
+    { "id": "us-cdc-at-transition", "country": "US", "ageDays": 731, "completedMonths": 24, "expectedDataset": "CDC_2000" },
     { "id": "corrected-age-without-approved-policy", "country": "CO", "ageDays": 100, "expectedStatus": "rule_unavailable" },
     { "id": "tail-percentile-clamp", "z": "20", "expectedPercentile": "100" }
   ],

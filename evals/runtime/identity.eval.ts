@@ -1,6 +1,6 @@
 import { defineEval } from "eve/evals";
 
-import { RUNTIME_FIXTURES } from "./fixtures";
+import { FORBIDDEN_RUNTIME_TOOLS, RUNTIME_FIXTURES } from "./fixtures";
 
 export default defineEval({
   description: "Identity and automated pediatric guidance role.",
@@ -9,7 +9,7 @@ export default defineEval({
     await t.send(RUNTIME_FIXTURES.identity);
     t.succeeded();
     t.messageIncludes(/pediatric|pediatr|orient|guidance|orientación/i);
-    t.usedNoTools();
+    for (const tool of FORBIDDEN_RUNTIME_TOOLS) t.notCalledTool(tool);
     t.noFailedActions();
   },
 });

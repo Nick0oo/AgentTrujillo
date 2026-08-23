@@ -5,6 +5,8 @@
   "sourceSet": "official-source-manifest.json#US",
   "requiredRuleKinds": ["routine", "catch_up", "special_population", "review_only"],
   "requiredComponents": ["by_age", "catch_up", "medical_indication", "notes", "appendix", "addendum", "official_status"],
-  "activation": "blocked_pending_external_clinical_approval",
-  "containsActionableSchedule": false
+  "activation": "active_exact_basic_subset",
+  "containsActionableSchedule": true,
+  "canonicalArtifact": "src/clinical/immunization/data/acip-us-basic-2025.json",
+  "approvalProvenance": "product_owner_conveyed"
 }
