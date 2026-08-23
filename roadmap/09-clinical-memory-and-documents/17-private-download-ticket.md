@@ -2,7 +2,7 @@
 id: AT-09-17
 title: Issue short-lived private download tickets
 module: 09-clinical-memory-and-documents
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-09-15, AT-09-16]
@@ -128,11 +128,18 @@ Commit exclusive paths with feat(documents): issue short-lived private download 
 
 ## Completion checklist
 
-- [ ] Composite child scope is structural and tested.
-- [ ] Confirmation/lifecycle/provenance are explicit.
-- [ ] Private URLs, secrets, and raw reasoning stay out of model/logs.
-- [ ] Draft extraction never becomes clinical truth automatically.
-- [ ] Replay, revocation, and deletion fail closed.
+- [x] Composite child scope is structural and tested.
+- [x] Confirmation/lifecycle/provenance are explicit.
+- [x] Private URLs, secrets, and raw reasoning stay out of model/logs.
+- [x] Draft extraction never becomes clinical truth automatically.
+- [x] Replay, revocation, and deletion fail closed.
+
+### Recorded 2026-08-23
+
+- Implementation commit: `48660c0` (`feat(documents): issue short-lived private download tickets`). Source/test SHA-256: `e34f6f1e99111e400308ad07869870c5455e2b64c56e2a77da7274434575f989` / `d68c490bbab2e86ed8cd780b36c21fb9e135a1aeb746ad5d615765d7371271c1`.
+- TDD first failed on the missing service. Final focused tests passed `13/13`; accumulated memory/document tests passed `151/151` across 14 files; typecheck exited `0`.
+- Review: installed Supabase API supports explicit download expiry; provider is called for exactly one trusted private bucket/path with TTL `120` and attachment filename. Current `read` access, composite scope, purpose, active lifecycle, clean scan and current linked-resource visibility are all required at issuance. Audit stores ticket digest/expiry only; URL never enters repository or tool-safe output.
+- Foreign, hidden, unscanned, quarantined, deleted, revoked, malformed, rate-limited, audit-race and provider-error cases fail closed. URLs may remain valid after later revocation for at most 120 seconds; that is the explicit residual exposure. No Cloud state, object, secret, environment, deployment, push or merge changed. `AT-09-19` now satisfies this dependency.
 
 ## Handoff
 
