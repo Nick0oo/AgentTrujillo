@@ -55,7 +55,7 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-Modules `01`–`07` have no remaining ready or active work. `AT-08-08` is complete at implementation commit `a29d513`; final gate `AT-08-17` is dependency-unblocked and awaits its explicit ready transition.
+Modules `01`–`07` have no remaining ready or active work. `AT-08-08` is complete at implementation commit `a29d513`; final gate `AT-08-17` is ready.
 
 ## Active workers
 
