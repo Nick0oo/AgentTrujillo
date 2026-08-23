@@ -2,7 +2,7 @@
 id: AT-09-16
 title: Link safe documents to same-child resources
 module: 09-clinical-memory-and-documents
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-09-13, AT-09-15]
@@ -128,11 +128,18 @@ Commit exclusive paths with feat(documents): link safe documents to same-child r
 
 ## Completion checklist
 
-- [ ] Composite child scope is structural and tested.
-- [ ] Confirmation/lifecycle/provenance are explicit.
-- [ ] Private URLs, secrets, and raw reasoning stay out of model/logs.
-- [ ] Draft extraction never becomes clinical truth automatically.
-- [ ] Replay, revocation, and deletion fail closed.
+- [x] Composite child scope is structural and tested.
+- [x] Confirmation/lifecycle/provenance are explicit.
+- [x] Private URLs, secrets, and raw reasoning stay out of model/logs.
+- [x] Draft extraction never becomes clinical truth automatically.
+- [x] Replay, revocation, and deletion fail closed.
+
+### Recorded 2026-08-23
+
+- Implementation commit: `d9c2e47` (`feat(documents): link safe documents to same-child resources`). Source/test SHA-256: `c56f7dde5b1b0e9b6a2cceb4ff618eda659deb5b37ed431befbe4d07c681296a` / `a92aa1be68d40bb9d22fb820c2705c85802c98c8aef445e59a3673905bf6be38`.
+- TDD first failed on the missing service. Final focused cases passed `8/8`; accumulated memory/document tests passed `143/143` across 13 files; typecheck exited `0`.
+- Review: current `manage_documents` access is rechecked; document and target must independently resolve to the exact trusted composite scope. Only active malware-clean documents and visible typed resources are eligible, purpose/resource compatibility is closed, and atomic repository replay/conflict semantics are mandatory. Link output contains no bucket, path, URL or object metadata and does not alter resource truth.
+- Unlink/list remain scope-bound and fail closed on revocation, malformed rows, concurrency or storage error. No Cloud schema/data/object, secret, environment, deployment, push or merge changed. `AT-09-17` and `AT-09-18` now satisfy this dependency.
 
 ## Handoff
 
