@@ -26,6 +26,8 @@ AT-08-08 + AT-08-11 + AT-08-15 + AT-08-16 -> AT-08-17
 
 Nutrition profile/reaction queries and approved-content packaging are parallel-safe after shared types. Development framework and observation chains are parallel until the final professional-boundary and eval gate.
 
+Execution amendment (2026-08-22): `AT-08-02`, `AT-08-03`, and `AT-08-09` form parallel group `module-08-foundations`. Their dependencies are complete, their exact paths and public contracts are disjoint, and none changes schema, generated types, packages, root configuration, or remote state. This makes the existing parallel-safe module declaration explicit in leaf frontmatter; later leaves retain their declared execution mode unless separately proven and recorded.
+
 ## Work-unit index
 
 | ID | Outcome | Depends on |
