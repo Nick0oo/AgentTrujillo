@@ -55,13 +55,13 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-Modules `01`–`08` have no remaining ready or active work. Module 09 is 7/21 completed. `AT-09-05` completed at implementation commit `e15aad4`; `AT-09-06` is the next dependency-eligible sequential leaf.
+Modules `01`–`08` have no remaining ready or active work. Module 09 is 7/21 completed. `AT-09-06` is `ready`; installed AI SDK `7.0.35` and `@ai-sdk/google` `4.0.44` explicitly support stable `gemini-embedding-2` with custom dimensions and retrieval task types.
 
 ## Active workers
 
 | Worker | Work unit | Claimed paths | Started |
 |---|---|---|---|
-| _None_ | — | — | — |
+| `root` | `AT-09-06` (`ready`) | `src/providers/google/embedding-provider.ts`; `tests/providers/google/embedding-provider.test.ts` | 2026-08-23; root-only execution by explicit user direction |
 
 Cloud-only execution override (2026-08-23): by explicit current user instruction, Module 09 uses the verified linked Supabase Cloud project as its only database source of truth. Local reset/test availability or drift is not an execution gate. Database leaves must verify exact project identity, migration impact, recoverability, generated linked types, and rollback-safe Cloud tests before any remote mutation.
 
