@@ -2,7 +2,7 @@
 id: AT-09-16
 title: Link safe documents to same-child resources
 module: 09-clinical-memory-and-documents
-status: ready
+status: in_progress
 execution: sequential
 parallel_group: null
 depends_on: [AT-09-13, AT-09-15]
