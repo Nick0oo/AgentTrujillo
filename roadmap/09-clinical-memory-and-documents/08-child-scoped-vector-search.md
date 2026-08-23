@@ -16,16 +16,16 @@ database_change: true
 requires_clinical_approval: false
 touches:
   create:
-    - supabase/migrations/20260816180000_child_scoped_vector_search.sql
-    - supabase/tests/038_child_scoped_vector_search.test.sql
+    - supabase/migrations/20260823200000_child_scoped_vector_search.sql
+    - supabase/tests/045_child_scoped_vector_search.test.sql
   modify:
     - agent/lib/supabase/database.types.ts
     - src/persistence/supabase/database.types.ts
   test:
-    - supabase/tests/038_child_scoped_vector_search.test.sql
+    - supabase/tests/045_child_scoped_vector_search.test.sql
 exclusive_paths:
-  - supabase/migrations/20260816180000_child_scoped_vector_search.sql
-  - supabase/tests/038_child_scoped_vector_search.test.sql
+  - supabase/migrations/20260823200000_child_scoped_vector_search.sql
+  - supabase/tests/045_child_scoped_vector_search.test.sql
   - agent/lib/supabase/database.types.ts
   - src/persistence/supabase/database.types.ts
 forbidden_paths:
@@ -87,7 +87,9 @@ SQL WHERE applies care_space_id and child_id to item and embedding plus active/c
 
 ## Database and Storage contract
 
-Use the single forward migration declared above; it is additive, clean/upgrade tested, composite-scoped, forced-RLS, least-privilege, replay/immutability safe, and followed by generated-type parity. Never apply remotely in this leaf.
+Use the single forward migration declared above; it is additive, Cloud-upgrade tested, composite-scoped, forced-RLS, least-privilege, replay/immutability safe, and followed by linked generated-type parity. By the Module 09 Cloud override, apply only after exact project/count/dry-run verification and rollback-safe rehearsal.
+
+Cloud chronology amendment (2026-08-23): the original planned filename `20260816180000` predates the authoritative linked migration history now applied through `20260823190000`; test `038` also predates the current Module 09 SQL sequence. Root therefore assigned the next forward-only identifiers `20260823200000` and `045` before task selection. No implementation, history rewrite, or remote mutation is part of this contract correction.
 
 ## Authorization and isolation
 
