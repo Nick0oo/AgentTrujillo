@@ -2,7 +2,7 @@
 id: AT-09-02
 title: Harden memory candidate persistence
 module: 09-clinical-memory-and-documents
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-09-01, AT-02-05]
@@ -132,11 +132,24 @@ Commit exclusive paths with feat(memory): harden memory candidate persistence; n
 
 ## Completion checklist
 
-- [ ] Composite child scope is structural and tested.
-- [ ] Confirmation/lifecycle/provenance are explicit.
-- [ ] Private URLs, secrets, and raw reasoning stay out of model/logs.
-- [ ] Draft extraction never becomes clinical truth automatically.
-- [ ] Replay, revocation, and deletion fail closed.
+- [x] Composite child scope is structural and tested.
+- [x] Confirmation/lifecycle/provenance are explicit.
+- [x] Private URLs, secrets, and raw reasoning stay out of model/logs.
+- [x] Draft extraction never becomes clinical truth automatically.
+- [x] Replay, revocation, and deletion fail closed.
+
+### Recorded 2026-08-23
+
+- Implementation commit: `f0faedfdeb9a5f384079c064556be0edc052c0a4` (`feat(memory): harden memory candidate persistence`).
+- Changed paths: migration `20260816170000`, SQL test `037`, and the two active generated database type contracts only. Migration SHA-256: `96ee93290192ea7d1c95d96cd992e3514b9e7595af0f666bd0ee0b656fe3409a`; test SHA-256: `2f5266c9469c6b466995d50a0fe0c56557c7398f28561fe6ea67a694ea46e57f`.
+- Cloud preflight: linked project `yapjiinrjsrothzgzxsv` (`CreciendoApp`, PostgreSQL 17, `ACTIVE_HEALTHY`) was reverified; the fact table contained zero rows; dry-run listed only `20260816170000` and no seeds, roles, or Vault changes.
+- Cloud apply: `npx supabase db push --linked --include-all --skip-vault --yes` applied exactly `20260816170000` (exit 0). Fresh migration listing shows matching local/remote history through that migration.
+- TDD/SQL evidence: pre-migration Cloud execution produced a rollback-only RED. After apply, the first diagnostic run exposed test-harness defects without persisting fixtures; after root-cause correction, `npx supabase db query --linked --file supabase/tests/037_memory_candidate_hardening.test.sql` passed 62/62 assertions. Follow-up counts confirmed zero fixture users, candidates, items, or decisions and zero product memory rows.
+- Isolation/security evidence: candidates and decisions force RLS, candidates expose read-only same-child review, sibling/foreign/revoked rows are hidden, direct writes are denied, composite session/message/candidate/item FKs hold, dangerous nested JSON keys fail, facts require a deferred confirm/correct decision, duplicate terminal/revoke decisions fail, and ineligible facts cannot resurrect.
+- Generated types: both contracts are byte-identical at SHA-256 `d201424cfa33719d100af2ff4abfd24e7495e07bffc21460fdc549b4ac921f5a`; linked type verification reported 156283 bytes and exit 0.
+- Fresh verification: Cloud lint returned 0 errors; focused Vitest passed 14/14 across 2 files; `npm run typecheck` exited 0; staged whitespace, exact paths, generated artifacts, forbidden paths, and secret patterns were clean.
+- Forward rollback plan: route callers off the new tables, revoke candidate review and any future write functions, and restore the prior fact constraint/RPC behavior in a new forward migration while retaining additive tables, columns, ledgers, and rows. No destructive rollback is approved.
+- Residual risk: AT-09-04/05 still own application authorization, atomic service transactions, replay responses, and guardian-facing lifecycle projection. Neither is dependency-ready until `AT-09-03` completes.
 
 ## Handoff
 
