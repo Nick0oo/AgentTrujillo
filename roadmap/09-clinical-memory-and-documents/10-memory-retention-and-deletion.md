@@ -2,7 +2,7 @@
 id: AT-09-10
 title: Enforce memory retention and deletion
 module: 09-clinical-memory-and-documents
-status: ready
+status: in_progress
 execution: sequential
 parallel_group: null
 depends_on: [AT-09-05, AT-09-07, AT-09-08]
