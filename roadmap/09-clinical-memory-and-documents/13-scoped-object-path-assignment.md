@@ -18,6 +18,7 @@ touches:
   create:
     - supabase/migrations/20260823220000_document_storage_hardening.sql
     - supabase/migrations/20260823220100_document_reservation_time_fix.sql
+    - supabase/migrations/20260823220200_document_reservation_replay_fix.sql
     - supabase/tests/041_document_storage_hardening.test.sql
   modify:
     - agent/lib/supabase/database.types.ts
@@ -27,6 +28,7 @@ touches:
 exclusive_paths:
   - supabase/migrations/20260823220000_document_storage_hardening.sql
   - supabase/migrations/20260823220100_document_reservation_time_fix.sql
+  - supabase/migrations/20260823220200_document_reservation_replay_fix.sql
   - supabase/tests/041_document_storage_hardening.test.sql
   - agent/lib/supabase/database.types.ts
   - src/persistence/supabase/database.types.ts
@@ -94,6 +96,8 @@ Use the single forward migration declared above; it is additive, clean/upgrade t
 Cloud chronology amendment (2026-08-23): linked history is already applied through `20260823210200`, so the root assigns the next forward-only version `20260823220000_document_storage_hardening.sql` instead of the stale planned filename. The explicit user Cloud-only instruction authorizes the reviewed apply after project/data verification and supersedes the historical local-only sentence; applied migrations remain immutable.
 
 Forward execution correction (2026-08-23): the rollback-only Cloud test exposed PostgreSQL resolving the PL/pgSQL variable name `current_time` as the SQL `time with time zone` value. The applied `20260823220000` stays immutable. Additive `20260823220100_document_reservation_time_fix.sql` replaces the function definition with the unambiguous variable name `v_now`; the same 18-case test is the regression proof.
+
+Forward replay/metadata correction (2026-08-23): root review proved a caller could reuse its request digest while changing metadata, and that PNG extension checking was purpose-specific. Applied history remains immutable. Additive `20260823220200_document_reservation_replay_fix.sql` makes replay equality compare every stored metadata field and enforces MIME/extension agreement for all guardian purposes; SQL test `041` expands to 20 cases.
 
 ## Authorization and isolation
 
