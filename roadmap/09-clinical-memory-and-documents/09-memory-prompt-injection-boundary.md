@@ -2,7 +2,7 @@
 id: AT-09-09
 title: Neutralize retrieved-memory prompt injection
 module: 09-clinical-memory-and-documents
-status: pending
+status: ready
 execution: sequential
 parallel_group: null
 depends_on: [AT-09-08, AT-04-10]
