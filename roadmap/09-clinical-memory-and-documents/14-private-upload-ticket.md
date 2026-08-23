@@ -2,7 +2,7 @@
 id: AT-09-14
 title: Issue short-lived private upload tickets
 module: 09-clinical-memory-and-documents
-status: pending
+status: ready
 execution: sequential
 parallel_group: null
 depends_on: [AT-09-12, AT-09-13]

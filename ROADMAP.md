@@ -55,7 +55,7 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-Modules `01`–`08` have no remaining ready or active work. Module 09 is 15/21 completed. `AT-09-14` is the next eligible leaf.
+Modules `01`–`08` have no remaining ready or active work. Module 09 is 15/21 completed. `AT-09-14` is `ready`.
 
 ## Active workers
 
