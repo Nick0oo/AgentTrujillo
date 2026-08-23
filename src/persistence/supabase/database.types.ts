@@ -1094,6 +1094,72 @@ export type Database = {
           },
         ]
       }
+      clinical_memory_deletion_requests: {
+        Row: {
+          care_space_id: string
+          child_id: string
+          completed_at: string | null
+          id: string
+          idempotency_key: string
+          legal_hold_id: string | null
+          memory_item_id: string
+          proof_sha256: string | null
+          request_kind: string
+          request_sha256: string
+          requested_at: string
+          requested_by: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          care_space_id: string
+          child_id: string
+          completed_at?: string | null
+          id: string
+          idempotency_key: string
+          legal_hold_id?: string | null
+          memory_item_id: string
+          proof_sha256?: string | null
+          request_kind: string
+          request_sha256: string
+          requested_at?: string
+          requested_by?: string | null
+          status: string
+          updated_at?: string
+        }
+        Update: {
+          care_space_id?: string
+          child_id?: string
+          completed_at?: string | null
+          id?: string
+          idempotency_key?: string
+          legal_hold_id?: string | null
+          memory_item_id?: string
+          proof_sha256?: string | null
+          request_kind?: string
+          request_sha256?: string
+          requested_at?: string
+          requested_by?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clinical_memory_deletion_requests_legal_hold_id_fkey"
+            columns: ["legal_hold_id"]
+            isOneToOne: false
+            referencedRelation: "clinical_memory_legal_holds"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clinical_memory_deletion_requests_scope_fk"
+            columns: ["memory_item_id", "care_space_id", "child_id"]
+            isOneToOne: false
+            referencedRelation: "clinical_memory_items"
+            referencedColumns: ["id", "care_space_id", "child_id"]
+          },
+        ]
+      }
       clinical_memory_embeddings: {
         Row: {
           care_space_id: string
@@ -1275,6 +1341,56 @@ export type Database = {
           {
             foreignKeyName: "clinical_memory_items_supersedes_scope_fk"
             columns: ["supersedes_id", "care_space_id", "child_id"]
+            isOneToOne: false
+            referencedRelation: "clinical_memory_items"
+            referencedColumns: ["id", "care_space_id", "child_id"]
+          },
+        ]
+      }
+      clinical_memory_legal_holds: {
+        Row: {
+          basis_code: string
+          basis_sha256: string
+          care_space_id: string
+          child_id: string
+          created_at: string
+          expires_at: string | null
+          id: string
+          imposed_by: string
+          memory_item_id: string
+          released_at: string | null
+          starts_at: string
+        }
+        Insert: {
+          basis_code: string
+          basis_sha256: string
+          care_space_id: string
+          child_id: string
+          created_at?: string
+          expires_at?: string | null
+          id: string
+          imposed_by: string
+          memory_item_id: string
+          released_at?: string | null
+          starts_at: string
+        }
+        Update: {
+          basis_code?: string
+          basis_sha256?: string
+          care_space_id?: string
+          child_id?: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          imposed_by?: string
+          memory_item_id?: string
+          released_at?: string | null
+          starts_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clinical_memory_legal_holds_scope_fk"
+            columns: ["memory_item_id", "care_space_id", "child_id"]
             isOneToOne: false
             referencedRelation: "clinical_memory_items"
             referencedColumns: ["id", "care_space_id", "child_id"]
@@ -4648,6 +4764,32 @@ export type Database = {
           valid_until: string
         }[]
       }
+      enqueue_expired_memory_deletions: {
+        Args: { p_cutoff_at: string; p_limit?: number }
+        Returns: {
+          memory_item_id: string
+          request_id: string
+        }[]
+      }
+      execute_memory_deletion: {
+        Args: {
+          p_care_space_id: string
+          p_child_id: string
+          p_memory_item_id: string
+          p_proof_sha256: string
+          p_request_id: string
+        }
+        Returns: {
+          care_space_id: string
+          child_id: string
+          deleted_embeddings: number
+          deleted_links: number
+          memory_item_id: string
+          outcome: string
+          request_id: string
+          status: string
+        }[]
+      }
       get_confirmed_memory: {
         Args: {
           p_authorization_version: string
@@ -5018,6 +5160,27 @@ export type Database = {
           last_sequence: number
           owner_user_id: string
           product_session_id: string
+          status: string
+        }[]
+      }
+      request_memory_deletion: {
+        Args: {
+          p_authorization_version: string
+          p_care_space_id: string
+          p_child_id: string
+          p_cutoff_at: string
+          p_idempotency_key: string
+          p_memory_item_id: string
+          p_request_id: string
+          p_request_sha256: string
+          p_session_id: string
+        }
+        Returns: {
+          care_space_id: string
+          child_id: string
+          memory_item_id: string
+          outcome: string
+          request_id: string
           status: string
         }[]
       }
