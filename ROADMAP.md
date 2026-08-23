@@ -61,7 +61,7 @@ Modules `01`–`07` have no remaining ready or active work. Foundation group `mo
 
 | Worker | Work unit | Claimed paths | Started | State |
 |---|---|---|---|---|
-| `at_08_04_worker` | `AT-08-04` | `src/clinical/nutrition/eligibility.ts`; `tests/clinical/nutrition/eligibility.test.ts` | 2026-08-22 | `in_progress` |
+| `at_08_04_worker` | `AT-08-04` | `src/clinical/nutrition/eligibility.ts`; `tests/clinical/nutrition/eligibility.test.ts` | 2026-08-22 | `review` |
 
 Future implementation workers use GPT-5.6 Luna with reasoning `max`. At most three may run concurrently after collision analysis.
 
