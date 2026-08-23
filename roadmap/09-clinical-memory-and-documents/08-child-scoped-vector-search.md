@@ -2,7 +2,7 @@
 id: AT-09-08
 title: Search vectors with structural child scope
 module: 09-clinical-memory-and-documents
-status: ready
+status: in_progress
 execution: sequential
 parallel_group: null
 depends_on: [AT-09-06, AT-09-07, AT-02-06]
