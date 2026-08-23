@@ -5,7 +5,7 @@ module: 09-clinical-memory-and-documents
 status: blocked
 execution: sequential
 parallel_group: null
-depends_on: [AT-09-02, AT-09-03]
+depends_on: [AT-09-02, AT-09-03, AT-09-04A]
 blocks: [AT-09-05]
 worker:
   model: gpt-5.6-luna

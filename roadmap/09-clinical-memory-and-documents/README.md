@@ -11,12 +11,12 @@ This module gives Agent Trujillo a guardian-controlled, provenance-rich clinical
 
 ## Exit gate
 
-All nineteen leaves are complete and prove candidates require policy plus explicit confirmation, only active confirmed memory is indexed/retrieved, Google model/task/dimension identity is pinned, composite care-space/child predicates execute before vector ordering, retrieved text cannot inject instructions, revocation/deletion prevents resurrection, uploads/downloads use minimal-purpose short-lived tickets, callbacks are authenticated/idempotent, extraction stays draft, and critical leakage/public-access/direct-write failures are zero.
+All nineteen original leaves plus the AT-09-04A Cloud-boundary amendment are complete and prove candidates require policy plus explicit confirmation, only active confirmed memory is indexed/retrieved, Google model/task/dimension identity is pinned, composite care-space/child predicates execute before vector ordering, retrieved text cannot inject instructions, revocation/deletion prevents resurrection, uploads/downloads use minimal-purpose short-lived tickets, callbacks are authenticated/idempotent, extraction stays draft, and critical leakage/public-access/direct-write failures are zero.
 
 ## Dependency graph
 
 ```text
-AT-09-01 -> AT-09-02 + AT-09-03 -> AT-09-04 -> AT-09-05
+AT-09-01 -> AT-09-02 + AT-09-03 -> AT-09-04A -> AT-09-04 -> AT-09-05
 AT-09-01 -> AT-09-06; AT-09-05 + AT-09-06 -> AT-09-07 -> AT-09-08 -> AT-09-09
 AT-09-05 + AT-09-07 + AT-09-08 -> AT-09-10
 AT-09-11 -> AT-09-12 -> AT-09-13 -> AT-09-14 -> AT-09-15 -> AT-09-16 -> AT-09-17
@@ -30,6 +30,8 @@ Cloud execution amendment (2026-08-23): by explicit current user instruction, Su
 
 Path amendment (2026-08-23): database leaves `AT-09-02`, `AT-09-08`, `AT-09-10`, `AT-09-13`, and `AT-09-15` own the two active generated-type contracts, `agent/lib/supabase/database.types.ts` and `src/persistence/supabase/database.types.ts`; the originally named `src/generated/database.types.ts` does not exist. Their SQL test names move from the already occupied `030`–`034` range to `037`, `038`, `039`, `041`, and `042`, respectively. Migration names remain unchanged and applied migrations remain immutable.
 
+AT-09-04 correction amendment (2026-08-23): `AT-09-04A` owns forward migration `20260823180000`, rollback-only SQL test `043`, both active generated type contracts, the request-scoped Supabase candidate adapter, and the two blocked AT-09-04 application paths required to replace its non-implementable callback transaction seam. It adds functions and minimal grants only; existing tables, rows, Storage objects, and applied migrations remain untouched.
+
 ## Work-unit index
 
 | ID | Outcome | Database |
@@ -37,6 +39,7 @@ Path amendment (2026-08-23): database leaves `AT-09-02`, `AT-09-08`, `AT-09-10`,
 | [AT-09-01](01-memory-domain-types.md) | Define memory contracts | no |
 | [AT-09-02](02-memory-candidate-schema.md) | Separate candidates from confirmed facts | yes |
 | [AT-09-03](03-sensitive-memory-confirmation-policy.md) | Govern sensitive confirmation | no |
+| [AT-09-04A](04a-memory-candidate-cloud-persistence.md) | Add authorized Cloud capture/list boundary | yes |
 | [AT-09-04](04-memory-candidate-service.md) | Capture candidates only | no |
 | [AT-09-05](05-memory-confirmation-service.md) | Confirm/reject/correct/revoke | no |
 | [AT-09-06](06-google-embedding-provider.md) | Pin 768-dimension Google embeddings | no |

@@ -55,7 +55,7 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-Modules `01`–`08` have no remaining ready or active work. Module 09 is 3/19 completed. `AT-09-04` is blocked by a verified missing Cloud write boundary; `AT-09-05` remains dependency-blocked. `AT-09-06` is dependency-unblocked but intentionally unclaimed because the current user required execution to stop on inconsistent evidence.
+Modules `01`–`08` have no remaining ready or active work. Module 09 is 3/20 completed after the root-approved `AT-09-04A` correction was added. `AT-09-04A` is `ready`: its dependencies, Cloud identity/history, additive impact, recoverability, exclusive paths, and user authority were verified on 2026-08-23. `AT-09-04` and `AT-09-05` remain dependency-blocked. Per current user scope, no other Module 09 leaf may be claimed.
 
 ## Active workers
 
@@ -73,7 +73,7 @@ The delegated Module 08 leaves used GPT-5.6 Luna with reasoning `max`. Per the e
 |---|---|---|---|
 | OpenRouter has no parity evidence | Fallback activation | Module 14 evidence and user-approved rollout | Expected future gate |
 | United States production activation is not approved | Module 15 US activation | Clinical, legal, provider, and release evidence | Expected future gate |
-| Cloud has no authorized clinical-memory candidate capture RPC or request-scoped adapter | `AT-09-04`, `AT-09-05`, and dependent Module 09 leaves | Root-approved forward amendment with Cloud migration/test/types/adapter evidence | Verified blocker 2026-08-23 |
+| Cloud has no authorized clinical-memory candidate capture RPC or request-scoped adapter | `AT-09-04`, `AT-09-05`, and dependent Module 09 leaves | `AT-09-04A` forward amendment with Cloud migration/test/types/adapter evidence | Amendment recorded; implementation pending 2026-08-23 |
 
 Expected future gates are not roadmap defects. Their work units define safe `RULE_UNAVAILABLE`, disabled, or blocked behavior until evidence exists.
 
