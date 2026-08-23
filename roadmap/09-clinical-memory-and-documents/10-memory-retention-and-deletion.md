@@ -17,15 +17,17 @@ requires_clinical_approval: false
 touches:
   create:
     - supabase/migrations/20260816190000_memory_retention_deletion.sql
-    - supabase/tests/032_memory_retention_deletion.test.sql
-    - src/generated/database.types.ts
-  modify: []
+    - supabase/tests/039_memory_retention_deletion.test.sql
+  modify:
+    - agent/lib/supabase/database.types.ts
+    - src/persistence/supabase/database.types.ts
   test:
-    - supabase/tests/032_memory_retention_deletion.test.sql
+    - supabase/tests/039_memory_retention_deletion.test.sql
 exclusive_paths:
   - supabase/migrations/20260816190000_memory_retention_deletion.sql
-  - supabase/tests/032_memory_retention_deletion.test.sql
-  - src/generated/database.types.ts
+  - supabase/tests/039_memory_retention_deletion.test.sql
+  - agent/lib/supabase/database.types.ts
+  - src/persistence/supabase/database.types.ts
 forbidden_paths:
   - .env
   - agent/tools/**

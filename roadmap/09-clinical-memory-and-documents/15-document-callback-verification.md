@@ -17,15 +17,17 @@ requires_clinical_approval: false
 touches:
   create:
     - supabase/migrations/20260816210000_document_callback_ledger.sql
-    - supabase/tests/034_document_callback_ledger.test.sql
-    - src/generated/database.types.ts
-  modify: []
+    - supabase/tests/042_document_callback_ledger.test.sql
+  modify:
+    - agent/lib/supabase/database.types.ts
+    - src/persistence/supabase/database.types.ts
   test:
-    - supabase/tests/034_document_callback_ledger.test.sql
+    - supabase/tests/042_document_callback_ledger.test.sql
 exclusive_paths:
   - supabase/migrations/20260816210000_document_callback_ledger.sql
-  - supabase/tests/034_document_callback_ledger.test.sql
-  - src/generated/database.types.ts
+  - supabase/tests/042_document_callback_ledger.test.sql
+  - agent/lib/supabase/database.types.ts
+  - src/persistence/supabase/database.types.ts
 forbidden_paths:
   - .env
   - agent/tools/**

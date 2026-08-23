@@ -17,15 +17,17 @@ requires_clinical_approval: false
 touches:
   create:
     - supabase/migrations/20260816200000_document_storage_hardening.sql
-    - supabase/tests/033_document_storage_hardening.test.sql
-    - src/generated/database.types.ts
-  modify: []
+    - supabase/tests/041_document_storage_hardening.test.sql
+  modify:
+    - agent/lib/supabase/database.types.ts
+    - src/persistence/supabase/database.types.ts
   test:
-    - supabase/tests/033_document_storage_hardening.test.sql
+    - supabase/tests/041_document_storage_hardening.test.sql
 exclusive_paths:
   - supabase/migrations/20260816200000_document_storage_hardening.sql
-  - supabase/tests/033_document_storage_hardening.test.sql
-  - src/generated/database.types.ts
+  - supabase/tests/041_document_storage_hardening.test.sql
+  - agent/lib/supabase/database.types.ts
+  - src/persistence/supabase/database.types.ts
 forbidden_paths:
   - .env
   - agent/tools/**

@@ -17,15 +17,17 @@ requires_clinical_approval: false
 touches:
   create:
     - supabase/migrations/20260816180000_child_scoped_vector_search.sql
-    - supabase/tests/031_child_scoped_vector_search.test.sql
-    - src/generated/database.types.ts
-  modify: []
+    - supabase/tests/038_child_scoped_vector_search.test.sql
+  modify:
+    - agent/lib/supabase/database.types.ts
+    - src/persistence/supabase/database.types.ts
   test:
-    - supabase/tests/031_child_scoped_vector_search.test.sql
+    - supabase/tests/038_child_scoped_vector_search.test.sql
 exclusive_paths:
   - supabase/migrations/20260816180000_child_scoped_vector_search.sql
-  - supabase/tests/031_child_scoped_vector_search.test.sql
-  - src/generated/database.types.ts
+  - supabase/tests/038_child_scoped_vector_search.test.sql
+  - agent/lib/supabase/database.types.ts
+  - src/persistence/supabase/database.types.ts
 forbidden_paths:
   - .env
   - agent/tools/**

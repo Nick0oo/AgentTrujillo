@@ -26,6 +26,10 @@ AT-09-09 + AT-09-10 + AT-09-17 + AT-09-18 -> AT-09-19
 
 Memory and document chains can execute in parallel after their shared authorization/domain contracts. Vector and Storage work use disjoint paths until the final isolation gate.
 
+Cloud execution amendment (2026-08-23): by explicit current user instruction, Supabase Cloud is the only database source of truth for Module 09. For database leaves, this supersedes their original local-only and "never apply remotely" wording and authorizes only the reviewed forward migrations on verified linked project `yapjiinrjsrothzgzxsv` (`CreciendoApp`). The root must recheck project identity and the exact dry-run plan before every apply, use existing environment values without printing or copying secrets, never reset/delete/truncate data, execute synthetic pgTAP fixtures through the linked query path with transaction rollback, regenerate linked types, and record impact plus a forward rollback plan. This does not authorize deployment, content activation, or any other remote mutation.
+
+Path amendment (2026-08-23): database leaves `AT-09-02`, `AT-09-08`, `AT-09-10`, `AT-09-13`, and `AT-09-15` own the two active generated-type contracts, `agent/lib/supabase/database.types.ts` and `src/persistence/supabase/database.types.ts`; the originally named `src/generated/database.types.ts` does not exist. Their SQL test names move from the already occupied `030`–`034` range to `037`, `038`, `039`, `041`, and `042`, respectively. Migration names remain unchanged and applied migrations remain immutable.
+
 ## Work-unit index
 
 | ID | Outcome | Database |
@@ -59,7 +63,8 @@ Memory is a user-controlled aid, not a diagnosis or substitute for structured cl
 ```powershell
 npm test -- tests/clinical/memory tests/application/memory tests/clinical/documents tests/application/documents tests/providers/google
 npm run eval -- memory-documents
-npx supabase test db --local
+npx supabase db query --linked --file <module-09-pgtap-file>
+npx supabase db lint --linked --level error
 npm run typecheck
 npm run build
 ```
