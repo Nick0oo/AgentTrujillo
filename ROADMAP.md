@@ -29,7 +29,7 @@ These facts do not close pending behavioral gates. Local schema parity, generate
 - Documentation implementation plan: `completed` at commit `2ba542b`.
 - Atomic roadmap authoring: modules `01` through `15` completed and cross-module verification passed; see [verification evidence](docs/verification/2026-08-16-agent-roadmap.md).
 - Product implementation: modules `01` through `07` completed with fresh runtime and Cloud evidence. Module `07` exact minimal formularies were released in `54e615c`; conveyed approval is recorded without a personal signature.
-- Module 08 has completed `AT-08-01`–`AT-08-05` and `AT-08-09`–`AT-08-15`; five leaves remain.
+- Module 08 has completed `AT-08-01`–`AT-08-05` and `AT-08-09`–`AT-08-16`; four leaves remain.
 
 ## Module ledger
 
@@ -55,13 +55,13 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-Modules `01`–`07` have no remaining ready or active work. `AT-08-15` is complete at implementation commit `fe0f329`. `AT-08-06` is ready; `AT-08-16` is active under the recorded conveyed Module 08 clinical approval.
+Modules `01`–`07` have no remaining ready or active work. `AT-08-16` is complete at implementation commit `1f04434`. `AT-08-06` is ready under the recorded conveyed Module 08 clinical approval.
 
 ## Active workers
 
 | Worker | Work unit | Claimed paths | Started | State |
 |---|---|---|---|---|
-| `root` | `AT-08-16` | `src/clinical/development/ead3-boundary.ts`; `tests/clinical/development/ead3-boundary.test.ts` | 2026-08-23 | `in_progress` |
+| — | — | — | — | No active worker |
 
 The completed delegated leaves used GPT-5.6 Luna with reasoning `max`. Per the explicit user instruction recorded on 2026-08-23, the root implements and reviews the remaining Module 08 leaves directly; no new subagents are dispatched. Collision and exclusive-path analysis still applies.
 
