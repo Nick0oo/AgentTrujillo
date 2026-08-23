@@ -55,13 +55,13 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-Modules `01`–`08` have no remaining ready or active work. Module 09 is 2/19 completed. `AT-09-03` is in progress after dependency, safety-contract, conveyed clinical-approval, path-collision, and Cloud-state checks; `AT-09-06` remains dependency-unblocked and unclaimed.
+Modules `01`–`08` have no remaining ready or active work. Module 09 is 2/19 completed. `AT-09-03` is in root review after its fresh worker implemented the policy and corrected canonical-type and digest-binding findings; `AT-09-06` remains dependency-unblocked and unclaimed.
 
 ## Active workers
 
 | Worker | Work unit | Claimed paths | Started |
 |---|---|---|---|
-| `module09_at0903` (`gpt-5.6-luna`, `max`) | `AT-09-03` | `src/clinical/memory/confirmation-policy.ts`; `tests/clinical/memory/confirmation-policy.test.ts` | 2026-08-23 |
+No implementation worker is active while the root reviews `AT-09-03`.
 
 Cloud-only execution override (2026-08-23): by explicit current user instruction, Module 09 uses the verified linked Supabase Cloud project as its only database source of truth. Local reset/test availability or drift is not an execution gate. Database leaves must verify exact project identity, migration impact, recoverability, generated linked types, and rollback-safe Cloud tests before any remote mutation.
 
