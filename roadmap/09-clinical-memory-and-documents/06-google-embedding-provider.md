@@ -2,7 +2,7 @@
 id: AT-09-06
 title: Implement pinned Google embedding provider
 module: 09-clinical-memory-and-documents
-status: ready
+status: in_progress
 execution: sequential
 parallel_group: null
 depends_on: [AT-09-01, AT-01-03]
