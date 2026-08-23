@@ -61,6 +61,8 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 `AT-10-08`–`AT-10-20` are dependency-unblocked as the `eve-tools` group, but each remains unclaimed until its own domain/clinical/path gates are checked. The recommended next claim is `AT-10-09` to unlock `AT-10-21` early.
 
+Root correction before `AT-10-09`: Eve's public tool context requires one shared fail-closed factory bridge to the branded request-scoped context, and branded safe errors must survive the idempotency wrapper. `AT-10-09` owns the explicitly added bridge/idempotency integration paths; no model authority, credential, per-user global state or new clinical behavior is authorized.
+
 ## Active workers
 
 None.

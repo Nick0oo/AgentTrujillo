@@ -16,14 +16,23 @@ database_change: false
 requires_clinical_approval: true
 touches:
   create:
+    - agent/lib/runtime/eve-tool-context.ts
     - agent/tools/get-growth-summary.ts
+    - tests/agent/runtime/eve-tool-context.test.ts
     - tests/agent/tools/get-growth-summary.test.ts
-  modify: []
+  modify:
+    - agent/lib/runtime/tool-idempotency.ts
+    - tests/agent/runtime/tool-idempotency.test.ts
   test:
+    - tests/agent/runtime/eve-tool-context.test.ts
     - tests/agent/tools/get-growth-summary.test.ts
 exclusive_paths:
+  - agent/lib/runtime/eve-tool-context.ts
   - agent/tools/get-growth-summary.ts
+  - tests/agent/runtime/eve-tool-context.test.ts
   - tests/agent/tools/get-growth-summary.test.ts
+  - agent/lib/runtime/tool-idempotency.ts
+  - tests/agent/runtime/tool-idempotency.test.ts
 forbidden_paths:
   - .env
   - supabase/migrations/**
@@ -79,6 +88,12 @@ Schema accepts metric/window display preferences only; handler executeGetGrowthS
 ## Technical design
 
 Authorize, resolve exact released dataset/algorithm, query confirmed non-superseded measurements, compute via module 05, and return bounded chronological series/provenance. No model math.
+
+### Root contract correction — Eve execution bridge and safe-error preservation
+
+Eve `0.27.13` supplies an authored tool with a public `ToolContext`; it does not carry this repository's branded `TrustedToolContext` or request-scoped domain services. This first concrete tool therefore owns one shared import-only bridge under `agent/lib/runtime/`: an application composition installs exactly one frozen factory, and each execution asks that factory for a fresh trusted context using the current Eve session, call, auth and abort metadata. The bridge independently verifies active scope, actor, Eve session ID, tool call ID and abort-signal identity before returning the context. It stores no child context, token or per-request service globally; absence, replacement, mismatch or malformed output fails closed. Module 11 must install the production factory from its authenticated route/service composition without putting authority in model schemas or durable Eve attributes.
+
+Root review also found that `withToolIdempotency` catches every handler exception, including the registry-branded `SafeToolError` introduced by `AT-10-06`, and replaces it with a generic idempotency-unavailable error. The narrow integration change owned here rethrows only a branded safe error unchanged so the outer audit records its bounded public code. Raw/domain/provider errors and structural lookalikes remain caught and fail closed exactly as before.
 
 ## Database and Storage contract
 

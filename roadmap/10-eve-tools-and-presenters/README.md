@@ -19,6 +19,8 @@ Eve `0.27.13` reports any authored `agent/runtime/` directory as unsupported and
 
 Current execution authority also resolves the README/frontmatter scheduling mismatch: the independent tool leaves may be queued by their declared contract groups, but the root closes one atomic leaf at a time; presenter leaves `AT-10-21` through `AT-10-31` follow their `execution: sequential` frontmatter and are likewise closed one at a time.
 
+Installed Eve passes only its public `ToolContext` to authored tools. The first concrete tool, `AT-10-09`, owns a shared import-only execution bridge that accepts one immutable application factory and resolves a fresh branded `TrustedToolContext` plus typed request-scoped services for every tool call. It validates Eve session/call/actor/abort binding after resolution, keeps no per-user context or credential globally, and fails closed until Module 11's authenticated composition installs the production factory. The same correction preserves only registry-branded safe errors through the idempotency wrapper; arbitrary thrown values remain private and fail closed.
+
 ## Exit gate
 
 All 33 leaves are complete and prove exactly thirteen intended tools, no red-flag/shell/filesystem/network/delegation tools, correct wrapper order, explicit confirmation for effects, replay convergence, safe output projections, privacy-safe audit/errors, accessible versioned widgets, text-only professional/emergency boundaries, mobile compatibility, and zero critical authorization/clinical/action leakage.
