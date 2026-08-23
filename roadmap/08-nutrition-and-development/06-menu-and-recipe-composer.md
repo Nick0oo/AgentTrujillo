@@ -2,7 +2,7 @@
 id: AT-08-06
 title: Compose constrained menus and recipes
 module: 08-nutrition-and-development
-status: pending
+status: ready
 execution: sequential
 parallel_group: null
 depends_on: [AT-08-04, AT-08-05]
