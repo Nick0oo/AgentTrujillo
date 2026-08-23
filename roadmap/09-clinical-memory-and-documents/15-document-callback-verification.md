@@ -2,7 +2,7 @@
 id: AT-09-15
 title: Verify upload and processing callbacks
 module: 09-clinical-memory-and-documents
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-09-14]
@@ -138,11 +138,18 @@ Commit exclusive paths with feat(documents): verify upload and processing callba
 
 ## Completion checklist
 
-- [ ] Composite child scope is structural and tested.
-- [ ] Confirmation/lifecycle/provenance are explicit.
-- [ ] Private URLs, secrets, and raw reasoning stay out of model/logs.
-- [ ] Draft extraction never becomes clinical truth automatically.
-- [ ] Replay, revocation, and deletion fail closed.
+- [x] Composite child scope is structural and tested.
+- [x] Confirmation/lifecycle/provenance are explicit.
+- [x] Private URLs, secrets, and raw reasoning stay out of model/logs.
+- [x] Draft extraction never becomes clinical truth automatically.
+- [x] Replay, revocation, and deletion fail closed.
+
+### Recorded 2026-08-23
+
+- Implementation commit: `ddcbaae` (`feat(documents): verify upload and processing callbacks`). Service/test SHA-256: `9f722cf2d2110e470f62ab0c3d135c5c4d46c5dcbab554d8a044c5d5339e87ed` / `73aa8ed4ac947782fd0aaa23b9fe4256e2262de7760a8701aec73469f9043594`; migration/test SHA-256: `b1d89555ec54a3265cf8f25364f9387d375dc1c92f3448087b7562410501f3a1` / `f84cd75879357ed0e614c41b0eb2dc98473fed8bb779e9e2b49a2f1c7e4b1c74`; generated types `7d92b41901afedbd42d9f1f4b30221b34e9ce38dec45a4164dcbedb0e9c24160` byte-identical.
+- TDD: application test first failed on the missing service and SQL first failed on the missing ledger. Final application cases passed `7/7`, Cloud SQL `12/12` in rollback, accumulated memory/document tests `135/135` across 12 files, typecheck and linked type parity exited `0`.
+- Cloud: dry-run named only `20260823230000`, which is recorded remotely. Ledger has composite document FK, forced RLS, no guardian grant, service-role-only ingestion, provider-event uniqueness, immutable identity and bounded indexes/results. Post-run state is 0 documents, 0 callback rows and the same 4 Storage objects; linked lint has no new finding.
+- Service verifies HMAC over exact raw bytes before JSON parse, configured key ID, five-minute signature freshness, bounded event time, strict payload/no authority fields and SHA-256 provenance. Unknown scan never becomes clean; raw body, signature, URL and secret are never persisted or logged. Conflicts and provider/storage failures abstain. No seed, reset, existing object, deployment, push, merge or environment change occurred.
 
 ## Handoff
 
