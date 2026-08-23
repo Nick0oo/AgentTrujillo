@@ -12,6 +12,31 @@ export type Database = {
   __InternalSupabase: {
     PostgrestVersion: "14.5"
   }
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json
+          operationName?: string
+          query?: string
+          variables?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
   public: {
     Tables: {
       agent_commands: {
@@ -4727,17 +4752,25 @@ export type Database = {
       }
       match_clinical_memory: {
         Args: {
+          p_authorization_version: string
           p_care_space_id: string
           p_child_id: string
+          p_cutoff_at: string
+          p_embedding_model: string
           p_match_count?: number
           p_match_threshold?: number
           p_query_embedding: string
+          p_session_id: string
         }
         Returns: {
+          confirmed_at: string
           memory_item_id: string
           memory_type: string
+          provenance_captured_at: string
+          provenance_source_id: string
+          provenance_type: string
+          searchable_text: string
           similarity: number
-          structured_content: Json
         }[]
       }
       persist_country_change_reassessment: {
@@ -5165,6 +5198,9 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
   public: {
     Enums: {},
   },
