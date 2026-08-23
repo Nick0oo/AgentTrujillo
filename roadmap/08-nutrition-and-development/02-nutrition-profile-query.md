@@ -2,7 +2,7 @@
 id: AT-08-02
 title: Load authorized nutrition profile
 module: 08-nutrition-and-development
-status: review
+status: completed
 execution: parallel
 parallel_group: module-08-foundations
 depends_on: [AT-08-01, AT-02-16]
@@ -122,17 +122,27 @@ Trace Colombia-first and US-ready synthetic cases to exact source/package/licens
 
 Record files, source/package/license/approval/algorithm digests, test counts, negative matrix, deterministic hashes, commands/exits, reviewer decisions, and commit.
 
+### Recorded 2026-08-22
+
+- Implementation commit: `2b00e58` (`feat(nutrition): load authorized nutrition profile`).
+- Exact implementation paths: `src/application/nutrition/nutrition-profile-query.ts`; `tests/application/nutrition/nutrition-profile-query.test.ts`.
+- TDD red: missing implementation module, exit `1`; final focused matrix `18/18`, exit `0`; fresh root `npm run typecheck`, exit `0`.
+- Root review removed profile over-read, added per-fact completeness, and required real access revalidation. Independent review initially found historical-cutoff authorization and permission-widening defects; both were regression-tested and re-review verdict was `PASS`.
+- Uniform denial covers expired, revoked, changed actor/space/child/version/country/timezone, widened permissions, missing/foreign rows, future or malformed facts, and port failures before unauthorized downstream reads.
+- Stable output includes trusted age provenance, minimum profile source identity/times, sorted declared exclusions, explicit unknown professional-plan state, and canonical SHA-256. Declared exclusions are never promoted to allergy/reaction facts.
+- No schema, clinical package, approval, source artifact, Cloud row, Storage object, environment value, or generated artifact changed. Cloud remained read-only and linked to `CreciendoApp` (`yapjiinrjsrothzgzxsv`). Newly unblocked after sibling leaf `AT-08-03`: `AT-08-04`.
+
 ## Commit protocol
 
 Commit exclusive paths with feat(nutrition): load authorized nutrition profile; no remote mutation, activation, or unrelated edit.
 
 ## Completion checklist
 
-- [ ] Exact interfaces and provenance are implemented.
-- [ ] Same-child authorization tests pass.
-- [ ] Source/license/approval gates fail closed.
-- [ ] No diagnosis, screening, prescription, or unsafe reassurance appears.
-- [ ] Urgent behavior remains emergency-department-only.
+- [x] Exact interfaces and provenance are implemented.
+- [x] Same-child authorization and revocation tests pass.
+- [x] This query returns no governed content; package/source/license/approval resolution remains fail-closed in `AT-08-05`.
+- [x] No diagnosis, screening, prescription, or unsafe reassurance appears.
+- [x] The query emits no urgent content or side effect; emergency behavior remains owned by preflight.
 
 ## Handoff
 

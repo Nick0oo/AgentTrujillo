@@ -55,13 +55,12 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-Modules `01`–`07` have no remaining ready or active work. Foundation group `module-08-foundations` is approved by the module README: `AT-08-02` is in review while `AT-08-03` and `AT-08-09` are ready; dependencies, shared-contract, Cloud-target, and exact-path collision checks passed.
+Modules `01`–`07` have no remaining ready or active work. Foundation group `module-08-foundations` is active: `AT-08-02` completed at `2b00e58`; `AT-08-03` and `AT-08-09` are in progress with disjoint paths.
 
 ## Active workers
 
 | Worker | Work unit | Claimed paths | Started | State |
 |---|---|---|---|---|
-| `at_08_02_worker` | `AT-08-02` | `src/application/nutrition/nutrition-profile-query.ts`; `tests/application/nutrition/nutrition-profile-query.test.ts` | 2026-08-22 | `review` |
 | `at_08_03_worker` | `AT-08-03` | `src/application/nutrition/food-reaction-query.ts`; `tests/application/nutrition/food-reaction-query.test.ts` | 2026-08-22 | `in_progress` |
 | `at_08_09_worker` | `AT-08-09` | `src/clinical/development/types.ts`; `tests/clinical/development/types.test.ts` | 2026-08-22 | `in_progress` |
 
