@@ -2,7 +2,7 @@
 id: AT-09-08
 title: Search vectors with structural child scope
 module: 09-clinical-memory-and-documents
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-09-06, AT-09-07, AT-02-06]
@@ -141,12 +141,20 @@ Commit exclusive paths with feat(memory): search vectors with structural child s
 
 ## Completion checklist
 
-- [ ] Composite child scope is structural and tested.
-- [ ] Confirmation/lifecycle/provenance are explicit.
-- [ ] Private URLs, secrets, and raw reasoning stay out of model/logs.
-- [ ] Draft extraction never becomes clinical truth automatically.
-- [ ] Replay, revocation, and deletion fail closed.
+- [x] Composite child scope is structural and tested.
+- [x] Confirmation/lifecycle/provenance are explicit.
+- [x] Private URLs, secrets, and raw reasoning stay out of model/logs.
+- [x] Draft extraction never becomes clinical truth automatically.
+- [x] Replay, revocation, and deletion fail closed.
+
+### Recorded 2026-08-23
+
+- Implementation commit: `b1473950e2049e4f025f80245daf4f1bc08ba7a2` (`feat(memory): search vectors with structural child scope`). Its six changed paths exactly match the amended `exclusive_paths`; source/migration/test SHA-256 values are `52179cd956e988a569fbe2873ebb081b0b3dd1e29a4758c9d33b8641c78259bc`, `b874c16efd9dc18471320d4bd056a4f9b2989c74d28c2b75938e3f470d995510`, `e6b9b6d88dfd560985e84e24c0c8761ce9c207b578a311638474eb2f4d18fab5`, and `c5f182c984e4cfe8ab21d16675d884b2ee9d9bcf5c20a5a584f592f770c7ed25`. Both linked generated type files are byte-identical at SHA-256 `96c5722094333104f12e9c3b35f4b73dc244255f7fb2e72634cc946a3f40b748`.
+- TDD: the repository test first failed with the expected missing-module error; the Cloud SQL test first failed with the expected missing hardened RPC. Final focused repository suite passed `5/5`; SQL fixture `045` passed `18/18` inside `BEGIN/ROLLBACK`; accumulated access/memory/provider gates passed `317` with `1` skipped across `22` files. `npm run typecheck` and Eve build exited `0` (build used process-only backend aliases for the existing `NEXT_PUBLIC_*` environment names; `.env` was not edited or printed).
+- Cloud: linked project `yapjiinrjsrothzgzxsv` / `CreciendoApp` was `ACTIVE_HEALTHY`; dry-run named only `20260823200000_child_scoped_vector_search.sql`, then `npx supabase db push --linked` applied exactly that migration. Linked history now contains `20260823200000`; `npx supabase db lint --linked --level error` returned zero findings. Pre/post counts remain `0` memory items, `0` embeddings, `0` documents, and `4` Storage objects; all synthetic rows rolled back.
+- Security/behavior: the old five-argument function is absent; the exact authenticated-only security-invoker RPC pins session owner, authorization version, composite scope, cutoff, model compatibility, content digest, confirmation, lifecycle, eligibility and validity before cosine ordering. Tests deny sibling retargeting, stale auth, revoked access, stale/model-mismatched rows, zero vectors, invalid thresholds and future cutoffs. Returned rows contain bounded citation fields, never structured content or embeddings.
+- Review: staged ownership, full diff, whitespace, secret/credential and forbidden-artifact scans passed. The first linked lint attempt timed out connecting to the pooler; a clean retry exited `0`. Forward recovery, if needed, is a new reviewed migration that replaces the RPC/grant/index contract; no applied migration rewrite or data rollback is required. No rows, Storage objects, deployment, push, merge, seed or destructive action occurred.
 
 ## Handoff
 
-Only the frontmatter blocks IDs become eligible after fresh verification evidence and commit.
+`AT-09-09` and downstream `AT-10-18` now satisfy this dependency; each must still pass its remaining gates.
