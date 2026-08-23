@@ -2,7 +2,7 @@
 id: AT-08-05
 title: Package approved nutrition content
 module: 08-nutrition-and-development
-status: ready
+status: in_progress
 execution: parallel
 parallel_group: module-08-content-queries
 depends_on: [AT-08-01, AT-03-11]

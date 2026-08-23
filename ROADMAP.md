@@ -61,6 +61,8 @@ Modules `01`–`07` have no remaining ready or active work. Foundation and polic
 
 | Worker | Work unit | Claimed paths | Started | State |
 |---|---|---|---|---|
+| `at_08_05_worker` | `AT-08-05` | `src/clinical/nutrition/content-loader.ts`; `tests/clinical/nutrition/content-loader.test.ts` | 2026-08-22 | `in_progress` |
+| `at_08_11_worker` | `AT-08-11` | `src/application/development/milestone-query.ts`; `tests/application/development/milestone-query.test.ts` | 2026-08-22 | `in_progress` |
 
 Future implementation workers use GPT-5.6 Luna with reasoning `max`. At most three may run concurrently after collision analysis.
 
