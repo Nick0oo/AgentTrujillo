@@ -59,11 +59,11 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-`AT-10-06` is the next eligible sequential infrastructure leaf after completed `AT-10-05` (`114b0c6`); it is not yet claimed.
+No additional leaf is ready while sequential infrastructure leaf `AT-10-06` is in progress.
 
 ## Active workers
 
-None.
+Root agent: `AT-10-06`; exclusive paths `agent/lib/runtime/safe-tool-errors.ts`, `tests/agent/runtime/safe-tool-errors.test.ts`, and the explicit branded-error integration in `agent/lib/runtime/tool-audit.ts` plus its test.
 
 Cloud-only execution override (2026-08-23): by explicit current user instruction, Module 09 uses the verified linked Supabase Cloud project as its only database source of truth. Local reset/test availability or drift is not an execution gate. Database leaves must verify exact project identity, migration impact, recoverability, generated linked types, and rollback-safe Cloud tests before any remote mutation.
 

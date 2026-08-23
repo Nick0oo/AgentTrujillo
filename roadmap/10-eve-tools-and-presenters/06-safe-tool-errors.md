@@ -2,7 +2,7 @@
 id: AT-10-06
 title: Map tool failures to safe typed errors
 module: 10-eve-tools-and-presenters
-status: pending
+status: in_progress
 execution: sequential
 parallel_group: null
 depends_on: [AT-10-05, AT-04-10]
@@ -18,12 +18,16 @@ touches:
   create:
     - agent/lib/runtime/safe-tool-errors.ts
     - tests/agent/runtime/safe-tool-errors.test.ts
-  modify: []
+  modify:
+    - agent/lib/runtime/tool-audit.ts
+    - tests/agent/runtime/tool-audit.test.ts
   test:
     - tests/agent/runtime/safe-tool-errors.test.ts
 exclusive_paths:
   - agent/lib/runtime/safe-tool-errors.ts
   - tests/agent/runtime/safe-tool-errors.test.ts
+  - agent/lib/runtime/tool-audit.ts
+  - tests/agent/runtime/tool-audit.test.ts
 forbidden_paths:
   - .env
   - supabase/migrations/**
@@ -79,6 +83,10 @@ Export ToolErrorCode, SafeToolError, mapToolError, isRetryableBeforeEffect, and 
 ## Technical design
 
 Default unknown to INTERNAL_UNAVAILABLE; separate forbidden/not-found without enumeration leaks, input/confirmation/idempotency/package/rule/provider/timeout/cancel cases; include retry hints only when no effect ambiguity.
+
+### Root contract correction — safe-error/audit integration
+
+Root review on 2026-08-23 found that completed `AT-10-05` recognizes only the preceding idempotency errors and otherwise records a generic unknown failure. A new `SafeToolError` created by this leaf would therefore lose its closed safe code at the audit boundary. This leaf explicitly owns a narrow integration change to `tool-audit.ts` and its test: recognize only the branded `SafeToolError`, record its public enum code, and rethrow the same safe instance after the redacted event is accepted. Messages, stacks, private causes and arbitrary structural lookalikes remain untrusted and are never copied. No other audit schema or outcome behavior changes.
 
 ## Database and Storage contract
 
