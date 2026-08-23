@@ -18,6 +18,7 @@ import {
   type ToolEffect,
 } from "./tool-approval-policy";
 import { ToolIdempotencyError } from "./tool-idempotency";
+import { isSafeToolError, type SafeToolError } from "./safe-tool-errors";
 import {
   REGISTERED_TOOL_IDS,
   TOOL_PERMISSION_POLICY,
@@ -319,8 +320,15 @@ function classify(result: ParsedHandlerResult, sessionSha256: string): Readonly<
 function safeThrown(error: unknown): Readonly<{
   outcome: "failure" | "cancellation";
   safeErrorCode: string;
-  returnedError: ToolAuditError | ToolIdempotencyError;
+  returnedError: ToolAuditError | ToolIdempotencyError | SafeToolError;
 }> {
+  if (isSafeToolError(error)) {
+    return Object.freeze({
+      outcome: error.code === "CANCELLED" ? "cancellation" : "failure",
+      safeErrorCode: error.code,
+      returnedError: error,
+    });
+  }
   if (error instanceof ToolIdempotencyError && error.code === "TOOL_IDEMPOTENCY_CANCELLED") {
     return Object.freeze({ outcome: "cancellation", safeErrorCode: error.code, returnedError: error });
   }
@@ -408,7 +416,7 @@ export function withToolAudit<TArgs extends readonly unknown[], TResult>(
     if (!contextState) fail("TOOL_AUDIT_UNAVAILABLE");
 
     let result: TResult | undefined;
-    let returnedError: ToolAuditError | ToolIdempotencyError | null = null;
+    let returnedError: ToolAuditError | ToolIdempotencyError | SafeToolError | null = null;
     let state: Readonly<{
       outcome: ToolAuditOutcome;
       approvalSha256: string | null;

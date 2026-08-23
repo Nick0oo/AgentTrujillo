@@ -10,6 +10,7 @@ import type { OwnedSessionRecord } from "../../../agent/lib/access/session-recor
 import type { SupabaseBearerToken } from "../../../agent/lib/supabase/types";
 import { createTrustedToolContext } from "../../../agent/lib/runtime/trusted-tool-context";
 import { ToolIdempotencyError } from "../../../agent/lib/runtime/tool-idempotency";
+import { mapToolError } from "../../../agent/lib/runtime/safe-tool-errors";
 import {
   ToolAuditError,
   withToolAudit,
@@ -205,6 +206,19 @@ describe("privacy-safe tool audit", () => {
     expect(sink.events[0]?.childSha256).toMatch(/^[a-f0-9]{64}$/);
     expect(sink.events[0]?.sessionSha256).toMatch(/^[a-f0-9]{64}$/);
     expect(Object.isFrozen(sink.events[0])).toBe(true);
+  });
+
+  it("preserves only the branded SafeToolError code across the redacted audit boundary", async () => {
+    const sink = new FakeSink();
+    const safe = mapToolError({
+      code: "PROVIDER_UNAVAILABLE",
+      message: "Patient Ana signedUrl=https://secret.invalid/?token=raw",
+    }, { effectState: "none" });
+    const invoke = withToolAudit(WRITE_DEFINITION, async () => { throw safe; });
+    await expect(invoke(context({ sink }))).rejects.toBe(safe);
+    expect(sink.events).toHaveLength(1);
+    expect(sink.events[0]).toMatchObject({ outcome: "failure", safeErrorCode: "PROVIDER_UNAVAILABLE" });
+    expect(JSON.stringify(sink.events[0])).not.toMatch(/Patient|Ana|signed|secret|token|raw/i);
   });
 
   it.each([
