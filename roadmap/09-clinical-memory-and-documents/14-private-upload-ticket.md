@@ -2,7 +2,7 @@
 id: AT-09-14
 title: Issue short-lived private upload tickets
 module: 09-clinical-memory-and-documents
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-09-12, AT-09-13]
@@ -130,11 +130,18 @@ Commit exclusive paths with feat(documents): issue short-lived private upload ti
 
 ## Completion checklist
 
-- [ ] Composite child scope is structural and tested.
-- [ ] Confirmation/lifecycle/provenance are explicit.
-- [ ] Private URLs, secrets, and raw reasoning stay out of model/logs.
-- [ ] Draft extraction never becomes clinical truth automatically.
-- [ ] Replay, revocation, and deletion fail closed.
+- [x] Composite child scope is structural and tested.
+- [x] Confirmation/lifecycle/provenance are explicit.
+- [x] Private URLs, secrets, and raw reasoning stay out of model/logs.
+- [x] Draft extraction never becomes clinical truth automatically.
+- [x] Replay, revocation, and deletion fail closed.
+
+### Recorded 2026-08-23
+
+- Implementation commit: `970a9dd` (`feat(documents): issue short-lived private upload tickets`). Source/test SHA-256: `a6b17357cae2b995075b56d09ff67d88850ed4fe9a32cbf52863ad342fc2b53b` / `4719c0a9aef9a71014ac4bfb6627afd32fe9079b996aecbd1fcd0a10dd5edb5d`.
+- TDD first failed on the missing service. Final focused tests passed `23/23`; accumulated memory/document tests passed `128/128` across 11 files; typecheck exited `0`.
+- Review: immutable current `manage_documents` access is revalidated before reservation; caller authority/path/bucket/URL/upsert claims are rejected; the reserved scope/bucket/path must match exactly. The provider gets `{upsert:false}` and must prove HTTPS expiry within five minutes and the reservation window. Only ticket/nonce digests and bounded metadata enter the ledger; provider failure, ledger race, bucket drift, replay or unsafe TTL fails closed and cancels.
+- Installed Storage SDK raw upload signatures are fixed at two hours, so the service deliberately rejects them instead of misrepresenting expiry; a conforming short-lived gateway/provider adapter is required for real issuance. No Cloud data/schema, object, secret, environment file, deployment, push or merge changed. `AT-09-15` now satisfies this dependency.
 
 ## Handoff
 
