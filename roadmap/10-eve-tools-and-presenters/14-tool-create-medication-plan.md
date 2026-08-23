@@ -16,13 +16,13 @@ database_change: false
 requires_clinical_approval: true
 touches:
   create:
-    - agent/tools/create-medication-plan.ts
+    - agent/tools/create_medication_plan.ts
     - tests/agent/tools/create-medication-plan.test.ts
   modify: []
   test:
     - tests/agent/tools/create-medication-plan.test.ts
 exclusive_paths:
-  - agent/tools/create-medication-plan.ts
+  - agent/tools/create_medication_plan.ts
   - tests/agent/tools/create-medication-plan.test.ts
 forbidden_paths:
   - .env

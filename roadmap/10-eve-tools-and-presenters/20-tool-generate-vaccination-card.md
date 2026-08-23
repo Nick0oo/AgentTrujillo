@@ -16,13 +16,13 @@ database_change: false
 requires_clinical_approval: true
 touches:
   create:
-    - agent/tools/generate-vaccination-card.ts
+    - agent/tools/generate_vaccination_card.ts
     - tests/agent/tools/generate-vaccination-card.test.ts
   modify: []
   test:
     - tests/agent/tools/generate-vaccination-card.test.ts
 exclusive_paths:
-  - agent/tools/generate-vaccination-card.ts
+  - agent/tools/generate_vaccination_card.ts
   - tests/agent/tools/generate-vaccination-card.test.ts
 forbidden_paths:
   - .env

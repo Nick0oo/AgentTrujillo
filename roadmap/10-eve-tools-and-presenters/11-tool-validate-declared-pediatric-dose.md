@@ -16,13 +16,13 @@ database_change: false
 requires_clinical_approval: true
 touches:
   create:
-    - agent/tools/validate-declared-pediatric-dose.ts
+    - agent/tools/validate_declared_pediatric_dose.ts
     - tests/agent/tools/validate-declared-pediatric-dose.test.ts
   modify: []
   test:
     - tests/agent/tools/validate-declared-pediatric-dose.test.ts
 exclusive_paths:
-  - agent/tools/validate-declared-pediatric-dose.ts
+  - agent/tools/validate_declared_pediatric_dose.ts
   - tests/agent/tools/validate-declared-pediatric-dose.test.ts
 forbidden_paths:
   - .env

@@ -16,13 +16,13 @@ database_change: false
 requires_clinical_approval: true
 touches:
   create:
-    - agent/tools/search-child-clinical-memory.ts
+    - agent/tools/search_child_clinical_memory.ts
     - tests/agent/tools/search-child-clinical-memory.test.ts
   modify: []
   test:
     - tests/agent/tools/search-child-clinical-memory.test.ts
 exclusive_paths:
-  - agent/tools/search-child-clinical-memory.ts
+  - agent/tools/search_child_clinical_memory.ts
   - tests/agent/tools/search-child-clinical-memory.test.ts
 forbidden_paths:
   - .env

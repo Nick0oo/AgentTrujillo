@@ -16,13 +16,13 @@ database_change: false
 requires_clinical_approval: true
 touches:
   create:
-    - agent/tools/capture-clinical-memory-candidate.ts
+    - agent/tools/capture_clinical_memory_candidate.ts
     - tests/agent/tools/capture-clinical-memory-candidate.test.ts
   modify: []
   test:
     - tests/agent/tools/capture-clinical-memory-candidate.test.ts
 exclusive_paths:
-  - agent/tools/capture-clinical-memory-candidate.ts
+  - agent/tools/capture_clinical_memory_candidate.ts
   - tests/agent/tools/capture-clinical-memory-candidate.test.ts
 forbidden_paths:
   - .env

@@ -16,13 +16,13 @@ database_change: false
 requires_clinical_approval: true
 touches:
   create:
-    - agent/tools/evaluate-vaccination-schedule.ts
+    - agent/tools/evaluate_vaccination_schedule.ts
     - tests/agent/tools/evaluate-vaccination-schedule.test.ts
   modify: []
   test:
     - tests/agent/tools/evaluate-vaccination-schedule.test.ts
 exclusive_paths:
-  - agent/tools/evaluate-vaccination-schedule.ts
+  - agent/tools/evaluate_vaccination_schedule.ts
   - tests/agent/tools/evaluate-vaccination-schedule.test.ts
 forbidden_paths:
   - .env

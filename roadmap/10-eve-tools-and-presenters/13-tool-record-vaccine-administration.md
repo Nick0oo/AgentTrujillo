@@ -16,13 +16,13 @@ database_change: false
 requires_clinical_approval: true
 touches:
   create:
-    - agent/tools/record-vaccine-administration.ts
+    - agent/tools/record_vaccine_administration.ts
     - tests/agent/tools/record-vaccine-administration.test.ts
   modify: []
   test:
     - tests/agent/tools/record-vaccine-administration.test.ts
 exclusive_paths:
-  - agent/tools/record-vaccine-administration.ts
+  - agent/tools/record_vaccine_administration.ts
   - tests/agent/tools/record-vaccine-administration.test.ts
 forbidden_paths:
   - .env

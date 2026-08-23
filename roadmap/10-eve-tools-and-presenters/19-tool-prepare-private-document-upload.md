@@ -16,13 +16,13 @@ database_change: false
 requires_clinical_approval: false
 touches:
   create:
-    - agent/tools/prepare-private-document-upload.ts
+    - agent/tools/prepare_private_document_upload.ts
     - tests/agent/tools/prepare-private-document-upload.test.ts
   modify: []
   test:
     - tests/agent/tools/prepare-private-document-upload.test.ts
 exclusive_paths:
-  - agent/tools/prepare-private-document-upload.ts
+  - agent/tools/prepare_private_document_upload.ts
   - tests/agent/tools/prepare-private-document-upload.test.ts
 forbidden_paths:
   - .env

@@ -16,13 +16,13 @@ database_change: false
 requires_clinical_approval: true
 touches:
   create:
-    - agent/tools/suggest-pediatric-nutrition.ts
+    - agent/tools/suggest_pediatric_nutrition.ts
     - tests/agent/tools/suggest-pediatric-nutrition.test.ts
   modify: []
   test:
     - tests/agent/tools/suggest-pediatric-nutrition.test.ts
 exclusive_paths:
-  - agent/tools/suggest-pediatric-nutrition.ts
+  - agent/tools/suggest_pediatric_nutrition.ts
   - tests/agent/tools/suggest-pediatric-nutrition.test.ts
 forbidden_paths:
   - .env

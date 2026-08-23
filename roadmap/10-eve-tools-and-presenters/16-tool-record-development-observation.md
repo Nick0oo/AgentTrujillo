@@ -16,13 +16,13 @@ database_change: false
 requires_clinical_approval: true
 touches:
   create:
-    - agent/tools/record-development-observation.ts
+    - agent/tools/record_development_observation.ts
     - tests/agent/tools/record-development-observation.test.ts
   modify: []
   test:
     - tests/agent/tools/record-development-observation.test.ts
 exclusive_paths:
-  - agent/tools/record-development-observation.ts
+  - agent/tools/record_development_observation.ts
   - tests/agent/tools/record-development-observation.test.ts
 forbidden_paths:
   - .env

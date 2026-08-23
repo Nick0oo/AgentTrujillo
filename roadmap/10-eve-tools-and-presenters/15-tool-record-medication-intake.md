@@ -16,13 +16,13 @@ database_change: false
 requires_clinical_approval: true
 touches:
   create:
-    - agent/tools/record-medication-intake.ts
+    - agent/tools/record_medication_intake.ts
     - tests/agent/tools/record-medication-intake.test.ts
   modify: []
   test:
     - tests/agent/tools/record-medication-intake.test.ts
 exclusive_paths:
-  - agent/tools/record-medication-intake.ts
+  - agent/tools/record_medication_intake.ts
   - tests/agent/tools/record-medication-intake.test.ts
 forbidden_paths:
   - .env

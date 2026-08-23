@@ -65,6 +65,8 @@ Root correction before `AT-10-09`: Eve's public tool context requires one shared
 
 Fresh Eve `0.27.13` discovery correction for `AT-10-09`: the implementation path uses `agent/tools/get_growth_summary.ts` so filesystem-derived identity is exactly `get_growth_summary`; the earlier hyphenated path produced the non-contractual name `get-growth-summary`. Schema, policy and clinical behavior are unchanged.
 
+Module-wide Eve discovery path correction: the same verified Eve `0.27.13` filesystem rule applies to all remaining authored Module 10 tools. Their frontmatter `touches` and `exclusive_paths` use underscore filenames matching the current user-authorized exact thirteen-tool surface; roadmap/test document filenames remain hyphenated. This is a path/ownership amendment only and changes no schema, policy, clinical behavior or dependency.
+
 Post-closure Module 11/`AT-10-21` compatibility correction for `AT-10-09`: the full Eve result must be strict trusted mobile data with bounded standard/version/reference provenance, and `toModelOutput` must separately emit the smaller `get_growth_summary.model.v1` projection. The correction changes no clinical value, calculation, authority, effect or wording and is confined to the completed leaf's owned tool/test paths.
 
 ## Active workers

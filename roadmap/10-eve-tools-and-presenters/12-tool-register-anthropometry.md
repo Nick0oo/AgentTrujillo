@@ -16,13 +16,13 @@ database_change: false
 requires_clinical_approval: true
 touches:
   create:
-    - agent/tools/register-anthropometry.ts
+    - agent/tools/register_anthropometry.ts
     - tests/agent/tools/register-anthropometry.test.ts
   modify: []
   test:
     - tests/agent/tools/register-anthropometry.test.ts
 exclusive_paths:
-  - agent/tools/register-anthropometry.ts
+  - agent/tools/register_anthropometry.ts
   - tests/agent/tools/register-anthropometry.test.ts
 forbidden_paths:
   - .env
