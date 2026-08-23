@@ -13,6 +13,10 @@ This module supplies Colombia-first, US-ready educational nutrition content and 
 
 All seventeen leaves are complete and evidence proves same-child profile/reaction access, deny-first eligibility, allergy/texture/choking exclusions, approved-only deterministic composition, and abstention outside scope. It also proves caregiver observations remain neutral facts, framework content is rights-cleared and non-screening, attachments stay private, EAD-3 cannot leak through routes/tools/prompts, writes converge on replay, and critical clinical/isolation/content-rights failures are zero.
 
+## Completion
+
+Completed 2026-08-23: **17/17 leaves completed, 0 pending**. Final implementation commit `145b3b0` proves the exit gate with 23/23 deterministic eval cases, 302/302 module tests, and 35/35 linked Supabase Cloud pgTAP assertions. Full evidence is recorded in [nutrition and development verification](../../docs/verification/nutrition-development.md).
+
 ## Dependency graph
 
 ```text
@@ -70,8 +74,8 @@ Menus and recipes are educational ideas filtered by exact approved rules; they a
 
 ```powershell
 npm test -- tests/clinical/nutrition tests/application/nutrition tests/clinical/development tests/application/development
-npm run eval -- nutrition-development
-npx supabase test db --local
+node --input-type=module -e "import { startVitest } from 'vitest/node'; const ctx = await startVitest('test', [], { run: true, include: ['tests/evals/nutrition-development.eval.ts'] }); await ctx?.close(); process.exitCode = ctx?.state.getCountOfFailedTests() ? 1 : 0;"
+npx supabase db query --linked --file supabase/tests/036_development_observation_idempotency.test.sql
 npm run typecheck
 npm run build
 ```
