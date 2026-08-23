@@ -21,6 +21,7 @@ touches:
   modify:
     - agent/lib/runtime/tool-approval-policy.ts
     - tests/agent/runtime/tool-approval-policy.test.ts
+    - roadmap/10-eve-tools-and-presenters/03-tool-approval-policy.md
   test:
     - tests/agent/runtime/tool-idempotency.test.ts
 exclusive_paths:
@@ -28,6 +29,7 @@ exclusive_paths:
   - tests/agent/runtime/tool-idempotency.test.ts
   - agent/lib/runtime/tool-approval-policy.ts
   - tests/agent/runtime/tool-approval-policy.test.ts
+  - roadmap/10-eve-tools-and-presenters/03-tool-approval-policy.md
 forbidden_paths:
   - .env
   - supabase/migrations/**
@@ -86,7 +88,7 @@ Validate/authorize/approve before claiming key; delegate atomic storage to domai
 
 ### Root contract correction — stable action fingerprint across fresh approval tokens
 
-Root review on 2026-08-23 found that completed `AT-10-03` included the per-token `expiresAt` in `approvalDigest`. Eve may rerun an interrupted tool step after that token expires. The required fresh UI approval would then produce a different confirmation fingerprint for the same tool call and canonical payload, forcing the fully scoped command ledger to report a changed-request conflict instead of an identical replay. This leaf therefore owns a narrow compatibility correction to the two `AT-10-03` implementation paths: keep preview/token expiry in the trusted channel record and consumption request, but exclude it from the stable action digest. Tool/schema, canonical input, actor, care space, child, product session, authorization version, entitlement revision and locale remain bound. Stale/replayed tokens still fail; a newly issued token for the same action can reauthorize the same durable command fingerprint. No other `AT-10-03` contract or completed evidence is rewritten silently; the correction and fresh regression evidence are recorded here.
+Root review on 2026-08-23 found that completed `AT-10-03` included the per-token `expiresAt` in `approvalDigest`. Eve may rerun an interrupted tool step after that token expires. The required fresh UI approval would then produce a different confirmation fingerprint for the same tool call and canonical payload, forcing the fully scoped command ledger to report a changed-request conflict instead of an identical replay. This leaf therefore owns a narrow compatibility correction to the two `AT-10-03` implementation paths and an additive supersession note in its evidence: keep preview/token expiry in the trusted channel record and consumption request, but exclude it from the stable action digest. Tool/schema, canonical input, actor, care space, child, product session, authorization version, entitlement revision and locale remain bound. Stale/replayed tokens still fail; a newly issued token for the same action can reauthorize the same durable command fingerprint. No other `AT-10-03` contract or completed evidence is rewritten silently; the correction and fresh regression evidence are recorded here.
 
 ## Database and Storage contract
 

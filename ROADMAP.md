@@ -63,7 +63,7 @@ No additional leaf is ready while sequential infrastructure leaf `AT-10-04` is i
 
 ## Active workers
 
-Root agent: `AT-10-04`; exclusive paths `agent/lib/runtime/tool-idempotency.ts`, `tests/agent/runtime/tool-idempotency.test.ts`, and the explicit stable-fingerprint correction in `agent/lib/runtime/tool-approval-policy.ts` plus its test.
+Root agent: `AT-10-04`; exclusive paths `agent/lib/runtime/tool-idempotency.ts`, `tests/agent/runtime/tool-idempotency.test.ts`, and the explicit stable-fingerprint correction in `agent/lib/runtime/tool-approval-policy.ts`, its test and the additive `AT-10-03` evidence note.
 
 Cloud-only execution override (2026-08-23): by explicit current user instruction, Module 09 uses the verified linked Supabase Cloud project as its only database source of truth. Local reset/test availability or drift is not an execution gate. Database leaves must verify exact project identity, migration impact, recoverability, generated linked types, and rollback-safe Cloud tests before any remote mutation.
 
