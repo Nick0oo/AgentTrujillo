@@ -2,7 +2,7 @@
 id: AT-08-06
 title: Compose constrained menus and recipes
 module: 08-nutrition-and-development
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-08-04, AT-08-05]
@@ -128,11 +128,22 @@ Commit exclusive paths with feat(nutrition): compose constrained menus and recip
 
 ## Completion checklist
 
-- [ ] Exact interfaces and provenance are implemented.
-- [ ] Same-child authorization tests pass.
-- [ ] Source/license/approval gates fail closed.
-- [ ] No diagnosis, screening, prescription, or unsafe reassurance appears.
-- [ ] Urgent behavior remains emergency-department-only.
+- [x] Exact interfaces and provenance are implemented.
+- [x] Same-child authorization tests pass.
+- [x] Source/license/approval gates fail closed.
+- [x] No diagnosis, screening, prescription, or unsafe reassurance appears.
+- [x] Urgent behavior remains emergency-department-only.
+
+### Recorded 2026-08-23
+
+- Implementation commit: `0019ce0`.
+- Changed paths: `src/clinical/nutrition/composer.ts` and `tests/clinical/nutrition/composer.test.ts` only.
+- Approval evidence: the exact content is re-resolved through AT-08-05 and retains conveyed approval record digest `7174f9b96ec3f780f95e915b08f3525a89374f922fe253af25a4afc43375fc00`; stale package, source, license, rights, artifact, algorithm, fixture, or approval evidence therefore fails closed before composition.
+- Red evidence: the focused test failed first because `composer.ts` did not exist. The implemented boundary then passed 18/18 focused tests.
+- Fresh verification: `npm test -- tests/clinical/nutrition/composer.test.ts` passed 18/18; `npm test -- tests/clinical/nutrition` passed 63/63; `npm run typecheck` exited 0.
+- Negative matrix: empty eligible sets, review-only sets, excluded recipes, ineligible guidance closure, content mutation, decision-digest drift, duplicate/foreign decisions, country separation, revoked/sibling/foreign-space/actor/timezone/permission scope changes, unavailable packages, invalid cutoff, and model-supplied authority/country/bypass fields all fail closed.
+- Review decision: the root verified seeded selection is order-stable, uses only complete eligible recipes and exact approved blocks, and exposes substitutions solely as complete alternative approved recipes—never as a novel ingredient combination, allergy challenge, therapeutic diet, diagnosis, or operational action.
+- No database, Storage, Supabase Cloud, deployment, content activation, or other remote state was changed. `AT-08-07` is newly unblocked.
 
 ## Handoff
 

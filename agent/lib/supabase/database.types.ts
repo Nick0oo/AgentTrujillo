@@ -1525,45 +1525,63 @@ export type Database = {
         Row: {
           care_space_id: string
           child_id: string
+          confirmation_sha256: string | null
+          confirmed_at: string | null
           created_at: string
           domain: string
           id: string
+          idempotency_key: string | null
+          input_sha256: string | null
           milestone_id: string | null
           observation: string
           observed_on: string
+          payload_sha256: string | null
           provenance_type: string
           recorded_by: string
           status: string
+          supersedes_observation_id: string | null
           title: string | null
           updated_at: string
         }
         Insert: {
           care_space_id: string
           child_id: string
+          confirmation_sha256?: string | null
+          confirmed_at?: string | null
           created_at?: string
           domain: string
           id?: string
+          idempotency_key?: string | null
+          input_sha256?: string | null
           milestone_id?: string | null
           observation: string
           observed_on: string
+          payload_sha256?: string | null
           provenance_type: string
           recorded_by: string
           status?: string
+          supersedes_observation_id?: string | null
           title?: string | null
           updated_at?: string
         }
         Update: {
           care_space_id?: string
           child_id?: string
+          confirmation_sha256?: string | null
+          confirmed_at?: string | null
           created_at?: string
           domain?: string
           id?: string
+          idempotency_key?: string | null
+          input_sha256?: string | null
           milestone_id?: string | null
           observation?: string
           observed_on?: string
+          payload_sha256?: string | null
           provenance_type?: string
           recorded_by?: string
           status?: string
+          supersedes_observation_id?: string | null
           title?: string | null
           updated_at?: string
         }
@@ -1581,6 +1599,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "development_milestones"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "development_observations_supersedes_scope_fk"
+            columns: ["care_space_id", "child_id", "supersedes_observation_id"]
+            isOneToOne: false
+            referencedRelation: "development_observations"
+            referencedColumns: ["care_space_id", "child_id", "id"]
           },
         ]
       }
@@ -4308,6 +4333,28 @@ export type Database = {
         }
         Returns: {
           administration_id: string
+          outcome: string
+        }[]
+      }
+      record_development_observation: {
+        Args: {
+          p_care_space_id: string
+          p_child_id: string
+          p_confirmation_sha256: string
+          p_document_ids: string[]
+          p_domain: string
+          p_idempotency_key: string
+          p_input_sha256: string
+          p_milestone_id: string
+          p_observation: string
+          p_observed_on: string
+          p_provenance_type: string
+          p_status: string
+          p_supersedes_observation_id: string
+          p_title: string
+        }
+        Returns: {
+          observation_id: string
           outcome: string
         }[]
       }

@@ -46,3 +46,17 @@ The exact 17 WHO/CDC source hashes were independently revalidated during closure
 - Urgent medication harm remains owned by the deterministic module `04` boundary and creates no medication write or operational escalation.
 
 This conveyed approval permits the exact minimal CO/US acetaminophen packages documented on 2026-08-22 to proceed through checksum-bound attestation and release. It does not approve any additional medication, presentation, extrapolated dose range, or recommendation. This record remains neither Dr. Trujillo's signature nor a claim of his electronic identity.
+
+## Module 08 scope accepted
+
+On 2026-08-22, the product owner explicitly stated in the active Codex task that Dr. Trujillo approved all module 08 work units that declare `requires_clinical_approval: true` and instructed the repository agent to develop them. This is recorded as `product_owner_conveyed`; it is not a personal signature, electronic identity, or claim that the repository agent witnessed the review.
+
+The conveyed scope accepts these boundaries:
+
+- Nutrition output is educational only. It never diagnoses allergy, treats disease, prescribes a diet, guarantees safety, recommends challenge/reintroduction, or weakens allergy, texture, choking, supervision, urgent-preflight, or professional-plan exclusions.
+- Colombia-first and United-States-ready content remains jurisdiction-separated. Every usable block, recipe, framework, and rule must bind exact sources, license/rights evidence, version, effective window, translation state, artifact checksum, algorithm version, deterministic fixtures, and this approval record.
+- Caregiver development content supports observation and conversation only. It never assigns achievement, developmental age, delay, autism, diagnosis, screening result, classification, or professional conclusion.
+- EAD-3 remains professional-only. Consumer/model schemas, prompts, tools, channels, fixtures, and eval output contain no items, responses, scoring, cutoffs, classifications, or simulated administration.
+- Observation writes remain caregiver-confirmed neutral facts; drafts, chat/document extraction, and attachments never become confirmed clinical facts without the declared confirmation and idempotency gates.
+
+This conveyed approval authorizes implementation and checksum-bound packaging of module 08. It does not waive source or license verification, approve content that is not represented by the recorded hashes, authorize destructive data operations, publish private objects, deploy, activate a production package, or enable United States rollout. Any artifact that cannot prove its exact provenance and rights remains unavailable.

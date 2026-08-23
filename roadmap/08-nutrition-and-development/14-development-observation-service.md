@@ -2,7 +2,7 @@
 id: AT-08-14
 title: Record confirmed observations
 module: 08-nutrition-and-development
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-08-13]
@@ -128,11 +128,22 @@ Commit exclusive paths with feat(development): record confirmed observations; no
 
 ## Completion checklist
 
-- [ ] Exact interfaces and provenance are implemented.
-- [ ] Same-child authorization tests pass.
-- [ ] Source/license/approval gates fail closed.
-- [ ] No diagnosis, screening, prescription, or unsafe reassurance appears.
-- [ ] Urgent behavior remains emergency-department-only.
+- [x] Exact interfaces and provenance are implemented.
+- [x] Same-child authorization tests pass.
+- [x] Source/license/approval gates fail closed.
+- [x] No diagnosis, screening, prescription, or unsafe reassurance appears.
+- [x] Urgent behavior remains emergency-department-only.
+
+### Recorded 2026-08-23
+
+- Implementation commit: `37a7aa5`.
+- Changed paths: `src/application/development/observation-service.ts` and `tests/application/development/observation-service.test.ts` only.
+- Red evidence: the focused test initially failed because the service module did not exist. Root review then added a targeted regression that failed while the public preview exposed internal confirmation material; the implementation now returns only the normalized draft and opaque bound digests.
+- Fresh verification: `npm test -- tests/application/development/observation-service.test.ts` passed 12/12; `npm test -- tests/clinical/development tests/application/development` passed 93/93; `npm run typecheck` exited 0.
+- Negative matrix: clinical/authority-field input, confirmation drift, changed replay, revoked/sibling/foreign-space/timezone/permission-widened scope, attachment mismatch, foreign predecessor, withdrawal drift, mixed-scope listing, and storage rollback all fail closed.
+- Review decision: the root reviewed the full staged diff, removed the internal confirmation-material exposure, confirmed append-only correction/withdrawal behavior, and found no secret, artifact, forbidden-path, diagnosis, score, booking, notification, or urgent-output surface.
+- The service consumes the AT-08-13 RPC contract through scoped transaction/repository ports; its concrete Supabase adapter remains owned by the later tool/persistence integration module, so this leaf performs no Cloud mutation.
+- `AT-08-15` and `AT-08-16` are newly unblocked.
 
 ## Handoff
 

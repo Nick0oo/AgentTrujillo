@@ -2,7 +2,7 @@
 id: AT-08-15
 title: Enforce private attachment policy
 module: 08-nutrition-and-development
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-08-14]
@@ -128,11 +128,22 @@ Commit exclusive paths with feat(development): enforce private attachment policy
 
 ## Completion checklist
 
-- [ ] Exact interfaces and provenance are implemented.
-- [ ] Same-child authorization tests pass.
-- [ ] Source/license/approval gates fail closed.
-- [ ] No diagnosis, screening, prescription, or unsafe reassurance appears.
-- [ ] Urgent behavior remains emergency-department-only.
+- [x] Exact interfaces and provenance are implemented.
+- [x] Same-child authorization tests pass.
+- [x] Source/license/approval gates fail closed.
+- [x] No diagnosis, screening, prescription, or unsafe reassurance appears.
+- [x] Urgent behavior remains emergency-department-only.
+
+### Recorded 2026-08-23
+
+- Implementation commit: `fe0f329`.
+- Changed paths: `src/clinical/development/attachment-policy.ts` and `tests/clinical/development/attachment-policy.test.ts` only.
+- Red evidence: the focused test initially failed because the policy module did not exist. Root review added separate failing regressions for revoked retention-policy provenance and a cutoff-dependent authorization proof that would have broken preview/confirm convergence.
+- Fresh verification: `npm test -- tests/clinical/development/attachment-policy.test.ts` passed 20/20; `npm test -- tests/clinical/development tests/application/development` passed 113/113; `npm run typecheck` exited 0.
+- Negative matrix: revoked/sibling/foreign-space/actor/timezone/permission scopes, mixed object scope, public/permanent URL, wrong bucket/path/purpose, expired or replay-unsafe ticket, MIME/size/hash mismatch, unavailable/rejected/future scan, missing/revoked/expired consent, revoked/expired retention, inactive lifecycle, and unknown fields all deny deterministically.
+- Review decision: the root verified the policy returns only trusted private attachment/proof values, never a URL or screening/diagnostic interpretation; authorization proofs remain stable across valid fresh cutoffs while the decision digest still records its evaluation cutoff.
+- Module 09 path/ticket/link contracts were read before implementation. This leaf performs no Storage access, Cloud mutation, deletion, upload, download, or public-link creation.
+- `AT-08-17` remains blocked on `AT-08-08` and `AT-08-16`; no new leaf is unblocked solely by this completion.
 
 ## Handoff
 

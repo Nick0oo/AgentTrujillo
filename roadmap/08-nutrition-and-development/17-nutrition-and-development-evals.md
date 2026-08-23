@@ -2,7 +2,7 @@
 id: AT-08-17
 title: Prove nutrition/development boundaries
 module: 08-nutrition-and-development
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-08-08, AT-08-11, AT-08-15, AT-08-16]
@@ -128,11 +128,22 @@ Commit exclusive paths with feat(nutrition): prove nutrition/development boundar
 
 ## Completion checklist
 
-- [ ] Exact interfaces and provenance are implemented.
-- [ ] Same-child authorization tests pass.
-- [ ] Source/license/approval gates fail closed.
-- [ ] No diagnosis, screening, prescription, or unsafe reassurance appears.
-- [ ] Urgent behavior remains emergency-department-only.
+- [x] Exact interfaces and provenance are implemented.
+- [x] Same-child authorization tests pass.
+- [x] Source/license/approval gates fail closed.
+- [x] No diagnosis, screening, prescription, or unsafe reassurance appears.
+- [x] Urgent behavior remains emergency-department-only.
+
+### Recorded 2026-08-23
+
+- Implementation commit: `145b3b0` (`feat(nutrition): prove nutrition/development boundaries`).
+- Changed paths: `tests/evals/nutrition-development.eval.ts` and `docs/verification/nutrition-development.md` only.
+- Red evidence: direct execution initially failed because the eval file did not exist. The first complete run then exposed two incorrect fixture expectations—unknown professional-plan evidence and the plural attachment-denial contract—which were corrected without changing production clinical behavior.
+- Deterministic evidence: 23/23 synthetic non-PHI cases passed at pinned digest `ec94522e79250d9dc0867eaf5eb68f489910ab9d7dfc3b918e454170ff929793`, with zero critical discrepancies, leakage findings, isolation failures, provenance gaps, or cross-country mixes. The eval uses no model or provider.
+- Fresh module verification: nutrition/development application and clinical suites passed 302/302; Cloud observation pgTAP passed 35/35 and rolled back; typecheck, Eve/Nitro build, Eve 0.27.13 baseline, and discovery all exited 0. Discovery reported zero errors and warnings.
+- Cloud evidence: linked project `yapjiinrjsrothzgzxsv` (`CreciendoApp`) was used. AT-08-17 made no migration, reset, deletion, truncation, content activation, deployment, or persistent remote mutation.
+- Approval evidence: conveyed clinical approval remains bound to record digest `7174f9b96ec3f780f95e915b08f3525a89374f922fe253af25a4afc43375fc00`; no personal signature or attributed electronic identity is claimed.
+- Root review: exact task paths, staged diff, whitespace, forbidden paths, artifacts, and secret patterns were reviewed clean before the focused commit. `AT-10-10` and `AT-10-16` are newly dependency-unblocked; Module 08 is 17/17 complete.
 
 ## Handoff
 

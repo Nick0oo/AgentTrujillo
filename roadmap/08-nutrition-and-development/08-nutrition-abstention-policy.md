@@ -2,7 +2,7 @@
 id: AT-08-08
 title: Apply nutrition abstention policy
 module: 08-nutrition-and-development
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-08-05, AT-08-07, AT-04-10]
@@ -128,11 +128,22 @@ Commit exclusive paths with feat(nutrition): apply nutrition abstention policy; 
 
 ## Completion checklist
 
-- [ ] Exact interfaces and provenance are implemented.
-- [ ] Same-child authorization tests pass.
-- [ ] Source/license/approval gates fail closed.
-- [ ] No diagnosis, screening, prescription, or unsafe reassurance appears.
-- [ ] Urgent behavior remains emergency-department-only.
+- [x] Exact interfaces and provenance are implemented.
+- [x] Same-child authorization tests pass.
+- [x] Source/license/approval gates fail closed.
+- [x] No diagnosis, screening, prescription, or unsafe reassurance appears.
+- [x] Urgent behavior remains emergency-department-only.
+
+### Recorded 2026-08-23
+
+- Implementation commit: `a29d513`.
+- Changed paths: `src/clinical/nutrition/abstention.ts` and `tests/clinical/nutrition/abstention.test.ts` only.
+- Approval/source evidence: educational output requires the exact AT-08-05 resolution evidence, AT-08-06 composition digest, AT-08-07 texture decision digest, and conveyed clinical approval record digest `7174f9b96ec3f780f95e915b08f3525a89374f922fe253af25a4afc43375fc00`.
+- Red evidence: the focused suite first failed because `abstention.ts` did not exist. Root review then added a failing regression showing an unresolved restriction could be hidden by a different eligible recipe; the correction maps unresolved reaction/restriction evidence to professional review and ordinary missing texture/readiness evidence to insufficient data.
+- Fresh verification: `npm test -- tests/clinical/nutrition/abstention.test.ts` passed 31/31; `npm test -- tests/clinical/nutrition tests/safety/clinical-response-policy.test.ts tests/safety/professional-review-policy.test.ts` passed 130/130; `npm run typecheck` exited 0.
+- Negative matrix: urgent reaction precedence, non-urgent allergy/reaction, swallowing, growth/condition, special diet, professional plan, age scope, conflicting/missing facts, unavailable packages, no eligible recipe, review/excluded texture, source/approval/composition/texture drift, hidden exclusions, prohibited content, and revoked/sibling/foreign-space/timezone/permission scope changes were covered.
+- Review decision: only `allowed` and exact `transform_required` dispositions can return approved educational guidance. Urgent returns only the terminal marker for Module 04 rendering; non-urgent review reuses the approved non-operational pediatrician copy with no Dr. Trujillo contact, handoff, booking, or notification.
+- No diagnosis, therapeutic diet, allergy determination, first aid, urgent decoration, database/Storage/Supabase Cloud mutation, deployment, or content activation was added. `AT-08-17` is now fully dependency-unblocked.
 
 ## Handoff
 

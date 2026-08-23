@@ -2,7 +2,7 @@
 id: AT-08-13
 title: Make observation writes replay-safe
 module: 08-nutrition-and-development
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-08-12, AT-02-05]
@@ -16,16 +16,20 @@ database_change: true
 requires_clinical_approval: false
 touches:
   create:
-    - supabase/migrations/20260816160000_development_observation_idempotency.sql
-    - supabase/tests/029_development_observation_idempotency.test.sql
-    - src/generated/database.types.ts
-  modify: []
+    - supabase/migrations/20260822130000_development_observation_idempotency.sql
+    - supabase/migrations/20260822130100_development_observation_coalesce_fix.sql
+    - supabase/tests/036_development_observation_idempotency.test.sql
+  modify:
+    - agent/lib/supabase/database.types.ts
+    - src/persistence/supabase/database.types.ts
   test:
-    - supabase/tests/029_development_observation_idempotency.test.sql
+    - supabase/tests/036_development_observation_idempotency.test.sql
 exclusive_paths:
-  - supabase/migrations/20260816160000_development_observation_idempotency.sql
-  - supabase/tests/029_development_observation_idempotency.test.sql
-  - src/generated/database.types.ts
+  - supabase/migrations/20260822130000_development_observation_idempotency.sql
+  - supabase/migrations/20260822130100_development_observation_coalesce_fix.sql
+  - supabase/tests/036_development_observation_idempotency.test.sql
+  - agent/lib/supabase/database.types.ts
+  - src/persistence/supabase/database.types.ts
 forbidden_paths:
   - .env
   - agent/tools/**
@@ -73,7 +77,7 @@ Only frontmatter paths; synthetic non-PHI fixtures and existing authorization/go
 
 ## Forbidden files and operations
 
-Never read .env, mutate applied migrations/remote state, bypass AuthorizedChildScope, source clinical truth from the model, reproduce unlicensed content, add consumer EAD-3, or emit diagnosis/prescription/emergency extras.
+Never edit or print `.env`, rewrite applied migrations, delete/reset/truncate remote data, bypass AuthorizedChildScope, source clinical truth from the model, reproduce unlicensed content, add consumer EAD-3, or emit diagnosis/prescription/emergency extras. Per the current user instruction, this leaf may apply only its reviewed forward-only additive migration to the exact verified linked Supabase Cloud project after dry-run/preflight.
 
 ## Interfaces and types
 
@@ -85,7 +89,7 @@ Atomic RPC claims key, inserts observation/attachments, stores result; identical
 
 ## Database and Storage contract
 
-Forward-only additive migration with composite scope, immutable replay behavior, forced RLS, least grants, generated types, and clean/upgrade local tests; no remote apply.
+Forward-only additive migration with composite scope, immutable replay behavior, forced RLS, least grants, generated types, and clean/upgrade verification. The current user instruction authorizes a reviewed Cloud apply to linked project `yapjiinrjsrothzgzxsv` (`CreciendoApp`) only: verify identity and migration plan immediately before apply, never delete/reset data, run rollback-safe verification, and record linked impact plus rollback instructions.
 
 ## Authorization and isolation
 
@@ -126,15 +130,26 @@ Record files, source/package/license/approval/algorithm digests, test counts, ne
 
 ## Commit protocol
 
-Commit exclusive paths with feat(development): make observation writes replay-safe; no remote mutation, activation, or unrelated edit.
+Commit exclusive paths with feat(development): make observation writes replay-safe; the only permitted remote mutation is the exact reviewed forward additive migration described above, with no data deletion, package activation, deployment, or unrelated edit.
 
 ## Completion checklist
 
-- [ ] Exact interfaces and provenance are implemented.
-- [ ] Same-child authorization tests pass.
-- [ ] Source/license/approval gates fail closed.
-- [ ] No diagnosis, screening, prescription, or unsafe reassurance appears.
-- [ ] Urgent behavior remains emergency-department-only.
+- [x] Exact interfaces and provenance are implemented.
+- [x] Same-child authorization tests pass.
+- [x] Source/license/approval gates fail closed.
+- [x] No diagnosis, screening, prescription, or unsafe reassurance appears.
+- [x] Urgent behavior remains emergency-department-only.
+
+### Recorded 2026-08-23
+
+- Implementation commit: `ea410b7`.
+- Changed paths: forward migrations `20260822130000` and `20260822130100`, SQL test `036`, and both owned generated Supabase type contracts.
+- Red evidence: the linked Cloud test failed before implementation because the RPC did not exist. The first applied RPC then exposed invalid qualified `COALESCE` syntax; its test transaction rolled back, the applied migration remained immutable, and forward fix `20260822130100` corrected only the installed definition.
+- Linked impact: exact healthy project `yapjiinrjsrothzgzxsv` (`CreciendoApp`, PostgreSQL 17) received additive columns, composite constraints, partial uniqueness, immutable guards, a fixed-search-path `SECURITY DEFINER` RPC, and least-privilege grants. No reset, delete, truncate, deployment, package activation, or unrelated mutation occurred.
+- Fresh Cloud evidence: the 35/35 pgTAP file passed through `supabase db query --linked --file` with `finish(true)` because `supabase test db --linked` required unavailable Docker. Its transaction rolled back all fixtures; follow-up counts confirmed zero fixture users/observations and no persisted pgTAP extension. Cloud lint had zero errors and only four pre-existing medication warnings.
+- Generated contracts are byte-identical at SHA-256 `955B5A8D8A93FE2C8E4FBE6F56C7677DA4A708225E846D9839AAE9C4931C2082`; `npm run typecheck` exited 0 and a post-commit dry-run reported the remote database up to date.
+- Non-destructive rollback plan: ship a forward migration that first revokes RPC execution and routes callers off, then replaces the RPC with the last known-good definition while retaining additive columns, rows, and document links. Dropping columns or observations is intentionally excluded because it would delete data.
+- `AT-08-14` is newly unblocked.
 
 ## Handoff
 

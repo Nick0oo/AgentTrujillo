@@ -13,6 +13,10 @@ This module supplies Colombia-first, US-ready educational nutrition content and 
 
 All seventeen leaves are complete and evidence proves same-child profile/reaction access, deny-first eligibility, allergy/texture/choking exclusions, approved-only deterministic composition, and abstention outside scope. It also proves caregiver observations remain neutral facts, framework content is rights-cleared and non-screening, attachments stay private, EAD-3 cannot leak through routes/tools/prompts, writes converge on replay, and critical clinical/isolation/content-rights failures are zero.
 
+## Completion
+
+Completed 2026-08-23: **17/17 leaves completed, 0 pending**. Final implementation commit `145b3b0` proves the exit gate with 23/23 deterministic eval cases, 302/302 module tests, and 35/35 linked Supabase Cloud pgTAP assertions. Full evidence is recorded in [nutrition and development verification](../../docs/verification/nutrition-development.md).
+
 ## Dependency graph
 
 ```text
@@ -25,6 +29,20 @@ AT-08-08 + AT-08-11 + AT-08-15 + AT-08-16 -> AT-08-17
 ```
 
 Nutrition profile/reaction queries and approved-content packaging are parallel-safe after shared types. Development framework and observation chains are parallel until the final professional-boundary and eval gate.
+
+Execution amendment (2026-08-22): `AT-08-02`, `AT-08-03`, and `AT-08-09` form parallel group `module-08-foundations`. Their dependencies are complete, their exact paths and public contracts are disjoint, and none changes schema, generated types, packages, root configuration, or remote state. This makes the existing parallel-safe module declaration explicit in leaf frontmatter; later leaves retain their declared execution mode unless separately proven and recorded.
+
+Execution amendment (2026-08-22): after the foundation commits, `AT-08-04`, `AT-08-10`, and `AT-08-12` form parallel group `module-08-policy-branches`. They consume separate completed contracts, own disjoint pure-policy paths, and change no shared type, schema, migration, generated contract, dependency, root configuration, or remote state. Conveyed clinical approval is recorded at `7b3d335`; exact runtime content still fails closed unless checksum/source/rights evidence resolves.
+
+Execution amendment (2026-08-22): after `AT-08-10` completed, `AT-08-05` and `AT-08-11` form parallel group `module-08-content-queries`. The nutrition package loader and scoped development query consume separate completed contracts, own disjoint paths, and do not change shared types, schema, dependencies, root configuration, or remote state. `AT-08-13` remains outside this group because migrations, RPC/RLS, and generated types are sequential.
+
+Path amendment (2026-08-22): `AT-08-13` owns new migration `20260822130000_development_observation_idempotency.sql`, SQL test `036_development_observation_idempotency.test.sql`, and both active generated-type contracts: `agent/lib/supabase/database.types.ts` and `src/persistence/supabase/database.types.ts`. The original leaf names collided with existing migration `20260816160000` and test `029`, and `src/generated/database.types.ts` does not exist. The follow-up addition of the `agent/` type path reflects the repository generator target and prevents its two Supabase consumers from drifting. Existing applied migrations remain immutable.
+
+Forward-fix amendment (2026-08-23): Cloud execution of the new observation RPC exposed three invalid schema-qualified `COALESCE` uses. The failing pgTAP transaction rolled back all fixtures. Applied migration `20260822130000` remains immutable; `AT-08-13` additionally owns forward migration `20260822130100_development_observation_coalesce_fix.sql`, which replaces only those qualified tokens in the exact installed RPC definition and reasserts least-privilege grants.
+
+Cloud execution amendment (2026-08-22): the current user instruction supersedes AT-08-13's earlier local-only wording and authorizes only its reviewed forward additive migration on verified linked project `yapjiinrjsrothzgzxsv` (`CreciendoApp`). The root must recheck project identity and dry-run plan, use the environment supplied from `main` without printing or copying secrets, never reset/delete/truncate data, generate both owned type contracts from the resulting schema, and record linked evidence plus a forward rollback plan. This does not authorize deployment, content activation, or any other remote mutation.
+
+Execution override (2026-08-23): by explicit current user instruction, `AT-08-13` through `AT-08-17` and the remaining nutrition chain are implemented and reviewed directly by the root agent without subagents. The root retains exclusive-path checks, test-first evidence where behavior changes, fresh diff review, Cloud safeguards, focused commits, and roadmap evidence. This user-authorized exception supersedes the default worker configuration only for the remaining Module 08 session.
 
 ## Work-unit index
 
@@ -56,8 +74,8 @@ Menus and recipes are educational ideas filtered by exact approved rules; they a
 
 ```powershell
 npm test -- tests/clinical/nutrition tests/application/nutrition tests/clinical/development tests/application/development
-npm run eval -- nutrition-development
-npx supabase test db --local
+node --input-type=module -e "import { startVitest } from 'vitest/node'; const ctx = await startVitest('test', [], { run: true, include: ['tests/evals/nutrition-development.eval.ts'] }); await ctx?.close(); process.exitCode = ctx?.state.getCountOfFailedTests() ? 1 : 0;"
+npx supabase db query --linked --file supabase/tests/036_development_observation_idempotency.test.sql
 npm run typecheck
 npm run build
 ```

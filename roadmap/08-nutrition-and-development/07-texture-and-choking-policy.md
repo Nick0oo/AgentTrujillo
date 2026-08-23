@@ -2,7 +2,7 @@
 id: AT-08-07
 title: Enforce texture and choking policy
 module: 08-nutrition-and-development
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-08-05, AT-08-06]
@@ -128,11 +128,22 @@ Commit exclusive paths with feat(nutrition): enforce texture and choking policy;
 
 ## Completion checklist
 
-- [ ] Exact interfaces and provenance are implemented.
-- [ ] Same-child authorization tests pass.
-- [ ] Source/license/approval gates fail closed.
-- [ ] No diagnosis, screening, prescription, or unsafe reassurance appears.
-- [ ] Urgent behavior remains emergency-department-only.
+- [x] Exact interfaces and provenance are implemented.
+- [x] Same-child authorization tests pass.
+- [x] Source/license/approval gates fail closed.
+- [x] No diagnosis, screening, prescription, or unsafe reassurance appears.
+- [x] Urgent behavior remains emergency-department-only.
+
+### Recorded 2026-08-23
+
+- Implementation commit: `fc7a8b7`.
+- Changed paths: `src/clinical/nutrition/texture-policy.ts` and `tests/clinical/nutrition/texture-policy.test.ts` only.
+- Approval/source evidence: the rule pack is country/effective-window/source/license/rights/fixture/checksum bound and requires conveyed clinical approval record digest `7174f9b96ec3f780f95e915b08f3525a89374f922fe253af25a4afc43375fc00`; approved user text must resolve from exact AT-08-06 recipe guidance blocks.
+- Red evidence: the focused suite first failed because `texture-policy.ts` did not exist. Root review then produced two additional failing regressions: unrelated global rules incorrectly required blocks in every recipe, and a known transformation incorrectly masked a second ingredient with an unknown form. Both failed before their focused corrections and passed afterward.
+- Fresh verification: `npm test -- tests/clinical/nutrition/texture-policy.test.ts` passed 21/21; `npm test -- tests/clinical/nutrition` passed 84/84; `npm run typecheck` exited 0.
+- Negative matrix: grapes, hard foods, thick nut butter, bones, sausage coins, whole nuts, sticky forms, missing ingredient closure, unknown form/readiness/swallowing, BLW bypass, checksum/approval/rights/country/composition drift, revoked/sibling/foreign-space/timezone/permission scopes, and request-supplied authority/bypass/urgent fields were covered.
+- Review decision: disposition precedence is `excluded > review_required > transform_required > allowed`; substitutions are exact approved transformations, BLW cannot weaken them, and unknowns cannot be hidden by a lower-priority allowed or transform decision. Active choking remains exclusively owned by Module 04 preflight.
+- No first aid, zero-risk promise, diagnosis, treatment, contact/booking action, database/Storage/Cloud mutation, deployment, or content activation was added. `AT-08-08` is newly unblocked.
 
 ## Handoff
 

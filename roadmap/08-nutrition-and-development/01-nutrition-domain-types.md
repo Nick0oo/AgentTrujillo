@@ -2,7 +2,7 @@
 id: AT-08-01
 title: Define nutrition guidance contracts
 module: 08-nutrition-and-development
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-04-14, AT-05-02, AT-03-11]
@@ -122,17 +122,28 @@ Trace Colombia-first and US-ready synthetic cases to exact source/package/licens
 
 Record files, source/package/license/approval/algorithm digests, test counts, negative matrix, deterministic hashes, commands/exits, reviewer decisions, and commit.
 
+### Recorded 2026-08-22
+
+- Implementation commit: `f1512d5` (`feat(nutrition): define nutrition guidance contracts`).
+- Changed implementation paths: `src/clinical/nutrition/types.ts`; `tests/clinical/nutrition/types.test.ts`.
+- TDD red: `npm test -- tests/clinical/nutrition/types.test.ts` exited `1` because the new module did not exist.
+- Fresh root verification after review: focused nutrition contracts `6/6`; full Vitest `571` passed and `1` skipped; `npm run typecheck` exit `0`; synthetic process-only `npm run build` exit `0`.
+- Independent reviewer: initial `CHANGES_REQUIRED`; redundant `completedMonths` was removed, immutable algorithm/fixture/rights evidence was added, and the negative/serialization/union matrix was expanded. Re-review verdict: `PASS`, no material findings.
+- Same-child evidence for this pure type leaf is structural: all ownership, scope, country-of-care, approval-authority, and other unknown inputs are rejected. Runtime child isolation remains owned by `AT-08-02` and `AT-08-03`.
+- Accepted boundary: Zod validates immutable provenance shape but cannot authorize mutable external state. Current approval, rights, and revocation resolution is fail-closed in `AT-08-05` before approved content becomes usable.
+- No clinical content, remote state, database, Storage object, environment file, credential, or generated artifact was changed. Newly unblocked: `AT-08-02`, `AT-08-03`, `AT-08-05`.
+
 ## Commit protocol
 
 Commit exclusive paths with feat(nutrition): define nutrition guidance contracts; no remote mutation, activation, or unrelated edit.
 
 ## Completion checklist
 
-- [ ] Exact interfaces and provenance are implemented.
-- [ ] Same-child authorization tests pass.
-- [ ] Source/license/approval gates fail closed.
-- [ ] No diagnosis, screening, prescription, or unsafe reassurance appears.
-- [ ] Urgent behavior remains emergency-department-only.
+- [x] Exact interfaces and provenance are implemented.
+- [x] Same-child authorization inputs are structurally excluded; runtime isolation remains in the scoped query leaves.
+- [x] Source/license/approval evidence fails structural validation; live resolution is reserved for `AT-08-05`.
+- [x] No diagnosis, screening, prescription, or unsafe reassurance appears.
+- [x] Urgent behavior remains emergency-department-only.
 
 ## Handoff
 
