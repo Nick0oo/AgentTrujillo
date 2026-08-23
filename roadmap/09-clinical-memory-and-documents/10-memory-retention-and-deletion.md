@@ -18,6 +18,7 @@ touches:
   create:
     - supabase/migrations/20260823210000_memory_retention_deletion.sql
     - supabase/migrations/20260823210100_memory_retention_replay_uniqueness.sql
+    - supabase/migrations/20260823210200_memory_retention_scoped_link_cleanup.sql
     - supabase/tests/039_memory_retention_deletion.test.sql
     - src/application/memory/retention-service.ts
     - src/persistence/supabase/memory-retention-repository.ts
@@ -33,6 +34,7 @@ touches:
 exclusive_paths:
   - supabase/migrations/20260823210000_memory_retention_deletion.sql
   - supabase/migrations/20260823210100_memory_retention_replay_uniqueness.sql
+  - supabase/migrations/20260823210200_memory_retention_scoped_link_cleanup.sql
   - supabase/tests/039_memory_retention_deletion.test.sql
   - src/application/memory/retention-service.ts
   - src/persistence/supabase/memory-retention-repository.ts
@@ -104,6 +106,8 @@ Use the single forward migration declared above; it is additive, clean/upgrade t
 Cloud chronology and path amendment (2026-08-23): authoritative linked history is already applied through `20260823200000`, so root assigned the next forward-only migration `20260823210000`; the rollback-only test remains the unused planned `039`. The outcome and interface always required `MemoryRetentionService.requestDeletion`/`execute` plus a request-scoped Cloud boundary, but their source/test paths were missing from frontmatter; the four declared service/repository paths are added before selection. The Module 09 Cloud override governs the reviewed apply and supersedes the historical local-only sentence above.
 
 Forward replay correction (2026-08-23): root review after applying `20260823210000` found its partial open-request uniqueness allowed a new idempotency key after a deletion reached `completed`. The applied migration remains immutable. The same active leaf therefore owns additive `20260823210100_memory_retention_replay_uniqueness.sql`, which requires permanent composite item uniqueness after a zero-duplicate preflight; SQL test `039` gains the completed-item replay case before closure.
+
+Forward link-scope correction (2026-08-23): root isolation review found the applied cleanup deleted `document_links` by globally opaque `resource_id` without joining the owning document scope. Applied history stays immutable. Additive `20260823210200_memory_retention_scoped_link_cleanup.sql` replaces only the cleanup RPC so link deletion joins `documents` on the exact request care space and child; test `039` adds a forged foreign-document link with the same resource UUID and requires it to survive.
 
 ## Authorization and isolation
 
