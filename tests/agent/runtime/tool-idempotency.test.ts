@@ -21,6 +21,7 @@ import {
   type IdempotentToolContext,
   type ToolHandlerOutcome,
 } from "../../../agent/lib/runtime/tool-idempotency";
+import { mapToolError } from "../../../agent/lib/runtime/safe-tool-errors";
 
 const NOW = new Date("2026-08-23T12:00:00.000Z");
 const ACTOR = "00000000-0000-4000-8000-000000000001";
@@ -479,5 +480,25 @@ describe("tool idempotency wrapper", () => {
     const valid = context() as unknown as Record<string, unknown>;
     await expect(invoke(Object.freeze({ ...valid }) as never, PAYLOAD, null))
       .rejects.toEqual(new ToolIdempotencyError("TOOL_IDEMPOTENCY_DENIED"));
+  });
+
+  it("preserves a branded safe error thrown by the domain handler", async () => {
+    const invoke = withToolIdempotency({
+      toolId: "get_growth_summary",
+      schemaVersion: "get-growth-summary.v1",
+      effect: "read_only",
+      operation: "no_effect",
+      inputSchema: INPUT_SCHEMA,
+      resultSchema: RESULT_SCHEMA,
+    }, async () => {
+      throw mapToolError(Object.freeze({ code: "RULE_UNAVAILABLE" }), { effectState: "none" });
+    });
+
+    await expect(invoke(context(), PAYLOAD, null)).rejects.toMatchObject({
+      name: "SafeToolError",
+      code: "CLINICAL_POLICY_UNAVAILABLE",
+      retryable: false,
+      retryAfterSeconds: null,
+    });
   });
 });

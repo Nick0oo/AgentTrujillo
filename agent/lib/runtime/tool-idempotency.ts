@@ -27,6 +27,7 @@ import {
   authorizeToolInvocation,
   type RegisteredToolId,
 } from "./tool-permission-policy";
+import { isSafeToolError } from "./safe-tool-errors";
 
 const REQUEST_VERSION = "tool-idempotency-request.v1" as const;
 const SCHEMA_VERSION = z.string().min(1).max(128).regex(/^[a-z0-9][a-z0-9._-]*$/u);
@@ -297,7 +298,8 @@ export function withToolIdempotency<TInput, TResult>(
     let rawOutcome: unknown;
     try {
       rawOutcome = await handler(runtime, input.data);
-    } catch {
+    } catch (error) {
+      if (isSafeToolError(error)) throw error;
       fail("TOOL_IDEMPOTENCY_UNAVAILABLE");
     }
     const outcome = handlerOutcomeSchema.safeParse(rawOutcome);
