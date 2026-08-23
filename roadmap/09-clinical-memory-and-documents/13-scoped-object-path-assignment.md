@@ -17,6 +17,7 @@ requires_clinical_approval: false
 touches:
   create:
     - supabase/migrations/20260823220000_document_storage_hardening.sql
+    - supabase/migrations/20260823220100_document_reservation_time_fix.sql
     - supabase/tests/041_document_storage_hardening.test.sql
   modify:
     - agent/lib/supabase/database.types.ts
@@ -25,6 +26,7 @@ touches:
     - supabase/tests/041_document_storage_hardening.test.sql
 exclusive_paths:
   - supabase/migrations/20260823220000_document_storage_hardening.sql
+  - supabase/migrations/20260823220100_document_reservation_time_fix.sql
   - supabase/tests/041_document_storage_hardening.test.sql
   - agent/lib/supabase/database.types.ts
   - src/persistence/supabase/database.types.ts
@@ -90,6 +92,8 @@ Server chooses allowed private bucket and path care_space_id/child_id/random doc
 Use the single forward migration declared above; it is additive, clean/upgrade tested, composite-scoped, forced-RLS, least-privilege, replay/immutability safe, and followed by generated-type parity. Never apply remotely in this leaf.
 
 Cloud chronology amendment (2026-08-23): linked history is already applied through `20260823210200`, so the root assigns the next forward-only version `20260823220000_document_storage_hardening.sql` instead of the stale planned filename. The explicit user Cloud-only instruction authorizes the reviewed apply after project/data verification and supersedes the historical local-only sentence; applied migrations remain immutable.
+
+Forward execution correction (2026-08-23): the rollback-only Cloud test exposed PostgreSQL resolving the PL/pgSQL variable name `current_time` as the SQL `time with time zone` value. The applied `20260823220000` stays immutable. Additive `20260823220100_document_reservation_time_fix.sql` replaces the function definition with the unambiguous variable name `v_now`; the same 18-case test is the regression proof.
 
 ## Authorization and isolation
 
