@@ -2,7 +2,7 @@
 id: AT-09-13
 title: Assign opaque child-scoped object paths
 module: 09-clinical-memory-and-documents
-status: ready
+status: in_progress
 execution: sequential
 parallel_group: null
 depends_on: [AT-09-11, AT-09-12]
@@ -16,7 +16,7 @@ database_change: true
 requires_clinical_approval: false
 touches:
   create:
-    - supabase/migrations/20260816200000_document_storage_hardening.sql
+    - supabase/migrations/20260823220000_document_storage_hardening.sql
     - supabase/tests/041_document_storage_hardening.test.sql
   modify:
     - agent/lib/supabase/database.types.ts
@@ -24,7 +24,7 @@ touches:
   test:
     - supabase/tests/041_document_storage_hardening.test.sql
 exclusive_paths:
-  - supabase/migrations/20260816200000_document_storage_hardening.sql
+  - supabase/migrations/20260823220000_document_storage_hardening.sql
   - supabase/tests/041_document_storage_hardening.test.sql
   - agent/lib/supabase/database.types.ts
   - src/persistence/supabase/database.types.ts
@@ -88,6 +88,8 @@ Server chooses allowed private bucket and path care_space_id/child_id/random doc
 ## Database and Storage contract
 
 Use the single forward migration declared above; it is additive, clean/upgrade tested, composite-scoped, forced-RLS, least-privilege, replay/immutability safe, and followed by generated-type parity. Never apply remotely in this leaf.
+
+Cloud chronology amendment (2026-08-23): linked history is already applied through `20260823210200`, so the root assigns the next forward-only version `20260823220000_document_storage_hardening.sql` instead of the stale planned filename. The explicit user Cloud-only instruction authorizes the reviewed apply after project/data verification and supersedes the historical local-only sentence; applied migrations remain immutable.
 
 ## Authorization and isolation
 
