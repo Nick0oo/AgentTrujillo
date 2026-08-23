@@ -55,12 +55,13 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-Modules `01`–`07` have no remaining ready or active work. The content-query group and `AT-08-13` are complete. `AT-08-06` and `AT-08-14` are dependency-ready; `AT-08-14` is selected next to consume the committed replay-safe RPC.
+Modules `01`–`07` have no remaining ready or active work. The content-query group and `AT-08-13` are complete. `AT-08-06` is dependency-ready. `AT-08-14` is active and consumes the committed replay-safe RPC.
 
 ## Active workers
 
 | Worker | Work unit | Claimed paths | Started | State |
 |---|---|---|---|---|
+| `root` | `AT-08-14` | `src/application/development/observation-service.ts`; `tests/application/development/observation-service.test.ts` | 2026-08-23 | `in_progress` |
 
 The completed delegated leaves used GPT-5.6 Luna with reasoning `max`. Per the explicit user instruction recorded on 2026-08-23, the root implements and reviews the remaining Module 08 leaves directly; no new subagents are dispatched. Collision and exclusive-path analysis still applies.
 

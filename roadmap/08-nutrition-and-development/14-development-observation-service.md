@@ -2,7 +2,7 @@
 id: AT-08-14
 title: Record confirmed observations
 module: 08-nutrition-and-development
-status: pending
+status: in_progress
 execution: sequential
 parallel_group: null
 depends_on: [AT-08-13]
