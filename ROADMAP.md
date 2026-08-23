@@ -55,13 +55,13 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-Modules `01`–`08` have no remaining ready or active work. Module 09 is 11/21 completed. `AT-09-10` is in root review at implementation commit `9055358`; `AT-09-11` remains unblocked.
+Modules `01`–`08` have no remaining ready or active work. Module 09 is 12/21 completed. `AT-09-11` is unblocked and awaits selection.
 
 ## Active workers
 
 | Worker | Work unit | Claimed paths | Started |
 |---|---|---|---|
-| `root` | `AT-09-10` | migration `20260823210000`, SQL test `039`, retention service/repository tests, linked generated types | 2026-08-23; root-only execution by explicit user direction |
+| — | — | — | — |
 
 Cloud-only execution override (2026-08-23): by explicit current user instruction, Module 09 uses the verified linked Supabase Cloud project as its only database source of truth. Local reset/test availability or drift is not an execution gate. Database leaves must verify exact project identity, migration impact, recoverability, generated linked types, and rollback-safe Cloud tests before any remote mutation.
 

@@ -2,7 +2,7 @@
 id: AT-09-10
 title: Enforce memory retention and deletion
 module: 09-clinical-memory-and-documents
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-09-05, AT-09-07, AT-09-08]
@@ -152,12 +152,20 @@ Commit exclusive paths with feat(memory): enforce memory retention and deletion;
 
 ## Completion checklist
 
-- [ ] Composite child scope is structural and tested.
-- [ ] Confirmation/lifecycle/provenance are explicit.
-- [ ] Private URLs, secrets, and raw reasoning stay out of model/logs.
-- [ ] Draft extraction never becomes clinical truth automatically.
-- [ ] Replay, revocation, and deletion fail closed.
+- [x] Composite child scope is structural and tested.
+- [x] Confirmation/lifecycle/provenance are explicit.
+- [x] Private URLs, secrets, and raw reasoning stay out of model/logs.
+- [x] Draft extraction never becomes clinical truth automatically.
+- [x] Replay, revocation, and deletion fail closed.
+
+### Recorded 2026-08-23
+
+- Implementation commit: `90553585bcc512f5cde239b998a0ff311d8de40c` (`feat(memory): enforce memory retention and deletion`). Service/repository SHA-256: `3b598b7396709447b8c509b6218ac054545e16b83dbb422ea8f04c4edacdb110` / `c932e40a4116363a53c0ab08cb84d618ae6ba4d242a1d2fbd1e1837f344592ed`; migrations: `67daf9025158064f7ce843f70fd6de4fec6fe3b88318ee6ebe8d56dbe6441c97`, `722b59f7d5c1e9f1e1eb66ca067f95927fd9c7a8f6f97cb9b21818d669f88a53`, `98bfaaffdc83a46b2d53dd4536840f732ee10a0c9d7b670176fd980196a26de2`; SQL test: `ec0d3d6bae7acf1a8267257532a246dc822b50b6b3fee163b8e0a8b2b3170f76`. Both generated types are byte-identical SHA-256 `8f6a72b6516fb9a83f537355c063a89351c84007d68da49427c1b1a3b0b4d3f5`.
+- TDD/review: service/repository tests first failed on missing modules; the completed-item replay case failed before `20260823210100`; the forged foreign-document link failed before `20260823210200`. Final SQL fixture `039` passed `26/26` within `BEGIN/ROLLBACK`; focused application/persistence gates passed `10/10`; accumulated access/memory/provider gates passed `333` with `1` skipped across `25` files. Typecheck and Eve build exited `0`; staged ownership, full diff, whitespace, secrets and forbidden artifacts were clean.
+- Cloud: verified linked `yapjiinrjsrothzgzxsv` / `CreciendoApp`; dry-runs named only each next migration, then applied immutable forward migrations `20260823210000`, `20260823210100`, and `20260823210200`. Linked lint returned zero findings and generated types match. Post-run counts are `0` memory items, `0` embeddings, `0` documents, `0` deletion requests, `0` legal holds and `4` Storage objects; all synthetic data rolled back.
+- Behavior/security: guardian RPC rechecks owner/session/version/composite scope and `record`; retrieval is revoked synchronously. Privileged cleanup alone deletes same-scope embeddings and same-scope document links, then writes bounded `[deleted]` tombstone content and proof. Permanent item uniqueness rejects replay resurrection. Active legal holds preserve source/derived data but never retrieval; released holds can be retried. Retention enqueue is service-role-only, bounded, lock-safe and idempotent. No audit row stores raw content.
+- Applied migrations were never rewritten. The two forward corrections were added after root review exposed replay and link-scope risks. No real row, Storage object, deployment, push, merge, reset, truncate or seed was changed; recovery remains another forward function/index migration, while retrieval stays denied throughout.
 
 ## Handoff
 
-Only the frontmatter blocks IDs become eligible after fresh verification evidence and commit.
+`AT-09-19` and `AT-12-11` now satisfy this dependency; both retain their remaining prerequisites.
