@@ -2,7 +2,7 @@
 id: AT-08-04
 title: Evaluate nutrition eligibility
 module: 08-nutrition-and-development
-status: review
+status: completed
 execution: parallel
 parallel_group: module-08-policy-branches
 depends_on: [AT-08-01, AT-08-02, AT-08-03]
@@ -128,11 +128,20 @@ Commit exclusive paths with feat(nutrition): evaluate nutrition eligibility; no 
 
 ## Completion checklist
 
-- [ ] Exact interfaces and provenance are implemented.
-- [ ] Same-child authorization tests pass.
-- [ ] Source/license/approval gates fail closed.
-- [ ] No diagnosis, screening, prescription, or unsafe reassurance appears.
-- [ ] Urgent behavior remains emergency-department-only.
+- [x] Exact interfaces and provenance are implemented.
+- [x] Only completed trusted same-child query envelopes are consumed; authority aliases are not part of the policy interface.
+- [x] Source/license/approval gates fail closed and exact query/cutoff digests are verified.
+- [x] No diagnosis, treatment, prescription, or unsafe reassurance appears.
+- [x] Urgent behavior remains outside this pure eligibility engine and cannot gain extra actions here.
+
+### Recorded 2026-08-22
+
+- Implementation commit: `1c54e35` (`feat(nutrition): evaluate nutrition eligibility`).
+- Owned paths: `src/clinical/nutrition/eligibility.ts`; `tests/clinical/nutrition/eligibility.test.ts`.
+- Root verification: `npm test -- tests/clinical/nutrition/eligibility.test.ts` -> 11/11 passed, exit 0; `npm run typecheck` -> exit 0.
+- Independent review: PASS after exact reaction enums/lifecycle/confirmation made re-signed malformed envelopes fail closed and chronological age became mandatory.
+- Governance evidence: conveyed clinical approval record `7b3d335`, SHA-256 `7174f9b96ec3f780f95e915b08f3525a89374f922fe253af25a4afc43375fc00`; policy approval, package, artifact, source, rights, fixtures, algorithm, and decision digests remain separately bound.
+- Remote evidence: no Supabase Cloud mutation was required for this pure policy leaf. `AT-08-06` still awaits `AT-08-05`.
 
 ## Handoff
 

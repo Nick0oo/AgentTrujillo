@@ -55,13 +55,12 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-Modules `01`–`07` have no remaining ready or active work. Foundation group `module-08-foundations` is complete. Parallel group `module-08-policy-branches` remains active only with `AT-08-04`; `AT-08-10` and `AT-08-12` are complete, dependency-unblocking `AT-08-11` and sequential database leaf `AT-08-13`.
+Modules `01`–`07` have no remaining ready or active work. Foundation and policy groups are complete. `AT-08-05` and `AT-08-11` are dependency-unblocked on disjoint content/query paths; sequential database leaf `AT-08-13` is also dependency-unblocked but cannot overlap schema/public-contract work.
 
 ## Active workers
 
 | Worker | Work unit | Claimed paths | Started | State |
 |---|---|---|---|---|
-| `at_08_04_worker` | `AT-08-04` | `src/clinical/nutrition/eligibility.ts`; `tests/clinical/nutrition/eligibility.test.ts` | 2026-08-22 | `review` |
 
 Future implementation workers use GPT-5.6 Luna with reasoning `max`. At most three may run concurrently after collision analysis.
 
