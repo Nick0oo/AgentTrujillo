@@ -37,7 +37,7 @@ commit:
 
 ## Outcome
 
-POST /creciendo/v1/sessions creates one Eve session durably bound to authenticated guardian, authorized child scope, channel version, locale, and security version without accepting ownership from the client.
+POST /creciendo/v1/sessions creates one durable product-session shell bound to authenticated guardian, authorized child scope, channel version, locale, and security version without accepting ownership from the client. Eve session materialization is deferred to the first authorized, preflight-safe message because installed Eve 0.27.13 has no empty-session API.
 
 ## Why this exists
 
@@ -60,7 +60,7 @@ AT-11-04, AT-02-14 plus installed Eve 0.27.13 channel behavior and current Supab
 
 ## Scope
 
-POST /creciendo/v1/sessions creates one Eve session durably bound to authenticated guardian, authorized child scope, channel version, locale, and security version without accepting ownership from the client. Exact route/event schemas, ordering, authentication, lifecycle, cancellation, replay, errors, tests, and evidence are included.
+POST /creciendo/v1/sessions creates one durable product-session shell bound to authenticated guardian, authorized child scope, channel version, locale, and security version without accepting ownership from the client. Eve session materialization is deferred to the first authorized, preflight-safe message. Exact route/event schemas, ordering, authentication, lifecycle, cancellation, replay, errors, tests, and evidence are included.
 
 ## Out of scope
 
@@ -80,7 +80,7 @@ Export handleCreateSession(request,auth,deps); input carries child-context token
 
 ## Technical design
 
-Verify context token/current access, claim idempotency, create ownership row and Eve session atomically/compensatably, store only opaque binding metadata, issue continuation token, and prevent orphan session on partial failure.
+Verify context token/current access, claim scoped hash-only idempotency, create the ownership row without invoking Eve, store only opaque binding metadata, issue continuation token, and prevent any pre-message Eve/model/tool effect. Same-process concurrency converges here; the existing RPC signature is made cross-instance atomic by the sole AT-11-10 forward migration before the module exit gate.
 
 ## Database and Storage contract
 

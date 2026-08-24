@@ -37,7 +37,7 @@ commit:
 
 ## Outcome
 
-POST /creciendo/v1/sessions/:id/messages validates ownership, idempotency, bounded normalized content, and runs deterministic safety preflight before any message persistence or Eve invocation.
+POST /creciendo/v1/sessions/:id/messages validates ownership, idempotency, bounded normalized content, and runs deterministic safety preflight before any message persistence or Eve invocation. On the first non-emergency turn it materializes and immutably binds the supported Eve session; no empty Eve session is created by AT-11-05.
 
 ## Why this exists
 
@@ -60,7 +60,7 @@ AT-11-05, AT-04-11, AT-10-33 plus installed Eve 0.27.13 channel behavior and cur
 
 ## Scope
 
-POST /creciendo/v1/sessions/:id/messages validates ownership, idempotency, bounded normalized content, and runs deterministic safety preflight before any message persistence or Eve invocation. Exact route/event schemas, ordering, authentication, lifecycle, cancellation, replay, errors, tests, and evidence are included.
+POST /creciendo/v1/sessions/:id/messages validates ownership, idempotency, bounded normalized content, and runs deterministic safety preflight before any message persistence or Eve invocation. On the first non-emergency turn it materializes and immutably binds the supported Eve session. Exact route/event schemas, ordering, authentication, lifecycle, cancellation, replay, errors, tests, and evidence are included.
 
 ## Out of scope
 
@@ -80,7 +80,7 @@ Export handleSessionMessage(request,auth,deps); input has content parts, client 
 
 ## Technical design
 
-Reauthorize session/child/security version, normalize message, run safety preflight synchronously. Critical result persists minimal safety evidence/event and terminates with emergency-only response; otherwise atomically append client message command and start/resume Eve turn. Images/documents are references, not raw arbitrary URLs.
+Reauthorize session/child/security version, normalize message, run safety preflight synchronously. Critical result persists minimal safety evidence/event and terminates with emergency-only response; otherwise atomically append client message command and start/resume Eve turn. The first non-emergency turn materializes and immutably binds the Eve session through the installed public channel API. Images/documents are references, not raw arbitrary URLs.
 
 ## Database and Storage contract
 

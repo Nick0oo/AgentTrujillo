@@ -76,11 +76,11 @@ Never read .env, trust session/child authority from path/body/token alone, expos
 
 ## Interfaces and types
 
-Add session event sequence/cursor tables or harden existing message/tool event projection, atomic append function, composite session ownership FKs, idempotent source-event uniqueness, terminal constraint, indexes, RLS/grants and generated types.
+Add session event sequence/cursor tables or harden existing message/tool event projection, atomic append function, composite session ownership FKs, idempotent source-event uniqueness, terminal constraint, indexes, RLS/grants and generated types. The same forward migration also hardens the existing `create_owned_agent_session` signature so AT-11-05's hash-only `initial_configuration` bindings converge atomically across instances; it adds no new public route, raw key storage or broader grant.
 
 ## Technical design
 
-Serialize append per session using locked counter/advisory strategy, never rely on timestamp; store safe event envelope or reference with schema/version/digest; cursor query returns after sequence and explicit retention gap. Events are immutable.
+Serialize append per session using locked counter/advisory strategy, never rely on timestamp; store safe event envelope or reference with schema/version/digest; cursor query returns after sequence and explicit retention gap. Events are immutable. Add a scoped partial unique index for Creciendo create-idempotency hashes and make the existing create RPC return the canonical row only for an identical request digest, or zero rows for a conflicting replay.
 
 ## Database and Storage contract
 
