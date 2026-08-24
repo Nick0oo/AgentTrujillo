@@ -2,7 +2,7 @@
 id: AT-11-09
 title: Sign and verify continuation tokens
 module: 11-creciendo-channel-and-streaming
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-03, AT-02-13]
@@ -130,6 +130,7 @@ Root implementation and self-review recorded on 2026-08-24:
 - Replay/authority review: verification is intentionally effect-free and repeatable for reconnect; rotation rejects sequence rollback and creates a new JTI; token sequence cannot exceed the live session sequence; token bindings must match the live trusted scope/session but never replace the mandatory route-level reauthorization.
 - Database/Cloud evidence: `database_change: false`; no client, schema, data, migration, RLS, grant, Storage, environment file or remote state was read or changed.
 - Staged review: exactly the two owned paths were staged; cached diff check, credential/private-key scan, artifact ignore check and personal full diff review were clean.
+- Fresh closure verification after review: focused `6/6`, all channel/access `225` passed with one conditional skip, `npm run typecheck`, and configured `npm run build` each exited `0`.
 
 Record routes/event versions, files, migration/config digests, test/eval counts, concurrency/reconnect matrix, raw fixture hashes, privacy scan, commands/exits, reviewers, and commit.
 
@@ -139,11 +140,11 @@ Commit exclusive paths with feat(channel): sign and verify continuation tokens; 
 
 ## Completion checklist
 
-- [ ] Every route authenticates and verifies current ownership.
-- [ ] Events are versioned, ordered, resumable, and bounded.
-- [ ] Reconnect never duplicates domain effects.
-- [ ] Reasoning, secrets, PHI, and internal payloads do not leak.
-- [ ] Emergency response is terminal and contains no extras.
+- [x] Token verification binds the live trusted scope/session; every consuming route must still reauthorize ownership.
+- [x] Claims are versioned, bounded and carry monotonic last-authorized sequence for resumable transport.
+- [x] Verification replay is effect-free and rotation rejects sequence rollback while generating a unique token ID.
+- [x] Tokens contain only opaque hashes and never reasoning, secrets, PHI, permissions, raw authority or internal payloads.
+- [x] The token policy invokes no model, tool, workflow or emergency behavior.
 
 ## Handoff
 
