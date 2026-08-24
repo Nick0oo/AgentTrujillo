@@ -2,7 +2,7 @@
 id: AT-11-10
 title: Persist monotonic event sequence and cursors
 module: 11-creciendo-channel-and-streaming
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-05, AT-02-04]
@@ -135,6 +135,7 @@ Root implementation and self-review recorded on 2026-08-24:
 - Cancellation/retention review: an authenticated cancel ticket blocks new guardian commands before the external abort, finalizes once with truthful effect state and one terminal event, and replays without a duplicate. Cursor resolution distinguishes invalid from retention gap, and bounded reads cannot bypass the retained floor.
 - Generated/runtime gates: linked type generation wrote `agent/lib/supabase/database.types.ts`; SHA-256 digests were types `AC40604CEFCAD8F16B7C14659958285DA7FECAF7195445654C735C9D9D6EC65D`, migration `BDA6CA96C86B012D0CC64DF41FBEB236CFD39E60D2F5D25D2F312CE744FE6320`, and pgTAP `C47D2A49075C667AA57BA2D60982E28CF76426EEA2DA288AEB8A4CF86AAA2701`. `npm test -- tests/channels` passed `50/50`, `npm run typecheck` exited `0`, and the Eve/Nitro build exited `0` using the ignored environment opaquely without printing or staging any value.
 - Staged review: exactly the three owned paths were staged; cached diff check, forbidden-path/artifact scan, credential/private-key scan and personal generated/schema/grant/trigger/RPC review were clean.
+- Fresh closure verification after review: linked Cloud pgTAP passed `79/79`; all channel tests passed `50/50`; `npm run typecheck` exited `0`; and the configured Eve/Nitro build exited `0`.
 
 Record routes/event versions, files, migration/config digests, test/eval counts, concurrency/reconnect matrix, raw fixture hashes, privacy scan, commands/exits, reviewers, and commit.
 
@@ -144,11 +145,11 @@ Commit exclusive paths with feat(channel): persist monotonic event sequence and 
 
 ## Completion checklist
 
-- [ ] Every route authenticates and verifies current ownership.
-- [ ] Events are versioned, ordered, resumable, and bounded.
-- [ ] Reconnect never duplicates domain effects.
-- [ ] Reasoning, secrets, PHI, and internal payloads do not leak.
-- [ ] Emergency response is terminal and contains no extras.
+- [x] Every database route contract derives the JWT actor and rechecks current owner, care space, child, permission, authorization version, expiry and revocation.
+- [x] Events are versioned, safe-integer ordered, opaque-cursor resumable, retention-aware and byte-bounded.
+- [x] Source/idempotency uniqueness plus locked counters make reconnect and replay effect-free.
+- [x] Recursive deny keys, closed payload shapes, hash-only commands, immutable rows and least grants exclude reasoning, secrets, authority and raw internal payloads.
+- [x] Emergency persists exactly one canonical terminal widget, no guardian message and no dispatch; nothing can append afterward.
 
 ## Handoff
 
