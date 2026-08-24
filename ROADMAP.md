@@ -59,7 +59,7 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-All thirteen Eve tools and all eleven presenters are closed after root review. `AT-10-26` closed at `311dc62` with digest-bound, single-use guardian confirmation metadata and no approval/effect authority. No leaf is active; `AT-10-32` is now the only dependency-ready unit and the final eval/gate remains blocked behind it.
+All thirteen Eve tools and all eleven presenters are closed after root review. `AT-10-26` closed at `311dc62` with digest-bound, single-use guardian confirmation metadata and no approval/effect authority. `AT-10-32` is ready and claimed sequentially by the root on its two exclusive registry/test paths; the final eval/gate remains blocked behind it.
 
 Root replay-receipt amendment for `AT-10-14`: the medication Cloud RPCs already return a durable `created`/`idempotent_replay` outcome, but the verified repository/application adapters discarded it. The leaf now owns only the exact additive port, plan-service, schedule-service, repository and regression-test paths required to propagate that existing receipt into `withToolIdempotency`. No database/API/schema/clinical rule changes or remote effects are authorized, and all existing record-only service methods remain compatible.
 
@@ -73,7 +73,7 @@ Post-closure Module 11/`AT-10-21` compatibility correction for `AT-10-09`: the f
 
 ## Active workers
 
-- None. `AT-10-32` is the next sequential unit after all eleven presenters closed.
+- Root: `AT-10-32`, claiming only `src/presentation/widget-registry.ts` and `tests/presentation/widget-registry.test.ts`.
 
 
 Cloud-only execution override (2026-08-23): by explicit current user instruction, Module 09 uses the verified linked Supabase Cloud project as its only database source of truth. Local reset/test availability or drift is not an execution gate. Database leaves must verify exact project identity, migration impact, recoverability, generated linked types, and rollback-safe Cloud tests before any remote mutation.

@@ -2,7 +2,7 @@
 id: AT-10-32
 title: Register and version all widgets
 module: 10-eve-tools-and-presenters
-status: pending
+status: in_progress
 execution: sequential
 parallel_group: null
 depends_on: [AT-10-21, AT-10-22, AT-10-23, AT-10-24, AT-10-25, AT-10-26, AT-10-27, AT-10-28, AT-10-29, AT-10-30, AT-10-31]
