@@ -2,7 +2,7 @@
 id: AT-10-30
 title: Present declared-dose comparison
 module: 10-eve-tools-and-presenters
-status: pending
+status: completed
 execution: sequential
 parallel_group: presenters
 depends_on: [AT-10-11]
@@ -127,11 +127,24 @@ Commit exclusive paths with feat(presenter): present declared-dose comparison; n
 
 ## Completion checklist
 
-- [ ] Model schemas contain no authority or clinical-result claims.
-- [ ] Policy order and effects are deterministic and tested.
-- [ ] Tool-to-model output is explicit and privacy-safe.
-- [ ] No diagnosis, prescription, clinician operation, or urgent extra exists.
-- [ ] Eve discovery contains exactly the intended surface.
+- [x] Model schemas contain no authority or clinical-result claims.
+- [x] Policy order and effects are deterministic and tested.
+- [x] Tool-to-model output is explicit and privacy-safe.
+- [x] No diagnosis, prescription, clinician operation, or urgent extra exists.
+- [x] Eve discovery contains exactly the intended surface.
+
+### Recorded 2026-08-23
+
+- Outcome and non-goals: `presentDoseValidation` consumes only strict `validate_declared_pediatric_dose.trusted.v1` data and emits deeply immutable `medication.dose-validation.v1`. It preserves declared, resolved and computed evidence without recalculating a limit, selecting/changing a medication or dose, advising administration, mutating state or exposing an action.
+- Implementation commit: `722afa97f59b77b2049ee8f0ebee9f0d27ee13b8` (`feat(presenter): present declared-dose comparison`). The only changed paths were `src/presentation/dose-validation.ts` and `tests/presentation/dose-validation.test.ts`.
+- TDD evidence: the initial focused command exited `1` because the presenter module did not exist. The final focused suite exited `0` with 18/18 tests; the tool-plus-presenter suite exited `0` with 40/40 tests; all current presenter tests exited `0` with 44/44 tests.
+- Fresh gates: `npm run typecheck -- --pretty false`, synthetic-config `npm run build`, and synthetic-config `npx eve info` exited `0`. Eve was `0.27.13`, compile was ready, and diagnostics were `0` errors/`0` warnings.
+- Presenter contract: the strict schema rejects extra authority/actions, malicious text, reason/outcome drift, package/date/citation drift, declaration/resolution mismatch and incomplete ingredient traces. Exact decimals, four outcomes, weight/rule/package dates, source handles and accessible trace fallback remain deterministic and separated.
+- Clinical review: the presenter reuses the exact Module 07 dose-comparison boundaries and generic professional-review copy covered by the conveyed approval record, without a personal signature. `outside_reference_limits`, `insufficient_data` and `requires_professional_review` abstain with the same inert professional text; `within_reference_limits` is explicitly not approval, prescription, proof of appropriateness or permission to administer.
+- Security/privacy review: there is no child/care-space/guardian authority, raw persistence identifier, signed URL, HTML/JS, arbitrary action, clinician operation or model-supplied clinical result. Trusted mobile data is consumed directly; the tool's smaller safe-to-model projection remains a separate contract.
+- Staged review: exactly the two exclusive paths were staged. Ownership, `git diff --cached --check`, forbidden/artifact, secret/credential, raw-payload/prompt/reasoning and action scans passed with zero findings.
+- Eve/discovery evidence: the presenter adds no tool. `eve info --json` directly enumerated the current six authored tools: `create_medication_plan`, `evaluate_vaccination_schedule`, `get_growth_summary`, `record_development_observation`, `suggest_pediatric_nutrition`, and `validate_declared_pediatric_dose`; no subagent or schedule was present. The legacy `npm run verify:discovery` module-01 baseline exited `1` only because its fixture intentionally expects zero authored tools; `AT-10-33` owns the final thirteen-tool allowlist/eval rather than rewriting that historical fixture here.
+- Exceptions and residual risk: no database, Supabase Cloud, provider, deployment or other remote mutation occurred. Mobile registry/channel binding remains `AT-10-32`/Module 11. No new clinical wording, behavior, package, source or approval was introduced.
 
 ## Handoff
 
