@@ -2,7 +2,7 @@
 id: AT-11-17
 title: Prove reconnect, ordering, and cancellation
 module: 11-creciendo-channel-and-streaming
-status: in_progress
+status: review
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-08, AT-11-10, AT-11-15, AT-11-16]
@@ -124,6 +124,15 @@ Consume the raw endpoint with an NDJSON reference client through create/message/
 
 Root readiness verification recorded on 2026-08-24: AT-11-08 (`2f055e0`), AT-11-10 (`8c7828f`), AT-11-15 (`650e260`) and AT-11-16 (`de0536c`) are completed with focused commits and fresh evidence. The linked Cloud head remains the sole reviewed AT-11-10 migration `20260824100000`; this leaf has `database_change: false` and authorizes no remote mutation. All three exclusive paths are unclaimed. Conservative clinical-contract approval is recorded only as unsigned product-owner conveyance without clinician identity or signature attribution.
 
+Root implementation and self-review recorded on 2026-08-24:
+
+- Added the additive `channel-streaming` dispatcher and deterministic `channel-streaming-eval.v1`. The eval runs all channel tests twice, strips nondeterministic timing/path output, requires identical evidence digests, validates the golden bytes, and executes actual create/message/stream/disconnect/reconnect/cancel handlers with one immutable authenticated synthetic scope, real continuation signing/rotation and real synchronous safety preflight.
+- Final eval passed `16/16` critical cases with two matching `111/111` channel runs, zero critical failures, zero isolation failures and zero leakage findings. It covers every fixture cut, later-only cursor replay, no effect redispatch, duplicate/out-of-order/retention failures, slow-client backpressure, concurrency, sibling/foreign/revoked/expired/guessed/tampered access, key rotation, revocation after headers, conservative cancellation, provider/persistence failure, deny-first private payload suppression and exactly one urgent terminal without Eve/model/tool/workflow.
+- Cloud source of truth: a fresh linked migration listing exited `0`, local/remote histories align at head `20260824100000`, and rollback-safe `supabase/tests/038_channel_event_sequence.test.sql` passed `79/79` against CreciendoApp (`yapjiinrjsrothzgzxsv`) with zero persistent data delta. No migration or other Cloud mutation occurred in this leaf.
+- The resolver correction recognizes semantic module suffixes such as `.v1` before appending `.ts`; this is required only because the new direct handler smoke imports the safety runtime through Node's eval dispatcher. `npm run eval -- tool-contracts` reaches its known Module 10 discovery comparison and reports `discovery_gate`; AT-11-18 explicitly owns the separate Module 11 fixture/baseline and must close it. The preserved tool-contract evaluator itself was not bypassed or replaced.
+- Fresh gates: `npm run typecheck`, full Eve/Nitro build using the ignored environment opaquely, `git diff --check`, exact three-path review, forbidden artifact and staged credential/private-key scans exited `0`. Eval SHA-256 is `4FA8620DF17ACED3A573B988C2423FAED30B8E2A3C25C0FF8E84BE1616167F07`; verification report SHA-256 is `813C7E609DE5CBED7BD322AE27747CAF300B7784A27E3C1A198CE63ECE25F37C`.
+- Implementation commit: `5780416` (`test(channel): prove reconnect, ordering, and cancellation`) contains exactly the three owned paths. Clinical approval remains unsigned product-owner conveyance without clinician attribution; `database_change: false`; no provider/deployment action occurred.
+
 Record routes/event versions, files, migration/config digests, test/eval counts, concurrency/reconnect matrix, raw fixture hashes, privacy scan, commands/exits, reviewers, and commit.
 
 ## Commit protocol
@@ -132,11 +141,11 @@ Commit exclusive paths with test(channel): prove reconnect, ordering, and cancel
 
 ## Completion checklist
 
-- [ ] Every route authenticates and verifies current ownership.
-- [ ] Events are versioned, ordered, resumable, and bounded.
-- [ ] Reconnect never duplicates domain effects.
-- [ ] Reasoning, secrets, PHI, and internal payloads do not leak.
-- [ ] Emergency response is terminal and contains no extras.
+- [x] Every route authenticates and verifies current ownership.
+- [x] Events are versioned, ordered, resumable, and bounded.
+- [x] Reconnect never duplicates domain effects.
+- [x] Reasoning, secrets, PHI, and internal payloads do not leak.
+- [x] Emergency response is terminal and contains no extras.
 
 ## Handoff
 
