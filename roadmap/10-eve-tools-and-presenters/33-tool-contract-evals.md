@@ -17,13 +17,21 @@ requires_clinical_approval: false
 touches:
   create:
     - tests/evals/tool-contracts.eval.ts
+    - tests/fixtures/runtime/eve-info-module-10.json
     - docs/verification/eve-tools-presenters.md
-  modify: []
+  modify:
+    - package.json
+    - scripts/verify-eve-discovery.mjs
+    - tests/runtime/eve-discovery.test.ts
   test:
     - docs/verification/eve-tools-presenters.md
 exclusive_paths:
   - tests/evals/tool-contracts.eval.ts
+  - tests/fixtures/runtime/eve-info-module-10.json
   - docs/verification/eve-tools-presenters.md
+  - package.json
+  - scripts/verify-eve-discovery.mjs
+  - tests/runtime/eve-discovery.test.ts
 forbidden_paths:
   - .env
   - supabase/migrations/**
@@ -59,6 +67,8 @@ AT-10-20, AT-10-32 and the exact Eve 0.27.13/AI SDK/domain contracts named below
 ## Scope
 
 An exhaustive discovery, schema, authorization, approval, idempotency, safe-output, presenter, prohibited-action, and adversarial suite proves every intended Eve tool and widget contract with zero critical failure. The leaf owns its exact schema, method, dependency injection, policy order, safe result/event, tests, and completion evidence.
+
+Root-approved final-gate amendment (2026-08-23): the required command `npm run eval -- tool-contracts` has no package entry, while `verify:discovery` is still intentionally pinned to the preserved Module 01 zero-tool fixture. This leaf therefore owns the minimal package-script entry, discovery selector/test correction, and a new reviewed Module 10 fixture with the exact thirteen-tool surface. `tests/fixtures/runtime/eve-info-module-01.json` remains unchanged for historical compatibility; no dependency, runtime route, model, tool implementation or clinical behavior changes.
 
 ## Out of scope
 

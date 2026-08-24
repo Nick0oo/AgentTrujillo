@@ -69,6 +69,8 @@ Fresh Eve `0.27.13` discovery correction for `AT-10-09`: the implementation path
 
 Module-wide Eve discovery path correction: the same verified Eve `0.27.13` filesystem rule applies to all remaining authored Module 10 tools. Their frontmatter `touches` and `exclusive_paths` use underscore filenames matching the current user-authorized exact thirteen-tool surface; roadmap/test document filenames remain hyphenated. This is a path/ownership amendment only and changes no schema, policy, clinical behavior or dependency.
 
+Root final-gate amendment for `AT-10-33`: the user-required `npm run eval -- tool-contracts` entry is absent and the existing discovery command still compares against the preserved Module 01 zero-tool fixture. AT-10-33 additionally owns only `package.json`, `scripts/verify-eve-discovery.mjs`, `tests/runtime/eve-discovery.test.ts`, and a new `tests/fixtures/runtime/eve-info-module-10.json` so the final commands can prove the current exact surface. The Module 01 fixture remains unchanged; no package dependency, runtime route, provider, clinical behavior or remote state is authorized.
+
 Post-closure Module 11/`AT-10-21` compatibility correction for `AT-10-09`: the full Eve result must be strict trusted mobile data with bounded standard/version/reference provenance, and `toModelOutput` must separately emit the smaller `get_growth_summary.model.v1` projection. The correction changes no clinical value, calculation, authority, effect or wording and is confined to the completed leaf's owned tool/test paths.
 
 ## Active workers
