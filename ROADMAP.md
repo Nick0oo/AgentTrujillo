@@ -59,7 +59,7 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-Module 11 is 16/18 completed. `AT-11-16` closed at implementation commit `de0536c`. `AT-11-17` is dependency/Cloud/approval-verified and `ready` to prove reconnect, ordering, cancellation and adversarial stream invariants; no Module 12 leaf is active.
+Module 11 is 16/18 completed. Root is implementing `AT-11-17` after dependency, Cloud and approval verification; the owned eval/report paths are isolated from runtime and database state. No Module 12 leaf is active.
 
 Root-authorized Module 11 reconciliation (2026-08-24): Eve 0.27.13 is binding; `/creciendo/v1` is the sole five-route public family; the linked Cloud source is `CreciendoApp` (`yapjiinrjsrothzgzxsv`) with verified head `20260823230000`; AT-11-10 owns forward migration `20260824100000`, free pgTAP ID `038`, and authoritative generated target `agent/lib/supabase/database.types.ts`; AT-11-18 modifies the existing internal channel. Only the reviewed AT-11-10 forward migration is authorized for remote application after dry-run and Cloud safety review. Conservative clinical approval for the seven marked Module 11 leaves is recorded as unsigned product-owner conveyance without clinician identity or signature attribution.
 
@@ -93,7 +93,7 @@ Post-closure Module 11/`AT-10-21` compatibility correction for `AT-10-09`: the f
 
 ## Active workers
 
-- None. `AT-11-16` is completed at implementation commit `de0536c`; `AT-11-17` is dependency-eligible but remains unclaimed until its explicit `ready` transition.
+- Root owns `AT-11-17` (`in_progress`) and exclusively claims its channel-streaming eval, verification report and additive eval dispatcher change. No subagent or other Module 11 leaf is active.
 
 
 Cloud-only execution override (2026-08-23): by explicit current user instruction, Module 09 uses the verified linked Supabase Cloud project as its only database source of truth. Local reset/test availability or drift is not an execution gate. Database leaves must verify exact project identity, migration impact, recoverability, generated linked types, and rollback-safe Cloud tests before any remote mutation.
