@@ -2,7 +2,7 @@
 id: AT-11-05
 title: Create owned child-bound sessions
 module: 11-creciendo-channel-and-streaming
-status: in_progress
+status: review
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-04, AT-02-14]
@@ -120,6 +120,19 @@ Attempt guessed session IDs, forged tokens/cursors/authority, reasoning/tool lea
 Consume the raw endpoint with an NDJSON reference client through create/message/stream/reconnect/cancel/revoke/emergency cases; inspect discovery, headers, events, persistence, logs, and mobile fixture compatibility.
 
 ## Completion evidence
+
+Root implementation and self-review recorded on 2026-08-24:
+
+- Outcome: `POST /creciendo/v1/sessions` now validates the strict request/capability contract, verifies the signed child-context against the authenticated guardian, reconstructs only trusted scope claims, reauthorizes current `record` access/version/expiry, creates or replays an RLS-owned product-session shell, and returns an opaque product ID, two-minute continuation JWT, non-authorizing sequence-zero cursor sentinel, bounded authorization expiry and negotiated versions. It deliberately invokes no Eve session, model, tool or clinical code under amendment `6de7933`.
+- TDD evidence: the focused test first exited `1` because the route module did not exist; after implementation `6/6` tests pass for create, identical/conflicting replay, concurrent convergence, forged/expired/revoked/sibling context, unknown authority/version/locale, current-access/persistence/signing failures, safe projection and truthful effect state.
+- Implementation commit: `e72baf6d18d7e1fb1ef866924557faaf0378ec7a` (`feat(channel): create owned child-bound sessions`).
+- Owned files: `agent/channels/creciendo.ts`; `src/channels/creciendo/routes/session-create.ts`; `tests/channels/creciendo/routes/session-create.test.ts`.
+- Affected verification before review: focused `6/6`; `npm test -- tests/channels tests/access` exited `0` with `19/19` files, `231` passed and one conditional skip; `npm run typecheck` and configured `npm run build` exited `0`.
+- Authorization/isolation review: authentication precedes the route; the body cannot provide child/care-space/owner/permission/security authority; context subject/signature/time are verified; live authorization must match actor, care space, child and version and cannot expand signed permissions; the session RPC derives owner from `auth.uid()` and rechecks active membership/access/record permission under lock.
+- Idempotency/concurrency review: raw client keys and bodies are never persisted; scoped create-key and request fingerprints are SHA-256 only; identical same-process calls share one promise and deterministic replay; durable restart replay queries only the exact owner/scope/channel/hash under RLS; conflict has zero effect. Amendment `6de7933` assigns cross-instance atomic uniqueness/convergence to the sole AT-11-10 migration and prevents the final module gate before its Cloud test passes.
+- Effect/recovery review: an RPC ambiguity reports `effectState: unknown`; continuation/response failure after a returned session reports `committed`; identical retry re-queries the hash binding and can issue fresh continuity. The initial cursor sentinel carries no session/child/sequence authority and is equivalent only to sequence zero after later live route authorization.
+- Database/Cloud evidence: `database_change: false`; production uses only the existing request-scoped owner SELECT policy and `create_owned_agent_session` RPC with the guardian bearer. No service role, schema, data, migration, RLS/grant, Storage, environment file or remote mutation occurred in this leaf.
+- Staged review: exactly the three owned paths were staged; cached diff check, credential/private-key scan, artifact ignore check and personal full diff review were clean.
 
 Record routes/event versions, files, migration/config digests, test/eval counts, concurrency/reconnect matrix, raw fixture hashes, privacy scan, commands/exits, reviewers, and commit.
 
