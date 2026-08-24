@@ -85,7 +85,7 @@ Post-closure Module 11/`AT-10-21` compatibility correction for `AT-10-09`: the f
 
 ## Active workers
 
-- None. `AT-11-14` is `ready` after verifying completed `AT-11-12`/`AT-11-13`, Module 10 safe-tool errors, strict channel errors/events, and conveyed unsigned conservative clinical approval.
+- Root owns `AT-11-14` (`in_progress`) and exclusively claims `src/channels/creciendo/stream-error-mapper.ts` plus `tests/channels/creciendo/stream-error-mapper.test.ts`. No subagent or other Module 11 leaf is active.
 
 
 Cloud-only execution override (2026-08-23): by explicit current user instruction, Module 09 uses the verified linked Supabase Cloud project as its only database source of truth. Local reset/test availability or drift is not an execution gate. Database leaves must verify exact project identity, migration impact, recoverability, generated linked types, and rollback-safe Cloud tests before any remote mutation.
