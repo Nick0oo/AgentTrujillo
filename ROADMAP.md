@@ -59,7 +59,7 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-Module 11 is 6/18 completed. `AT-11-05` closed at implementation commit `e72baf6`; its documented cross-instance constraint remains owned by AT-11-10, and `AT-11-06` is next in the required sequence. No Module 12 leaf is active.
+Module 11 is 6/18 completed. `AT-11-06` is `ready` after verified `AT-11-05` (`e72baf6`), `AT-04-11`, `AT-10-33` (`ca418b1`), conveyed unsigned clinical approval, and ordering amendment `f66d535`. No Module 12 leaf is active.
 
 Root-authorized Module 11 reconciliation (2026-08-24): Eve 0.27.13 is binding; `/creciendo/v1` is the sole five-route public family; the linked Cloud source is `CreciendoApp` (`yapjiinrjsrothzgzxsv`) with verified head `20260823230000`; AT-11-10 owns forward migration `20260824100000`, free pgTAP ID `038`, and authoritative generated target `agent/lib/supabase/database.types.ts`; AT-11-18 modifies the existing internal channel. Only the reviewed AT-11-10 forward migration is authorized for remote application after dry-run and Cloud safety review. Conservative clinical approval for the seven marked Module 11 leaves is recorded as unsigned product-owner conveyance without clinician identity or signature attribution.
 
@@ -85,7 +85,7 @@ Post-closure Module 11/`AT-10-21` compatibility correction for `AT-10-09`: the f
 
 ## Active workers
 
-- None. `AT-11-06` is dependency-eligible but remains unclaimed until its explicit `ready` transition.
+- None. `AT-11-06` is ready and remains unclaimed until its explicit `in_progress` transition.
 
 
 Cloud-only execution override (2026-08-23): by explicit current user instruction, Module 09 uses the verified linked Supabase Cloud project as its only database source of truth. Local reset/test availability or drift is not an execution gate. Database leaves must verify exact project identity, migration impact, recoverability, generated linked types, and rollback-safe Cloud tests before any remote mutation.
