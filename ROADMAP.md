@@ -59,7 +59,7 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-Module 11 is 7/18 completed. `AT-11-06` closed at implementation commit `1e7079a`; `AT-11-10` is `ready` after fresh verification of its completed dependencies, linked project identity, zero migration drift, remote head `20260823230000`, empty affected tables, forced RLS, least grants, WAL-G recoverability metadata, and a clean linked schema lint. No Module 12 leaf is active.
+Module 11 is 7/18 completed. `AT-11-06` closed at implementation commit `1e7079a`; root directly owns `AT-11-10` in `in_progress` state and its three exclusive paths. Fresh Cloud preflight recorded the exact linked project, zero drift, remote head `20260823230000`, empty affected tables, forced RLS, least grants, WAL-G recoverability metadata, and a clean linked schema lint. No Module 12 leaf is active.
 
 Root-authorized Module 11 reconciliation (2026-08-24): Eve 0.27.13 is binding; `/creciendo/v1` is the sole five-route public family; the linked Cloud source is `CreciendoApp` (`yapjiinrjsrothzgzxsv`) with verified head `20260823230000`; AT-11-10 owns forward migration `20260824100000`, free pgTAP ID `038`, and authoritative generated target `agent/lib/supabase/database.types.ts`; AT-11-18 modifies the existing internal channel. Only the reviewed AT-11-10 forward migration is authorized for remote application after dry-run and Cloud safety review. Conservative clinical approval for the seven marked Module 11 leaves is recorded as unsigned product-owner conveyance without clinician identity or signature attribution.
 
@@ -85,7 +85,7 @@ Post-closure Module 11/`AT-10-21` compatibility correction for `AT-10-09`: the f
 
 ## Active workers
 
-- None. `AT-11-10` is `ready`; its exclusive paths are unclaimed until the immediate root-only `in_progress` transition.
+- Root: `AT-11-10` (`in_progress`) — exclusive ownership of `supabase/migrations/20260824100000_channel_event_sequence.sql`, `supabase/tests/038_channel_event_sequence.test.sql`, and `agent/lib/supabase/database.types.ts`.
 
 
 Cloud-only execution override (2026-08-23): by explicit current user instruction, Module 09 uses the verified linked Supabase Cloud project as its only database source of truth. Local reset/test availability or drift is not an execution gate. Database leaves must verify exact project identity, migration impact, recoverability, generated linked types, and rollback-safe Cloud tests before any remote mutation.
