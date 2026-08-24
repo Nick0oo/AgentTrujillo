@@ -2,7 +2,7 @@
 id: AT-11-03
 title: Authenticate every Creciendo request
 module: 11-creciendo-channel-and-streaming
-status: pending
+status: ready
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-02, AT-02-10]
