@@ -22,6 +22,12 @@ import {
   handleCreateSession,
   type SessionCreateRouteDependencies,
 } from "../../src/channels/creciendo/routes/session-create";
+import {
+  createEveMessageDispatcher,
+  createSessionMessageRouteDependencies,
+  handleSessionMessage,
+  type SessionMessageRouteBaseDependencies,
+} from "../../src/channels/creciendo/routes/session-message";
 
 export const MAX_REQUEST_BODY_BYTES = 64 * 1_024;
 export const DEFAULT_REQUEST_TIMEOUT_MS = 15_000;
@@ -303,11 +309,41 @@ const productionSessionCreate: AuthenticatedChannelHandler = (request, auth) =>
   handleCreateSession(request, auth, getProductionSessionCreateDependencies());
 const guardedSessionCreate = withProductionChannelAuth(productionSessionCreate);
 
+let productionSessionMessageRuntime: Readonly<{
+  config: ReturnType<typeof loadRuntimeConfig>;
+  dependencies: SessionMessageRouteBaseDependencies;
+}> | undefined;
+
+function getProductionSessionMessageRuntime() {
+  productionSessionMessageRuntime ??= (() => {
+    const config = loadRuntimeConfig(process.env);
+    return Object.freeze({
+      config,
+      dependencies: createSessionMessageRouteDependencies(config),
+    });
+  })();
+  return productionSessionMessageRuntime;
+}
+
+const productionSessionMessage: AuthenticatedChannelHandler = (request, auth, args) => {
+  const runtime = getProductionSessionMessageRuntime();
+  return handleSessionMessage(request, auth, {
+    ...runtime.dependencies,
+    sessionId: args.params.sessionId ?? "",
+    eve: createEveMessageDispatcher({
+      send: args.send,
+      resolveActiveSession: args.resolveActiveSession,
+      getSession: args.getSession,
+    }, runtime.config),
+  });
+};
+const guardedSessionMessage = withProductionChannelAuth(productionSessionMessage);
+
 export default createCreciendoChannel({
   handlers: {
     childContext: guardedChildContext,
     createSession: guardedSessionCreate,
-    sendMessage: guardedUnavailable,
+    sendMessage: guardedSessionMessage,
     streamSession: guardedUnavailable,
     cancelSession: guardedUnavailable,
   },
