@@ -2,7 +2,7 @@
 id: AT-11-05
 title: Create owned child-bound sessions
 module: 11-creciendo-channel-and-streaming
-status: ready
+status: in_progress
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-04, AT-02-14]
