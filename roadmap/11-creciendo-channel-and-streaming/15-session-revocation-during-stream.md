@@ -2,7 +2,7 @@
 id: AT-11-15
 title: Terminate streams on access revocation
 module: 11-creciendo-channel-and-streaming
-status: in_progress
+status: review
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-07, AT-11-14, AT-02-15]
@@ -125,6 +125,14 @@ Attempt guessed session IDs, forged tokens/cursors/authority, reasoning/tool lea
 Consume the raw endpoint with an NDJSON reference client through create/message/stream/reconnect/cancel/revoke/emergency cases; inspect discovery, headers, events, persistence, logs, and mobile fixture compatibility.
 
 ## Completion evidence
+
+Root implementation and self-review recorded on 2026-08-24:
+
+- The stream guard revalidates the immutable owner/care-space/child/security-version binding twice around invalidation attachment, before every persisted frame and poll, and on the fixed `15_000 ms` maximum interval inherited from AT-02-15. Checks are serialized and fail closed on revoked/expired/mismatched scope, regressed session state, validator failure, subscription failure, or scheduler failure.
+- Revocation aborts the response signal before cooperative Eve cancellation, clears queued timers/subscriptions, suppresses every later frame, and invokes cancellation at most once. Filesystem composition cancels only the exact already-bound Eve session after resolving its active continuation; absent/stale bindings cannot be guessed and cancellation failure cannot restore bytes.
+- TDD/adversarial coverage passed `4/4` focused guard tests, `14/14` guard/route integration tests, then `16` affected files and `125/125` tests. Cases include attach races, concurrent checks, current-token revocation, invalid identity/version/permissions/progress, provider/subscription failure, queued frame discard, periodic denial and duplicate-close resistance.
+- Fresh gates: `npm run typecheck`, full Eve/Nitro build using the ignored environment opaquely, `git diff --check`, exact owned-path review, forbidden artifact scan and staged credential/private-key scan exited `0`.
+- Implementation commit: `650e260` (`feat(channel): terminate streams on access revocation`) contains exactly the five amended owned paths. `database_change: false`; no Cloud or other remote mutation occurred.
 
 Record routes/event versions, files, migration/config digests, test/eval counts, concurrency/reconnect matrix, raw fixture hashes, privacy scan, commands/exits, reviewers, and commit.
 
