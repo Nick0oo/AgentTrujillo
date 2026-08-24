@@ -17,6 +17,11 @@ import {
   handleChildContext,
   type ChildContextRouteDependencies,
 } from "../../src/channels/creciendo/routes/child-context";
+import {
+  createSessionCreateRouteDependencies,
+  handleCreateSession,
+  type SessionCreateRouteDependencies,
+} from "../../src/channels/creciendo/routes/session-create";
 
 export const MAX_REQUEST_BODY_BYTES = 64 * 1_024;
 export const DEFAULT_REQUEST_TIMEOUT_MS = 15_000;
@@ -287,10 +292,21 @@ const productionChildContext: AuthenticatedChannelHandler = (request, auth) =>
   handleChildContext(request, auth, getProductionChildContextDependencies());
 const guardedChildContext = withProductionChannelAuth(productionChildContext);
 
+let productionSessionCreateDependencies: SessionCreateRouteDependencies | undefined;
+
+function getProductionSessionCreateDependencies(): SessionCreateRouteDependencies {
+  productionSessionCreateDependencies ??= createSessionCreateRouteDependencies(loadRuntimeConfig(process.env));
+  return productionSessionCreateDependencies;
+}
+
+const productionSessionCreate: AuthenticatedChannelHandler = (request, auth) =>
+  handleCreateSession(request, auth, getProductionSessionCreateDependencies());
+const guardedSessionCreate = withProductionChannelAuth(productionSessionCreate);
+
 export default createCreciendoChannel({
   handlers: {
     childContext: guardedChildContext,
-    createSession: guardedUnavailable,
+    createSession: guardedSessionCreate,
     sendMessage: guardedUnavailable,
     streamSession: guardedUnavailable,
     cancelSession: guardedUnavailable,
