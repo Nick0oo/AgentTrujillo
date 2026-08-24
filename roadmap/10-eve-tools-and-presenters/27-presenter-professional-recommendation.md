@@ -2,7 +2,7 @@
 id: AT-10-27
 title: Present plain professional-review recommendation
 module: 10-eve-tools-and-presenters
-status: pending
+status: in_progress
 execution: sequential
 parallel_group: presenters
 depends_on: [AT-04-09, AT-10-06]

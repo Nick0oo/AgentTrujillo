@@ -59,7 +59,7 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-Dependency and exact path checks moved sequential presenter `AT-10-29` through root security/compatibility review to completed at `cb1d5c8`. Remaining tools `AT-10-15`, `AT-10-17` and `AT-10-19` are parallel-ready on disjoint paths; presenters continue one at a time.
+Dependency, approval-reuse and exact-path checks moved parallel tools `AT-10-15` and `AT-10-17` plus sequential presenter `AT-10-27` from ready to claimed. Their six exclusive paths are disjoint and no public/shared type or root configuration is owned. `AT-10-19` remains the next parallel-ready tool when a Luna/max slot is released.
 
 Root replay-receipt amendment for `AT-10-14`: the medication Cloud RPCs already return a durable `created`/`idempotent_replay` outcome, but the verified repository/application adapters discarded it. The leaf now owns only the exact additive port, plan-service, schedule-service, repository and regression-test paths required to propagate that existing receipt into `withToolIdempotency`. No database/API/schema/clinical rule changes or remote effects are authorized, and all existing record-only service methods remain compatible.
 
@@ -73,7 +73,9 @@ Post-closure Module 11/`AT-10-21` compatibility correction for `AT-10-09`: the f
 
 ## Active workers
 
-- None.
+- `/root/at_10_15` — `AT-10-15`, GPT-5.6 Luna/max; owns only `agent/tools/record_medication_intake.ts` and `tests/agent/tools/record-medication-intake.test.ts`.
+- `/root/at_10_17` — `AT-10-17`, GPT-5.6 Luna/max; owns only `agent/tools/capture_clinical_memory_candidate.ts` and `tests/agent/tools/capture-clinical-memory-candidate.test.ts`.
+- `/root` — `AT-10-27`, sequential presenter; owns only `src/presentation/professional-recommendation.ts` and `tests/presentation/professional-recommendation.test.ts`.
 
 
 Cloud-only execution override (2026-08-23): by explicit current user instruction, Module 09 uses the verified linked Supabase Cloud project as its only database source of truth. Local reset/test availability or drift is not an execution gate. Database leaves must verify exact project identity, migration impact, recoverability, generated linked types, and rollback-safe Cloud tests before any remote mutation.

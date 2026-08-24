@@ -2,7 +2,7 @@
 id: AT-10-17
 title: Capture a clinical-memory candidate
 module: 10-eve-tools-and-presenters
-status: pending
+status: in_progress
 execution: parallel
 parallel_group: eve-tools
 depends_on: [AT-10-07, AT-09-19]
