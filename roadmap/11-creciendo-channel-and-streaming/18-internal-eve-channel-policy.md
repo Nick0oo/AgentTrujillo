@@ -2,7 +2,7 @@
 id: AT-11-18
 title: Restrict standard Eve channel to operators
 module: 11-creciendo-channel-and-streaming
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-02, AT-11-17]
@@ -137,6 +137,7 @@ Root implementation and self-review recorded on 2026-08-24:
 - Added the current Module 11 discovery baseline while preserving Module 01 and Module 10 fixtures. Exact Eve info reports `ready`, `0` errors, `0` warnings, thirteen authored tools, five Creciendo routes, six protected Eve routes, no schedules/subagents and no `/v1` or `/v1/chat`. The verifier now defaults to Module 11; fixture SHA-256 is `D3CEB5C2CC8E791819D37E63796669D4C71FB325FED96DAFCE893BBFC4708DF4` and policy SHA-256 is `C2BF01C9A98EE99D95267CB871E37C3A1B9B6C60975ED42D90769D06E3086201`.
 - Fresh gates before commit: focused policy/discovery tests passed `16/16`; all channel plus discovery tests passed `127/127` in 17 files; channel-streaming eval passed `16/16` critical cases with two matching `117/117` channel runs, zero critical/isolation/leakage failures; tool-contract eval passed `547/547`, zero critical/leakage/prohibited-surface findings; exact discovery, `npm run typecheck`, Eve/Nitro build, `git diff --check`, forbidden-artifact and staged credential/private-key scans exited `0`.
 - Implementation commit `3a0b152` (`feat(channel): restrict standard eve channel to operators`) contains exactly five declared paths. This leaf has `database_change: false`; it made no Cloud, provider, deployment or production-state mutation.
+- Fresh root closure after committed diff review: the two focused files passed `16/16`, exact Module 11 discovery again reported `ready` with zero diagnostics and the exact five Creciendo plus six protected Eve routes, `npm run typecheck`, `git show --check`, `git diff --check` and the clean-worktree check exited `0`. No review finding remained.
 
 Record routes/event versions, files, migration/config digests, test/eval counts, concurrency/reconnect matrix, raw fixture hashes, privacy scan, commands/exits, reviewers, and commit.
 

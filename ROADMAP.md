@@ -33,6 +33,7 @@ These facts do not close pending behavioral gates. Local schema parity, generate
 - Module 09 is **21/21 completed with 0 pending leaves**. Final isolation evidence is recorded at implementation commit `debbfcf` and `docs/verification/memory-documents.md`.
 - Module 10 execution uses the root-authorized 2026-08-23 contract reconciliation: Eve `0.27.13` supersedes its historical `0.27.1` references, and only `AT-13-01` may execute early after verified `AT-03-11` to supply the provider-neutral catalog required by `AT-10-02`. The rest of Module 13 remains pending behind its general entry gate.
 - Module 10 is **33/33 completed with 0 pending leaves**. `AT-10-01` closed at `13ef49f`; `AT-10-02` at `f0ce01a`; `AT-10-03` at `73ad42a`; `AT-10-04` at `296fad3`; `AT-10-05` at `114b0c6`; `AT-10-06` at `783fc32`; `AT-10-07` at `4af8b5d`; `AT-10-08` at `ae6988c`; `AT-10-09` at `71c8aeb` plus trusted/mobile compatibility correction `9271b9e`; `AT-10-10` at `9e3943f`; `AT-10-11` at `b1bce0e`; `AT-10-12` at `3c4f46d`; `AT-10-13` at `84178dd`; `AT-10-14` at `1dc2dd4`; `AT-10-15` at `9f10223`; `AT-10-16` at `c7b9cbe`; `AT-10-17` at `39fa910`; `AT-10-18` at `6e70693`; `AT-10-19` at `7ac4682`; `AT-10-20` at `75b5f4d`; `AT-10-21` at `d34b07f`; `AT-10-22` at `a2a2e19`; `AT-10-23` at `7bed230`; `AT-10-24` at `1b53e5e`; `AT-10-25` at `5c06e75`; `AT-10-26` at `311dc62`; `AT-10-27` at `1020998`; `AT-10-28` at `6a99955`; `AT-10-29` at `cb1d5c8`; `AT-10-30` at `722afa9`; `AT-10-31` at `d9fb08a`; `AT-10-32` at `6bd8663`; and `AT-10-33` at `ca418b1`, after the Eve-supported runtime-helper correction in `2ada844`, the explicit replay-fingerprint amendments `43639a7`/`acdeadc`, the safe-error/audit amendment `a01db90`, the discovery-identity correction `d5ff6e1`, and the final independent-review amendment `bc41c61`.
+- Module 11 is **18/18 completed with 0 pending leaves**. The final internal-channel/discovery boundary closed at implementation commit `3a0b152`; module-wide release evidence is recorded in `docs/verification/creciendo-channel.md`. `/creciendo/v1` is the sole public product transport, while `/eve/v1` is fail-closed in preview/production and limited to local loopback operations in development/test.
 - The early `AT-13-01` exception is completed at `eb82958` with a provider-neutral, synthetic-test-only catalog. It unblocks `AT-10-02`; all other Module 13 leaves remain pending behind the general Module 13 entry gate.
 
 ## Module ledger
@@ -49,7 +50,7 @@ These facts do not close pending behavioral gates. Local schema parity, generate
 | 08 | Nutrition and development | completed | completed | Guidance stays educational and EAD-3 remains professional-only | [Module 08](roadmap/08-nutrition-and-development/README.md) |
 | 09 | Clinical memory and documents | completed | completed | Retrieval and Storage remain private and child-scoped | [Module 09](roadmap/09-clinical-memory-and-documents/README.md) |
 | 10 | Eve tools and presenters | completed | completed | Every tool is typed, scoped, policy-gated, idempotent, and safely rendered | [Module 10](roadmap/10-eve-tools-and-presenters/README.md) |
-| 11 | Creciendo channel and streaming | completed | pending | Authenticated NDJSON resumes without leaks or duplicate effects | [Module 11](roadmap/11-creciendo-channel-and-streaming/README.md) |
+| 11 | Creciendo channel and streaming | completed | completed | Authenticated NDJSON resumes without leaks or duplicate effects | [Module 11](roadmap/11-creciendo-channel-and-streaming/README.md) |
 | 12 | Persistence, workflows, and Realtime | completed | pending | Replays converge and Realtime emits invalidations only | [Module 12](roadmap/12-persistence-workflows-and-realtime/README.md) |
 | 13 | Commerce and entitlements | completed | pending | Verified event ledger converges to provider-neutral entitlements | [Module 13](roadmap/13-commerce-and-entitlements/README.md) |
 | 14 | Model fallback, observability, and evals | completed | pending | Fallback parity and privacy gates have zero critical failures | [Module 14](roadmap/14-model-fallback-observability-and-evals/README.md) |
@@ -59,7 +60,7 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-Module 11 is 17/18 completed. `AT-11-18` is in `review` at implementation commit `3a0b152`: the standard Eve route family is production/preview fail-closed, local loopback operations remain available, and exact Module 11 discovery plus the tool-contract gate pass. No Module 12 leaf is active.
+Module 11 is 18/18 completed. `AT-11-18` closed at implementation commit `3a0b152`: the standard Eve route family is production/preview fail-closed, local loopback operations remain available, and exact Module 11 discovery plus the tool-contract gate pass. `AT-12-01` is dependency-eligible but remains pending and unclaimed; no Module 12 implementation has started.
 
 Root-authorized Module 11 reconciliation (2026-08-24): Eve 0.27.13 is binding; `/creciendo/v1` is the sole five-route public family; the linked Cloud source is `CreciendoApp` (`yapjiinrjsrothzgzxsv`) with verified head `20260823230000`; AT-11-10 owns forward migration `20260824100000`, free pgTAP ID `038`, and authoritative generated target `agent/lib/supabase/database.types.ts`; AT-11-18 modifies the existing internal channel. Only the reviewed AT-11-10 forward migration is authorized for remote application after dry-run and Cloud safety review. Conservative clinical approval for the seven marked Module 11 leaves is recorded as unsigned product-owner conveyance without clinician identity or signature attribution.
 
@@ -93,7 +94,7 @@ Post-closure Module 11/`AT-10-21` compatibility correction for `AT-10-09`: the f
 
 ## Active workers
 
-- Root is reviewing committed `AT-11-18` at `3a0b152`; no implementation worker or Module 12 leaf is active.
+- None. Module 11 is completed; `AT-12-01` is dependency-eligible but remains pending and unclaimed as instructed.
 
 
 Cloud-only execution override (2026-08-23): by explicit current user instruction, Module 09 uses the verified linked Supabase Cloud project as its only database source of truth. Local reset/test availability or drift is not an execution gate. Database leaves must verify exact project identity, migration impact, recoverability, generated linked types, and rollback-safe Cloud tests before any remote mutation.
