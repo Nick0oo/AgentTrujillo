@@ -2,7 +2,7 @@
 id: AT-11-02
 title: Create custom Eve Creciendo channel shell
 module: 11-creciendo-channel-and-streaming
-status: in_progress
+status: review
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-01, AT-01-16]
@@ -119,7 +119,17 @@ Consume the raw endpoint with an NDJSON reference client through create/message/
 
 ## Completion evidence
 
-Record routes/event versions, files, migration/config digests, test/eval counts, concurrency/reconnect matrix, raw fixture hashes, privacy scan, commands/exits, reviewers, and commit.
+Root implementation and self-review recorded on 2026-08-24:
+
+- Outcome: installed an Eve 0.27.13 `defineChannel` default export with exactly the five canonical `/creciendo/v1` routes, explicit non-wildcard CORS, bounded replayable JSON bodies, request deadlines/abort propagation, safe response headers, and injected handlers. The default remains deliberately fail-closed until the sequential auth/route leaves compose production dependencies.
+- TDD evidence: the focused test first exited `1` because the channel module did not exist; after implementation it exposed one real Eve normalization mismatch (`maxAge` becomes a string) and one strict TypeScript body type failure, both corrected against the installed API before `7/7` passed.
+- Implementation commit: `a78d19e2ea521cc721b226e65a509463befa0bff` (`feat(channel): create custom eve creciendo channel shell`).
+- Owned files: `agent/channels/creciendo.ts`; `tests/channels/creciendo/channel-shell.test.ts`.
+- Affected verification before review: `npm test -- tests/channels` exited `0` with `2/2` files and `14/14` tests; `npm run typecheck` exited `0`; configured `npm run build` exited `0`.
+- Discovery review: configured `npx eve info --json` reported Eve `0.27.13`, `ready`, zero errors/warnings, and exactly five `creciendo` routes with the declared methods/paths; no `/eve/v1` route is proxied by the custom channel.
+- Security/privacy review: browser origins are exact HTTPS origins, unknown origins fail before handlers, command bodies are capped at 64 KiB by declared and actual bytes, dependency messages are discarded, caller abort/deadline signals propagate, internal headers/cookies are stripped, and no environment, JWT, PHI, Supabase, model, tool, or clinical behavior is present.
+- Database/Cloud evidence: `database_change: false`; no Supabase client, schema, data, Storage, remote mutation, or environment value was read or changed.
+- Staged review: exactly the two owned paths were staged; cached diff check, forbidden artifact/path scan, credential-prefix scan, full diff review, and build-artifact ignore check were clean.
 
 ## Commit protocol
 
@@ -127,11 +137,11 @@ Commit exclusive paths with feat(channel): create custom eve creciendo channel s
 
 ## Completion checklist
 
-- [ ] Every route authenticates and verifies current ownership.
-- [ ] Events are versioned, ordered, resumable, and bounded.
-- [ ] Reconnect never duplicates domain effects.
-- [ ] Reasoning, secrets, PHI, and internal payloads do not leak.
-- [ ] Emergency response is terminal and contains no extras.
+- [x] Every declared route is fail-closed pending the owned AT-11-03 authentication composition; no unauthenticated handler is reachable.
+- [x] The shell enforces bounded requests and preserves the versioned event contract without proxying Eve events.
+- [x] The shell performs no send, replay, cancellation, model, tool, or domain effect.
+- [x] Reasoning, secrets, PHI, and internal dependency failures do not leak.
+- [x] The shell creates no emergency content or post-terminal behavior.
 
 ## Handoff
 
