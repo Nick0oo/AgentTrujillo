@@ -31,6 +31,9 @@ These facts do not close pending behavioral gates. Local schema parity, generate
 - Product implementation: modules `01` through `09` completed with fresh runtime and Cloud evidence. Module `07` exact minimal formularies were released in `54e615c`; conveyed approval is recorded without a personal signature.
 - Module 08 is **17/17 completed with 0 pending leaves**. Final boundary evidence is recorded at implementation commit `145b3b0` and `docs/verification/nutrition-development.md`.
 - Module 09 is **21/21 completed with 0 pending leaves**. Final isolation evidence is recorded at implementation commit `debbfcf` and `docs/verification/memory-documents.md`.
+- Module 10 execution uses the root-authorized 2026-08-23 contract reconciliation: Eve `0.27.13` supersedes its historical `0.27.1` references, and only `AT-13-01` may execute early after verified `AT-03-11` to supply the provider-neutral catalog required by `AT-10-02`. The rest of Module 13 remains pending behind its general entry gate.
+- Module 10 is **33/33 completed with 0 pending leaves**. `AT-10-01` closed at `13ef49f`; `AT-10-02` at `f0ce01a`; `AT-10-03` at `73ad42a`; `AT-10-04` at `296fad3`; `AT-10-05` at `114b0c6`; `AT-10-06` at `783fc32`; `AT-10-07` at `4af8b5d`; `AT-10-08` at `ae6988c`; `AT-10-09` at `71c8aeb` plus trusted/mobile compatibility correction `9271b9e`; `AT-10-10` at `9e3943f`; `AT-10-11` at `b1bce0e`; `AT-10-12` at `3c4f46d`; `AT-10-13` at `84178dd`; `AT-10-14` at `1dc2dd4`; `AT-10-15` at `9f10223`; `AT-10-16` at `c7b9cbe`; `AT-10-17` at `39fa910`; `AT-10-18` at `6e70693`; `AT-10-19` at `7ac4682`; `AT-10-20` at `75b5f4d`; `AT-10-21` at `d34b07f`; `AT-10-22` at `a2a2e19`; `AT-10-23` at `7bed230`; `AT-10-24` at `1b53e5e`; `AT-10-25` at `5c06e75`; `AT-10-26` at `311dc62`; `AT-10-27` at `1020998`; `AT-10-28` at `6a99955`; `AT-10-29` at `cb1d5c8`; `AT-10-30` at `722afa9`; `AT-10-31` at `d9fb08a`; `AT-10-32` at `6bd8663`; and `AT-10-33` at `ca418b1`, after the Eve-supported runtime-helper correction in `2ada844`, the explicit replay-fingerprint amendments `43639a7`/`acdeadc`, the safe-error/audit amendment `a01db90`, the discovery-identity correction `d5ff6e1`, and the final independent-review amendment `bc41c61`.
+- The early `AT-13-01` exception is completed at `eb82958` with a provider-neutral, synthetic-test-only catalog. It unblocks `AT-10-02`; all other Module 13 leaves remain pending behind the general Module 13 entry gate.
 
 ## Module ledger
 
@@ -45,7 +48,7 @@ These facts do not close pending behavioral gates. Local schema parity, generate
 | 07 | Medication and adherence | completed | completed | Declared-dose validation is conservative and plans/intakes are idempotent | [Module 07](roadmap/07-medication-and-adherence/README.md) |
 | 08 | Nutrition and development | completed | completed | Guidance stays educational and EAD-3 remains professional-only | [Module 08](roadmap/08-nutrition-and-development/README.md) |
 | 09 | Clinical memory and documents | completed | completed | Retrieval and Storage remain private and child-scoped | [Module 09](roadmap/09-clinical-memory-and-documents/README.md) |
-| 10 | Eve tools and presenters | completed | pending | Every tool is typed, scoped, policy-gated, idempotent, and safely rendered | [Module 10](roadmap/10-eve-tools-and-presenters/README.md) |
+| 10 | Eve tools and presenters | completed | completed | Every tool is typed, scoped, policy-gated, idempotent, and safely rendered | [Module 10](roadmap/10-eve-tools-and-presenters/README.md) |
 | 11 | Creciendo channel and streaming | completed | pending | Authenticated NDJSON resumes without leaks or duplicate effects | [Module 11](roadmap/11-creciendo-channel-and-streaming/README.md) |
 | 12 | Persistence, workflows, and Realtime | completed | pending | Replays converge and Realtime emits invalidations only | [Module 12](roadmap/12-persistence-workflows-and-realtime/README.md) |
 | 13 | Commerce and entitlements | completed | pending | Verified event ledger converges to provider-neutral entitlements | [Module 13](roadmap/13-commerce-and-entitlements/README.md) |
@@ -56,15 +59,30 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-Modules `01`–`09` have no remaining ready or active work. Module 10 remains pending; no Module 10 work unit is selected or claimed by this completion.
+Module 10 is closed at 33/33. `AT-11-01` is newly unblocked by `AT-10-33` and completed `AT-02-16`, but remains unclaimed and `pending` until the later Module 11 entry/selection review. No Module 11 or 12 leaf is active in this closure.
+
+Root replay-receipt amendment for `AT-10-14`: the medication Cloud RPCs already return a durable `created`/`idempotent_replay` outcome, but the verified repository/application adapters discarded it. The leaf now owns only the exact additive port, plan-service, schedule-service, repository and regression-test paths required to propagate that existing receipt into `withToolIdempotency`. No database/API/schema/clinical rule changes or remote effects are authorized, and all existing record-only service methods remain compatible.
+
+Root correction before `AT-10-09`: Eve's public tool context requires one shared fail-closed factory bridge to the branded request-scoped context, and branded safe errors must survive the idempotency wrapper. `AT-10-09` owns the explicitly added bridge/idempotency integration paths; no model authority, credential, per-user global state or new clinical behavior is authorized.
+
+Fresh Eve `0.27.13` discovery correction for `AT-10-09`: the implementation path uses `agent/tools/get_growth_summary.ts` so filesystem-derived identity is exactly `get_growth_summary`; the earlier hyphenated path produced the non-contractual name `get-growth-summary`. Schema, policy and clinical behavior are unchanged.
+
+Module-wide Eve discovery path correction: the same verified Eve `0.27.13` filesystem rule applies to all remaining authored Module 10 tools. Their frontmatter `touches` and `exclusive_paths` use underscore filenames matching the current user-authorized exact thirteen-tool surface; roadmap/test document filenames remain hyphenated. This is a path/ownership amendment only and changes no schema, policy, clinical behavior or dependency.
+
+Root final-gate amendment for `AT-10-33`: the user-required `npm run eval -- tool-contracts` entry is absent and the existing discovery command still compares against the preserved Module 01 zero-tool fixture. AT-10-33 additionally owns only `package.json`, `scripts/verify-eve-discovery.mjs`, `tests/runtime/eve-discovery.test.ts`, and a new `tests/fixtures/runtime/eve-info-module-10.json` so the final commands can prove the current exact surface. The Module 01 fixture remains unchanged; no package dependency, runtime route, provider, clinical behavior or remote state is authorized.
+
+AT-10-33 review amendment: independent Standards/Spec review rejected the first source-string eval and its constant leakage result, and identified host-clock use in the otherwise pure guardian-confirmation presenter. AT-10-33 now also owns only `src/presentation/guardian-confirmation.ts`, its focused test, and the Module 10 README exit-gate sentence. The corrected eval must derive leakage/prohibited findings from behavioral tests, captured-output scans and strict runtime data, compare two internal runs, and expose only bounded failure codes; the presenter receives an explicit trusted instant. Approval semantics, clinical wording, widget version, tool behavior and remote state remain unchanged.
+
+Post-closure Module 11/`AT-10-21` compatibility correction for `AT-10-09`: the full Eve result must be strict trusted mobile data with bounded standard/version/reference provenance, and `toModelOutput` must separately emit the smaller `get_growth_summary.model.v1` projection. The correction changes no clinical value, calculation, authority, effect or wording and is confined to the completed leaf's owned tool/test paths.
 
 ## Active workers
 
-None.
+- None. Module 10 is closed; no Module 11 or 12 path is claimed.
+
 
 Cloud-only execution override (2026-08-23): by explicit current user instruction, Module 09 uses the verified linked Supabase Cloud project as its only database source of truth. Local reset/test availability or drift is not an execution gate. Database leaves must verify exact project identity, migration impact, recoverability, generated linked types, and rollback-safe Cloud tests before any remote mutation.
 
-The delegated Module 08 leaves used GPT-5.6 Luna with reasoning `max`. Per the explicit user instruction recorded on 2026-08-23, the root implemented and reviewed the remaining leaves directly; no additional subagents were dispatched. Collision and exclusive-path analysis remained in force.
+Delegated implementation leaves use GPT-5.6 Luna with reasoning `max`. The initial Module 10 instruction required direct root execution; the user's later explicit amendment authorized subagents only for genuinely parallel leaves. `AT-10-12` and `AT-10-13` used Luna/max on disjoint paths while the root retained all review, gate, commit and evidence authority. Sequential presenters remain root-owned one at a time.
 
 ## Blockers
 

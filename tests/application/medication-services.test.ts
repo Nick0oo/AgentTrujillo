@@ -49,24 +49,34 @@ function createMemoryStore(): MedicationStore {
   const occurrences = new Map<string, MedicationScheduleOccurrence>();
   const intakes = new Map<string, MedicationIntakeRecord>();
   let sequence = 0;
-  return {
+  const store: MedicationStore = {
     async createPlan(currentScope, planInput, operation) {
       const id = `00000000-0000-0000-0000-${String(++sequence).padStart(12, "0")}`;
       const record: MedicationPlanRecord = { id, careSpaceId: currentScope.careSpaceId, childId: currentScope.childId, version: 1, status: "draft", input: planInput, recordedBy: currentScope.actorUserId, supersedesId: null };
       plans.set(id, record);
       return record;
     },
+    async createPlanWithOutcome(currentScope, planInput, operation) {
+      return { outcome: "created", value: await store.createPlan(currentScope, planInput, operation) };
+    },
     async getPlan(currentScope, id) { const record = plans.get(id); return record?.careSpaceId === currentScope.careSpaceId && record.childId === currentScope.childId ? record : null; },
     async listPlans(currentScope) { return [...plans.values()].filter((record) => record.careSpaceId === currentScope.careSpaceId && record.childId === currentScope.childId); },
     async setPlanStatus(currentScope, id, status) { const record = await this.getPlan(currentScope, id); if (!record) throw new Error("NOT_FOUND"); const next = { ...record, status } as MedicationPlanRecord; plans.set(id, next); return next; },
+    async setPlanStatusWithOutcome(currentScope, id, status, operation) {
+      return { outcome: "created", value: await store.setPlanStatus(currentScope, id, status, operation) };
+    },
     async supersedePlan(currentScope, id, nextInput, operation) { const previous = await this.getPlan(currentScope, id); if (!previous) throw new Error("NOT_FOUND"); plans.set(id, { ...previous, status: "superseded" }); return this.createPlan(currentScope, nextInput, operation); },
     async listOccurrences(currentScope, planId, from, to) { const plan = await this.getPlan(currentScope, planId); return plan ? [...occurrences.values()].filter((value) => value.planId === planId && value.scheduledFor >= from && value.scheduledFor < to) : []; },
     async putOccurrences(_currentScope, values) { for (const value of values) occurrences.set(value.occurrenceId, value); return values; },
+    async putOccurrencesWithOutcome(currentScope, values, operation) {
+      return { outcome: "created", value: await store.putOccurrences(currentScope, values, operation) };
+    },
     async getOccurrence(currentScope, occurrenceId) { const value = occurrences.get(occurrenceId); return value && (await this.getPlan(currentScope, value.planId)) ? value : null; },
     async createIntake(currentScope, value) { const id = `intake-${++sequence}`; const record = { ...value, id, recordedBy: currentScope.actorUserId } as MedicationIntakeRecord; intakes.set(id, record); return record; },
     async getIntake(currentScope, id) { const value = intakes.get(id); return value && (await this.getPlan(currentScope, value.planId)) ? value : null; },
     async listIntakes(currentScope, planId, from, to) { const plan = await this.getPlan(currentScope, planId); return plan ? [...intakes.values()].filter((value) => value.planId === planId && (value.scheduledFor === null || (value.scheduledFor >= from && value.scheduledFor < to))) : []; },
   };
+  return store;
 }
 
 describe("medication lifecycle services", () => {
@@ -118,6 +128,34 @@ describe("medication lifecycle services", () => {
     await expect(intakeService.record(scope, { planId: plan.id, scheduledFor: "invalid", state: "unknown" }, { idempotencyKey: "invalid-time", digest: "caller" })).rejects.toThrow("MEDICATION_INTAKE_TIME_INVALID");
     await expect(intakeService.record(scope, { planId: plan.id, scheduledFor: "2026-08-16T08:00:00Z", state: "taken", takenAt: "2026-08-16T11:00:00Z" }, { idempotencyKey: "future-taken", digest: "caller" })).rejects.toThrow("MEDICATION_FUTURE_INTAKE_DENIED");
     await expect(intakeService.record(scope, { planId: plan.id, scheduledFor: "2026-08-16T08:00:00Z", state: "skipped", takenAt: "2026-08-16T08:01:00Z" }, { idempotencyKey: "inconsistent-state", digest: "caller" })).rejects.toThrow("MEDICATION_TAKEN_AT_FORBIDDEN");
+  });
+
+  it("denies new or corrected intake facts after the plan is no longer active", async () => {
+    const store = createMemoryStore();
+    const planService = createMedicationPlanService(store, { now: () => new Date("2026-08-16T10:00:00Z") });
+    const plan = await planService.createDraft(scope, input(), { idempotencyKey: "plan-ended-intake", digest: "caller" });
+    await planService.confirm(scope, plan.id, { idempotencyKey: "confirm-ended-intake", digest: "caller" });
+    const intakeService = createMedicationIntakeService(store, { now: () => new Date("2026-08-16T10:00:00Z") });
+    const original = await intakeService.record(
+      scope,
+      { planId: plan.id, scheduledFor: "2026-08-16T08:00:00Z", state: "taken", takenAt: "2026-08-16T08:05:00Z" },
+      { idempotencyKey: "original-ended-intake", digest: "caller" },
+    );
+    await planService.end(scope, plan.id, "completed", { idempotencyKey: "end-intake-plan", digest: "caller" });
+
+    await expect(intakeService.record(
+      scope,
+      { planId: plan.id, scheduledFor: "2026-08-16T09:00:00Z", state: "unknown" },
+      { idempotencyKey: "new-ended-intake", digest: "caller" },
+    )).rejects.toThrow("MEDICATION_PLAN_NOT_ACTIVE");
+    await expect(intakeService.correct(
+      scope,
+      original.id,
+      { planId: plan.id, scheduledFor: "2026-08-16T08:00:00Z", state: "skipped" },
+      { idempotencyKey: "correct-ended-intake", digest: "caller" },
+    )).rejects.toThrow("MEDICATION_PLAN_NOT_ACTIVE");
+    await expect(intakeService.list(scope, plan.id, { from: "2026-08-16T00:00:00Z", to: "2026-08-17T00:00:00Z" }))
+      .resolves.toHaveLength(1);
   });
 
   it("denies a stale scope before any persistence call", async () => {
@@ -178,6 +216,34 @@ describe("medication lifecycle services", () => {
     const first = await service.confirm(scope, draft.id, { idempotencyKey: "confirm-replay", digest: "caller-a" });
     const replay = await service.confirm(scope, draft.id, { idempotencyKey: "confirm-replay", digest: "caller-b" });
     expect(replay).toEqual(first);
+  });
+
+  it("propagates typed created and replayed receipts for plan and schedule commands", async () => {
+    const store = createMemoryStore();
+    const plans = createMedicationPlanService(store, { now: () => new Date("2026-08-16T10:00:00Z") });
+    const firstDraft = await plans.createDraftWithOutcome(scope, input(), { idempotencyKey: "receipt-plan", digest: "caller-a" });
+    const replayedDraft = await plans.createDraftWithOutcome(scope, input(), { idempotencyKey: "receipt-plan", digest: "caller-b" });
+    expect(firstDraft.outcome).toBe("created");
+    expect(replayedDraft).toEqual({ outcome: "replayed", value: firstDraft.value });
+
+    const firstConfirmation = await plans.confirmDeclaredPlanWithOutcome(scope, firstDraft.value.id, { idempotencyKey: "receipt-confirm", digest: "caller-a" });
+    const replayedConfirmation = await plans.confirmDeclaredPlanWithOutcome(scope, firstDraft.value.id, { idempotencyKey: "receipt-confirm", digest: "caller-b" });
+    expect(firstConfirmation.outcome).toBe("created");
+    expect(replayedConfirmation).toEqual({ outcome: "replayed", value: firstConfirmation.value });
+
+    const schedules = createMedicationScheduleService(store, { now: () => new Date("2026-08-16T10:00:00Z") });
+    const range = { from: "2026-08-16T00:00:00Z", to: "2026-08-17T00:00:00Z", maxOccurrences: 10 } as const;
+    const firstSchedule = await schedules.materializeWithOutcome(scope, firstDraft.value.id, range, { idempotencyKey: "receipt-schedule", digest: "caller-a" });
+    const replayedSchedule = await schedules.materializeWithOutcome(scope, firstDraft.value.id, range, { idempotencyKey: "receipt-schedule", digest: "caller-b" });
+    expect(firstSchedule.outcome).toBe("created");
+    expect(replayedSchedule).toEqual({ outcome: "replayed", value: firstSchedule.value });
+
+    const intakes = createMedicationIntakeService(store, { now: () => new Date("2026-08-16T10:00:00Z") });
+    const intakeCommand = { planId: firstDraft.value.id, scheduledFor: "2026-08-16T08:00:00Z", state: "unknown" as const };
+    const firstIntake = await intakes.recordWithOutcome(scope, intakeCommand, { idempotencyKey: "receipt-intake", digest: "caller-a" });
+    const replayedIntake = await intakes.recordWithOutcome(scope, intakeCommand, { idempotencyKey: "receipt-intake", digest: "caller-b" });
+    expect(firstIntake.outcome).toBe("created");
+    expect(replayedIntake).toEqual({ outcome: "replayed", value: firstIntake.value });
   });
 
   it("marks adherence source incomplete when active facts conflict", async () => {

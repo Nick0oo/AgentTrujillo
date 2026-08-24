@@ -2,7 +2,7 @@
 id: AT-10-22
 title: Present vaccination status widget
 module: 10-eve-tools-and-presenters
-status: pending
+status: completed
 execution: sequential
 parallel_group: presenters
 depends_on: [AT-10-08]
@@ -47,13 +47,13 @@ The active guardian receives one bounded, accessible, child-specific operation o
 
 ## Prerequisites
 
-AT-10-08 and the exact Eve 0.27.1/AI SDK/domain contracts named below.
+AT-10-08 and the exact Eve 0.27.13/AI SDK/domain contracts named below.
 
 ## Mandatory reading
 
 - Module 10 README and direct prerequisite leaves
 - Root AGENTS clinical/tool/channel rules
-- Installed Eve 0.27.1 skill/tool/channel documentation and AI SDK schemas
+- Installed Eve 0.27.13 skill/tool/channel documentation and AI SDK schemas
 - Modules 02–09 domain authorization, governance, safety, persistence, and eval evidence
 
 ## Scope
@@ -121,17 +121,27 @@ Inspect Eve discovery and one real synthetic invocation/event stream for allowed
 
 Record tool/widget ID and schema version, files, discovery diff, domain/package/approval digests, test/eval counts, negative matrix, output/log scans, commands/exits, reviewers, and commit.
 
+- Outcome delivered in implementation commit `a2a2e19d8943e58312dfdfb1a6427b9894d05815` (`feat(presenter): present vaccination status widget`). Created only `src/presentation/vaccination-status.ts` and `tests/presentation/vaccination-status.test.ts`; no tool, database, Storage, provider, neighboring presenter or remote path changed.
+- TDD red: `npm test -- tests/presentation/vaccination-status.test.ts --reporter=dot` exited `1` because `../../src/presentation/vaccination-status` did not exist and executed `0` tests. The final tool-plus-presenter run exited `0` with `2` files and `24/24` tests; the accumulated `npm test -- tests/presentation --reporter=dot` run exited `0` with `2` files and `16/16` tests.
+- Fresh `npm run typecheck -- --pretty false` exited `0`. Fresh synthetic-config `npm run build` exited `0`; fresh Eve `0.27.13` `npx eve info` exited `0` with `0` diagnostics, `4` active tools and `0` subagents. The presenter adds no Eve-discoverable capability and therefore does not change the current tool surface.
+- Widget contract is the exported strict `vaccination.status.v1` schema with `kind: vaccination_status`. It accepts only strict `evaluate_vaccination_schedule.trusted.v1`, never the smaller model projection, and preserves exact country, package/version/algorithm, assessment order, six status tokens, rule/series/dose/reason codes, fact handles, source labels/reference codes/citation handles and ISO dates. Its four window states preserve open or closed bounds and explicitly declare inclusive endpoints without calculating another date.
+- The timeline and accessible seven-column table carry identical typed rows, stable IDs and semantic status icons. The locale boundary is closed to `es-CO` and `en-US`; screen-reader and one-line text fallbacks are deterministic. Citation deduplication preserves first appearance and fails closed on conflicting metadata; duplicate assessment identities and mismatched fact counts also fail closed.
+- Negative coverage rejects model projections, unknown/authority fields, unsupported locale/schema drift, malicious markup, citation conflicts, duplicate identities, evidence-count mismatch and arbitrary widget action fields. Output/capability scans found no HTML/JS, URL, phone, location, alarm, notification, appointment, clinician contact/handoff, diagnosis, treatment, prescription, prompt/reasoning, PHI, secret or signed URL.
+- Clinical review reused only the already-recorded vaccination status/package behavior and the exact existing generic professional-review copy `pediatrician-review-es-co` / `pediatrician-review-en-us`. Status labels are deterministic locale labels for the six trusted tokens and add no vaccine, eligibility rule, immunity/contraindication claim, recommendation, reminder or action. The approval basis is the product-owner-conveyed record; no Dr. Trujillo signature, identity or witnessed approval is claimed.
+- Technical, clinical, security and root self-review found no unresolved finding. The presenter is pure, recursively frozen, performs no persistence/replay/authorization/effect and exposes no arbitrary operation; authorization, cancellation and revocation remain enforced by the prerequisite tool before the trusted result exists.
+- Before commit, staged ownership was exactly the two declared paths; `git diff --cached --check` and forbidden-path/artifact/secret/privacy/capability scans exited `0`. The only scan match was the fixed synthetic UUID used by the forged-authority negative test; it is not production data. No `.env` value was read, edited or displayed and no remote mutation occurred. This contract is ready for Module 11's trusted versioned `ui-part`; channel authorization, event sequencing, cancellation, resume and replay remain Module 11 responsibilities.
+
 ## Commit protocol
 
 Commit exclusive paths with feat(presenter): present vaccination status widget; no remote deployment, unrelated changes, or undocumented discovery entry.
 
 ## Completion checklist
 
-- [ ] Model schemas contain no authority or clinical-result claims.
-- [ ] Policy order and effects are deterministic and tested.
-- [ ] Tool-to-model output is explicit and privacy-safe.
-- [ ] No diagnosis, prescription, clinician operation, or urgent extra exists.
-- [ ] Eve discovery contains exactly the intended surface.
+- [x] Model schemas contain no authority or clinical-result claims.
+- [x] Policy order and effects are deterministic and tested.
+- [x] Tool-to-model output is explicit and privacy-safe.
+- [x] No diagnosis, prescription, clinician operation, or urgent extra exists.
+- [x] Eve discovery contains exactly the intended surface.
 
 ## Handoff
 

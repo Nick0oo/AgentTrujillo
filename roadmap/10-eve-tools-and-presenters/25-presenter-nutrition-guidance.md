@@ -2,7 +2,7 @@
 id: AT-10-25
 title: Present approved nutrition guidance
 module: 10-eve-tools-and-presenters
-status: pending
+status: completed
 execution: sequential
 parallel_group: presenters
 depends_on: [AT-10-10]
@@ -47,13 +47,13 @@ The active guardian receives one bounded, accessible, child-specific operation o
 
 ## Prerequisites
 
-AT-10-10 and the exact Eve 0.27.1/AI SDK/domain contracts named below.
+AT-10-10 and the exact Eve 0.27.13/AI SDK/domain contracts named below.
 
 ## Mandatory reading
 
 - Module 10 README and direct prerequisite leaves
 - Root AGENTS clinical/tool/channel rules
-- Installed Eve 0.27.1 skill/tool/channel documentation and AI SDK schemas
+- Installed Eve 0.27.13 skill/tool/channel documentation and AI SDK schemas
 - Modules 02–09 domain authorization, governance, safety, persistence, and eval evidence
 
 ## Scope
@@ -127,11 +127,23 @@ Commit exclusive paths with feat(presenter): present approved nutrition guidance
 
 ## Completion checklist
 
-- [ ] Model schemas contain no authority or clinical-result claims.
-- [ ] Policy order and effects are deterministic and tested.
-- [ ] Tool-to-model output is explicit and privacy-safe.
-- [ ] No diagnosis, prescription, clinician operation, or urgent extra exists.
-- [ ] Eve discovery contains exactly the intended surface.
+- [x] Model schemas contain no authority or clinical-result claims.
+- [x] Policy order and effects are deterministic and tested.
+- [x] Tool-to-model output is explicit and privacy-safe.
+- [x] No diagnosis, prescription, clinician operation, or urgent extra exists.
+- [x] Eve discovery contains exactly the intended surface.
+
+### Recorded 2026-08-23
+
+- Outcome and non-goals: `presentNutritionGuidance` consumes only `suggest_pediatric_nutrition.trusted.v1` and emits strict, deeply immutable `nutrition.guidance.v1` widgets. It does not calculate eligibility, invent recipes or preparation text, mutate state, expose model output as trusted mobile data, add actions, or contact/notify/book/transfer to a clinician.
+- Implementation commit: `5c06e75befeb1fe2fb6c71e6e6a7bef79f04aef0` (`feat(presenter): present approved nutrition guidance`). Changed paths were only `src/presentation/nutrition-guidance.ts` and `tests/presentation/nutrition-guidance.test.ts`.
+- TDD evidence: the first focused command `npm test -- tests/presentation/nutrition-guidance.test.ts --reporter=dot` exited `1` because the presenter module did not exist; no test executed. The completed focused suite exited `0` with 10/10 tests.
+- Accumulated verification: the tool-plus-presenter command exited `0` with 29/29 tests; all current presentation tests exited `0` with 26/26 tests; `npm run typecheck -- --pretty false`, synthetic-config `npm run build`, and synthetic-config `npx eve info` each exited `0`.
+- Presenter contract: educational output preserves approved blocks, recipe ingredients, exclusions, texture, supervision, whole-recipe alternatives, citations, package/version/jurisdiction/algorithm disclosure and exact approved texture transformations. Insufficient-data and professional-review states are separate strict variants with accessible textual fallbacks. Additional fields, markup/executable text, locale drift, citation/source drift, detached content and invalid transformation closure fail closed.
+- Clinical review: this presenter reuses only the trusted result, approved nutrition content and exact generic professional-review copy already conveyed through Module 08. It introduces no nutrition rule, allergy/choking claim, therapeutic claim, clinical recommendation, emergency copy or attributed Dr. Trujillo signature. Professional recommendation remains inert text and exposes no action.
+- Security/privacy review: the widget schema has no child/care-space/guardian identifiers, authority claims, URLs, storage tickets, HTML/JS or arbitrary actions. Trusted mobile payload and the separately implemented safe-to-model projection remain distinct. Staged ownership, whitespace, forbidden-path, artifact, secret, credential and synthetic-PHI scans were clean.
+- Eve evidence: installed Eve was `0.27.13`; compile was `ready` with `0` errors and `0` warnings. This presenter adds no Eve tool, so discovery remained exactly the four currently completed tools and zero subagents/schedules.
+- Exceptions and residual risk: no remote or database action was performed. Mobile rendering remains Module 11 work; registry binding remains `AT-10-32`. No new clinical approval is required because no approved content, package, copy or behavior was expanded.
 
 ## Handoff
 

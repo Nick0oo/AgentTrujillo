@@ -6,14 +6,33 @@ import { dirname, resolve } from "node:path";
 export const FORBIDDEN_RUNTIME_NAMES = Object.freeze([
   "agent",
   "bash",
+  "book_clinician",
+  "clinician_booking",
+  "clinician_contact",
+  "clinician_handoff",
+  "clinician_notify",
+  "contact_clinician",
+  "evaluate_red_flags",
+  "filesystem",
   "glob",
   "grep",
+  "notify_clinician",
   "read_file",
+  "schedule_clinician",
+  "transfer_clinician",
+  "trigger_red_flag_alert",
+  "web",
   "web_fetch",
   "web_search",
   "workflow",
   "write_file",
 ]);
+
+export function fixtureFileForBaseline(baseline) {
+  if (baseline === "module-01") return "eve-info-module-01.json";
+  if (baseline === "module-10") return "eve-info-module-10.json";
+  throw new Error("Unsupported Eve discovery baseline");
+}
 
 export function extractJson(stdout) {
   const start = stdout.indexOf("{");
@@ -131,7 +150,8 @@ function runInfo() {
 
 function main() {
   const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-  const fixturePath = resolve(root, "tests/fixtures/runtime/eve-info-module-01.json");
+  const fixtureFile = fixtureFileForBaseline(process.env.EVE_DISCOVERY_BASELINE ?? "module-10");
+  const fixturePath = resolve(root, "tests/fixtures/runtime", fixtureFile);
   const info = runInfo();
   const actual = projectSurface(info);
   const fixture = JSON.parse(readFileSync(fixturePath, "utf8"));

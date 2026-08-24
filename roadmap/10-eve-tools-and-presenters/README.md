@@ -4,14 +4,30 @@ This module is the only model-callable action surface. It wraps modules 02–09 
 
 ## Entry gate
 
-- Eve 0.27.1 discovery and Gemini runtime gates pass.
+- Eve 0.27.13 discovery and Gemini runtime gates pass.
 - Modules 02–09 authorization, governance, safety, clinical engines, persistence, memory, and documents pass for each exposed capability.
 - Deterministic red-flag preflight remains outside Eve tool calling.
 - Model-facing schemas contain no care-space, child, guardian, country, permission, entitlement, package, approval, or clinical result truth.
 
+### Authorized contract reconciliation — 2026-08-23
+
+`AT-01-18`, the root `AGENTS.md`, the installed package, and the lockfile supersede the historical `0.27.1` references in this module. Every Module 10 leaf targets Eve `0.27.13` and its bundled documentation; no remembered or web-only `0.27.1` API is authoritative.
+
+To break the documented dependency cycle, current root authority permits only `AT-13-01` to enter early after its own dependency `AT-03-11` is verified. That leaf produces the provider-neutral catalog consumed by `AT-10-02`; it does not configure providers, inspect real accounts, mutate remote state, or open any other Module 13 leaf. The remaining Module 13 entry gate and leaves stay pending, and later Module 13 work reuses the same versioned catalog without a compatibility fork.
+
+Eve `0.27.13` reports any authored `agent/runtime/` directory as unsupported and fails the zero-warning discovery gate. The infrastructure helpers in `AT-10-01` through `AT-10-07` therefore live under the supported import-only `agent/lib/runtime/` slot. This is a path-only correction: it creates no model-callable tool, changes no public tool identity, and leaves their tests under `tests/agent/runtime/`.
+
+Current execution authority also resolves the README/frontmatter scheduling mismatch: the independent tool leaves may be queued by their declared contract groups, but the root closes one atomic leaf at a time; presenter leaves `AT-10-21` through `AT-10-31` follow their `execution: sequential` frontmatter and are likewise closed one at a time.
+
+Installed Eve passes only its public `ToolContext` to authored tools. The first concrete tool, `AT-10-09`, owns a shared import-only execution bridge that accepts one immutable application factory and resolves a fresh branded `TrustedToolContext` plus typed request-scoped services for every tool call. It validates Eve session/call/actor/abort binding after resolution, keeps no per-user context or credential globally, and fails closed until Module 11's authenticated composition installs the production factory. The same correction preserves only registry-branded safe errors through the idempotency wrapper; arbitrary thrown values remain private and fail closed.
+
+Eve `0.27.13` derives the authored tool name literally from the filename slug. The binding underscore-based surface therefore uses underscore implementation filenames (for example, `agent/tools/get_growth_summary.ts`); hyphenated roadmap/test filenames are documentation identifiers only. This discovery-identity correction is path-only and does not alter tool schemas or policy.
+
+Module 10 tools expose two deliberately different result contracts: a strict trusted result consumed by mobile presenters/events and a smaller explicit `*.model.v1` projection returned only by Eve `toModelOutput`. Trusted results may carry bounded version/reference provenance needed by a presenter; neither contract carries model-supplied authority, raw identifiers, package digests or generic payloads. The `AT-10-09` compatibility correction established this seam before `AT-10-21` was claimed.
+
 ## Exit gate
 
-All 33 leaves are complete and prove exactly thirteen intended tools, no red-flag/shell/filesystem/network/delegation tools, correct wrapper order, explicit confirmation for effects, replay convergence, safe output projections, privacy-safe audit/errors, accessible versioned widgets, text-only professional/emergency boundaries, mobile compatibility, and zero critical authorization/clinical/action leakage.
+Module 10 exits only when all 33 leaves are complete and prove exactly thirteen intended tools, no red-flag/shell/filesystem/network/delegation tools, correct wrapper order, explicit confirmation for effects, replay convergence, safe output projections, privacy-safe audit/errors, accessible versioned widgets, text-only professional/emergency boundaries, mobile compatibility, and zero critical authorization/clinical/action leakage.
 
 ## Dependency strategy
 

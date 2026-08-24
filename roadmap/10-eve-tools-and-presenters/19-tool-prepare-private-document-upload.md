@@ -2,7 +2,7 @@
 id: AT-10-19
 title: Prepare a private document upload
 module: 10-eve-tools-and-presenters
-status: pending
+status: completed
 execution: parallel
 parallel_group: eve-tools
 depends_on: [AT-10-07, AT-09-19, AT-10-03]
@@ -16,13 +16,13 @@ database_change: false
 requires_clinical_approval: false
 touches:
   create:
-    - agent/tools/prepare-private-document-upload.ts
+    - agent/tools/prepare_private_document_upload.ts
     - tests/agent/tools/prepare-private-document-upload.test.ts
   modify: []
   test:
     - tests/agent/tools/prepare-private-document-upload.test.ts
 exclusive_paths:
-  - agent/tools/prepare-private-document-upload.ts
+  - agent/tools/prepare_private_document_upload.ts
   - tests/agent/tools/prepare-private-document-upload.test.ts
 forbidden_paths:
   - .env
@@ -47,13 +47,13 @@ The active guardian receives one bounded, accessible, child-specific operation o
 
 ## Prerequisites
 
-AT-10-07, AT-09-19, AT-10-03 and the exact Eve 0.27.1/AI SDK/domain contracts named below.
+AT-10-07, AT-09-19, AT-10-03 and the exact Eve 0.27.13/AI SDK/domain contracts named below.
 
 ## Mandatory reading
 
 - Module 10 README and direct prerequisite leaves
 - Root AGENTS clinical/tool/channel rules
-- Installed Eve 0.27.1 skill/tool/channel documentation and AI SDK schemas
+- Installed Eve 0.27.13 skill/tool/channel documentation and AI SDK schemas
 - Modules 02–09 domain authorization, governance, safety, persistence, and eval evidence
 
 ## Scope
@@ -119,7 +119,21 @@ Inspect Eve discovery and one real synthetic invocation/event stream for allowed
 
 ## Completion evidence
 
-Record tool/widget ID and schema version, files, discovery diff, domain/package/approval digests, test/eval counts, negative matrix, output/log scans, commands/exits, reviewers, and commit.
+Recorded by the Luna/max implementer and root reviewer on 2026-08-23:
+
+- Outcome: added model-callable `prepare_private_document_upload` with strict `prepare-private-document-upload.v1` declared-metadata input, `prepare_private_document_upload.trusted.v1` trusted result, `private.document-upload.v1` mobile event, and separate `prepare_private_document_upload.model.v1` projection. The tool reserves through the verified request-scoped M09 service only after explicit approval and never accepts bucket, object path, child/care-space/guardian/country authority, ticket, URL, header or approval-token fields from the model.
+- Policy/effect order: outer active-scope and permission reauthorization precedes approval consumption; the wrapper then performs strict validation, digest-bound guardian approval and derived idempotency; the handler reauthorizes immediately before the domain call and after the possible effect before exposing the ticket. Cancellation after issuance attempts the M09 typed `cancel` operation best-effort and still reports the effect as unknown; an already-issued provider URL is not falsely claimed revoked before its bounded TTL.
+- Approval/idempotency: effect is `draft`; the service receives only `prepare_private_document_upload:<sha256>` derived from trusted product-session/tool-call identity. The model's opaque client key participates in approval/request binding but is never used as repository authority. M09 intentionally returns `IDEMPOTENCY_CONFLICT` for reservation replay because it has no safe fresh-URL reissue operation; the tool neither reuses a stale URL nor mints a second capability.
+- Trusted/model separation: the strict guardian event carries the one-purpose HTTPS ticket, exact no-upsert headers, checksum, MIME, size and maximum five-minute expiry. Model output contains only `upload_prepared`, allowlisted purpose and `mobileActionRequired: true`; audit contains digests/status only. Ticket URLs, query tokens, headers, paths, bucket and document identifiers were absent from model and audit serialization.
+- Implementation commit: `7ac468271f84d08b7b6367fe6192ec9cc8e0896d` (`feat(tool): prepare a private document upload`). Changed paths were exactly `agent/tools/prepare_private_document_upload.ts` and `tests/agent/tools/prepare-private-document-upload.test.ts`.
+- TDD/worker evidence: the initial missing-module RED exited `1`; the Luna/max worker delivered `13/13` focused tests, `6/6` M09 service tests, `106/106` selected runtime tests and isolated strict typecheck at exit `0`, without staging, committing, editing roadmap or invoking any real provider.
+- Root review correction: a new cancellation-cleanup assertion first failed at exit `1` with `12` passing and `1` failing test because an issued reservation was not cancelled. The root added the existing typed M09 `cancel` seam and best-effort cleanup for cancellation, post-effect authorization denial and invalid ticket projection; the corrected focused suite passed `13/13`.
+- Fresh root verification: focused tool plus M09 upload-ticket service passed `2` files/`19` tests; approval, idempotency, audit, safe-error, safe-projection, permission and trusted-context suites passed `7` files/`138` tests. `npm run typecheck`, `npm run build`, `git diff --cached --check` and all listed commands exited `0`.
+- Fresh Eve checkpoint: Eve `0.27.13` reported compile ready, `0` errors, `0` warnings, exactly `13` tools, `0` subagents and `0` schedules. The legacy Module 01 zero-tool fixture remains a transparent AT-10-33 integration correction; this leaf does not claim that legacy verifier passed.
+- Negative/security matrix: forged authority/storage/ticket fields, unsafe filename/URL/userinfo/header/upsert/MIME/checksum/TTL, missing permission, foreign country, expired scope, approval drift, current-ticket expiry, provider/policy/authorization failure, post-issue revocation, cancellation and reservation replay all failed closed. Staged ownership was exact; forbidden-path, artifact, credential and PHI/prompt/reasoning scans reported zero findings.
+- Clinical/safety review: the upload is not a confirmed clinical fact and cannot bypass scan, extraction-draft or confirmation boundaries. No diagnosis, prescription, clinical rule/copy, clinician action, urgent workflow or personal approval/signature was added; this leaf does not require clinical approval.
+- Cloud/database: `database_change: false`; no migration, schema edit, direct/generic write, real upload, Storage call, Supabase data mutation, deployment or remote effect occurred. The verified M09 evidence still records that the installed raw Storage provider's two-hour signed-upload URL is rejected; production issuance requires an approved provider/gateway that proves a maximum five-minute capability.
+- Handoff: closing the last pending tool dependency makes AT-10-26 eligible once selected under the sequential presenter rule. Module 11 can later transport only the trusted versioned event and must keep the signed ticket out of model/log streams; Module 12 replay must preserve M09 conflict semantics and never duplicate a capability.
 
 ## Commit protocol
 
@@ -127,11 +141,11 @@ Commit exclusive paths with feat(tool): prepare a private document upload; no re
 
 ## Completion checklist
 
-- [ ] Model schemas contain no authority or clinical-result claims.
-- [ ] Policy order and effects are deterministic and tested.
-- [ ] Tool-to-model output is explicit and privacy-safe.
-- [ ] No diagnosis, prescription, clinician operation, or urgent extra exists.
-- [ ] Eve discovery contains exactly the intended surface.
+- [x] Model schemas contain no authority or clinical-result claims.
+- [x] Policy order and effects are deterministic and tested.
+- [x] Tool-to-model output is explicit and privacy-safe.
+- [x] No diagnosis, prescription, clinician operation, or urgent extra exists.
+- [x] Eve discovery contains exactly the intended surface.
 
 ## Handoff
 

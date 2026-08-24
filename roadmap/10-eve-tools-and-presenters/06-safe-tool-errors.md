@@ -2,7 +2,7 @@
 id: AT-10-06
 title: Map tool failures to safe typed errors
 module: 10-eve-tools-and-presenters
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-10-05, AT-04-10]
@@ -16,14 +16,18 @@ database_change: false
 requires_clinical_approval: false
 touches:
   create:
-    - agent/runtime/safe-tool-errors.ts
+    - agent/lib/runtime/safe-tool-errors.ts
     - tests/agent/runtime/safe-tool-errors.test.ts
-  modify: []
+  modify:
+    - agent/lib/runtime/tool-audit.ts
+    - tests/agent/runtime/tool-audit.test.ts
   test:
     - tests/agent/runtime/safe-tool-errors.test.ts
 exclusive_paths:
-  - agent/runtime/safe-tool-errors.ts
+  - agent/lib/runtime/safe-tool-errors.ts
   - tests/agent/runtime/safe-tool-errors.test.ts
+  - agent/lib/runtime/tool-audit.ts
+  - tests/agent/runtime/tool-audit.test.ts
 forbidden_paths:
   - .env
   - supabase/migrations/**
@@ -47,13 +51,13 @@ The active guardian receives one bounded, accessible, child-specific operation o
 
 ## Prerequisites
 
-AT-10-05, AT-04-10 and the exact Eve 0.27.1/AI SDK/domain contracts named below.
+AT-10-05, AT-04-10 and the exact Eve 0.27.13/AI SDK/domain contracts named below.
 
 ## Mandatory reading
 
 - Module 10 README and direct prerequisite leaves
 - Root AGENTS clinical/tool/channel rules
-- Installed Eve 0.27.1 skill/tool/channel documentation and AI SDK schemas
+- Installed Eve 0.27.13 skill/tool/channel documentation and AI SDK schemas
 - Modules 02–09 domain authorization, governance, safety, persistence, and eval evidence
 
 ## Scope
@@ -79,6 +83,10 @@ Export ToolErrorCode, SafeToolError, mapToolError, isRetryableBeforeEffect, and 
 ## Technical design
 
 Default unknown to INTERNAL_UNAVAILABLE; separate forbidden/not-found without enumeration leaks, input/confirmation/idempotency/package/rule/provider/timeout/cancel cases; include retry hints only when no effect ambiguity.
+
+### Root contract correction — safe-error/audit integration
+
+Root review on 2026-08-23 found that completed `AT-10-05` recognizes only the preceding idempotency errors and otherwise records a generic unknown failure. A new `SafeToolError` created by this leaf would therefore lose its closed safe code at the audit boundary. This leaf explicitly owns a narrow integration change to `tool-audit.ts` and its test: recognize only the branded `SafeToolError`, record its public enum code, and rethrow the same safe instance after the redacted event is accepted. Messages, stacks, private causes and arbitrary structural lookalikes remain untrusted and are never copied. No other audit schema or outcome behavior changes.
 
 ## Database and Storage contract
 
@@ -119,6 +127,26 @@ Inspect Eve discovery and one real synthetic invocation/event stream for allowed
 
 ## Completion evidence
 
+Recorded by root implementer/reviewer on 2026-08-23:
+
+- Outcome: added one `SafeToolError` boundary with the exact frozen `safe-tool-error.v1` payload, a 12-code `ToolErrorCode` vocabulary, `mapToolError`, `isRetryableBeforeEffect`, branded-error recognition and a private weak cause registry with redacted `tool-error-diagnostics.v1` metadata.
+- Public/private separation: serialization exposes only `kind`, version, code, retryability and a bounded rate-limit delay. Error message, stack, cause, SQL state, provider detail, identifiers, authority fields, prompts, reasoning, URLs and secrets remain outside the public object; forbidden and not-found share `RESOURCE_UNAVAILABLE` while retaining distinct private cause classes.
+- Retry/effect safety: only provider, persistence, rate-limit and timeout failures are retryable, only when the caller proves `effectState: none`. Missing, forged, hostile or effect-ambiguous options fail to `unknown` and disable retry. Rate-limit delay accepts only integers from 1 through 300 seconds.
+- Integration amendment: root correction `a01db90734e90c55997e268af9a312a167471d28` authorized the narrow completed-audit integration. `withToolAudit` recognizes only registry-branded safe errors, records the bounded public code, and rethrows the same instance after accepting the redacted event; structural lookalikes remain unknown.
+- Fail-closed review correction: new red tests proved `TOOL_IDEMPOTENCY_UNAVAILABLE` was initially classified as internal and a hostile proxy could throw during mapper inspection (`2` failures, `30` passes). The final mapper classifies the former as persistence unavailable and catches hostile error/options inspection without copying trap content.
+- Implementation commit: `783fc329d4209184d85a5e22c839c3c7c3b7fa17` (`feat(runtime): map tool failures to safe typed errors`).
+- Owned files: `agent/lib/runtime/safe-tool-errors.ts`; `tests/agent/runtime/safe-tool-errors.test.ts`; narrow branded-error integration in `agent/lib/runtime/tool-audit.ts`; `tests/agent/runtime/tool-audit.test.ts`.
+- TDD evidence: the first focused run exited `1` because `safe-tool-errors.ts` did not exist; subsequent adversarial assertions exposed an unsafe version-regex assertion, four missing real-domain mappings, and the two root-review findings above before implementation. No failing assertion was waived.
+- Fresh narrow verification: `npm test -- tests/agent/runtime/safe-tool-errors.test.ts tests/agent/runtime/tool-audit.test.ts --reporter=dot` exited `0` with `2/2` files and `47/47` tests.
+- Fresh accumulated verification: `npm test -- --reporter=dot` exited `0` with `131/131` files, `1,191` passed and `1` pre-existing skip (`1,192` total). `npm run typecheck` and `git diff --check` exited `0`.
+- Fresh Eve gates: synthetic-config `npm run build`, `npx eve info` and `npm run verify:discovery` exited `0`. Installed Eve was `0.27.13`, compile status was ready, diagnostics were `0` errors/`0` warnings, and the authored discovery surface remained exactly `0` tools, `0` subagents and `0` schedules.
+- Negative matrix: malicious SQL/provider strings, sibling/missing identifiers, locale variants, signed URL/token, prompt/reasoning markers, unknown objects, structural forgeries, hostile proxies/getters, revoked/expired context codes, cancellation, effect-unknown timeout, retry-after bounds and unknown fields were exercised. Public serialization and audit events contained none of the injected content.
+- Self-review: codes are locale-neutral and make no clinical-result claim; `SafeToolError` instances are accepted only when present in the private registry; the original cause has no public accessor; diagnostic source codes are domain-separated SHA-256 digests; objects and payloads are frozen and deterministic.
+- Technical/security review: staged paths matched the four amended exclusive paths. `git diff --cached --check`, forbidden-path, artifact and credential-pattern scans passed. Privacy scan findings in implementation were only the word `diagnostics`; PHI/URL/prompt-like matches were synthetic adversarial test canaries whose asserted purpose is proving non-disclosure.
+- Clinical review: no wording, rule, package, medication, vaccine, diagnosis, prescription, professional operation or emergency behavior changed. `requires_clinical_approval: false`; no approval identity or signature is asserted.
+- Cloud/database evidence: `database_change: false`; no Supabase query/write, schema change, storage action, provider access, Cloud clinical effect or remote mutation occurred.
+- Manual exception/residual risk: this infrastructure leaf owns no model-callable Eve tool or mobile widget event, so a real tool invocation/stream is not applicable and discovery correctly remains empty. Synthetic mapper/audit invocations verify the failure/cancellation boundary. Individual tool leaves must supply their exact safe projections and effect-state truth. Completion unblocks only `AT-10-07`.
+
 Record tool/widget ID and schema version, files, discovery diff, domain/package/approval digests, test/eval counts, negative matrix, output/log scans, commands/exits, reviewers, and commit.
 
 ## Commit protocol
@@ -127,11 +155,11 @@ Commit exclusive paths with feat(runtime): map tool failures to safe typed error
 
 ## Completion checklist
 
-- [ ] Model schemas contain no authority or clinical-result claims.
-- [ ] Policy order and effects are deterministic and tested.
-- [ ] Tool-to-model output is explicit and privacy-safe.
-- [ ] No diagnosis, prescription, clinician operation, or urgent extra exists.
-- [ ] Eve discovery contains exactly the intended surface.
+- [x] Model schemas contain no authority or clinical-result claims.
+- [x] Policy order and effects are deterministic and tested.
+- [x] Tool-to-model output is explicit and privacy-safe.
+- [x] No diagnosis, prescription, clinician operation, or urgent extra exists.
+- [x] Eve discovery contains exactly the intended surface.
 
 ## Handoff
 

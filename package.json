@@ -23,6 +23,7 @@
     "import:immunization:us": "node scripts/clinical/import-acip-us.mjs",
     "eval:runtime": "eve eval runtime --strict --max-concurrency 1",
     "eval:runtime:json": "eve eval runtime --strict --max-concurrency 1 --json",
+    "eval": "node --experimental-transform-types tests/evals/tool-contracts.eval.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:runtime": "vitest run tests/runtime",

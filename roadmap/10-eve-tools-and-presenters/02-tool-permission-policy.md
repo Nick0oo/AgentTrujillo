@@ -2,7 +2,7 @@
 id: AT-10-02
 title: Enforce tool permission and entitlement policy
 module: 10-eve-tools-and-presenters
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-10-01, AT-13-01]
@@ -16,13 +16,13 @@ database_change: false
 requires_clinical_approval: false
 touches:
   create:
-    - agent/runtime/tool-permission-policy.ts
+    - agent/lib/runtime/tool-permission-policy.ts
     - tests/agent/runtime/tool-permission-policy.test.ts
   modify: []
   test:
     - tests/agent/runtime/tool-permission-policy.test.ts
 exclusive_paths:
-  - agent/runtime/tool-permission-policy.ts
+  - agent/lib/runtime/tool-permission-policy.ts
   - tests/agent/runtime/tool-permission-policy.test.ts
 forbidden_paths:
   - .env
@@ -47,13 +47,13 @@ The active guardian receives one bounded, accessible, child-specific operation o
 
 ## Prerequisites
 
-AT-10-01, AT-13-01 and the exact Eve 0.27.1/AI SDK/domain contracts named below.
+AT-10-01, AT-13-01 and the exact Eve 0.27.13/AI SDK/domain contracts named below.
 
 ## Mandatory reading
 
 - Module 10 README and direct prerequisite leaves
 - Root AGENTS clinical/tool/channel rules
-- Installed Eve 0.27.1 skill/tool/channel documentation and AI SDK schemas
+- Installed Eve 0.27.13 skill/tool/channel documentation and AI SDK schemas
 - Modules 02–09 domain authorization, governance, safety, persistence, and eval evidence
 
 ## Scope
@@ -119,7 +119,27 @@ Inspect Eve discovery and one real synthetic invocation/event stream for allowed
 
 ## Completion evidence
 
-Record tool/widget ID and schema version, files, discovery diff, domain/package/approval digests, test/eval counts, negative matrix, output/log scans, commands/exits, reviewers, and commit.
+Recorded by root implementer/reviewer on 2026-08-23:
+
+- Outcome: added the exhaustive immutable `tool-permission.v1` registry and `authorizeToolInvocation`, which revalidates trusted context before tool lookup, then checks guardian permission, current CO activation, and the server-side entitlement capability snapshot.
+- Exact surface: the registry contains only the thirteen intended IDs. Twelve require `advanced_ai`; `generate_vaccination_card` requires `reports`. Read tools require `read`; clinical fact writes require `record`; medication tools require `manage_medication`; upload/PDF tools require `manage_documents`.
+- Country/plan decision: every tool is CO-only because United States production activation remains unapproved. Free contexts without paid capability are denied; Premium/projected capability can enable a tool but never grants child authorization, clinical package approval, confirmation or safety authority.
+- Non-goals preserved: no model schema, tool implementation/discovery entry, approval, idempotency/replay, domain effect, clinical calculation/copy, provider/product lookup, flag, database/Storage call, migration, remote mutation, deploy or clinician operation.
+- Prerequisites: `AT-10-01` implementation `13ef49f` and early `AT-13-01` implementation `eb82958` were verified ancestors of the working HEAD. Policy imports only the catalog capability type, never the synthetic provider mappings.
+- Implementation commit: `f0ce01ac02abe54bb9708a813bb002bed0f57eb4` (`feat(runtime): enforce tool permission and entitlement policy`).
+- Owned files: `agent/lib/runtime/tool-permission-policy.ts`; `tests/agent/runtime/tool-permission-policy.test.ts`.
+- TDD evidence: the first focused test exited `1` because the policy module did not exist; runtime then passed `26/26`. Typecheck initially exposed `Object.fromEntries` key widening and the CO tuple `includes` narrowing; both were corrected without changing behavior.
+- Fresh narrow verification: `npm test -- tests/agent/runtime/tool-permission-policy.test.ts` exited `0` with `1` file and `26/26` cases.
+- Fresh affected verification: `npm test -- tests/agent/runtime tests/access tests/commerce` exited `0` with `16/16` files, `244` passed and `1` pre-existing skip (`245` total).
+- Fresh gates: `npm run typecheck`, synthetic-config `npm run build`, and `npm run verify:discovery` exited `0`; Eve remained `ready` with `0` errors, `0` warnings and `authoredTools: []`.
+- Negative matrix: missing permission, missing/downgraded capability, US country, expired entitlement lease, cancelled context, forged tool object, unknown IDs, `evaluate_red_flags`, red-flag alert, shell, filesystem, arbitrary web, delegation and clinician-contact IDs all return the same frozen `TOOL_INVOCATION_DENIED` decision.
+- Order/replay evidence: `requireActiveChildScope` runs before registry lookup, so invalid/revoked/expired/cancelled contexts cannot enumerate tool policy. A newly reauthorized downgraded context is denied rather than using cached paid access. The allowed decision binds policy version and entitlement revision for later approval/idempotency/domain rechecks.
+- Self-review: all thirteen policy entries were compared against leaf effects and permissions; compile-time `satisfies Record<RegisteredToolId,...>` plus exact runtime key assertions prevent omissions or extras.
+- Technical/security review: the decision exposes no actor, care-space/child, provider/product, price, token, clinical content or action. Registry/country arrays/entries and decisions are frozen; unknown inputs fail closed with no effect.
+- Clinical review: permission/capability never changes clinical truth, package availability or approved wording. Pre-LLM emergency evaluation is not registered and bypasses this paid/tool policy; no clinical behavior or claim was added and no approval/signature is asserted.
+- Staged review: only the two owned paths were staged; `git diff --cached --check`, forbidden/artifact/secret/bearer/signed-URL/log/network scan and full staged-diff review passed.
+- Cloud/database evidence: `database_change: false`; no Supabase client, direct/generic query, Cloud test effect, provider account access or remote mutation occurred.
+- Residual integration gate: an allowed decision is not permission to execute an effect. AT-10-03/04 and every domain transaction must revalidate approval/replay ordering and current authorization/entitlement revision. Completion unblocks only `AT-10-03`.
 
 ## Commit protocol
 
@@ -127,11 +147,11 @@ Commit exclusive paths with feat(runtime): enforce tool permission and entitleme
 
 ## Completion checklist
 
-- [ ] Model schemas contain no authority or clinical-result claims.
-- [ ] Policy order and effects are deterministic and tested.
-- [ ] Tool-to-model output is explicit and privacy-safe.
-- [ ] No diagnosis, prescription, clinician operation, or urgent extra exists.
-- [ ] Eve discovery contains exactly the intended surface.
+- [x] Model schemas contain no authority or clinical-result claims.
+- [x] Policy order and effects are deterministic and tested.
+- [x] Tool-to-model output is explicit and privacy-safe.
+- [x] No diagnosis, prescription, clinician operation, or urgent extra exists.
+- [x] Eve discovery contains exactly the intended surface.
 
 ## Handoff
 

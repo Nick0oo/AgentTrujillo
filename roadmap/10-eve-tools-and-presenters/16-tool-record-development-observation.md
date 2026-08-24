@@ -2,7 +2,7 @@
 id: AT-10-16
 title: Record caregiver development observation
 module: 10-eve-tools-and-presenters
-status: pending
+status: completed
 execution: parallel
 parallel_group: eve-tools
 depends_on: [AT-10-07, AT-08-17, AT-10-03]
@@ -16,13 +16,13 @@ database_change: false
 requires_clinical_approval: true
 touches:
   create:
-    - agent/tools/record-development-observation.ts
+    - agent/tools/record_development_observation.ts
     - tests/agent/tools/record-development-observation.test.ts
   modify: []
   test:
     - tests/agent/tools/record-development-observation.test.ts
 exclusive_paths:
-  - agent/tools/record-development-observation.ts
+  - agent/tools/record_development_observation.ts
   - tests/agent/tools/record-development-observation.test.ts
 forbidden_paths:
   - .env
@@ -47,13 +47,13 @@ The active guardian receives one bounded, accessible, child-specific operation o
 
 ## Prerequisites
 
-AT-10-07, AT-08-17, AT-10-03 and the exact Eve 0.27.1/AI SDK/domain contracts named below.
+AT-10-07, AT-08-17, AT-10-03 and the exact Eve 0.27.13/AI SDK/domain contracts named below.
 
 ## Mandatory reading
 
 - Module 10 README and direct prerequisite leaves
 - Root AGENTS clinical/tool/channel rules
-- Installed Eve 0.27.1 skill/tool/channel documentation and AI SDK schemas
+- Installed Eve 0.27.13 skill/tool/channel documentation and AI SDK schemas
 - Modules 02–09 domain authorization, governance, safety, persistence, and eval evidence
 
 ## Scope
@@ -127,11 +127,25 @@ Commit exclusive paths with feat(tool): record caregiver development observation
 
 ## Completion checklist
 
-- [ ] Model schemas contain no authority or clinical-result claims.
-- [ ] Policy order and effects are deterministic and tested.
-- [ ] Tool-to-model output is explicit and privacy-safe.
-- [ ] No diagnosis, prescription, clinician operation, or urgent extra exists.
-- [ ] Eve discovery contains exactly the intended surface.
+- [x] Model schemas contain no authority or clinical-result claims.
+- [x] Policy order and effects are deterministic and tested.
+- [x] Tool-to-model output is explicit and privacy-safe.
+- [x] No diagnosis, prescription, clinician operation, or urgent extra exists.
+- [x] Eve discovery contains exactly the intended surface.
+
+### Recorded 2026-08-23
+
+- Outcome and non-goals: `record_development_observation` stores one confirmed factual caregiver diary observation for the active child. It does not score, screen, classify a milestone as attained/missed, estimate developmental age, interpret EAD-3, diagnose, create a clinician case, contact anyone, change schema or expose a generic persistence operation.
+- Implementation commit: `c7b9cbe36687c817f97e6c922af04a81d825da90` (`feat(tool): record caregiver development observation`). Exactly `agent/tools/record_development_observation.ts` and `tests/agent/tools/record-development-observation.test.ts` changed.
+- TDD evidence: the initial focused run exited `1` because the tool module did not exist. The completed focused suite passed 11/11 tests; the fresh accumulated tool, observation service, milestone query and six development-domain files passed 159/159.
+- Root implementation and contract review: the strict input accepts only bounded factual text/date/domain, an optional caregiver milestone code, caregiver question and opaque attachment handles. It rejects authority, country, source, EAD-3/professional markers, scores, diagnosis fields, control/role markup, prompt injection, duplicate/forged handles and extra fields.
+- Approval/authorization/effect review: guardian approval is consumed before any resolver or service call. The active scope, `record` permission, capability, country, session expiry and cancellation are rechecked before attachment resolution, draft creation and confirmation; revocation between draft and confirmation prevents the write. The existing domain service performs a transaction-scoped authorization recheck and durable idempotent write.
+- Attachment/privacy review: `attachment:v1:<sha256>` binds version, private bucket, object path, content digest, MIME and size. A request-scoped typed resolver must return the exact same handle set; missing, duplicate or substituted references fail before draft/confirmation. Trusted output contains only MIME/size/state summaries, while model output omits observation/concern text, object paths, hashes, handles and the persistence observation ID.
+- Clinical review: the tool reuses the exact Module 08 caregiver-observation validator, released caregiver framework, attachment policy and conveyed approval record without adding wording, milestones, rules, scores, criteria, clinical claims or a personal signature. Caregiver concern remains a neutral question; EAD-3 stays professional-only.
+- Replay/error/audit review: durable `created`/`idempotent_replay` is preserved as `created`/`replayed`; approval-token replay causes no duplicate effect. Safe errors cover drift, invalid observation, storage, policy, access, cancellation and idempotency without leaking record identifiers or raw payloads; audit events remain redacted.
+- Fresh gates: `npm run typecheck`, synthetic-config `npm run build`, and synthetic-config `npx eve info --json` exited `0`. Eve was `0.27.13`, discovery was ready with 0 errors/0 warnings and directly listed the current six authored tools including `record_development_observation` and no subagents/schedules.
+- Staged review: exactly the two exclusive paths were staged. `git diff --cached --check`, ownership/forbidden-path/artifact and credential/secret/token scans passed with zero findings.
+- Exceptions and residual risk: no Supabase Cloud write, schema/migration/provider/deploy or other remote mutation occurred. The mobile presenter remains `AT-10-24`; shared guardian confirmation and registry/channel binding remain `AT-10-26`, `AT-10-32` and Module 11.
 
 ## Handoff
 
