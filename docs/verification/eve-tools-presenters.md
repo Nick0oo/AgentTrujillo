@@ -8,7 +8,7 @@ Scope: `AT-10-01` through `AT-10-33`, plus the explicitly authorized early execu
 
 Module 10 is implemented as thirteen model-callable Eve tools, eleven strict versioned presenters, and one exact presenter registry. The final behavioral contract eval imports the real tool descriptors, runtime policy registries, and widget registry; it locks thirty reviewed behavior suites by SHA-256 and assertion count. It reports zero critical failures, zero emitted-output leakage findings, zero prohibited-surface findings, and the stable SHA-256 digest `f6b0a0eec512a67f1ba138bb06e4567d8681cbb2e65cafbfefc0255de0632352` across its two complete internal evidence runs.
 
-`AT-10-33` focal commit: `PENDING_FOCAL_COMMIT`. The roadmap/evidence closure commit is recorded after that focal commit exists.
+`AT-10-33` focal commit: `ca418b1d173d11187505bdc7e556472664beb152`. The subsequent documentation commit closes the roadmap state; its hash is reported in the final handoff rather than self-referenced inside that commit.
 
 ## Contract reconciliations
 
@@ -60,7 +60,7 @@ The repository records conveyed approval through Module 08 without a personal si
 | AT-10-30 | `722afa9` | `src/presentation/dose-validation.ts`<br>`tests/presentation/dose-validation.test.ts` |
 | AT-10-31 | `d9fb08a` | `src/presentation/tool-state.ts`<br>`tests/presentation/tool-state.test.ts` |
 | AT-10-32 | `6bd8663` | `src/presentation/widget-registry.ts`<br>`tests/presentation/widget-registry.test.ts` |
-| AT-10-33 | `PENDING_FOCAL_COMMIT` | `package.json`<br>`scripts/verify-eve-discovery.mjs`<br>`src/presentation/guardian-confirmation.ts`<br>`tests/presentation/guardian-confirmation.test.ts`<br>`tests/runtime/eve-discovery.test.ts`<br>`tests/fixtures/runtime/eve-info-module-10.json`<br>`tests/evals/tool-contracts.eval.ts`<br>`docs/verification/eve-tools-presenters.md` |
+| AT-10-33 | `ca418b1` | `package.json`<br>`scripts/verify-eve-discovery.mjs`<br>`src/presentation/guardian-confirmation.ts`<br>`tests/presentation/guardian-confirmation.test.ts`<br>`tests/runtime/eve-discovery.test.ts`<br>`tests/fixtures/runtime/eve-info-module-10.json`<br>`tests/evals/tool-contracts.eval.ts`<br>`docs/verification/eve-tools-presenters.md` |
 
 Load-bearing amendments and compatibility corrections were kept explicit: `aef1676` (Eve/dependency reconciliation), `2ada844` (Eve-supported runtime-helper ownership), `43639a7` and `acdeadc` (stable approval evidence for replay), `a01db90` (safe-error/audit ownership), `d5ff6e1` (filesystem discovery identity), `9271b9e` (strict trusted growth result separated from the model projection), `6a65369` (AT-10-33 final-gate ownership), and `bc41c61` (independent-review corrections). `03f187d` records the AT-10-33 claim. The early catalog is `eb82958`.
 
@@ -158,7 +158,7 @@ Configuration was loaded from the principal checkout only into child-process env
 | Supabase `projects list` with principal environment | 0 | Four visible projects; exactly one linked; statuses include linked healthy state. |
 | Supabase linked migration list | 0 | 50 local/remote pairs in parity through `20260823230000`. |
 | Supabase linked database lint at error level | 0 | Zero error lines. |
-| `git fetch origin` and ancestry check | 0 | `origin/main` at `7f8f71c`, ancestor of the branch; branch 90 commits ahead and 0 behind before the focal and closure commits. |
+| `git fetch origin` and ancestry check | 0 | `origin/main` at `7f8f71c`, ancestor of the branch; branch 91 commits ahead and 0 behind after the focal commit and before the closure commit. |
 | Final root review, two independent Luna-Max reviews, staged diff/secret/PHI/artifact/forbidden-path scans | 0 | No remaining P0-P3 finding; exactly eight AT-10-33 focal paths staged; `git diff --cached --check` clean; zero forbidden paths and zero high-confidence credential, key, bearer, JWT, signed-URL, email, authority-field, raw-prompt/reasoning/payload/document findings. |
 
 The one skipped test is `local Supabase parity gate runs the full local command when Docker is explicitly enabled`. It is deliberately conditional and does not weaken this no-database-change module; the linked Cloud project is the source of truth for this execution.
@@ -173,7 +173,7 @@ All 33 Module 10 leaves declare `database_change: false`. This branch adds no mi
 
 Module 11 can consume exact versioned trusted envelopes, fallback text, confirmation-only actions, terminal emergency events, cancellation/replay states, and model-excluded payloads without inferring authority. Private upload tickets remain trusted-event-only, and vaccination-card generation exposes bounded state rather than raw documents or URLs. Module 12 can preserve the same idempotency receipts, reauthorization-before-replay rule, private invalidations, resume/cancel semantics, and no-duplicate-effect boundary.
 
-Completion of `AT-10-33` satisfies the remaining Module 10 entry prerequisite for `AT-11-01`; because `AT-02-16` is already complete, `AT-11-01` becomes the next ready leaf. `AT-11-02` remains sequentially dependent on `AT-11-01`. The completed `AT-10-32` registry satisfies Module 10's side of `AT-11-11`, which remains pending on `AT-11-10`. Module 12 remains pending until both Modules 10 and 11 are complete.
+Completion of `AT-10-33` satisfies the remaining Module 10 dependency for `AT-11-01`; because `AT-02-16` is already complete, `AT-11-01` is newly unblocked for the later Module 11 entry/selection review but remains unclaimed and `pending` here. `AT-11-02` remains sequentially dependent on `AT-11-01`. The completed `AT-10-32` registry satisfies Module 10's side of `AT-11-11`, which remains pending on `AT-11-10`. Module 12 remains pending until both Modules 10 and 11 are complete.
 
 ## Exceptions and residual risk
 

@@ -2,7 +2,7 @@
 id: AT-10-33
 title: Prove Eve tool and presenter contracts
 module: 10-eve-tools-and-presenters
-status: in_progress
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-10-20, AT-10-32]
@@ -139,17 +139,31 @@ Inspect Eve discovery and one real synthetic invocation/event stream for allowed
 
 Record tool/widget ID and schema version, files, discovery diff, domain/package/approval digests, test/eval counts, negative matrix, output/log scans, commands/exits, reviewers, and commit.
 
+Completed 2026-08-24 after implementation, root self-review, independent Standards/Spec review, fresh configured verification, focal commit, and staged-content scans.
+
+- Focal commit: `ca418b1d173d11187505bdc7e556472664beb152` (`test(presenter): prove eve tool and presenter contracts`). Its eight paths exactly match the amended ownership declared above.
+- Test-first evidence: the missing eval command and Module 10 discovery fixture failed first; the focused discovery implementation began at 4 failed/4 passed; the guardian host-clock regression failed at 1 failed/17 passed before the explicit trusted instant was implemented.
+- Narrow verification: discovery 8/8; guardian confirmation 18/18; accumulated agent/presentation 33 files and 485/485 tests.
+- Critical accumulated verification: 107 files; 973 passed and the one intentional local-Docker parity test skipped. A first concurrent latency attempt was rejected after one CPU-contention outlier; the red-flag engine passed 3/3 in isolation and the full suite then passed non-concurrently.
+- Final eval: `tool-contract-eval.v2`, 242 runtime-derived/digest-locked checks; two internal runs of 47 files and 547/547 tests; 13 tools, 11 presenters, one registry; zero critical failures, leakage findings, or prohibited-surface findings; deterministic SHA-256 `f6b0a0eec512a67f1ba138bb06e4567d8681cbb2e65cafbfefc0255de0632352`.
+- Gates: `npm run typecheck` exit 0; configured exact `npm run build` exit 0; installed Eve `0.27.13` info exit 0 with compile ready, 0 errors/warnings, 13 tools, 0 subagents/schedules; exact discovery exit 0 on Google direct `gemini-3.6-flash`.
+- Security/clinical review: no model authority field, diagnosis, prescription, clinician operation, red-flag tool, arbitrary capability, urgent extra, raw trusted payload, prompt, reasoning, document content, signed URL, PHI/PII, or secret reached the staged surface. Guardian confirmation is deterministic from its strict trusted instant. No clinical copy/rule/package/effect was expanded and no approval identity was invented.
+- Independent Luna-Max Standards and Spec reviews confirmed the runtime-registry, descriptor, SHA-locked behavior, double-run determinism, and presenter corrections; no P0-P3 implementation finding remained after evidence counts were refreshed.
+- Staged gates: exact ownership confirmed; `git diff --cached --check` exit 0; forbidden-path/artifact and high-confidence credential/PHI/PII/raw-boundary scans returned zero findings.
+- Supabase Cloud remained read-only: one linked `ACTIVE_HEALTHY` project, 50/50 migration parity through `20260823230000`, and linked lint exit 0 with zero error lines. No database, provider, deployment, production, or other remote mutation occurred.
+- Full evidence, matrices, command results, exceptions, and Module 11/12 compatibility are recorded in `docs/verification/eve-tools-presenters.md`.
+
 ## Commit protocol
 
 Commit exclusive paths with test(presenter): prove eve tool and presenter contracts; no remote deployment, unrelated changes, or undocumented discovery entry.
 
 ## Completion checklist
 
-- [ ] Model schemas contain no authority or clinical-result claims.
-- [ ] Policy order and effects are deterministic and tested.
-- [ ] Tool-to-model output is explicit and privacy-safe.
-- [ ] No diagnosis, prescription, clinician operation, or urgent extra exists.
-- [ ] Eve discovery contains exactly the intended surface.
+- [x] Model schemas contain no authority or clinical-result claims.
+- [x] Policy order and effects are deterministic and tested.
+- [x] Tool-to-model output is explicit and privacy-safe.
+- [x] No diagnosis, prescription, clinician operation, or urgent extra exists.
+- [x] Eve discovery contains exactly the intended surface.
 
 ## Handoff
 
