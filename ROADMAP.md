@@ -85,7 +85,7 @@ Post-closure Module 11/`AT-10-21` compatibility correction for `AT-10-09`: the f
 
 ## Active workers
 
-- None. `AT-11-13` is `ready` after verifying completed mapper implementation `87e563e`, its exhaustive Eve 0.27.13 kind registry, and conveyed unsigned conservative clinical approval.
+- Root owns `AT-11-13` (`in_progress`) and exclusively claims `src/channels/creciendo/reasoning-suppression.ts` plus `tests/channels/creciendo/reasoning-suppression.test.ts`. No subagent or other Module 11 leaf is active.
 
 
 Cloud-only execution override (2026-08-23): by explicit current user instruction, Module 09 uses the verified linked Supabase Cloud project as its only database source of truth. Local reset/test availability or drift is not an execution gate. Database leaves must verify exact project identity, migration impact, recoverability, generated linked types, and rollback-safe Cloud tests before any remote mutation.
