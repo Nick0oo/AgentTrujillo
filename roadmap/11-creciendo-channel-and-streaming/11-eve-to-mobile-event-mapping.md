@@ -2,7 +2,7 @@
 id: AT-11-11
 title: Map Eve events to mobile contracts
 module: 11-creciendo-channel-and-streaming
-status: in_progress
+status: review
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-10, AT-10-32]
@@ -118,6 +118,17 @@ Attempt guessed session IDs, forged tokens/cursors/authority, reasoning/tool lea
 Consume the raw endpoint with an NDJSON reference client through create/message/stream/reconnect/cancel/revoke/emergency cases; inspect discovery, headers, events, persistence, logs, and mobile fixture compatibility.
 
 ## Completion evidence
+
+Root implementation and self-review recorded on 2026-08-24:
+
+- Outcome: `mapEveEvent` now maps installed Eve `0.27.13` events into the closed Creciendo channel union with distinct immutable public and source identities. The exported compile-time exhaustive registry contains exactly all 28 installed event kinds; an unknown/new kind returns only a bounded type/code telemetry record and a `closeStream: true` disposition.
+- Public allowlist: only `message.appended.messageDelta`, an out-of-band trusted widget/citation projection, and `turn.completed` can produce public events. Text is revalidated through `parseChannelEvent`; a successful turn produces exactly one `message-complete` terminal with trusted message/effect/outcome context. Empty deltas and redundant lifecycle boundaries are dropped.
+- Tool/model separation: the injected projection registry receives only source ID, installed Eve kind, Eve sequence and the expected Eve turn binding. It never receives raw actions, arguments, outputs, results or provider data. Raw `actions.requested`, `action.result` and `result.completed` payloads are not projected; strict Module 10 widgets and public citations are re-parsed, client widget-version negotiation is enforced, and invalid/unsafe projections close safely without echoing data.
+- Safety/lifecycle: reasoning, received prompts, authorization challenges, continuation tokens, subagents, compaction, provider metadata/usage and internal lifecycle events remain non-public. Eve failures return redacted fail-closed dispositions for AT-11-14 to phase-map. Eve `turn.cancelled` is deliberately not misrepresented as a public session terminal because Eve 0.27.13 documents it as a reusable-turn boundary; the authenticated durable cancel ledger owns `session-cancelled`. No Eve event can create `emergency-recommendation`; raw or trusted emergency spoofs close safely, and any append after an already terminal ledger state is rejected.
+- TDD: the first focused run exited `1` because the mapper module did not exist. A second red run proved a server-valid widget was emitted without checking negotiated mobile support, and a third proved an accessor exception could escape the boundary. The final mapper enforces supported widget versions and wraps every untrusted access fail-closed.
+- Tests: focused mapper verification passed `10/10`; the full channel suite passed `8` files and `60/60` tests. Coverage includes all 28 installed kinds, unknown/new kinds, source/turn drift, duplicate source, terminal append, raw tool/model leakage, nested unsafe fields, valid tool/UI/citation projections, invalid/unsupported widgets, unsafe citation URL, emergency spoof, oversized/control text and hostile accessors.
+- Fresh gates: `npm run typecheck`, the full Eve/Nitro build using the ignored environment opaquely, `git diff --check`, staged ownership/whitespace review, private-key/credential scan and forbidden-artifact review exited cleanly. Final SHA-256 is `21C7BD4B44773B40E9340C265B6807D19C8770F5CC262AA8DE99F8ABC79D78A6` for the mapper and `4B7DAD4F571028D5516A27C0575DA475D7982990A1DE680E0429B9D8A551F66F` for its test.
+- Implementation commit: `87e563e` (`feat(channel): map eve events to mobile contracts`) contains exactly the two owned paths. The product-owner-conveyed conservative clinical approval is recorded unsigned and without personal identity/signature attribution. `database_change: false`; no Supabase/provider/deployment request or remote mutation occurred.
 
 Record routes/event versions, files, migration/config digests, test/eval counts, concurrency/reconnect matrix, raw fixture hashes, privacy scan, commands/exits, reviewers, and commit.
 
