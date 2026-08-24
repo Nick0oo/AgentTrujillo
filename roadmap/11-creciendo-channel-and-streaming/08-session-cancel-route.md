@@ -2,7 +2,7 @@
 id: AT-11-08
 title: Cancel active session work safely
 module: 11-creciendo-channel-and-streaming
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-07, AT-10-04]
@@ -130,6 +130,7 @@ Root implementation and self-review recorded on 2026-08-24:
 - TDD/adversarial tests: the first focused run failed because the route module did not exist. Final focused verification passed `16/16`; all channel tests passed `13` files and `101/101`, covering strict input, guessed/revoked/forged access, ticket-before-signal ordering, exact turn guard, create/cancel key parity, bound/unbound/stale Eve ownership, already-terminal emergency protection, accepted/no-active/throw/caller-abort truth, conflict/finalize failure and zero duplicate terminal work.
 - Fresh gates: `npm run typecheck`, full Eve/Nitro build using the ignored environment opaquely, `git diff --check`, exact owned-path review, forbidden artifact scan and credential/private-key scan exited `0`. SHA-256 is `4682F8EF627F5381CE83B0E8B1DF2324A7C1E54867F52DFDD3B0B54619277A78` for the route and `D4ED95E803DD2F3D96F8EDFF00B1A54954C6CC88C69452676241DEC486CDAA1E` for its tests.
 - Implementation commit: `2f055e0` (`feat(channel): cancel active session work safely`) contains exactly the three owned paths. `database_change: false`; it consumes only the already-applied AT-11-10 RPCs and performed no remote mutation.
+- Fresh closure after roadmap review: focused cancel/shell verification passed `16/16`, `npm run typecheck` and `git diff --check` exited `0`, and the worktree was clean.
 
 Record routes/event versions, files, migration/config digests, test/eval counts, concurrency/reconnect matrix, raw fixture hashes, privacy scan, commands/exits, reviewers, and commit.
 
