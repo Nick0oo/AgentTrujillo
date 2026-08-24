@@ -85,7 +85,7 @@ Post-closure Module 11/`AT-10-21` compatibility correction for `AT-10-09`: the f
 
 ## Active workers
 
-- None. `AT-11-12` is `ready` after verifying completed dependency implementation commit `87e563e`, the strict channel-event parser, and Eve 0.27.13 one-event-per-NDJSON-line streaming semantics.
+- Root owns `AT-11-12` (`in_progress`) and exclusively claims `src/channels/creciendo/ndjson-encoder.ts` plus `tests/channels/creciendo/ndjson-encoder.test.ts`. No subagent or other Module 11 leaf is active.
 
 
 Cloud-only execution override (2026-08-23): by explicit current user instruction, Module 09 uses the verified linked Supabase Cloud project as its only database source of truth. Local reset/test availability or drift is not an execution gate. Database leaves must verify exact project identity, migration impact, recoverability, generated linked types, and rollback-safe Cloud tests before any remote mutation.
