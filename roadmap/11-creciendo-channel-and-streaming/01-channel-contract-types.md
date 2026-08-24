@@ -2,7 +2,7 @@
 id: AT-11-01
 title: Define Creciendo channel contracts
 module: 11-creciendo-channel-and-streaming
-status: in_progress
+status: review
 execution: sequential
 parallel_group: null
 depends_on: [AT-10-33, AT-02-16]
@@ -119,7 +119,18 @@ Consume the raw endpoint with an NDJSON reference client through create/message/
 
 ## Completion evidence
 
-Record routes/event versions, files, migration/config digests, test/eval counts, concurrency/reconnect matrix, raw fixture hashes, privacy scan, commands/exits, reviewers, and commit.
+Root implementation and self-review recorded on 2026-08-24:
+
+- Outcome: added strict Zod contracts for the canonical channel, child-context/session/message/stream/cancel requests and responses, capability negotiation, opaque cursors/tokens, hashed continuation claims, safe errors, and the closed nine-kind mobile event union.
+- Clinical approval: the conservative transport contract approval was conveyed by the product owner and is recorded unsigned; no clinician name, identity, signature, or claim of direct Dr. Trujillo approval is made.
+- TDD evidence: `npm test -- tests/channels/creciendo/types.test.ts` first exited `1` because the owned module did not exist, then exited `0` with `7/7` tests after the implementation.
+- Implementation commit: `b86fc8e340368d6f9d9f44316ea2afe3d0d9dbd3` (`feat(channel): define creciendo channel contracts`).
+- Owned files: `src/channels/creciendo/types.ts`; `tests/channels/creciendo/types.test.ts`.
+- Affected verification before review: `npm test -- tests/channels tests/presentation` exited `0` with `13/13` files and `159/159` tests; `npm run typecheck` exited `0`.
+- Security/privacy review: client authority and tool choice are rejected as unknown fields; continuation claims contain only SHA-256 bindings; event kinds cannot represent reasoning, prompts, raw tool/provider payloads, secrets, signed URLs, care-space/permission/country authority, or emergency actions.
+- Ordering/resume review: positive safe-integer sequences, immutable UUID event/session/turn IDs, opaque cursors, bounded frames, idempotency keys, and terminal-event literals are explicit. Reconnect effects remain the responsibility of the later repository/route leaves.
+- Database/Cloud evidence: `database_change: false`; no Supabase client, schema, data, Storage, remote mutation, or environment value was used.
+- Staged review: exactly the two owned paths were staged; `git diff --cached --check`, forbidden-path/artifact scan, credential-prefix scan, runtime/network import scan, and full staged diff review were clean.
 
 ## Commit protocol
 
@@ -127,11 +138,11 @@ Commit exclusive paths with feat(channel): define creciendo channel contracts; n
 
 ## Completion checklist
 
-- [ ] Every route authenticates and verifies current ownership.
-- [ ] Events are versioned, ordered, resumable, and bounded.
-- [ ] Reconnect never duplicates domain effects.
-- [ ] Reasoning, secrets, PHI, and internal payloads do not leak.
-- [ ] Emergency response is terminal and contains no extras.
+- [x] Authenticated request contracts expose no client authority; route enforcement remains dependency-gated to AT-11-03 onward.
+- [x] Events are versioned, ordered, resumable, and bounded.
+- [x] Cursor/idempotency contracts make replay distinguishable without representing domain effects.
+- [x] Reasoning, secrets, PHI, and internal payloads are unrepresentable in the closed event schemas.
+- [x] Emergency response is terminal and contains no extras.
 
 ## Handoff
 
