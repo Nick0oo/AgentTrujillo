@@ -330,6 +330,7 @@ function validateConditionalFields(
 function assertPreviewContract(
   preview: z.infer<typeof APPROVAL_PREVIEW_SCHEMA>,
   locale: Locale,
+  now: string,
 ): PreviewSpec {
   const spec = GUARDIAN_CONFIRMATION_PREVIEW_REGISTRY[preview.toolId];
   if (preview.locale !== locale
@@ -339,7 +340,7 @@ function assertPreviewContract(
     || TOOL_APPROVAL_REQUIREMENTS[preview.toolId].approval !== "explicit_ui"
     || TOOL_APPROVAL_REQUIREMENTS[preview.toolId].effect !== spec.effect) fail();
 
-  const expiresIn = Date.parse(preview.expiresAt) - Date.now();
+  const expiresIn = Date.parse(preview.expiresAt) - Date.parse(now);
   if (!Number.isFinite(expiresIn) || expiresIn <= 0 || expiresIn > 300_000) fail();
 
   const values = new Map<string, string>();
@@ -356,14 +357,19 @@ function assertPreviewContract(
   return spec;
 }
 
-export function presentGuardianConfirmation(rawPreview: unknown, rawLocale: unknown): GuardianConfirmationWidget {
+export function presentGuardianConfirmation(
+  rawPreview: unknown,
+  rawLocale: unknown,
+  rawNow: unknown,
+): GuardianConfirmationWidget {
   const parsedPreview = APPROVAL_PREVIEW_SCHEMA.safeParse(rawPreview);
   const parsedLocale = LOCALE.safeParse(rawLocale);
-  if (!parsedPreview.success || !parsedLocale.success) fail();
+  const parsedNow = INSTANT.safeParse(rawNow);
+  if (!parsedPreview.success || !parsedLocale.success || !parsedNow.success) fail();
 
   const preview = parsedPreview.data;
   const locale = parsedLocale.data;
-  const spec = assertPreviewContract(preview, locale);
+  const spec = assertPreviewContract(preview, locale, parsedNow.data);
   const copy = COPY[locale];
   const facts = preview.entries
     .filter((entry) => !spec.hiddenPaths.includes(normalizedPath(entry.path)))

@@ -4,7 +4,23 @@ import { describe, expect, it } from "vitest";
 
 // @ts-expect-error The executable module intentionally has no runtime declaration file.
 const discovery = await import("../../scripts/verify-eve-discovery.mjs");
-const fixturePath = resolve(process.cwd(), "tests/fixtures/runtime/eve-info-module-01.json");
+const module01FixturePath = resolve(process.cwd(), "tests/fixtures/runtime/eve-info-module-01.json");
+const module10FixturePath = resolve(process.cwd(), "tests/fixtures/runtime/eve-info-module-10.json");
+const EXPECTED_TOOLS = [
+  "capture_clinical_memory_candidate",
+  "create_medication_plan",
+  "evaluate_vaccination_schedule",
+  "generate_vaccination_card",
+  "get_growth_summary",
+  "prepare_private_document_upload",
+  "record_development_observation",
+  "record_medication_intake",
+  "record_vaccine_administration",
+  "register_anthropometry",
+  "search_child_clinical_memory",
+  "suggest_pediatric_nutrition",
+  "validate_declared_pediatric_dose",
+] as const;
 
 const sampleInfo = {
   appRoot: "C:\\workspace\\agent-trujillo",
@@ -57,10 +73,20 @@ describe("Eve discovery gate", () => {
 
   it("rejects forbidden default capability names even when info.tools is empty", () => {
     expect(discovery.findForbiddenNames({ tools: [], connections: [{ name: "web_search" }] })).toContain("web_search");
+    expect(discovery.findForbiddenNames({ tools: [{ name: "evaluate_red_flags" }] })).toContain("evaluate_red_flags");
+    expect(discovery.findForbiddenNames({ tools: [{ name: "contact_clinician" }] })).toContain("contact_clinician");
+    expect(discovery.findForbiddenNames({ tools: [{ name: "clinician_handoff" }] })).toContain("clinician_handoff");
+    expect(discovery.findForbiddenNames({ tools: [{ name: "filesystem" }] })).toContain("filesystem");
     expect(discovery.findForbiddenNames({ tools: [], connections: [] })).toEqual([]);
   });
 
-  it("keeps the reviewed fixture canonical and free of host paths or secrets", () => {
+  it("selects only the preserved Module 01 or current Module 10 discovery fixture", () => {
+    expect(discovery.fixtureFileForBaseline("module-01")).toBe("eve-info-module-01.json");
+    expect(discovery.fixtureFileForBaseline("module-10")).toBe("eve-info-module-10.json");
+    expect(() => discovery.fixtureFileForBaseline("module-11")).toThrow();
+  });
+
+  it.each([module01FixturePath, module10FixturePath])("keeps reviewed fixture %s canonical and free of host paths or secrets", (fixturePath) => {
     expect(existsSync(fixturePath)).toBe(true);
     const fixture = readFileSync(fixturePath, "utf8");
     expect(fixture).not.toMatch(/[A-Z]:\\|\/Users\/|\/home\//i);
@@ -68,15 +94,17 @@ describe("Eve discovery gate", () => {
     expect(JSON.parse(fixture).modelId).toBe("gemini-3.6-flash");
   });
 
-  it("enforces a zero-warning, exact runtime surface", () => {
-    const fixture = JSON.parse(readFileSync(fixturePath, "utf8"));
-    expect(discovery.compareSurface(discovery.projectSurface(sampleInfo), fixture)).toEqual([]);
-    expect(fixture.diagnostics).toEqual({ errors: 0, warnings: 0 });
-    expect(fixture.skills).toEqual(["clinical-safety", "response-format", "tool-policy"]);
-    expect(fixture.authoredTools).toEqual([]);
-    expect(fixture.subagents).toEqual([]);
-    expect(fixture.schedules).toEqual([]);
-    expect(fixture.channels).toContainEqual({
+  it("preserves the Module 01 baseline and enforces the exact zero-warning Module 10 surface", () => {
+    const module01 = JSON.parse(readFileSync(module01FixturePath, "utf8"));
+    const module10 = JSON.parse(readFileSync(module10FixturePath, "utf8"));
+    expect(module01.authoredTools).toEqual([]);
+    expect(module10.authoredTools).toEqual(EXPECTED_TOOLS);
+    expect(discovery.compareSurface(discovery.projectSurface({ ...sampleInfo, tools: [...EXPECTED_TOOLS] }), module10)).toEqual([]);
+    expect(module10.diagnostics).toEqual({ errors: 0, warnings: 0 });
+    expect(module10.skills).toEqual(["clinical-safety", "response-format", "tool-policy"]);
+    expect(module10.subagents).toEqual([]);
+    expect(module10.schedules).toEqual([]);
+    expect(module10.channels).toContainEqual({
       name: "eve",
       kind: "http",
       method: "POST",

@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import {
   GUARDIAN_CONFIRMATION_PREVIEW_REGISTRY,
@@ -8,6 +8,7 @@ import {
 } from "../../src/presentation/guardian-confirmation";
 
 const DIGEST = "a".repeat(64);
+const NOW = "2026-08-23T12:00:00.000Z";
 
 const CASES = {
   register_anthropometry: {
@@ -120,7 +121,7 @@ function preview(toolId: ToolId, locale: "es-CO" | "en-US" = "es-CO"): MutablePr
     locale,
     actionLabel: fixture.actionLabel[locale],
     entries: fixture.entries.map(([path, value]) => ({ path, value })),
-    expiresAt: new Date(Date.now() + 240_000).toISOString(),
+    expiresAt: new Date(Date.parse(NOW) + 240_000).toISOString(),
     approvalDigest: DIGEST,
   };
 }
@@ -137,7 +138,7 @@ describe("presentGuardianConfirmation", () => {
 
   it.each(Object.keys(CASES) as ToolId[])("presents an exact bounded %s confirmation", (toolId) => {
     const input = preview(toolId);
-    const widget = presentGuardianConfirmation(input, "es-CO");
+    const widget = presentGuardianConfirmation(input, "es-CO", NOW);
     expect(GUARDIAN_CONFIRMATION_WIDGET_SCHEMA.safeParse(widget).success).toBe(true);
     expect(widget).toMatchObject({
       kind: "guardian_confirmation",
@@ -172,14 +173,14 @@ describe("presentGuardianConfirmation", () => {
   });
 
   it("renders opaque domain references as presence without leaking their values", () => {
-    const widget = presentGuardianConfirmation(preview("record_vaccine_administration"), "es-CO");
+    const widget = presentGuardianConfirmation(preview("record_vaccine_administration"), "es-CO", NOW);
     const reference = widget.data.facts.find((fact) => fact.path === "evidenceDraftId");
     expect(reference).toMatchObject({ representation: "linked_reference", value: null });
     expect(JSON.stringify(widget)).not.toContain("evidence:draft:one");
   });
 
   it("uses fixed accessible localized copy and inert cancel-safe controls", () => {
-    const widget = presentGuardianConfirmation(preview("register_anthropometry", "en-US"), "en-US");
+    const widget = presentGuardianConfirmation(preview("register_anthropometry", "en-US"), "en-US", NOW);
     expect(widget.data.warning.label).toBe("Review every displayed field before confirming.");
     expect(widget.data.controls.approve.label).toBe("Confirm");
     expect(widget.data.controls.cancel.label).toBe("Cancel");
@@ -191,49 +192,62 @@ describe("presentGuardianConfirmation", () => {
 
   it("preserves the canonical digest but never creates approval truth or a reusable credential", () => {
     const input = preview("prepare_private_document_upload");
-    const first = presentGuardianConfirmation(input, "es-CO");
-    const second = presentGuardianConfirmation(input, "es-CO");
+    const first = presentGuardianConfirmation(input, "es-CO", NOW);
+    const second = presentGuardianConfirmation(input, "es-CO", NOW);
     expect(first).toEqual(second);
     expect(first.data.approval.approvalDigest).toBe(DIGEST);
     expect(first.data.approval.usage).toBe("single_use");
     expect(JSON.stringify(first)).not.toMatch(/approved|consumed|approvalId|confirmedAt|approvalToken|token/iu);
   });
 
+  it("uses only the explicit trusted instant and is independent of the host clock", () => {
+    const trustedNow = "2026-08-23T12:00:00.000Z";
+    const hostClock = vi.spyOn(Date, "now").mockReturnValue(Date.parse(trustedNow));
+    try {
+      const input = preview("generate_vaccination_card");
+      const first = presentGuardianConfirmation(input, "es-CO", trustedNow);
+      hostClock.mockReturnValue(Date.parse("2036-08-23T12:00:00.000Z"));
+      expect(presentGuardianConfirmation(input, "es-CO", trustedNow)).toEqual(first);
+    } finally {
+      hostClock.mockRestore();
+    }
+  });
+
   it("fails closed for omitted material fields and conditional field mismatches", () => {
     const omitted = preview("register_anthropometry");
     omitted.entries = omitted.entries.filter((entry) => entry.path !== "occurredAt");
-    expect(() => presentGuardianConfirmation(omitted, "es-CO")).toThrow(GuardianConfirmationPresentationError);
+    expect(() => presentGuardianConfirmation(omitted, "es-CO", NOW)).toThrow(GuardianConfirmationPresentationError);
 
     const intake = preview("record_medication_intake");
     intake.entries = intake.entries.filter((entry) => entry.path !== "takenAt");
-    expect(() => presentGuardianConfirmation(intake, "es-CO")).toThrow(GuardianConfirmationPresentationError);
+    expect(() => presentGuardianConfirmation(intake, "es-CO", NOW)).toThrow(GuardianConfirmationPresentationError);
 
     const mixedMeasurement = preview("register_anthropometry");
     mixedMeasurement.entries.push({ path: "value.pounds", value: "12" });
-    expect(() => presentGuardianConfirmation(mixedMeasurement, "es-CO")).toThrow(GuardianConfirmationPresentationError);
+    expect(() => presentGuardianConfirmation(mixedMeasurement, "es-CO", NOW)).toThrow(GuardianConfirmationPresentationError);
 
     const driftedCard = preview("generate_vaccination_card");
     driftedCard.entries[0] = { path: "locale", value: "en-US" };
-    expect(() => presentGuardianConfirmation(driftedCard, "es-CO")).toThrow(GuardianConfirmationPresentationError);
+    expect(() => presentGuardianConfirmation(driftedCard, "es-CO", NOW)).toThrow(GuardianConfirmationPresentationError);
   });
 
   it("rejects tool swaps, schema/effect/action drift, locale drift, unknown paths and duplicate paths", () => {
     const swapped = { ...preview("register_anthropometry"), toolId: "record_medication_intake" };
-    expect(() => presentGuardianConfirmation(swapped, "es-CO")).toThrow(GuardianConfirmationPresentationError);
+    expect(() => presentGuardianConfirmation(swapped, "es-CO", NOW)).toThrow(GuardianConfirmationPresentationError);
 
     for (const changed of [
       { ...preview("register_anthropometry"), schemaVersion: "register-anthropometry.v2" },
       { ...preview("register_anthropometry"), effect: "draft" },
       { ...preview("register_anthropometry"), actionLabel: "Aceptar" },
-    ]) expect(() => presentGuardianConfirmation(changed, "es-CO")).toThrow(GuardianConfirmationPresentationError);
+    ]) expect(() => presentGuardianConfirmation(changed, "es-CO", NOW)).toThrow(GuardianConfirmationPresentationError);
 
-    expect(() => presentGuardianConfirmation(preview("register_anthropometry"), "en-US")).toThrow(GuardianConfirmationPresentationError);
+    expect(() => presentGuardianConfirmation(preview("register_anthropometry"), "en-US", NOW)).toThrow(GuardianConfirmationPresentationError);
     const unknown = preview("register_anthropometry");
     unknown.entries.push({ path: "countryOfCare", value: "US" });
-    expect(() => presentGuardianConfirmation(unknown, "es-CO")).toThrow(GuardianConfirmationPresentationError);
+    expect(() => presentGuardianConfirmation(unknown, "es-CO", NOW)).toThrow(GuardianConfirmationPresentationError);
     const duplicate = preview("register_anthropometry");
     duplicate.entries.push({ path: "unit", value: "kg" });
-    expect(() => presentGuardianConfirmation(duplicate, "es-CO")).toThrow(GuardianConfirmationPresentationError);
+    expect(() => presentGuardianConfirmation(duplicate, "es-CO", NOW)).toThrow(GuardianConfirmationPresentationError);
   });
 
   it("rejects markup, script, prompt-role content, control bytes and forged authority", () => {
@@ -241,28 +255,32 @@ describe("presentGuardianConfirmation", () => {
     for (const value of attacks) {
       const malicious = preview("record_development_observation");
       malicious.entries[0] = { path: "text", value };
-      expect(() => presentGuardianConfirmation(malicious, "es-CO"), value).toThrow(GuardianConfirmationPresentationError);
+      expect(() => presentGuardianConfirmation(malicious, "es-CO", NOW), value).toThrow(GuardianConfirmationPresentationError);
     }
     for (const path of ["childId", "care_space_id", "permissions", "entitlements", "approvalToken", "sessionId"]) {
       const forged = preview("record_development_observation");
       forged.entries.push({ path, value: "forged" });
-      expect(() => presentGuardianConfirmation(forged, "es-CO")).toThrow(GuardianConfirmationPresentationError);
+      expect(() => presentGuardianConfirmation(forged, "es-CO", NOW)).toThrow(GuardianConfirmationPresentationError);
     }
   });
 
   it("rejects expired, malformed and extra-field previews and cannot render urgent actions", () => {
     const expired = preview("generate_vaccination_card");
     expired.expiresAt = "2000-01-01T00:00:00.000Z";
-    expect(() => presentGuardianConfirmation(expired, "es-CO")).toThrow(GuardianConfirmationPresentationError);
-    expect(() => presentGuardianConfirmation({ ...preview("generate_vaccination_card"), approvalToken: "forged-token" }, "es-CO"))
+    expect(() => presentGuardianConfirmation(expired, "es-CO", NOW)).toThrow(GuardianConfirmationPresentationError);
+    expect(() => presentGuardianConfirmation({ ...preview("generate_vaccination_card"), approvalToken: "forged-token" }, "es-CO", NOW))
       .toThrow(GuardianConfirmationPresentationError);
     expect(() => presentGuardianConfirmation({
       ...preview("generate_vaccination_card"), toolId: "evaluate_red_flags", actionLabel: "Urgent",
-    }, "es-CO")).toThrow(GuardianConfirmationPresentationError);
+    }, "es-CO", NOW)).toThrow(GuardianConfirmationPresentationError);
+    expect(() => presentGuardianConfirmation(preview("generate_vaccination_card"), "es-CO", undefined))
+      .toThrow(GuardianConfirmationPresentationError);
+    expect(() => presentGuardianConfirmation(preview("generate_vaccination_card"), "es-CO", "not-an-instant"))
+      .toThrow(GuardianConfirmationPresentationError);
   });
 
   it("keeps output schemas strict and exposes no arbitrary actions", () => {
-    const widget = presentGuardianConfirmation(preview("generate_vaccination_card"), "es-CO");
+    const widget = presentGuardianConfirmation(preview("generate_vaccination_card"), "es-CO", NOW);
     expect(GUARDIAN_CONFIRMATION_WIDGET_SCHEMA.safeParse({ ...widget, html: "<p>x</p>" }).success).toBe(false);
     expect(GUARDIAN_CONFIRMATION_WIDGET_SCHEMA.safeParse({
       ...widget,
