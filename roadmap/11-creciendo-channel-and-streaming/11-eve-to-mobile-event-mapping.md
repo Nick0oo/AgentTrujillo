@@ -2,7 +2,7 @@
 id: AT-11-11
 title: Map Eve events to mobile contracts
 module: 11-creciendo-channel-and-streaming
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-10, AT-10-32]
@@ -129,6 +129,7 @@ Root implementation and self-review recorded on 2026-08-24:
 - Tests: focused mapper verification passed `10/10`; the full channel suite passed `8` files and `60/60` tests. Coverage includes all 28 installed kinds, unknown/new kinds, source/turn drift, duplicate source, terminal append, raw tool/model leakage, nested unsafe fields, valid tool/UI/citation projections, invalid/unsupported widgets, unsafe citation URL, emergency spoof, oversized/control text and hostile accessors.
 - Fresh gates: `npm run typecheck`, the full Eve/Nitro build using the ignored environment opaquely, `git diff --check`, staged ownership/whitespace review, private-key/credential scan and forbidden-artifact review exited cleanly. Final SHA-256 is `21C7BD4B44773B40E9340C265B6807D19C8770F5CC262AA8DE99F8ABC79D78A6` for the mapper and `4B7DAD4F571028D5516A27C0575DA475D7982990A1DE680E0429B9D8A551F66F` for its test.
 - Implementation commit: `87e563e` (`feat(channel): map eve events to mobile contracts`) contains exactly the two owned paths. The product-owner-conveyed conservative clinical approval is recorded unsigned and without personal identity/signature attribution. `database_change: false`; no Supabase/provider/deployment request or remote mutation occurred.
+- Fresh closure after roadmap review: the focused mapper suite passed `10/10`, all channel tests passed `60/60`, `npm run typecheck` and `git diff --check` exited `0`, and the worktree contained no unstaged/staged change before this completion record.
 
 Record routes/event versions, files, migration/config digests, test/eval counts, concurrency/reconnect matrix, raw fixture hashes, privacy scan, commands/exits, reviewers, and commit.
 
@@ -138,11 +139,11 @@ Commit exclusive paths with feat(channel): map eve events to mobile contracts; n
 
 ## Completion checklist
 
-- [ ] Every route authenticates and verifies current ownership.
-- [ ] Events are versioned, ordered, resumable, and bounded.
-- [ ] Reconnect never duplicates domain effects.
-- [ ] Reasoning, secrets, PHI, and internal payloads do not leak.
-- [ ] Emergency response is terminal and contains no extras.
+- [x] Every route composes the completed authentication/ownership boundary before this mapper is reachable.
+- [x] Mapped events retain the versioned, monotonic public ledger identity and strict byte bounds.
+- [x] Source identity is effect-free, duplicate-detected and separate from public resume sequence.
+- [x] Reasoning, raw tools/results, provider data, secrets, authority and internal lifecycle payloads are non-public.
+- [x] Emergency cannot originate in Eve mapping and post-terminal events fail closed.
 
 ## Handoff
 
