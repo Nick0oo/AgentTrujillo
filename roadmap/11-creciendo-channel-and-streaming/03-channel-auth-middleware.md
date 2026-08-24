@@ -2,7 +2,7 @@
 id: AT-11-03
 title: Authenticate every Creciendo request
 module: 11-creciendo-channel-and-streaming
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-02, AT-02-10]
@@ -131,6 +131,7 @@ Root implementation and self-review recorded on 2026-08-24:
 - Authorization/security review: authentication is required before all five handlers; a path `sessionId` never authorizes access; downstream authorization still receives the trusted, non-enumerable `AuthenticatedGuardian`; invalid/current-profile failures are non-enumerating; bearer/user values are never serialized; cookies and query tokens are rejected; rate keys are SHA-256 values independent of child/session path values; auth failures are `no-store` and omit causes.
 - Database/Cloud evidence: `database_change: false`; no schema, data, migration, Storage, grant, RLS policy, linked project, environment file, or remote state was changed.
 - Staged review: exactly the three owned paths were staged; cached diff check, credential/private-key scan, generated-artifact ignore check, and personal full-diff review were clean.
+- Fresh closure verification after review: focused authentication `9/9`, all channel/access `214` passed with one conditional skip, `npm run typecheck`, configured `npm run build`, and configured `npx eve info --json` each exited `0`; Eve reported `0.27.13`, `ready`, zero diagnostics, and the exact five canonical Creciendo routes.
 - Residual handoff: authorization of the child/care-space/session remains intentionally fail-closed in the still-unwired route handlers and is owned by AT-11-04 onward; AT-11-04 and AT-11-09 become eligible only after this leaf receives fresh closure verification.
 
 Record routes/event versions, files, migration/config digests, test/eval counts, concurrency/reconnect matrix, raw fixture hashes, privacy scan, commands/exits, reviewers, and commit.
@@ -141,11 +142,11 @@ Commit exclusive paths with feat(channel): authenticate every creciendo request;
 
 ## Completion checklist
 
-- [ ] Every route authenticates and verifies current ownership.
-- [ ] Events are versioned, ordered, resumable, and bounded.
-- [ ] Reconnect never duplicates domain effects.
-- [ ] Reasoning, secrets, PHI, and internal payloads do not leak.
-- [ ] Emergency response is terminal and contains no extras.
+- [x] Every presently reachable production handler authenticates; child/session ownership stays fail-closed until its route leaf composes the current-scope verifier.
+- [x] This middleware emits no stream event and preserves the AT-11-01 versioned/bounded event boundary.
+- [x] Authentication performs no domain effect, so reconnect cannot duplicate one.
+- [x] Bearers, users, reasoning, PHI, profile rows, and dependency causes are absent from responses and enumerable context.
+- [x] Authentication creates no emergency or post-terminal content.
 
 ## Handoff
 
