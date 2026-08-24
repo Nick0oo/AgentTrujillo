@@ -61,6 +61,8 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 `AT-10-14` remains in root review after Luna/max implementation and requires a narrowly owned typed replay-receipt correction before closure. `AT-10-16` is in root review with narrow and accumulated suites green. `AT-10-25` and the sequential presenter `AT-10-30` are completed.
 
+Root replay-receipt amendment for `AT-10-14`: the medication Cloud RPCs already return a durable `created`/`idempotent_replay` outcome, but the verified repository/application adapters discarded it. The leaf now owns only the exact additive port, plan-service, schedule-service, repository and regression-test paths required to propagate that existing receipt into `withToolIdempotency`. No database/API/schema/clinical rule changes or remote effects are authorized, and all existing record-only service methods remain compatible.
+
 Root correction before `AT-10-09`: Eve's public tool context requires one shared fail-closed factory bridge to the branded request-scoped context, and branded safe errors must survive the idempotency wrapper. `AT-10-09` owns the explicitly added bridge/idempotency integration paths; no model authority, credential, per-user global state or new clinical behavior is authorized.
 
 Fresh Eve `0.27.13` discovery correction for `AT-10-09`: the implementation path uses `agent/tools/get_growth_summary.ts` so filesystem-derived identity is exactly `get_growth_summary`; the earlier hyphenated path produced the non-contractual name `get-growth-summary`. Schema, policy and clinical behavior are unchanged.

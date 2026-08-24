@@ -2,7 +2,7 @@
 id: AT-10-14
 title: Create confirmed declared medication plan
 module: 10-eve-tools-and-presenters
-status: pending
+status: in_progress
 execution: parallel
 parallel_group: eve-tools
 depends_on: [AT-10-07, AT-07-18, AT-10-03]
@@ -18,12 +18,24 @@ touches:
   create:
     - agent/tools/create_medication_plan.ts
     - tests/agent/tools/create-medication-plan.test.ts
-  modify: []
+  modify:
+    - src/application/medication/ports.ts
+    - src/application/medication/medication-plan-service.ts
+    - src/application/medication/medication-schedule-service.ts
+    - src/persistence/supabase/medication-repository.ts
+    - tests/application/medication-services.test.ts
+    - tests/persistence/medication-repository.test.ts
   test:
     - tests/agent/tools/create-medication-plan.test.ts
 exclusive_paths:
   - agent/tools/create_medication_plan.ts
   - tests/agent/tools/create-medication-plan.test.ts
+  - src/application/medication/ports.ts
+  - src/application/medication/medication-plan-service.ts
+  - src/application/medication/medication-schedule-service.ts
+  - src/persistence/supabase/medication-repository.ts
+  - tests/application/medication-services.test.ts
+  - tests/persistence/medication-repository.test.ts
 forbidden_paths:
   - .env
   - supabase/migrations/**
@@ -79,6 +91,10 @@ Schema accepts declaration/product label/dose/unit/route/frequency/start/end/tim
 ## Technical design
 
 Preflight, permission, resolve presentation without substitution, validate declaration, confirmation preview, approval, atomic plan creation and schedule preview/materialization according to explicit declaration. Dose validation is separate evidence, not authorization.
+
+### Root ownership amendment — durable replay receipts
+
+Root review on 2026-08-23 proved that the verified medication RPCs already return `created` or `idempotent_replay`, but the existing repository and application services discard that receipt and expose only the record. `AT-10-04` requires every consequential tool handler to return the durable domain outcome; labelling a replay as newly created or inventing an in-memory replay claim is not acceptable. Before changing code, root therefore adds only the exact medication repository/service/port and regression-test paths needed to propagate the existing receipt through additive typed methods. There is no schema, migration, RPC, rule, package, remote mutation or behavior expansion. Existing record-only public methods remain compatible, and the same receipt seam is reusable by the later medication-intake tool without implementing that leaf early.
 
 ## Database and Storage contract
 
