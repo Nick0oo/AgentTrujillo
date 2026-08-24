@@ -14,7 +14,8 @@ registerHooks({
     try {
       return nextResolve(specifier, context);
     } catch (error) {
-      if ((specifier.startsWith(".") || specifier.startsWith("/")) && !/\.[a-z0-9]+$/iu.test(specifier)) {
+      if ((specifier.startsWith(".") || specifier.startsWith("/"))
+        && (!/\.[a-z0-9]+$/iu.test(specifier) || /\.v[0-9]+$/iu.test(specifier))) {
         return nextResolve(`${specifier}.ts`, context);
       }
       throw error;
@@ -488,14 +489,17 @@ function boundedFailureCode(error: unknown): string {
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
+  const requested = process.argv[2] ?? "tool-contracts";
   try {
-    const requested = process.argv[2] ?? "tool-contracts";
-    if (requested !== "tool-contracts") throw new Error("unknown_eval");
-    const report = await runToolContractsEval();
+    const report = requested === "tool-contracts"
+      ? await runToolContractsEval()
+      : requested === "channel-streaming"
+        ? await (await import("./channel-streaming.eval.ts")).runChannelStreamingEval()
+        : (() => { throw new Error("unknown_eval"); })();
     process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
     if (report.criticalFailures !== 0) process.exitCode = 1;
   } catch (error) {
-    process.stderr.write(`tool-contracts eval failed: ${boundedFailureCode(error)}\n`);
+    process.stderr.write(`${requested} eval failed: ${boundedFailureCode(error)}\n`);
     process.exitCode = 1;
   }
 }
