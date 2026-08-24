@@ -59,7 +59,7 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-Module 11 is 15/18 completed. Root is implementing `AT-11-16` after dependency and approval verification; the work is confined to the versioned NDJSON fixture and its human mobile contract. No Module 12 leaf is active.
+Module 11 is 15/18 completed. `AT-11-16` is in root `review` at implementation commit `de0536c`: the machine-checked nine-line NDJSON catalog and human mobile contract cover the exact five routes, nine event types and eleven widget versions with no invented upload capability. No Module 12 leaf is active.
 
 Root-authorized Module 11 reconciliation (2026-08-24): Eve 0.27.13 is binding; `/creciendo/v1` is the sole five-route public family; the linked Cloud source is `CreciendoApp` (`yapjiinrjsrothzgzxsv`) with verified head `20260823230000`; AT-11-10 owns forward migration `20260824100000`, free pgTAP ID `038`, and authoritative generated target `agent/lib/supabase/database.types.ts`; AT-11-18 modifies the existing internal channel. Only the reviewed AT-11-10 forward migration is authorized for remote application after dry-run and Cloud safety review. Conservative clinical approval for the seven marked Module 11 leaves is recorded as unsigned product-owner conveyance without clinician identity or signature attribution.
 
@@ -93,7 +93,7 @@ Post-closure Module 11/`AT-10-21` compatibility correction for `AT-10-09`: the f
 
 ## Active workers
 
-- Root owns `AT-11-16` (`in_progress`) and exclusively claims `tests/fixtures/channel/creciendo-v1.ndjson` plus `docs/contracts/creciendo-channel-v1.md`. No subagent or other Module 11 leaf is active.
+- Root is reviewing `AT-11-16` at implementation commit `de0536c` across its four amended owned paths; no subagent or other Module 11 leaf is active.
 
 
 Cloud-only execution override (2026-08-23): by explicit current user instruction, Module 09 uses the verified linked Supabase Cloud project as its only database source of truth. Local reset/test availability or drift is not an execution gate. Database leaves must verify exact project identity, migration impact, recoverability, generated linked types, and rollback-safe Cloud tests before any remote mutation.

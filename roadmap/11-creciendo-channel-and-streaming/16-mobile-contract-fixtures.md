@@ -2,7 +2,7 @@
 id: AT-11-16
 title: Publish mobile channel contract fixtures
 module: 11-creciendo-channel-and-streaming
-status: in_progress
+status: review
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-12, AT-10-32]
@@ -130,6 +130,14 @@ Root contract amendment recorded before implementation on 2026-08-24: the stale 
 
 Root transport-document amendment recorded before contract publication on 2026-08-24: `docs/integration/mobile-contract.md` still says every request sends `X-Child-Context` and that idempotency is only a header, while the completed exact v1 request schemas carry `childContextToken` only when creating a session, then `continuationToken` in message/cancel JSON and `X-Continuation-Token` for GET stream; command idempotency is the exact JSON `idempotencyKey` field. AT-11-16 additionally owns that integration document solely to align it with the already completed runtime contract. CORS may allow `X-Child-Context` and `Idempotency-Key`, but neither is authority or a substitute for those exact fields. No completed runtime contract is changed.
 
+Root implementation and self-review recorded on 2026-08-24:
+
+- Published the exact five-route `creciendo.channel.v1` wire contract, `creciendo.channel-event.v1`/`creciendo.error.v1` schemas, request/token/idempotency locations, ownership and revocation rules, cursor/replay/retention/cancel truth, all nine event types, all eleven closed Module 10 widget versions, compatibility rules and a Creciendo parser procedure. The pre-runtime integration prose now matches those already completed schemas.
+- The golden fixture has nine LF-delimited canonical JSON frames across four independent synthetic sessions: ordered multiline/confirmation/widget/citation/heartbeat/completion, ambiguous-effect cancellation, a one-event emergency terminal, and a non-resumable retention gap. It contains no real identity, child, session or clinical record and no upload/provider/internal payload.
+- TDD evidence: the first focused run failed `3/3` because both contract artifacts were absent. The permanent verifier now imports runtime schemas, parses/re-encodes every byte, checks bounds/order/terminal closure/privacy, verifies all five routes/nine event types/eleven registry versions and passes `3/3`. All channel tests pass `15` files and `111/111`.
+- Fresh gates: `npm run typecheck`, full Eve/Nitro build with the ignored environment used opaquely, `git diff --check`, exact owned-path review, forbidden artifact scan, staged credential/private-key scan and fixture privacy/PHI scan exited `0`. Fixture SHA-256 is `5BCE95342FC00C64F12ECF4C7EEC5157B8961FEFDD0CB45E0B8D0BBA4ED4145A`; human contract SHA-256 is `DBFFFC4D45146BFA9781761B2ECB6D027F990DE4D32715C0B4BB218B2B01F3DB`.
+- Conservative clinical-contract approval is recorded only as unsigned product-owner conveyance, without a clinician identity or signature. Implementation commit `de0536c` (`feat(channel): publish mobile channel contract fixtures`) contains exactly the four amended owned paths. `database_change: false`; no Cloud/provider/deployment request or remote mutation occurred.
+
 Record routes/event versions, files, migration/config digests, test/eval counts, concurrency/reconnect matrix, raw fixture hashes, privacy scan, commands/exits, reviewers, and commit.
 
 ## Commit protocol
@@ -138,11 +146,11 @@ Commit exclusive paths with feat(channel): publish mobile channel contract fixtu
 
 ## Completion checklist
 
-- [ ] Every route authenticates and verifies current ownership.
-- [ ] Events are versioned, ordered, resumable, and bounded.
-- [ ] Reconnect never duplicates domain effects.
-- [ ] Reasoning, secrets, PHI, and internal payloads do not leak.
-- [ ] Emergency response is terminal and contains no extras.
+- [x] Every route authenticates and verifies current ownership.
+- [x] Events are versioned, ordered, resumable, and bounded.
+- [x] Reconnect never duplicates domain effects.
+- [x] Reasoning, secrets, PHI, and internal payloads do not leak.
+- [x] Emergency response is terminal and contains no extras.
 
 ## Handoff
 
