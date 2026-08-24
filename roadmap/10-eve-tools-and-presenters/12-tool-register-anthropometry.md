@@ -2,7 +2,7 @@
 id: AT-10-12
 title: Register confirmed anthropometry
 module: 10-eve-tools-and-presenters
-status: pending
+status: in_progress
 execution: parallel
 parallel_group: eve-tools
 depends_on: [AT-10-07, AT-05-15, AT-10-03]

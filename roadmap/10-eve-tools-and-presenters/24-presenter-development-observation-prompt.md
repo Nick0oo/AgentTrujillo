@@ -2,7 +2,7 @@
 id: AT-10-24
 title: Present development observation confirmation
 module: 10-eve-tools-and-presenters
-status: pending
+status: in_progress
 execution: sequential
 parallel_group: presenters
 depends_on: [AT-10-16]

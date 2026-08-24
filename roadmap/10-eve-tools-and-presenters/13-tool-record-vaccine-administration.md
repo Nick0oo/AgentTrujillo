@@ -2,7 +2,7 @@
 id: AT-10-13
 title: Record confirmed vaccine administration
 module: 10-eve-tools-and-presenters
-status: pending
+status: in_progress
 execution: parallel
 parallel_group: eve-tools
 depends_on: [AT-10-07, AT-06-14, AT-10-03]

@@ -59,7 +59,7 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-Dependency, approval-reuse and exact path collision checks moved `AT-10-18`, `AT-10-20` and `AT-10-23` through review to completed at `6e70693`, `75b5f4d` and `7bed230`. `AT-10-24` and `AT-10-29` are ready and unclaimed; presenter execution remains sequential.
+Dependency, approval-reuse and exact path collision checks moved `AT-10-18`, `AT-10-20` and `AT-10-23` through review to completed at `6e70693`, `75b5f4d` and `7bed230`. `AT-10-12`, `AT-10-13` and `AT-10-24` are claimed on disjoint exclusive paths. `AT-10-29` remains ready and unclaimed; presenter execution remains sequential.
 
 Root replay-receipt amendment for `AT-10-14`: the medication Cloud RPCs already return a durable `created`/`idempotent_replay` outcome, but the verified repository/application adapters discarded it. The leaf now owns only the exact additive port, plan-service, schedule-service, repository and regression-test paths required to propagate that existing receipt into `withToolIdempotency`. No database/API/schema/clinical rule changes or remote effects are authorized, and all existing record-only service methods remain compatible.
 
@@ -73,7 +73,9 @@ Post-closure Module 11/`AT-10-21` compatibility correction for `AT-10-09`: the f
 
 ## Active workers
 
-- No active worker. The next presenter will be claimed only after dependency, approval and path checks.
+- `/root/at_10_12` — `AT-10-12`, GPT-5.6 Luna/max; owns only `agent/tools/register_anthropometry.ts` and `tests/agent/tools/register-anthropometry.test.ts`.
+- `/root/at_10_13` — `AT-10-13`, GPT-5.6 Luna/max; owns only `agent/tools/record_vaccine_administration.ts` and `tests/agent/tools/record-vaccine-administration.test.ts`.
+- `/root` — `AT-10-24`, sequential presenter; owns only `src/presentation/development-observation.ts` and `tests/presentation/development-observation.test.ts`.
 
 
 Cloud-only execution override (2026-08-23): by explicit current user instruction, Module 09 uses the verified linked Supabase Cloud project as its only database source of truth. Local reset/test availability or drift is not an execution gate. Database leaves must verify exact project identity, migration impact, recoverability, generated linked types, and rollback-safe Cloud tests before any remote mutation.
