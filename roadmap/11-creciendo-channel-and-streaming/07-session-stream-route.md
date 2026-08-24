@@ -2,7 +2,7 @@
 id: AT-11-07
 title: Stream authorized NDJSON session events
 module: 11-creciendo-channel-and-streaming
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-06, AT-11-09, AT-11-12]
@@ -132,6 +132,7 @@ Root implementation and self-review recorded on 2026-08-24:
 - TDD/adversarial tests: the initial focused run failed because the route module did not exist. Final focused verification passed `14/14`; all channel tests passed `12` files and `92/92`, including guessed/denied session, forged continuation, future version, invalid/retained cursor, malformed/extra payload, duplicate/out-of-order pages, strict resume, terminal closure, key-derivation parity, backpressure and disconnect disposal.
 - Fresh gates: `npm run typecheck`, full Eve/Nitro build using the ignored environment opaquely, `git diff --check`, exact owned/amended-path review, forbidden artifact scan and credential/private-key scan exited `0`. SHA-256 is `3F770EF3284F5F6C18C314915D7DF75749370DBB26F531C9D0704A684E3ED205` for the route and `E529F34955C2FAA158083A6F6AE0255D66C80C4996AD7948882AC9BA5AC666DD` for its tests.
 - Implementation commit: `e7feaa4` (`feat(channel): stream authorized ndjson session events`) contains exactly the three original owned paths plus the explicitly amended channel-shell regression test. `database_change: false`; no remote mutation occurred.
+- Fresh closure after roadmap review: focused route/shell verification passed `14/14`, `npm run typecheck` and `git diff --check` exited `0`, and the worktree was clean.
 
 Record routes/event versions, files, migration/config digests, test/eval counts, concurrency/reconnect matrix, raw fixture hashes, privacy scan, commands/exits, reviewers, and commit.
 
