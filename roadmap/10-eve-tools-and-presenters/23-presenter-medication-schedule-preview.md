@@ -2,7 +2,7 @@
 id: AT-10-23
 title: Present declared medication schedule preview
 module: 10-eve-tools-and-presenters
-status: in_progress
+status: completed
 execution: sequential
 parallel_group: presenters
 depends_on: [AT-10-14]
@@ -127,11 +127,25 @@ Commit exclusive paths with feat(presenter): present declared medication schedul
 
 ## Completion checklist
 
-- [ ] Model schemas contain no authority or clinical-result claims.
-- [ ] Policy order and effects are deterministic and tested.
-- [ ] Tool-to-model output is explicit and privacy-safe.
-- [ ] No diagnosis, prescription, clinician operation, or urgent extra exists.
-- [ ] Eve discovery contains exactly the intended surface.
+- [x] Model schemas contain no authority or clinical-result claims.
+- [x] Policy order and effects are deterministic and tested.
+- [x] Tool-to-model output is explicit and privacy-safe.
+- [x] No diagnosis, prescription, clinician operation, or urgent extra exists.
+- [x] Eve discovery contains exactly the intended surface.
+
+### Recorded 2026-08-23
+
+- Outcome and non-goals: `presentMedicationSchedulePreview(draft, occurrences, locale)` emits the strict mobile widget `medication.schedule-preview.v1` from one typed `medication.schedule-preview-input.v1` draft. It is pure and does not create/confirm a plan, resolve a product, calculate a schedule, alter a regimen, advise timing/missed doses, expose an executable action, contact a clinician or handle emergencies.
+- Implementation commit: `7bed2300c31b81cacd18c85cea0686d5f5eea988` (`feat(presenter): present declared medication schedule preview`), containing only `src/presentation/medication-schedule-preview.ts` and `tests/presentation/medication-schedule-preview.test.ts`.
+- TDD evidence: the initial focused run exited `1` because the presenter module did not exist. An intermediate run exposed the unsupported Zod union `.omit()` and then the fallback control-character boundary; both were corrected without weakening strictness. The focused suite reached 12/12. Root review added a valid-hex digest-drift regression that failed before the typed draft digest was bound to the trusted approval preview; after correction, all 12/12 passed and the accumulated presentation suite passed 56/56 across five files.
+- Exact-data review: declared product/presentation/dose/route/frequency/timezone/effective dates remain separate from canonical resolved product/presentation/ingredients. Resolution mismatch, ambiguity or absence is explicit; unresolved and as-needed declarations cannot acquire generated occurrences. The presenter does not reproduce medication arithmetic or scheduling rules.
+- Schedule review: at most 64 occurrences from one plan/version are accepted, in deterministic instant/opaque-ID order, inside the same bounded seven-day/effective window, timezone and generated source. Exact instants/local dates are preserved; local-date and DST-offset checks detect drift without changing the domain result. Internal occurrence/plan IDs are validation-only and absent from output.
+- Approval/action review: the draft's canonical approval digest, preview digest, exact flattened declaration entries, schema/tool/effect/subject/locale and fixed action label must agree. Output carries only inert confirmation metadata; the raw entries and model-provided idempotency key are omitted. Approve/cancel semantics remain owned by `AT-10-26`, with no HTML/JS/button/navigation operation in this widget.
+- Clinical review: the presenter reuses the exact conveyed Module 07 behavior that plans/schedules only render a caregiver-declared regimen and the existing non-selection/non-prescription/non-safe-to-administer boundary wording. It adds no medicine, presentation, rule, dose, frequency, duration, claim or personal signature/approver identity. Urgent medication language is rejected by the prerequisite strict declaration schema before rendering.
+- Accessibility/privacy review: Spanish and English widgets include bounded screen-reader and textual fallback content; strict schemas reject extra authority/executable fields and malicious markup/instructions. Output omits child/care/guardian IDs, plan/occurrence IDs, approval entries, idempotency keys, prompts, reasoning, URLs, tickets and storage paths; the result is deterministic and deeply frozen.
+- Fresh gates: focused 12/12, presentation 56/56, `npm run typecheck`, synthetic-config `npm run build` and synthetic-config `npx eve info` all exited `0`. Eve was `0.27.13`, diagnostics were 0 errors/0 warnings and discovery remained the current exact eight tools; presenters do not add a model-callable tool.
+- Staged review: exactly the two owned paths were staged. `git diff --cached --check`, ownership/forbidden-path/artifact and credential/key/token scans passed. A privacy-name scan found only the deliberate forged `childId` adversarial test and no emitted field.
+- Exceptions and residual risk: no database, migration, package, provider, Supabase Cloud, workflow, Storage, deployment or other remote mutation occurred. A trusted pre-creation composition must supply this typed draft/occurrence preview; generic guardian controls, widget registry/version dispatch and Creciendo event delivery remain `AT-10-26`, `AT-10-32` and Module 11.
 
 ## Handoff
 
