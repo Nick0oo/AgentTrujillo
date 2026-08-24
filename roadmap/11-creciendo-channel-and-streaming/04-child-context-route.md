@@ -2,7 +2,7 @@
 id: AT-11-04
 title: Resolve active child context route
 module: 11-creciendo-channel-and-streaming
-status: pending
+status: ready
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-03, AT-02-13]
