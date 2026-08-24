@@ -59,7 +59,7 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-All thirteen Eve tool leaves are closed after root review; `AT-10-19` closed at `7ac4682` with cancellation cleanup and exact signed-ticket/model separation. No worker or presenter is active while the root selects the next sequential presenter; `AT-10-28`, `AT-10-31` and newly unblocked `AT-10-26` are eligible, with `AT-10-28` next by the approved execution order.
+All thirteen Eve tool leaves are closed after root review; `AT-10-19` closed at `7ac4682` with cancellation cleanup and exact signed-ticket/model separation. `AT-10-28` passed its `AT-04-08`/`AT-04-11` dependency and exact-copy approval checks, moved to `ready`, and is the sole sequential presenter claimed by the root.
 
 Root replay-receipt amendment for `AT-10-14`: the medication Cloud RPCs already return a durable `created`/`idempotent_replay` outcome, but the verified repository/application adapters discarded it. The leaf now owns only the exact additive port, plan-service, schedule-service, repository and regression-test paths required to propagate that existing receipt into `withToolIdempotency`. No database/API/schema/clinical rule changes or remote effects are authorized, and all existing record-only service methods remain compatible.
 
@@ -73,7 +73,7 @@ Post-closure Module 11/`AT-10-21` compatibility correction for `AT-10-09`: the f
 
 ## Active workers
 
-- None. Parallel tool implementation is closed; sequential presenters remain root-owned one at a time.
+- `/root` — `AT-10-28`; owns only `src/presentation/emergency-recommendation.ts` and `tests/presentation/emergency-recommendation.test.ts` for implementation. Exact existing bilingual synthetic copy is reused without production activation or new clinical wording.
 
 
 Cloud-only execution override (2026-08-23): by explicit current user instruction, Module 09 uses the verified linked Supabase Cloud project as its only database source of truth. Local reset/test availability or drift is not an execution gate. Database leaves must verify exact project identity, migration impact, recoverability, generated linked types, and rollback-safe Cloud tests before any remote mutation.
