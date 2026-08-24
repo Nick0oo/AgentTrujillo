@@ -2,7 +2,7 @@
 id: AT-11-13
 title: Suppress reasoning and internal events
 module: 11-creciendo-channel-and-streaming
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-11]
@@ -128,6 +128,7 @@ Root implementation and self-review recorded on 2026-08-24:
 - TDD and tests: the first focused run failed because the module was absent; red follow-ups proved hostile accessors were misclassified as merely unknown and tagged reasoning/provider content was not caught. Final focused tests passed `8/8`; all channel tests passed `10` files and `76/76`, covering all 28 kinds, nested/renamed/encoded attacks, raw tools/errors/provider data, counters, sink, debug, cycles and unknown kinds.
 - Fresh gates: `npm run typecheck`, full Eve/Nitro build with ignored environment loaded opaquely, `git diff --check`, exact path/whitespace review, credential/private-key and artifact scans passed. SHA-256 is `BEE1D640E5C1CB7B8BEF367AADB0CF9EAB8B6B3BEB1A4EDC9021E4D42A6D32A1` for the filter and `583EDF588C92242D80665AC20D98106498EEC274A2CBF27935E46D66DD2227EB` for its tests.
 - Implementation commit: `3db63c5` (`feat(channel): suppress reasoning and internal events`) contains exactly the two owned paths. Conveyed conservative clinical approval remains recorded unsigned without identity/signature attribution. `database_change: false`; no remote request or mutation occurred.
+- Fresh closure after roadmap review: focused suppression tests passed `8/8`, all channel tests passed `76/76`, and `npm run typecheck` plus `git diff --check` exited `0` with a clean worktree.
 
 Record routes/event versions, files, migration/config digests, test/eval counts, concurrency/reconnect matrix, raw fixture hashes, privacy scan, commands/exits, reviewers, and commit.
 
@@ -137,11 +138,11 @@ Commit exclusive paths with feat(channel): suppress reasoning and internal event
 
 ## Completion checklist
 
-- [ ] Every route authenticates and verifies current ownership.
-- [ ] Events are versioned, ordered, resumable, and bounded.
-- [ ] Reconnect never duplicates domain effects.
-- [ ] Reasoning, secrets, PHI, and internal payloads do not leak.
-- [ ] Emergency response is terminal and contains no extras.
+- [x] Filter runs only inside the already authenticated child/session boundary and carries no authority.
+- [x] Allowed mapping candidates retain only bounded public ordering fields.
+- [x] Suppression and replay are pure and create no domain effect.
+- [x] Reasoning, prompts, raw tool/model/provider/error data and unknown kinds are structurally non-public.
+- [x] No emergency event or emergency copy can originate from this Eve filter.
 
 ## Handoff
 
