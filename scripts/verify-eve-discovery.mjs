@@ -28,9 +28,12 @@ export const FORBIDDEN_RUNTIME_NAMES = Object.freeze([
   "write_file",
 ]);
 
+export const DEFAULT_DISCOVERY_BASELINE = "module-11";
+
 export function fixtureFileForBaseline(baseline) {
   if (baseline === "module-01") return "eve-info-module-01.json";
   if (baseline === "module-10") return "eve-info-module-10.json";
+  if (baseline === "module-11") return "eve-info-module-11.json";
   throw new Error("Unsupported Eve discovery baseline");
 }
 
@@ -150,7 +153,7 @@ function runInfo() {
 
 function main() {
   const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-  const fixtureFile = fixtureFileForBaseline(process.env.EVE_DISCOVERY_BASELINE ?? "module-10");
+  const fixtureFile = fixtureFileForBaseline(process.env.EVE_DISCOVERY_BASELINE ?? DEFAULT_DISCOVERY_BASELINE);
   const fixturePath = resolve(root, "tests/fixtures/runtime", fixtureFile);
   const info = runInfo();
   const actual = projectSurface(info);

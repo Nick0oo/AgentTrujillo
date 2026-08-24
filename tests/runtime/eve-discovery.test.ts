@@ -6,6 +6,7 @@ import { describe, expect, it } from "vitest";
 const discovery = await import("../../scripts/verify-eve-discovery.mjs");
 const module01FixturePath = resolve(process.cwd(), "tests/fixtures/runtime/eve-info-module-01.json");
 const module10FixturePath = resolve(process.cwd(), "tests/fixtures/runtime/eve-info-module-10.json");
+const module11FixturePath = resolve(process.cwd(), "tests/fixtures/runtime/eve-info-module-11.json");
 const EXPECTED_TOOLS = [
   "capture_clinical_memory_candidate",
   "create_medication_plan",
@@ -80,13 +81,15 @@ describe("Eve discovery gate", () => {
     expect(discovery.findForbiddenNames({ tools: [], connections: [] })).toEqual([]);
   });
 
-  it("selects only the preserved Module 01 or current Module 10 discovery fixture", () => {
+  it("selects preserved historical fixtures and the current Module 11 baseline", () => {
     expect(discovery.fixtureFileForBaseline("module-01")).toBe("eve-info-module-01.json");
     expect(discovery.fixtureFileForBaseline("module-10")).toBe("eve-info-module-10.json");
-    expect(() => discovery.fixtureFileForBaseline("module-11")).toThrow();
+    expect(discovery.fixtureFileForBaseline("module-11")).toBe("eve-info-module-11.json");
+    expect(discovery.DEFAULT_DISCOVERY_BASELINE).toBe("module-11");
+    expect(() => discovery.fixtureFileForBaseline("module-12")).toThrow();
   });
 
-  it.each([module01FixturePath, module10FixturePath])("keeps reviewed fixture %s canonical and free of host paths or secrets", (fixturePath) => {
+  it.each([module01FixturePath, module10FixturePath, module11FixturePath])("keeps reviewed fixture %s canonical and free of host paths or secrets", (fixturePath) => {
     expect(existsSync(fixturePath)).toBe(true);
     const fixture = readFileSync(fixturePath, "utf8");
     expect(fixture).not.toMatch(/[A-Z]:\\|\/Users\/|\/home\//i);
@@ -110,5 +113,24 @@ describe("Eve discovery gate", () => {
       method: "POST",
       urlPath: "/eve/v1/session/reset",
     });
+  });
+
+  it("freezes the sole public Creciendo family plus the protected Eve operator surface", () => {
+    const module11 = JSON.parse(readFileSync(module11FixturePath, "utf8"));
+    const creciendoRoutes = module11.channels.filter((route: { name: string }) => route.name === "creciendo");
+    const eveRoutes = module11.channels.filter((route: { name: string }) => route.name === "eve");
+
+    expect(module11.authoredTools).toEqual(EXPECTED_TOOLS);
+    expect(module11.diagnostics).toEqual({ errors: 0, warnings: 0 });
+    expect(creciendoRoutes).toEqual([
+      { name: "creciendo", kind: "http", method: "GET", urlPath: "/creciendo/v1/sessions/:sessionId/stream" },
+      { name: "creciendo", kind: "http", method: "POST", urlPath: "/creciendo/v1/child-context" },
+      { name: "creciendo", kind: "http", method: "POST", urlPath: "/creciendo/v1/sessions" },
+      { name: "creciendo", kind: "http", method: "POST", urlPath: "/creciendo/v1/sessions/:sessionId/cancel" },
+      { name: "creciendo", kind: "http", method: "POST", urlPath: "/creciendo/v1/sessions/:sessionId/messages" },
+    ]);
+    expect(eveRoutes).toHaveLength(6);
+    expect(module11.channels).not.toContainEqual(expect.objectContaining({ urlPath: "/v1/chat" }));
+    expect(module11.channels).not.toContainEqual(expect.objectContaining({ urlPath: "/v1" }));
   });
 });
