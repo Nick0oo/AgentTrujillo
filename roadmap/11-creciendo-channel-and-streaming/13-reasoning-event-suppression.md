@@ -2,7 +2,7 @@
 id: AT-11-13
 title: Suppress reasoning and internal events
 module: 11-creciendo-channel-and-streaming
-status: pending
+status: ready
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-11]
