@@ -2,7 +2,7 @@
 id: AT-11-03
 title: Authenticate every Creciendo request
 module: 11-creciendo-channel-and-streaming
-status: in_progress
+status: review
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-02, AT-02-10]
@@ -120,6 +120,18 @@ Attempt guessed session IDs, forged tokens/cursors/authority, reasoning/tool lea
 Consume the raw endpoint with an NDJSON reference client through create/message/stream/reconnect/cancel/revoke/emergency cases; inspect discovery, headers, events, persistence, logs, and mobile fixture compatibility.
 
 ## Completion evidence
+
+Root implementation and self-review recorded on 2026-08-24:
+
+- Outcome: every production Creciendo handler is composed behind one Supabase bearer middleware before route code. The middleware accepts exactly one header JWT, delegates issuer/audience/algorithm/signature/time verification to the pinned Module 02 authenticator, confirms the token against current Supabase Auth state, resolves the current guardian profile with a request-scoped client, rejects cookies/query credentials, attaches non-enumerable trusted guardian context, assigns only opaque hashes downstream, and applies bounded per-principal command/stream rate classes.
+- TDD evidence: the focused test first exited `1` because `src/channels/creciendo/auth-middleware.ts` did not exist. After implementation, `9/9` focused authentication tests pass, including missing/duplicate/malformed/query/cookie tokens, revoked/missing profile, dependency outage, rate limiting, concurrent principals, safe correlation IDs, production composition, non-serialization of JWT/user identity, and propagation of downstream route failures.
+- Implementation commit: `2e221140aeb6a09ad563b46207d7ce3ed620b916` (`feat(channel): authenticate every creciendo request`).
+- Owned files: `agent/channels/creciendo.ts`; `src/channels/creciendo/auth-middleware.ts`; `tests/channels/creciendo/auth-middleware.test.ts`.
+- Affected verification before review: `npm test -- tests/channels tests/access` exited `0` with `16/16` files, `214` passed and one conditional skip; `npm run typecheck` exited `0`; configured `npm run build` exited `0` on Eve `0.27.13`.
+- Authorization/security review: authentication is required before all five handlers; a path `sessionId` never authorizes access; downstream authorization still receives the trusted, non-enumerable `AuthenticatedGuardian`; invalid/current-profile failures are non-enumerating; bearer/user values are never serialized; cookies and query tokens are rejected; rate keys are SHA-256 values independent of child/session path values; auth failures are `no-store` and omit causes.
+- Database/Cloud evidence: `database_change: false`; no schema, data, migration, Storage, grant, RLS policy, linked project, environment file, or remote state was changed.
+- Staged review: exactly the three owned paths were staged; cached diff check, credential/private-key scan, generated-artifact ignore check, and personal full-diff review were clean.
+- Residual handoff: authorization of the child/care-space/session remains intentionally fail-closed in the still-unwired route handlers and is owned by AT-11-04 onward; AT-11-04 and AT-11-09 become eligible only after this leaf receives fresh closure verification.
 
 Record routes/event versions, files, migration/config digests, test/eval counts, concurrency/reconnect matrix, raw fixture hashes, privacy scan, commands/exits, reviewers, and commit.
 
