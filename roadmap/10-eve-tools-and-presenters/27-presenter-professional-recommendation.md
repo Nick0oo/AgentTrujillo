@@ -2,7 +2,7 @@
 id: AT-10-27
 title: Present plain professional-review recommendation
 module: 10-eve-tools-and-presenters
-status: in_progress
+status: completed
 execution: sequential
 parallel_group: presenters
 depends_on: [AT-04-09, AT-10-06]
@@ -127,11 +127,23 @@ Commit exclusive paths with feat(presenter): present plain professional-review r
 
 ## Completion checklist
 
-- [ ] Model schemas contain no authority or clinical-result claims.
-- [ ] Policy order and effects are deterministic and tested.
-- [ ] Tool-to-model output is explicit and privacy-safe.
-- [ ] No diagnosis, prescription, clinician operation, or urgent extra exists.
-- [ ] Eve discovery contains exactly the intended surface.
+- [x] Model schemas contain no authority or clinical-result claims.
+- [x] Policy order and effects are deterministic and tested.
+- [x] Tool-to-model output is explicit and privacy-safe.
+- [x] No diagnosis, prescription, clinician operation, or urgent extra exists.
+- [x] Eve discovery contains exactly the intended surface.
+
+### Recorded 2026-08-23
+
+- Outcome and non-goals: `presentProfessionalRecommendation(policyResult, locale)` is a pure, text-only `professional_recommendation` / `professional.recommendation.v1` presenter. It preserves one approved non-urgent reason code and exact localized copy, and performs no authorization decision, clinical interpretation, model call, clinician operation, write, provider/network call, migration, deploy or remote mutation.
+- Implementation commit: `1020998eb053b6abc824aea308ecbd38c5eeabe2` (`feat(presenter): present plain professional-review recommendation`) created exactly `src/presentation/professional-recommendation.ts` and `tests/presentation/professional-recommendation.test.ts`.
+- TDD evidence: the initial focused run exited `1` because the presenter module did not exist. The final focused suite passed 14/14; accumulated presentation plus professional/clinical response-policy verification passed 11 files/119 tests.
+- Contract review: input must be the strict `pediatrician_recommendation` result from the existing deterministic policy and must match the requested locale, reason, message ID and copy bytes exactly. The output carries only `text/professional.recommendation.v1`, locale, approved reason code, copy ID/version, exact text, screen-reader text and fallback text. The exported strict schema independently rejects extra fields and copy drift.
+- Clinical approval review: this leaf reuses the exact bilingual generic bytes, reason categories and non-operational behavior already closed in `AT-04-09` and covered by the conveyed Module 01 professional-review boundary. It introduces no new wording, reason, specialist, clinical claim or named-provider text. Dr. Trujillo display text remains absent because no named copy is activated; no signature, identity, witnessed review or new approval is asserted.
+- Safety/security review: urgent precedence is rejected so this presenter cannot decorate or follow an emergency result. Unknown reason, locale mismatch, provider-name/review claim, scheduling wording, URL, action and schema drift all fail closed. The payload contains no button, phone, email, address, location, calendar, availability, notification, case, handoff or transfer field and cannot imply that a clinician saw the conversation.
+- Fresh gates: focused 14/14; accumulated 11 files/119 tests; isolated strict source typecheck, repository `npm run typecheck -- --pretty false`, synthetic-config `npm run build` and synthetic-config `npx eve info` exited `0`. Eve `0.27.13` reported ready discovery, 0 errors/0 warnings and the same 10 active tools because presenters are not model-callable.
+- Staged review: exactly the two owned paths were staged; `git diff --cached --check`, ownership/forbidden-path/artifact and credential/secret/PII scans passed with zero findings before commit.
+- Exceptions and residual risk: the reused source copy remains tagged `synthetic_test_only`; this technical presenter neither changes that flag nor activates production copy. Production activation remains a separate release/governance decision. The generic text contract is ready for Module 11 mobile event mapping and `AT-10-32` registry binding.
 
 ## Handoff
 
