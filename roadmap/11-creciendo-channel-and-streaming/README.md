@@ -28,6 +28,7 @@ The current product-owner instruction corrects the pending Module 11 contract be
 - Eve supplies exact session cancellation helpers only to the filesystem-discovered channel route context. AT-11-15 therefore also owns `agent/channels/creciendo.ts` solely to inject a revocation abort callback that verifies the already bound Eve session before requesting cancellation. The revocation guard remains authoritative for byte suppression; this adds no client field, public Eve route, session lookup authority, database mutation or cancellation success claim.
 - The only authorized remote mutation is application of the reviewed AT-11-10 migration after linked identity, drift, recoverability, dry-run, RLS, grants, and shared-frontend compatibility checks. Reset, delete, truncate, destructive rewrites, and all unrelated remote mutations remain forbidden.
 - Conservative clinical-contract approval for AT-11-01, AT-11-06, AT-11-11, AT-11-13, AT-11-14, AT-11-16, and AT-11-17 was conveyed by the product owner. It is recorded as unsigned conveyed approval and is not attributed to a named clinician or represented as Dr. Trujillo's signature.
+- AT-11-16 contract-fixture correction: the frozen v1 event union and binding five-route surface contain no upload-ticket event. AT-11-16 must not invent a signed upload URL; it owns an additive runtime-schema fixture verifier so its NDJSON, routes, versions and closed widget registry remain machine-verifiable. A future upload capability requires a separately reviewed contract version.
 
 ## Exit gate
 

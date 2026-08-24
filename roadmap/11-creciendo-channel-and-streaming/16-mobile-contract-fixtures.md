@@ -18,12 +18,15 @@ touches:
   create:
     - tests/fixtures/channel/creciendo-v1.ndjson
     - docs/contracts/creciendo-channel-v1.md
+    - tests/channels/creciendo/mobile-contract-fixtures.test.ts
   modify: []
   test:
     - docs/contracts/creciendo-channel-v1.md
+    - tests/channels/creciendo/mobile-contract-fixtures.test.ts
 exclusive_paths:
   - tests/fixtures/channel/creciendo-v1.ndjson
   - docs/contracts/creciendo-channel-v1.md
+  - tests/channels/creciendo/mobile-contract-fixtures.test.ts
 forbidden_paths:
   - .env
   - supabase/migrations/20260814000000_platform_foundation.sql
@@ -78,7 +81,7 @@ Contract includes OpenAPI-like routes and JSON Schema/Zod-generated event defini
 
 ## Technical design
 
-Generate fixtures from runtime schemas, not hand-divergent copies; validate with mobile parser compatibility artifact/version; include backward-compat window and change procedure. Ephemeral signed upload URL is represented only in trusted test event with fake token.
+Generate fixtures from runtime schemas, not hand-divergent copies; validate with a permanent runtime-schema/mobile-parser compatibility test; include backward-compat window and change procedure. The closed Module 11 event union has no upload-ticket event and the binding public surface has exactly five routes, so this leaf does not invent or publish a signed upload URL; a future version must add that capability through its own reviewed schema and route contract.
 
 ## Database and Storage contract
 
@@ -119,7 +122,9 @@ Consume the raw endpoint with an NDJSON reference client through create/message/
 
 ## Completion evidence
 
-Root readiness verification recorded on 2026-08-24: AT-11-12 is completed at `1298c26`; AT-10-32 is completed at `6bd8663`; both commits and their fresh gates are present in branch history. The two exclusive paths are unclaimed, `database_change: false`, and conservative clinical-contract approval is recorded as unsigned product-owner conveyance without clinician identity or signature attribution.
+Root readiness verification recorded on 2026-08-24: AT-11-12 is completed at `1298c26`; AT-10-32 is completed at `6bd8663`; both commits and their fresh gates are present in branch history. The declared exclusive paths were unclaimed, `database_change: false`, and conservative clinical-contract approval is recorded as unsigned product-owner conveyance without clinician identity or signature attribution.
+
+Root contract amendment recorded before implementation on 2026-08-24: the stale signed-upload fixture instruction conflicts with the already frozen exact `CHANNEL_EVENT_SCHEMA` and the product-owner-mandated five-route-only `/creciendo/v1` surface. No upload field/event/route will be invented. This leaf additionally owns `tests/channels/creciendo/mobile-contract-fixtures.test.ts` so every golden line, route, version and closed widget identifier is checked against runtime sources rather than trusted as prose. The amendment adds no public capability, authority, schema, database or remote effect.
 
 Record routes/event versions, files, migration/config digests, test/eval counts, concurrency/reconnect matrix, raw fixture hashes, privacy scan, commands/exits, reviewers, and commit.
 
