@@ -2,7 +2,7 @@
 id: AT-11-16
 title: Publish mobile channel contract fixtures
 module: 11-creciendo-channel-and-streaming
-status: pending
+status: ready
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-12, AT-10-32]
@@ -118,6 +118,8 @@ Attempt guessed session IDs, forged tokens/cursors/authority, reasoning/tool lea
 Consume the raw endpoint with an NDJSON reference client through create/message/stream/reconnect/cancel/revoke/emergency cases; inspect discovery, headers, events, persistence, logs, and mobile fixture compatibility.
 
 ## Completion evidence
+
+Root readiness verification recorded on 2026-08-24: AT-11-12 is completed at `1298c26`; AT-10-32 is completed at `6bd8663`; both commits and their fresh gates are present in branch history. The two exclusive paths are unclaimed, `database_change: false`, and conservative clinical-contract approval is recorded as unsigned product-owner conveyance without clinician identity or signature attribution.
 
 Record routes/event versions, files, migration/config digests, test/eval counts, concurrency/reconnect matrix, raw fixture hashes, privacy scan, commands/exits, reviewers, and commit.
 
