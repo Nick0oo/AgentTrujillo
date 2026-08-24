@@ -2,7 +2,7 @@
 id: AT-11-07
 title: Stream authorized NDJSON session events
 module: 11-creciendo-channel-and-streaming
-status: in_progress
+status: review
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-06, AT-11-09, AT-11-12]
@@ -123,6 +123,16 @@ Consume the raw endpoint with an NDJSON reference client through create/message/
 
 ## Completion evidence
 
+Root implementation and self-review recorded on 2026-08-24:
+
+- Outcome: the discovered Creciendo channel now composes authenticated `GET /creciendo/v1/sessions/:sessionId/stream`. The handler accepts the continuation JWT and opaque `Last-Event-ID` only in bounded headers, requires the exact channel/event versions, rejects query/body authority, and opens NDJSON only after current owner/child/read/security-version/session authorization, continuation binding, authenticated Cloud cursor resolution and a validated first event page.
+- Cloud ledger boundary: production uses request-scoped guardian clients and only `resolve_owned_creciendo_cursor`/`read_owned_creciendo_events`. The session ID is a locator; the child is discovered from an owner-filtered session row, reauthorized through `resolve_authorized_child_scope`, lease-refreshed with live read access, and every cursor/read RPC repeats owner, care-space, child, version, expiry and revocation checks. No service role, generic event query or database mutation is used.
+- Resume/order/privacy: output starts exactly at `after_sequence + 1`, requires contiguous monotonic sequences, UUID cursor/event equality, closed `ChannelEvent` parsing and terminal-last semantics, and rejects duplicates both within and across pages. Reconnect only reads immutable events and has no command/model/tool effect path. Persisted terminal events close the stream; a cursor already on the terminal event returns a clean empty stream. No ephemeral heartbeat/error identity is fabricated outside the immutable ledger.
+- Transport: `createNdjsonStream` provides one bounded UTF-8 JSON value per line with pull-based backpressure. Polling is bounded to 25 seconds, reader cancellation aborts a pending poll before iterator disposal, and malformed/post-header sources close with a code-only encoder error rather than leaking the source payload. Exact version headers are CORS allowed/exposed under amendment `ccd6d00` for Expo web.
+- TDD/adversarial tests: the initial focused run failed because the route module did not exist. Final focused verification passed `14/14`; all channel tests passed `12` files and `92/92`, including guessed/denied session, forged continuation, future version, invalid/retained cursor, malformed/extra payload, duplicate/out-of-order pages, strict resume, terminal closure, key-derivation parity, backpressure and disconnect disposal.
+- Fresh gates: `npm run typecheck`, full Eve/Nitro build using the ignored environment opaquely, `git diff --check`, exact owned/amended-path review, forbidden artifact scan and credential/private-key scan exited `0`. SHA-256 is `3F770EF3284F5F6C18C314915D7DF75749370DBB26F531C9D0704A684E3ED205` for the route and `E529F34955C2FAA158083A6F6AE0255D66C80C4996AD7948882AC9BA5AC666DD` for its tests.
+- Implementation commit: `e7feaa4` (`feat(channel): stream authorized ndjson session events`) contains exactly the three original owned paths plus the explicitly amended channel-shell regression test. `database_change: false`; no remote mutation occurred.
+
 Record routes/event versions, files, migration/config digests, test/eval counts, concurrency/reconnect matrix, raw fixture hashes, privacy scan, commands/exits, reviewers, and commit.
 
 ## Commit protocol
@@ -131,11 +141,11 @@ Commit exclusive paths with feat(channel): stream authorized ndjson session even
 
 ## Completion checklist
 
-- [ ] Every route authenticates and verifies current ownership.
-- [ ] Events are versioned, ordered, resumable, and bounded.
-- [ ] Reconnect never duplicates domain effects.
-- [ ] Reasoning, secrets, PHI, and internal payloads do not leak.
-- [ ] Emergency response is terminal and contains no extras.
+- [x] Every route authenticates and verifies current ownership.
+- [x] Events are versioned, ordered, resumable, and bounded.
+- [x] Reconnect never duplicates domain effects.
+- [x] Reasoning, secrets, PHI, and internal payloads do not leak.
+- [x] Emergency response is terminal and contains no extras.
 
 ## Handoff
 
