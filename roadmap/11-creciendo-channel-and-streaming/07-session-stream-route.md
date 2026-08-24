@@ -2,7 +2,7 @@
 id: AT-11-07
 title: Stream authorized NDJSON session events
 module: 11-creciendo-channel-and-streaming
-status: ready
+status: in_progress
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-06, AT-11-09, AT-11-12]
