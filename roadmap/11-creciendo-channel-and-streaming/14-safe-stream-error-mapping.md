@@ -2,7 +2,7 @@
 id: AT-11-14
 title: Map streaming failures safely
 module: 11-creciendo-channel-and-streaming
-status: in_progress
+status: review
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-12, AT-11-13, AT-10-06]
@@ -118,6 +118,16 @@ Attempt guessed session IDs, forged tokens/cursors/authority, reasoning/tool lea
 Consume the raw endpoint with an NDJSON reference client through create/message/stream/reconnect/cancel/revoke/emergency cases; inspect discovery, headers, events, persistence, logs, and mobile fixture compatibility.
 
 ## Completion evidence
+
+Root implementation and self-review recorded on 2026-08-24:
+
+- Outcome: `mapPreStreamError` produces immutable no-store HTTP status/headers/body before headers; `mapInStreamError` produces one exact terminal `stream-error` `ChannelEvent` after headers. Both carry only a caller-generated opaque correlation ID and fixed safe codes, never raw cause text, stack, details or localization.
+- Classification: authentication remains 401, while guessed/not-found/revoked/foreign session cases converge to indistinguishable 404 `ACCESS_DENIED`. Request/cursor, version, retention, conflict, rate, provider, persistence, timeout, cancellation/abort (including encoder abort) and unknown causes map to the strict channel code/status surface. Module 10 `SafeToolError` is consumed without exposing private diagnostics.
+- Retry truth: retry is allowed only for transient codes before an effect; rate delay is integer-bounded 1–300 and only advertised for rate limit. Resume requires a verified persisted sequence/cursor, a resumable technical class and non-ambiguous effect truth. After headers, resume wins over command retry; unknown effect, access denial, retention gap and cancel never advertise a cursor. Known committed effects may resume but never retry the command.
+- Terminal integrity: in-stream output is re-parsed by `parseChannelEvent` with caller-owned event/session/turn/sequence/cursor identity. If that trusted identity is invalid, the mapper returns `event: null` and `do-not-retry` so the route closes the socket rather than emit malformed NDJSON.
+- TDD/tests: initial focused run failed because the module was absent; a review red test exposed encoder abort being misclassified as internal instead of cancellation. Final focused verification passed `9/9`; all channel tests passed `11` files and `85/85`, including malicious stack/getter, auth non-enumeration, cursor/retention, rate delay, ambiguous/committed effects, safe-tool/encoder failures and locale-neutral output.
+- Fresh gates: `npm run typecheck`, full Eve/Nitro build using the ignored environment opaquely, `git diff --check`, exact owned-path/staged review, credential/private-key and artifact scans passed. SHA-256 is `92024B1FED21CED5EC9A7020964ECC9486E5083B48A4759DBA20CDA5A0959FA9` for the mapper and `9ECA27593FC8C28B0EDF79DE3798EA3543BBCD74CC8A66FF4F2BEC1D1C9C8B1E` for the tests.
+- Implementation commit: `4796f20` (`feat(channel): map streaming failures safely`) contains exactly the two owned paths. Conveyed conservative clinical approval is recorded unsigned without identity/signature attribution. `database_change: false`; no remote mutation occurred.
 
 Record routes/event versions, files, migration/config digests, test/eval counts, concurrency/reconnect matrix, raw fixture hashes, privacy scan, commands/exits, reviewers, and commit.
 
