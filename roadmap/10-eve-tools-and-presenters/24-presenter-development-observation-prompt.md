@@ -2,7 +2,7 @@
 id: AT-10-24
 title: Present development observation confirmation
 module: 10-eve-tools-and-presenters
-status: in_progress
+status: completed
 execution: sequential
 parallel_group: presenters
 depends_on: [AT-10-16]
@@ -119,7 +119,19 @@ Inspect Eve discovery and one real synthetic invocation/event stream for allowed
 
 ## Completion evidence
 
-Record tool/widget ID and schema version, files, discovery diff, domain/package/approval digests, test/eval counts, negative matrix, output/log scans, commands/exits, reviewers, and commit.
+Recorded by the root implementer/reviewer on 2026-08-23:
+
+- Outcome: added the pure `presentDevelopmentObservationPreview` boundary with strict input `development.observation-preview-input.v1` and mobile widget `development.observation-preview.v1`. It consumes only the confirmation-bound M08 draft, preserves date/domain/caregiver text deterministically, keeps concern as a caregiver question, and exposes only inert `confirm`/`cancel` semantics.
+- Implementation commit: `1b53e5e37aeaa96984db8837914aa9cd51093771` (`feat(presenter): present development observation confirmation`). Owned files are `src/presentation/development-observation.ts` and `tests/presentation/development-observation.test.ts`.
+- TDD: the first focused run exited `1` because the presenter module did not exist. The first implementation passed; root review then added regressions for concern-originated quoted language, normalized caregiver source, Base64-obfuscated professional IDs, deterministic warning order and warning/payload drift before final verification.
+- Fresh focused verification: `npm test -- tests/presentation/development-observation.test.ts --reporter=dot` exited `0` with `1/1` file and `16/16` tests.
+- Fresh accumulated verification: presentation plus development clinical/application/tool suites exited `0` with `14/14` files and `229/229` tests. `npm run typecheck` and synthetic-config `npm run build` exited `0`.
+- Eve verification: synthetic-config `npx eve info` exited `0` on Eve `0.27.13`, compile-ready with `0` errors, `0` warnings and the unchanged `8` authored tools. A presenter adds no model-callable tool.
+- Clinical approval reuse: the widget repeats only the M08 caregiver-confirmed neutral observation contract and imports the exact approved `CAREGIVER_MILESTONE_DISCLAIMER`. The conveyed Module 08 approval remains bound to record digest `7174f9b96ec3f780f95e915b08f3525a89374f922fe253af25a4afc43375fc00`; no signature, personal identity, new milestone, instrument, criterion, classification, diagnosis or clinical conclusion is asserted.
+- Safety/security review: professional/EAD-3/score/classification references, including bounded Base64 obfuscation, fail closed. Unquoted interpretation/diagnostic claims, HTML/JavaScript, role/prompt injection, authority additions, unsupported locales, source normalization drift, digest drift and warning drift fail closed. Explicitly attributed clinical wording is retained only as quoted caregiver data with the existing neutral warning code.
+- Privacy/mobile boundary: attachment bucket, object path and content digest are accepted only inside the typed trusted preview and omitted from the widget; output contains bounded MIME/size/state summaries only. No URL, Storage ticket, child/care-space identity, clinician operation, scheduling, notification, map, phone, executable action, prompt or reasoning is emitted. The fallback is bounded plain text.
+- Staged review: exactly the two exclusive owned paths were staged. `git diff --cached --check`, forbidden/artifact and credential-pattern scans passed with zero findings. Full staged diff review found no out-of-scope path or remote effect.
+- Cloud/database evidence: `database_change: false`; no Supabase client/query/write, Storage access, provider call, remote mutation or deployment occurred. `AT-10-32` remains pending on the other presenters; this leaf independently supplies the development widget contract needed by Modules 11/12.
 
 ## Commit protocol
 
@@ -127,11 +139,11 @@ Commit exclusive paths with feat(presenter): present development observation con
 
 ## Completion checklist
 
-- [ ] Model schemas contain no authority or clinical-result claims.
-- [ ] Policy order and effects are deterministic and tested.
-- [ ] Tool-to-model output is explicit and privacy-safe.
-- [ ] No diagnosis, prescription, clinician operation, or urgent extra exists.
-- [ ] Eve discovery contains exactly the intended surface.
+- [x] Model schemas contain no authority or clinical-result claims.
+- [x] Policy order and effects are deterministic and tested.
+- [x] Tool-to-model output is explicit and privacy-safe.
+- [x] No diagnosis, prescription, clinician operation, or urgent extra exists.
+- [x] Eve discovery contains exactly the intended surface.
 
 ## Handoff
 
