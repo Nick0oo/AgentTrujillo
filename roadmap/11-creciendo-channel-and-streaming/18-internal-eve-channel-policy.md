@@ -2,7 +2,7 @@
 id: AT-11-18
 title: Restrict standard Eve channel to operators
 module: 11-creciendo-channel-and-streaming
-status: in_progress
+status: review
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-02, AT-11-17]
@@ -130,6 +130,14 @@ Consume the raw endpoint with an NDJSON reference client through create/message/
 
 Root readiness verification recorded on 2026-08-24: prerequisite implementation commits `a78d19e` (`AT-11-02`) and `5780416` (`AT-11-17`) exist and both leaves are `completed`; the worktree is clean on `codex/module-11` and every declared exclusive path is unclaimed. Installed Eve `0.27.13` confirms that the authored `agent/channels/eve.ts` controls authentication for the discovered `/eve/v1` family but does not remove its routes. This leaf will therefore preserve local loopback operations and disable the standard Eve channel fail-closed in preview/production; it will not invent a partially configured public operator mode, trust a guardian token, accept a session ID as authority, mutate Cloud, or add a public route.
 
+Root implementation and self-review recorded on 2026-08-24:
+
+- TDD evidence: the new internal-channel suite first failed `6/6` because the strict policy exports did not exist. The completed policy uses Eve `0.27.13` `eveChannel`, `localDev`, `isLoopbackRequest`, `ForbiddenError` and `routeAuth` semantics directly; preview/production, missing/unknown configuration, Vercel deployment conflicts, attempted operator/local flags, guardian bearers, revoked-looking bearers and guessed session paths receive the same generic no-store `403` before runtime or session lookup. Only loopback requests in explicit `APP_ENV=development|test` resolve the synthetic local Eve principal.
+- Removed the scaffold `vercelOidc()`/`placeholderAuth()` walk without recreating the channel, adding anonymous auth, enabling forwarded principals or changing Eve's locally permitted behavior. `agent/channels/creciendo.ts` was reviewed line by line and intentionally left unchanged because it already composes exactly the five canonical `/creciendo/v1` routes with the completed ownership, safety, stream and cancellation handlers.
+- Added the current Module 11 discovery baseline while preserving Module 01 and Module 10 fixtures. Exact Eve info reports `ready`, `0` errors, `0` warnings, thirteen authored tools, five Creciendo routes, six protected Eve routes, no schedules/subagents and no `/v1` or `/v1/chat`. The verifier now defaults to Module 11; fixture SHA-256 is `D3CEB5C2CC8E791819D37E63796669D4C71FB325FED96DAFCE893BBFC4708DF4` and policy SHA-256 is `C2BF01C9A98EE99D95267CB871E37C3A1B9B6C60975ED42D90769D06E3086201`.
+- Fresh gates before commit: focused policy/discovery tests passed `16/16`; all channel plus discovery tests passed `127/127` in 17 files; channel-streaming eval passed `16/16` critical cases with two matching `117/117` channel runs, zero critical/isolation/leakage failures; tool-contract eval passed `547/547`, zero critical/leakage/prohibited-surface findings; exact discovery, `npm run typecheck`, Eve/Nitro build, `git diff --check`, forbidden-artifact and staged credential/private-key scans exited `0`.
+- Implementation commit `3a0b152` (`feat(channel): restrict standard eve channel to operators`) contains exactly five declared paths. This leaf has `database_change: false`; it made no Cloud, provider, deployment or production-state mutation.
+
 Record routes/event versions, files, migration/config digests, test/eval counts, concurrency/reconnect matrix, raw fixture hashes, privacy scan, commands/exits, reviewers, and commit.
 
 ## Commit protocol
@@ -138,11 +146,11 @@ Commit exclusive paths with feat(channel): restrict standard eve channel to oper
 
 ## Completion checklist
 
-- [ ] Every route authenticates and verifies current ownership.
-- [ ] Events are versioned, ordered, resumable, and bounded.
-- [ ] Reconnect never duplicates domain effects.
-- [ ] Reasoning, secrets, PHI, and internal payloads do not leak.
-- [ ] Emergency response is terminal and contains no extras.
+- [x] Every route authenticates and verifies current ownership.
+- [x] Events are versioned, ordered, resumable, and bounded.
+- [x] Reconnect never duplicates domain effects.
+- [x] Reasoning, secrets, PHI, and internal payloads do not leak.
+- [x] Emergency response is terminal and contains no extras.
 
 ## Handoff
 
