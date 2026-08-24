@@ -2,7 +2,7 @@
 id: AT-11-09
 title: Sign and verify continuation tokens
 module: 11-creciendo-channel-and-streaming
-status: ready
+status: in_progress
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-03, AT-02-13]
