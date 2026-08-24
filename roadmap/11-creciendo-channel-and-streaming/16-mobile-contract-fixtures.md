@@ -2,7 +2,7 @@
 id: AT-11-16
 title: Publish mobile channel contract fixtures
 module: 11-creciendo-channel-and-streaming
-status: ready
+status: in_progress
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-12, AT-10-32]
