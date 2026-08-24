@@ -2,7 +2,7 @@
 id: AT-10-28
 title: Present emergency-department-only response
 module: 10-eve-tools-and-presenters
-status: in_progress
+status: completed
 execution: sequential
 parallel_group: presenters
 depends_on: [AT-04-08, AT-04-11]
@@ -119,7 +119,20 @@ Inspect Eve discovery and one real synthetic invocation/event stream for allowed
 
 ## Completion evidence
 
-Record tool/widget ID and schema version, files, discovery diff, domain/package/approval digests, test/eval counts, negative matrix, output/log scans, commands/exits, reviewers, and commit.
+Recorded by the root implementer/reviewer on 2026-08-23:
+
+- Outcome: added pure `presentEmergencyRecommendation(decision, locale)` and strict `emergency.recommendation.v1`. It accepts only the standalone deterministic `urgent/emergency_recommendation` decision with canonical bounded rule codes and the exact copy key/locale binding; non-urgent modes, extra fields, authority, entitlement, provider state, actions and model text fail closed.
+- Terminal payload: the event contains only its kind/version, `terminal: true`, locale, existing copy message ID/version, and exact identical text/screen-reader/fallback text. Rule codes, package/source details, copy key, request/child/care-space identifiers, action metadata and audit correlation do not enter the user payload. The current user instruction requiring exclusively the approved emergency copy takes precedence over older generic metadata language; Module 11 may correlate outside this payload but cannot decorate it.
+- Exact copy: es-CO is `Acudan directamente al servicio de urgencias.` and en-US is `Go directly to the emergency department.` with existing `emergency-copy-v1` IDs. The presenter resolves and renders through the completed AT-04-08 validators and does not translate, interpolate or invoke a model.
+- Clinical approval review: this leaf reuses byte-for-byte the AT-04-08 synthetic bilingual implementation and AT-04-11 terminal pre-LLM behavior already recorded as user-approved. It introduces no package, source, rule, clinical claim, wording, diagnosis, treatment or professional workflow. Approval remains honestly `synthetic_test_only`; no production artifact activation, personal Dr. Trujillo identity, signature or new approval is asserted.
+- Implementation commit: `6a9995579469b9e3d4e51869780ad3e9ab189be3` (`feat(presenter): present emergency-department-only response`). Changed paths were exactly `src/presentation/emergency-recommendation.ts` and `tests/presentation/emergency-recommendation.test.ts`.
+- TDD: the missing presenter RED exited `1` before implementation. A later payload-minimization regression exited `1` with `2` failing/`4` passing assertions until the internal copy key was removed. Final focused verification passed `6/6`.
+- Fresh accumulated verification: all presenters passed `9` files/`108` tests; the selected emergency-copy, boundary, preflight, red-flag engine and clinical-response suites passed `5` files/`26` tests. `npm run typecheck` exited `0`. The first concurrent build compiled successfully but Windows denied the final `.output` rename with transient `EPERM`; the immediate fresh sequential `npm run build` exited `0`.
+- Fresh Eve checkpoint: Eve `0.27.13` reported compile ready, `0` errors, `0` warnings, exactly `13` tools, `0` subagents and `0` schedules. This pure presenter adds no Eve/model-callable tool and preserves the required surface.
+- Negative/security review: locale/key drift, non-urgent decisions, empty/injected rule codes, appended model text, action/widget/authority/entitlement/provider injection, extra output keys, phone and appended home-monitoring text were rejected. Output scans found no button, URL, number, map/location, alarm/notification, booking/contact, diagnosis/treatment/medicine/dose, clinician/handoff/workflow, HTML/JS, rule/source/request IDs or generative continuation.
+- Accessibility/determinism: screen-reader and fallback values equal the exact copy, both locales serialize deterministically, and the full result/copy payload is deeply immutable without mutating the trusted decision.
+- Ownership/remote state: staged paths matched the two declared files; whitespace, forbidden-path, artifact, secret and PHI/prompt/reasoning scans passed. `database_change: false`; no environment file, Supabase/provider request, schema/data write, deployment or remote mutation occurred.
+- Handoff: AT-10-32 can consume `emergency.recommendation.v1` only after every other presenter closes. Module 11 must emit it as one terminal event with no Eve/model/tool continuation; Module 12 must not replay it into a generative or action workflow.
 
 ## Commit protocol
 
@@ -127,11 +140,11 @@ Commit exclusive paths with feat(presenter): present emergency-department-only r
 
 ## Completion checklist
 
-- [ ] Model schemas contain no authority or clinical-result claims.
-- [ ] Policy order and effects are deterministic and tested.
-- [ ] Tool-to-model output is explicit and privacy-safe.
-- [ ] No diagnosis, prescription, clinician operation, or urgent extra exists.
-- [ ] Eve discovery contains exactly the intended surface.
+- [x] Model schemas contain no authority or clinical-result claims.
+- [x] Policy order and effects are deterministic and tested.
+- [x] Tool-to-model output is explicit and privacy-safe.
+- [x] No diagnosis, prescription, clinician operation, or urgent extra exists.
+- [x] Eve discovery contains exactly the intended surface.
 
 ## Handoff
 
