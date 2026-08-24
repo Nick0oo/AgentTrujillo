@@ -2,7 +2,7 @@
 id: AT-11-18
 title: Restrict standard Eve channel to operators
 module: 11-creciendo-channel-and-streaming
-status: pending
+status: ready
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-02, AT-11-17]
@@ -127,6 +127,8 @@ Attempt guessed session IDs, forged tokens/cursors/authority, reasoning/tool lea
 Consume the raw endpoint with an NDJSON reference client through create/message/stream/reconnect/cancel/revoke/emergency cases; inspect discovery, headers, events, persistence, logs, and mobile fixture compatibility.
 
 ## Completion evidence
+
+Root readiness verification recorded on 2026-08-24: prerequisite implementation commits `a78d19e` (`AT-11-02`) and `5780416` (`AT-11-17`) exist and both leaves are `completed`; the worktree is clean on `codex/module-11` and every declared exclusive path is unclaimed. Installed Eve `0.27.13` confirms that the authored `agent/channels/eve.ts` controls authentication for the discovered `/eve/v1` family but does not remove its routes. This leaf will therefore preserve local loopback operations and disable the standard Eve channel fail-closed in preview/production; it will not invent a partially configured public operator mode, trust a guardian token, accept a session ID as authority, mutate Cloud, or add a public route.
 
 Record routes/event versions, files, migration/config digests, test/eval counts, concurrency/reconnect matrix, raw fixture hashes, privacy scan, commands/exits, reviewers, and commit.
 
