@@ -105,4 +105,34 @@ describe("medication operation idempotency", () => {
     expect(rpcCalls[0]?.[1]).not.toHaveProperty("p_status");
     expect(rpcCalls[0]?.[1]).not.toHaveProperty("p_input_digest");
   });
+
+  it("preserves the durable replay receipt returned by a medication RPC", async () => {
+    const query: any = {
+      select: () => query,
+      eq: () => query,
+      maybeSingle: async () => ({ data: {
+        id: "00000000-0000-4000-8000-000000000030",
+        display_name: "Synthetic medication",
+        medication_concept_id: "00000000-0000-4000-8000-000000000040",
+        starts_at: "2026-08-21T08:00:00Z",
+        status: "active",
+        version: 1,
+        recorded_by: "00000000-0000-4000-8000-000000000001",
+        medication_concepts: { concept_code: "SYN-001", coding_system: "INVIMA" },
+        medication_schedules: [],
+      }, error: null }),
+    };
+    const client: any = {
+      from: () => query,
+      rpc: async () => ({
+        data: [{ plan_id: "00000000-0000-4000-8000-000000000030", outcome: "idempotent_replay" }],
+        error: null,
+      }),
+    };
+    const repository = createMedicationRepository(client, { resolveConceptId: async () => "concept" });
+    const now = Date.now();
+    const authorized = createAuthorizedChildScopeFromTrustedRow({ actorUserId: "00000000-0000-4000-8000-000000000001", careSpaceId: "00000000-0000-4000-8000-000000000002", childId: "00000000-0000-4000-8000-000000000003", permissions: ["read", "manage_medication"], countryOfCare: "CO", timezone: "UTC", authorizationVersion: "m:1:a:1", issuedAt: new Date(now - 60_000), expiresAt: new Date(now + 60_000) });
+    const receipt = await repository.setPlanStatusWithOutcome(authorized, "00000000-0000-4000-8000-000000000030", "active", { careSpaceId: authorized.careSpaceId, childId: authorized.childId, actorUserId: authorized.actorUserId, operationKind: "confirm_plan", idempotencyKey: "confirm", digest: "a".repeat(64) });
+    expect(receipt).toMatchObject({ outcome: "idempotent_replay", value: { id: "00000000-0000-4000-8000-000000000030", status: "active" } });
+  });
 });

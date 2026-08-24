@@ -25,6 +25,13 @@ function requireRpcRow(result: RpcResult, requestId: string): RpcRow {
   return row;
 }
 
+function medicationOutcome(row: RpcRow): "created" | "idempotent_replay" {
+  if (row.outcome !== "created" && row.outcome !== "idempotent_replay") {
+    throw new Error("MEDICATION_RPC_OUTCOME_INVALID");
+  }
+  return row.outcome;
+}
+
 function mapPlan(row: RpcRow, scope: AuthorizedChildScope): MedicationPlanRecord {
   const schedule = Array.isArray(row.medication_schedules) ? firstRow(row.medication_schedules) : null;
   const rawFrequency = schedule?.frequency_kind === "interval"
@@ -82,19 +89,42 @@ export function createMedicationRepository(client: Client, options: Readonly<{ r
     if (result.error) throw new Error("MEDICATION_READ_FAILED");
     return result.data?.id ? String(result.data.id) : null;
   }
+  async function createPlanWithOutcome(scope: AuthorizedChildScope, input: MedicationPlanInput, operation: MedicationOperation) {
+    assert(scope, "manage_medication");
+    const conceptId = await options.resolveConceptId(scope, input);
+    const row = requireRpcRow(await dynamic.rpc("record_medication_plan", { p_care_space_id: scope.careSpaceId, p_child_id: scope.childId, p_medication_concept_id: conceptId, p_medication_presentation_id: input.presentationId ?? null, p_display_name: input.displayName, p_declared_indication: input.declaredIndication ?? null, p_starts_at: input.startsAt, p_ends_at: input.endsAt ?? null, p_input_fingerprint: operation.digest, p_idempotency_key: operation.idempotencyKey, p_input_payload: { ...input, timeZone: scope.timezone } }), "record_medication_plan");
+    const plan = await planById(scope, String(row.plan_id));
+    if (!plan) throw new Error("MEDICATION_PLAN_NOT_FOUND");
+    return { outcome: medicationOutcome(row), value: plan } as const;
+  }
+  async function setPlanStatusWithOutcome(scope: AuthorizedChildScope, planId: string, status: MedicationPlanRecord["status"], operation: MedicationOperation) {
+    assert(scope, "manage_medication");
+    const row = requireRpcRow(await dynamic.rpc("transition_medication_plan", { p_care_space_id: scope.careSpaceId, p_child_id: scope.childId, p_plan_id: planId, p_target_status: status, p_idempotency_key: operation.idempotencyKey, p_input_fingerprint: operation.digest, p_input_payload: { planId, status } }), "transition_medication_plan");
+    const plan = await planById(scope, String(row.plan_id));
+    if (!plan) throw new Error("MEDICATION_PLAN_NOT_FOUND");
+    return { outcome: medicationOutcome(row), value: plan } as const;
+  }
+  async function putOccurrencesWithOutcome(scope: AuthorizedChildScope, occurrences: readonly MedicationScheduleOccurrence[], operation: MedicationOperation) {
+    assert(scope, "manage_medication");
+    const first = occurrences[0];
+    if (!first) return { outcome: "created", value: occurrences } as const;
+    const row = requireRpcRow(await dynamic.rpc("record_medication_schedule_occurrences", { p_care_space_id: scope.careSpaceId, p_child_id: scope.childId, p_medication_plan_id: first.planId, p_plan_version: first.planVersion, p_occurrences: occurrences.map((value) => ({ occurrence_key: value.occurrenceId, scheduled_for: value.scheduledFor, local_date: value.localDate, time_zone: value.timeZone, source: value.source })), p_input_digest: operation.digest, p_idempotency_key: operation.idempotencyKey }), "record_medication_schedule_occurrences");
+    if (row.saved_count === undefined) throw new Error("MEDICATION_SCHEDULE_WRITE_FAILED");
+    return { outcome: medicationOutcome(row), value: occurrences } as const;
+  }
   return {
     async createPlan(scope, input, operation) {
-      assert(scope, "manage_medication");
-      const conceptId = await options.resolveConceptId(scope, input);
-      const row = requireRpcRow(await dynamic.rpc("record_medication_plan", { p_care_space_id: scope.careSpaceId, p_child_id: scope.childId, p_medication_concept_id: conceptId, p_medication_presentation_id: input.presentationId ?? null, p_display_name: input.displayName, p_declared_indication: input.declaredIndication ?? null, p_starts_at: input.startsAt, p_ends_at: input.endsAt ?? null, p_input_fingerprint: operation.digest, p_idempotency_key: operation.idempotencyKey, p_input_payload: { ...input, timeZone: scope.timezone } }), "record_medication_plan");
-      const plan = await planById(scope, String(row.plan_id)); if (!plan) throw new Error("MEDICATION_PLAN_NOT_FOUND"); return plan;
+      return (await createPlanWithOutcome(scope, input, operation)).value;
     },
+    createPlanWithOutcome,
     async getPlan(scope, planId) { return planById(scope, planId); },
     async listPlans(scope) { assert(scope, "read"); const result = await dynamic.from("medication_plans").select("*, medication_concepts(*), medication_schedules(*)").eq("care_space_id", scope.careSpaceId).eq("child_id", scope.childId).order("starts_at", { ascending: false }); if (result.error) throw new Error("MEDICATION_READ_FAILED"); return (result.data as RpcRow[]).map((row) => mapPlan(row, scope)); },
-    async setPlanStatus(scope, planId, status, operation) { assert(scope, "manage_medication"); const row = requireRpcRow(await dynamic.rpc("transition_medication_plan", { p_care_space_id: scope.careSpaceId, p_child_id: scope.childId, p_plan_id: planId, p_target_status: status, p_idempotency_key: operation.idempotencyKey, p_input_fingerprint: operation.digest, p_input_payload: { planId, status } }), "transition_medication_plan"); const plan = await planById(scope, String(row.plan_id)); if (!plan) throw new Error("MEDICATION_PLAN_NOT_FOUND"); return plan; },
+    async setPlanStatus(scope, planId, status, operation) { return (await setPlanStatusWithOutcome(scope, planId, status, operation)).value; },
+    setPlanStatusWithOutcome,
     async supersedePlan(scope, planId, input, operation) { assert(scope, "manage_medication"); const current = await planById(scope, planId); if (!current) throw new Error("MEDICATION_PLAN_NOT_FOUND"); const conceptId = await options.resolveConceptId(scope, input); const row = requireRpcRow(await dynamic.rpc("supersede_medication_plan", { p_care_space_id: scope.careSpaceId, p_child_id: scope.childId, p_plan_id: planId, p_medication_concept_id: conceptId, p_medication_presentation_id: input.presentationId ?? null, p_display_name: input.displayName, p_declared_indication: input.declaredIndication ?? null, p_starts_at: input.startsAt, p_ends_at: input.endsAt ?? null, p_input_fingerprint: operation.digest, p_idempotency_key: operation.idempotencyKey, p_input_payload: { ...input, timeZone: scope.timezone } }), "supersede_medication_plan"); const plan = await planById(scope, String(row.plan_id)); if (!plan) throw new Error("MEDICATION_PLAN_NOT_FOUND"); return plan; },
     async listOccurrences(scope, planId, from, to) { assert(scope, "read"); const result = await dynamic.from("medication_schedule_occurrences").select("*").eq("care_space_id", scope.careSpaceId).eq("child_id", scope.childId).eq("medication_plan_id", planId).gte("scheduled_for", from).lt("scheduled_for", to).order("scheduled_for", { ascending: true }); if (result.error) throw new Error("MEDICATION_READ_FAILED"); return (result.data as RpcRow[]).map(mapOccurrence); },
-    async putOccurrences(scope, occurrences, operation) { assert(scope, "manage_medication"); const first = occurrences[0]; if (!first) return occurrences; const row = requireRpcRow(await dynamic.rpc("record_medication_schedule_occurrences", { p_care_space_id: scope.careSpaceId, p_child_id: scope.childId, p_medication_plan_id: first.planId, p_plan_version: first.planVersion, p_occurrences: occurrences.map((value) => ({ occurrence_key: value.occurrenceId, scheduled_for: value.scheduledFor, local_date: value.localDate, time_zone: value.timeZone, source: value.source })), p_input_digest: operation.digest, p_idempotency_key: operation.idempotencyKey }), "record_medication_schedule_occurrences"); if (row.saved_count === undefined) throw new Error("MEDICATION_SCHEDULE_WRITE_FAILED"); return occurrences; },
+    async putOccurrences(scope, occurrences, operation) { return (await putOccurrencesWithOutcome(scope, occurrences, operation)).value; },
+    putOccurrencesWithOutcome,
     async getOccurrence(scope, occurrenceId) { assert(scope, "read"); const result = await dynamic.from("medication_schedule_occurrences").select("*").eq("occurrence_key", occurrenceId).eq("care_space_id", scope.careSpaceId).eq("child_id", scope.childId).maybeSingle(); if (result.error) throw new Error("MEDICATION_READ_FAILED"); return result.data ? mapOccurrence(result.data as RpcRow) : null; },
     async createIntake(scope, value, operation) { assert(scope, "record"); const occurrenceId = await occurrenceStorageId(scope, value.occurrenceId); if (value.occurrenceId && !occurrenceId) throw new Error("MEDICATION_OCCURRENCE_NOT_FOUND"); const rpcName = value.supersedesId ? "correct_medication_intake" : "record_medication_intake"; const params = value.supersedesId ? { p_care_space_id: scope.careSpaceId, p_child_id: scope.childId, p_original_intake_id: value.supersedesId, p_medication_plan_id: value.planId, p_medication_schedule_occurrence_id: occurrenceId, p_scheduled_for: value.scheduledFor, p_taken_at: value.takenAt, p_status: value.state, p_actual_quantity_lexeme: value.quantity, p_actual_unit: value.unit, p_input_fingerprint: operation.digest, p_idempotency_key: operation.idempotencyKey, p_input_payload: value } : { p_care_space_id: scope.careSpaceId, p_child_id: scope.childId, p_medication_plan_id: value.planId, p_medication_schedule_occurrence_id: occurrenceId, p_scheduled_for: value.scheduledFor, p_taken_at: value.takenAt, p_status: value.state, p_actual_quantity_lexeme: value.quantity, p_actual_unit: value.unit, p_input_fingerprint: operation.digest, p_idempotency_key: operation.idempotencyKey, p_input_payload: value }; const row = requireRpcRow(await dynamic.rpc(rpcName, params), rpcName); const result = await dynamic.from("medication_intakes").select("*, medication_schedule_occurrences(occurrence_key)").eq("id", String(row.intake_id)).eq("care_space_id", scope.careSpaceId).eq("child_id", scope.childId).maybeSingle(); if (result.error || !result.data) throw new Error("MEDICATION_INTAKE_NOT_FOUND"); return mapIntake(result.data as RpcRow); },
     async getIntake(scope, intakeId) { assert(scope, "read"); const result = await dynamic.from("medication_intakes").select("*, medication_schedule_occurrences(occurrence_key)").eq("id", intakeId).eq("care_space_id", scope.careSpaceId).eq("child_id", scope.childId).maybeSingle(); if (result.error) throw new Error("MEDICATION_READ_FAILED"); return result.data ? mapIntake(result.data as RpcRow) : null; },
