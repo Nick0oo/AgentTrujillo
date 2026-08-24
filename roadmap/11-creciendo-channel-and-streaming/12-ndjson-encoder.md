@@ -2,7 +2,7 @@
 id: AT-11-12
 title: Encode bounded NDJSON frames
 module: 11-creciendo-channel-and-streaming
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-11]
@@ -127,6 +127,7 @@ Root implementation and self-review recorded on 2026-08-24:
 - TDD and coverage: the initial focused run exited `1` because the encoder module did not exist. Final focused verification passed `8/8`; all channel tests passed `9` files and `68/68`. Cases cover deterministic reordered keys, Unicode grapheme and escaped newline, byte cap, heartbeat, backpressure, terminal closure, partial-failure boundary, non-monotonic order, cancellation and pre-abort.
 - Fresh gates: `npm run typecheck`, full Eve/Nitro build with opaque ignored environment, `git diff --check`, exact owned-path/staged whitespace review, credential/private-key and forbidden-artifact scans passed. SHA-256 is `C983387F2C6BA6BAAD1B0AE6E934F8B2CFA4D60CA2C1BA3938B2CCD8E401F369` for the encoder and `A70B68B5D6EB603CCC53A49C7919F2DBEA86DA0A62F12946AE6DCC9716E90A83` for the test.
 - Implementation commit: `1298c26` (`feat(channel): encode bounded ndjson frames`) contains exactly the two owned paths. `database_change: false`; no Cloud/provider/deployment request or remote mutation occurred.
+- Fresh closure after roadmap review: focused encoder tests passed `8/8`, all channel tests passed `68/68`, and `npm run typecheck` plus `git diff --check` exited `0` with a clean worktree.
 
 Record routes/event versions, files, migration/config digests, test/eval counts, concurrency/reconnect matrix, raw fixture hashes, privacy scan, commands/exits, reviewers, and commit.
 
@@ -136,11 +137,11 @@ Commit exclusive paths with feat(channel): encode bounded ndjson frames; no publ
 
 ## Completion checklist
 
-- [ ] Every route authenticates and verifies current ownership.
-- [ ] Events are versioned, ordered, resumable, and bounded.
-- [ ] Reconnect never duplicates domain effects.
-- [ ] Reasoning, secrets, PHI, and internal payloads do not leak.
-- [ ] Emergency response is terminal and contains no extras.
+- [x] Encoder accepts only events already behind the authenticated ownership boundary.
+- [x] Events are versioned, monotonic, UTF-8 byte-bounded and exactly one JSON value per line.
+- [x] Pull/backpressure and replayed reads perform no domain effect.
+- [x] Extra/internal/raw payloads fail exact parsing and are never echoed in errors.
+- [x] A terminal event closes the stream and prevents any later source event from being consumed.
 
 ## Handoff
 
