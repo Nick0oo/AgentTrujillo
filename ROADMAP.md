@@ -59,7 +59,7 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-Exact-copy approval and path checks moved sequential presenter `AT-10-27` through root clinical/security review to completed at `1020998`. Parallel tools `AT-10-15` and `AT-10-17` remain claimed on disjoint paths; `AT-10-19` is next parallel-ready.
+Exact-copy approval and path checks moved sequential presenter `AT-10-27` through root clinical/security review to completed at `1020998`. Parallel tools `AT-10-15`, `AT-10-17` and `AT-10-19` are now claimed by Luna/max workers on six disjoint exclusive paths; the root performs review only until a slot closes.
 
 Root replay-receipt amendment for `AT-10-14`: the medication Cloud RPCs already return a durable `created`/`idempotent_replay` outcome, but the verified repository/application adapters discarded it. The leaf now owns only the exact additive port, plan-service, schedule-service, repository and regression-test paths required to propagate that existing receipt into `withToolIdempotency`. No database/API/schema/clinical rule changes or remote effects are authorized, and all existing record-only service methods remain compatible.
 
@@ -75,6 +75,7 @@ Post-closure Module 11/`AT-10-21` compatibility correction for `AT-10-09`: the f
 
 - `/root/at_10_15` — `AT-10-15`, GPT-5.6 Luna/max; owns only `agent/tools/record_medication_intake.ts` and `tests/agent/tools/record-medication-intake.test.ts`.
 - `/root/at_10_17` — `AT-10-17`, GPT-5.6 Luna/max; owns only `agent/tools/capture_clinical_memory_candidate.ts` and `tests/agent/tools/capture-clinical-memory-candidate.test.ts`.
+- `/root/at_10_19` — `AT-10-19`, GPT-5.6 Luna/max; owns only `agent/tools/prepare_private_document_upload.ts` and `tests/agent/tools/prepare-private-document-upload.test.ts`.
 
 
 Cloud-only execution override (2026-08-23): by explicit current user instruction, Module 09 uses the verified linked Supabase Cloud project as its only database source of truth. Local reset/test availability or drift is not an execution gate. Database leaves must verify exact project identity, migration impact, recoverability, generated linked types, and rollback-safe Cloud tests before any remote mutation.
