@@ -28,6 +28,11 @@ import {
   handleSessionMessage,
   type SessionMessageRouteBaseDependencies,
 } from "../../src/channels/creciendo/routes/session-message";
+import {
+  createSessionStreamRouteDependencies,
+  handleSessionStream,
+  type SessionStreamRouteBaseDependencies,
+} from "../../src/channels/creciendo/routes/session-stream";
 
 export const MAX_REQUEST_BODY_BYTES = 64 * 1_024;
 export const DEFAULT_REQUEST_TIMEOUT_MS = 15_000;
@@ -244,9 +249,17 @@ export function createCreciendoChannel(dependencies: CreciendoChannelDependencie
         "Last-Event-ID",
         "X-Child-Context",
         "X-Continuation-Token",
+        "X-Creciendo-Channel-Version",
+        "X-Creciendo-Event-Version",
         "X-Request-Id",
       ],
-      exposeHeaders: ["Content-Type", "Retry-After", "X-Request-Id"],
+      exposeHeaders: [
+        "Content-Type",
+        "Retry-After",
+        "X-Creciendo-Channel-Version",
+        "X-Creciendo-Event-Version",
+        "X-Request-Id",
+      ],
       credentials: false,
       maxAge: 300,
       preflight: { statusCode: 204 },
@@ -339,12 +352,26 @@ const productionSessionMessage: AuthenticatedChannelHandler = (request, auth, ar
 };
 const guardedSessionMessage = withProductionChannelAuth(productionSessionMessage);
 
+let productionSessionStreamDependencies: SessionStreamRouteBaseDependencies | undefined;
+
+function getProductionSessionStreamDependencies(): SessionStreamRouteBaseDependencies {
+  productionSessionStreamDependencies ??= createSessionStreamRouteDependencies(loadRuntimeConfig(process.env));
+  return productionSessionStreamDependencies;
+}
+
+const productionSessionStream: AuthenticatedChannelHandler = (request, auth, args) =>
+  handleSessionStream(request, auth, {
+    ...getProductionSessionStreamDependencies(),
+    sessionId: args.params.sessionId ?? "",
+  });
+const guardedSessionStream = withProductionChannelAuth(productionSessionStream);
+
 export default createCreciendoChannel({
   handlers: {
     childContext: guardedChildContext,
     createSession: guardedSessionCreate,
     sendMessage: guardedSessionMessage,
-    streamSession: guardedUnavailable,
+    streamSession: guardedSessionStream,
     cancelSession: guardedUnavailable,
   },
   allowedOrigins: [],
