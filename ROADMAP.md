@@ -87,7 +87,7 @@ Post-closure Module 11/`AT-10-21` compatibility correction for `AT-10-09`: the f
 
 ## Active workers
 
-- None. `AT-11-08` is `ready` after verifying completed `AT-11-07`/`AT-10-04`, Eve 0.27.13 `cancel({ turnId })` semantics, and the applied authenticated cancel accept/finalize RPCs.
+- Root owns `AT-11-08` (`in_progress`) and exclusively claims `src/channels/creciendo/routes/session-cancel.ts`, `tests/channels/creciendo/routes/session-cancel.test.ts`, and the sequential composition path `agent/channels/creciendo.ts`. No subagent or other Module 11 leaf is active.
 
 
 Cloud-only execution override (2026-08-23): by explicit current user instruction, Module 09 uses the verified linked Supabase Cloud project as its only database source of truth. Local reset/test availability or drift is not an execution gate. Database leaves must verify exact project identity, migration impact, recoverability, generated linked types, and rollback-safe Cloud tests before any remote mutation.
