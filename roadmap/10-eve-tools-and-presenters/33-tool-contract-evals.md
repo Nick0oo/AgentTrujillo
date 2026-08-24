@@ -22,7 +22,10 @@ touches:
   modify:
     - package.json
     - scripts/verify-eve-discovery.mjs
+    - src/presentation/guardian-confirmation.ts
+    - tests/presentation/guardian-confirmation.test.ts
     - tests/runtime/eve-discovery.test.ts
+    - roadmap/10-eve-tools-and-presenters/README.md
   test:
     - docs/verification/eve-tools-presenters.md
 exclusive_paths:
@@ -31,7 +34,10 @@ exclusive_paths:
   - docs/verification/eve-tools-presenters.md
   - package.json
   - scripts/verify-eve-discovery.mjs
+  - src/presentation/guardian-confirmation.ts
+  - tests/presentation/guardian-confirmation.test.ts
   - tests/runtime/eve-discovery.test.ts
+  - roadmap/10-eve-tools-and-presenters/README.md
 forbidden_paths:
   - .env
   - supabase/migrations/**
@@ -69,6 +75,8 @@ AT-10-20, AT-10-32 and the exact Eve 0.27.13/AI SDK/domain contracts named below
 An exhaustive discovery, schema, authorization, approval, idempotency, safe-output, presenter, prohibited-action, and adversarial suite proves every intended Eve tool and widget contract with zero critical failure. The leaf owns its exact schema, method, dependency injection, policy order, safe result/event, tests, and completion evidence.
 
 Root-approved final-gate amendment (2026-08-23): the required command `npm run eval -- tool-contracts` has no package entry, while `verify:discovery` is still intentionally pinned to the preserved Module 01 zero-tool fixture. This leaf therefore owns the minimal package-script entry, discovery selector/test correction, and a new reviewed Module 10 fixture with the exact thirteen-tool surface. `tests/fixtures/runtime/eve-info-module-01.json` remains unchanged for historical compatibility; no dependency, runtime route, model, tool implementation or clinical behavior changes.
+
+Root review amendment (2026-08-23): independent Standards/Spec review found that the first eval draft inferred behavior from source strings, reported leakage as a constant, and did not itself prove repeat determinism; it also found the completed guardian-confirmation presenter reading `Date.now()` despite the pure-presenter contract. This leaf additionally owns only that presenter/test pair to inject an explicit trusted instant, and the Module 10 README to state its exit gate conditionally until this leaf closes. The final eval must derive findings from behavioral suites, strict registry/discovery data, scanned captured output, and an internal two-run comparison. No approval semantics, clinical copy, tool effect, mobile version, dependency, database, or remote state changes.
 
 ## Out of scope
 
