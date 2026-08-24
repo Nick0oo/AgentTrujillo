@@ -59,7 +59,7 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-All thirteen Eve tools and ten of eleven presenters are closed after root review. `AT-10-31` closed at `d9fb08a` with monotonic, approval/effect-aware safe state. No leaf is active while the root selects the last presenter `AT-10-26`; the registry and final gate remain dependency-blocked.
+All thirteen Eve tools and ten of eleven presenters are closed after root review. `AT-10-31` closed at `d9fb08a` with monotonic, approval/effect-aware safe state. `AT-10-26` is ready and claimed sequentially by the root on its two exclusive presenter/test paths; the registry and final gate remain dependency-blocked.
 
 Root replay-receipt amendment for `AT-10-14`: the medication Cloud RPCs already return a durable `created`/`idempotent_replay` outcome, but the verified repository/application adapters discarded it. The leaf now owns only the exact additive port, plan-service, schedule-service, repository and regression-test paths required to propagate that existing receipt into `withToolIdempotency`. No database/API/schema/clinical rule changes or remote effects are authorized, and all existing record-only service methods remain compatible.
 
@@ -73,7 +73,7 @@ Post-closure Module 11/`AT-10-21` compatibility correction for `AT-10-09`: the f
 
 ## Active workers
 
-- None. `AT-10-26` is the only remaining presenter and will be claimed sequentially by the root.
+- Root: `AT-10-26`, claiming only `src/presentation/guardian-confirmation.ts` and `tests/presentation/guardian-confirmation.test.ts`.
 
 
 Cloud-only execution override (2026-08-23): by explicit current user instruction, Module 09 uses the verified linked Supabase Cloud project as its only database source of truth. Local reset/test availability or drift is not an execution gate. Database leaves must verify exact project identity, migration impact, recoverability, generated linked types, and rollback-safe Cloud tests before any remote mutation.

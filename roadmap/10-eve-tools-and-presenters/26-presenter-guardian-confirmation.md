@@ -2,7 +2,7 @@
 id: AT-10-26
 title: Present generic guardian confirmation
 module: 10-eve-tools-and-presenters
-status: pending
+status: in_progress
 execution: sequential
 parallel_group: presenters
 depends_on: [AT-10-03, AT-10-12, AT-10-13, AT-10-14, AT-10-15, AT-10-16, AT-10-17, AT-10-19]
