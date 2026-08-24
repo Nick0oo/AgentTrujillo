@@ -2,7 +2,7 @@
 id: AT-11-05
 title: Create owned child-bound sessions
 module: 11-creciendo-channel-and-streaming
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-04, AT-02-14]
@@ -133,6 +133,7 @@ Root implementation and self-review recorded on 2026-08-24:
 - Effect/recovery review: an RPC ambiguity reports `effectState: unknown`; continuation/response failure after a returned session reports `committed`; identical retry re-queries the hash binding and can issue fresh continuity. The initial cursor sentinel carries no session/child/sequence authority and is equivalent only to sequence zero after later live route authorization.
 - Database/Cloud evidence: `database_change: false`; production uses only the existing request-scoped owner SELECT policy and `create_owned_agent_session` RPC with the guardian bearer. No service role, schema, data, migration, RLS/grant, Storage, environment file or remote mutation occurred in this leaf.
 - Staged review: exactly the three owned paths were staged; cached diff check, credential/private-key scan, artifact ignore check and personal full diff review were clean.
+- Fresh closure verification after review: focused `6/6`, all channel/access `231` passed with one conditional skip, `npm run typecheck`, and configured `npm run build` each exited `0`.
 
 Record routes/event versions, files, migration/config digests, test/eval counts, concurrency/reconnect matrix, raw fixture hashes, privacy scan, commands/exits, reviewers, and commit.
 
@@ -142,11 +143,11 @@ Commit exclusive paths with feat(channel): create owned child-bound sessions; no
 
 ## Completion checklist
 
-- [ ] Every route authenticates and verifies current ownership.
-- [ ] Events are versioned, ordered, resumable, and bounded.
-- [ ] Reconnect never duplicates domain effects.
-- [ ] Reasoning, secrets, PHI, and internal payloads do not leak.
-- [ ] Emergency response is terminal and contains no extras.
+- [x] Session create authenticates, verifies the context signature and freshly reauthorizes current owner/care-space/child/record/version/expiry.
+- [x] It returns a strict versioned bounded response, a signed continuation and a non-authorizing sequence-zero cursor sentinel.
+- [x] Scoped hashes plus serialized/durable replay prevent duplicate same-process/restart effects; AT-11-10 owns the documented final cross-instance Cloud constraint.
+- [x] Response and durable create metadata exclude raw keys, body, authority, Eve identifiers, reasoning, secrets and clinical data.
+- [x] Creation invokes no Eve/model/tool/workflow or emergency behavior; the first real message owns synchronous safety.
 
 ## Handoff
 
