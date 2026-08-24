@@ -19,7 +19,8 @@ touches:
     - tests/fixtures/channel/creciendo-v1.ndjson
     - docs/contracts/creciendo-channel-v1.md
     - tests/channels/creciendo/mobile-contract-fixtures.test.ts
-  modify: []
+  modify:
+    - docs/integration/mobile-contract.md
   test:
     - docs/contracts/creciendo-channel-v1.md
     - tests/channels/creciendo/mobile-contract-fixtures.test.ts
@@ -27,6 +28,7 @@ exclusive_paths:
   - tests/fixtures/channel/creciendo-v1.ndjson
   - docs/contracts/creciendo-channel-v1.md
   - tests/channels/creciendo/mobile-contract-fixtures.test.ts
+  - docs/integration/mobile-contract.md
 forbidden_paths:
   - .env
   - supabase/migrations/20260814000000_platform_foundation.sql
@@ -125,6 +127,8 @@ Consume the raw endpoint with an NDJSON reference client through create/message/
 Root readiness verification recorded on 2026-08-24: AT-11-12 is completed at `1298c26`; AT-10-32 is completed at `6bd8663`; both commits and their fresh gates are present in branch history. The declared exclusive paths were unclaimed, `database_change: false`, and conservative clinical-contract approval is recorded as unsigned product-owner conveyance without clinician identity or signature attribution.
 
 Root contract amendment recorded before implementation on 2026-08-24: the stale signed-upload fixture instruction conflicts with the already frozen exact `CHANNEL_EVENT_SCHEMA` and the product-owner-mandated five-route-only `/creciendo/v1` surface. No upload field/event/route will be invented. This leaf additionally owns `tests/channels/creciendo/mobile-contract-fixtures.test.ts` so every golden line, route, version and closed widget identifier is checked against runtime sources rather than trusted as prose. The amendment adds no public capability, authority, schema, database or remote effect.
+
+Root transport-document amendment recorded before contract publication on 2026-08-24: `docs/integration/mobile-contract.md` still says every request sends `X-Child-Context` and that idempotency is only a header, while the completed exact v1 request schemas carry `childContextToken` only when creating a session, then `continuationToken` in message/cancel JSON and `X-Continuation-Token` for GET stream; command idempotency is the exact JSON `idempotencyKey` field. AT-11-16 additionally owns that integration document solely to align it with the already completed runtime contract. CORS may allow `X-Child-Context` and `Idempotency-Key`, but neither is authority or a substitute for those exact fields. No completed runtime contract is changed.
 
 Record routes/event versions, files, migration/config digests, test/eval counts, concurrency/reconnect matrix, raw fixture hashes, privacy scan, commands/exits, reviewers, and commit.
 

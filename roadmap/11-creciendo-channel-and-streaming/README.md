@@ -29,6 +29,7 @@ The current product-owner instruction corrects the pending Module 11 contract be
 - The only authorized remote mutation is application of the reviewed AT-11-10 migration after linked identity, drift, recoverability, dry-run, RLS, grants, and shared-frontend compatibility checks. Reset, delete, truncate, destructive rewrites, and all unrelated remote mutations remain forbidden.
 - Conservative clinical-contract approval for AT-11-01, AT-11-06, AT-11-11, AT-11-13, AT-11-14, AT-11-16, and AT-11-17 was conveyed by the product owner. It is recorded as unsigned conveyed approval and is not attributed to a named clinician or represented as Dr. Trujillo's signature.
 - AT-11-16 contract-fixture correction: the frozen v1 event union and binding five-route surface contain no upload-ticket event. AT-11-16 must not invent a signed upload URL; it owns an additive runtime-schema fixture verifier so its NDJSON, routes, versions and closed widget registry remain machine-verifiable. A future upload capability requires a separately reviewed contract version.
+- AT-11-16 transport-document correction: the pre-runtime mobile prose incorrectly prescribed `X-Child-Context` on every request and header-only idempotency. AT-11-16 owns `docs/integration/mobile-contract.md` only to document the completed v1 wire contract: child context token in session-create JSON, continuation token in message/cancel JSON and GET stream header, and exact JSON `idempotencyKey` for commands. Allowed CORS headers are not authority.
 
 ## Exit gate
 
