@@ -2,7 +2,7 @@
 id: AT-11-13
 title: Suppress reasoning and internal events
 module: 11-creciendo-channel-and-streaming
-status: in_progress
+status: review
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-11]
@@ -118,6 +118,16 @@ Attempt guessed session IDs, forged tokens/cursors/authority, reasoning/tool lea
 Consume the raw endpoint with an NDJSON reference client through create/message/stream/reconnect/cancel/revoke/emergency cases; inspect discovery, headers, events, persistence, logs, and mobile fixture compatibility.
 
 ## Completion evidence
+
+Root implementation and self-review recorded on 2026-08-24:
+
+- Outcome: a deny-first boundary classifies every installed Eve 0.27.13 kind and permits only seven sanitized candidates: visible assistant delta, two out-of-band projection references, three cause-free failure signals and the turn-complete boundary. All other known kinds and every unknown/new kind are private.
+- Structural suppression: public text copies only `messageDelta` plus minimal sequence/step/turn fields; cumulative text is erased. Actions/results copy no call IDs, names, inputs, outputs, error or result. Failure events copy no code/message/details/stack. Reasoning, received prompts, structured model results, provider metadata, authorization, continuation, compaction and subagent payloads never reach mapping/persistence/telemetry.
+- Recursive guard: `assertNoReasoningPayload` is depth/node/UTF-8 bounded and rejects renamed reasoning/prompt/tool/provider/debug/cause/encoded keys, sensitive type/content tags, non-plain objects, accessors, symbols, cycles, non-finite/scalar anomalies and oversized structures. `debug: true` creates no bypass and no summarized-reasoning fallback exists.
+- Observability: suppression counters expose only total plus type/reason counts. The optional sink receives the fixed metric name, installed kind or `unknown`, reason and count `1`; sink failures cannot weaken filtering. Unknown attacker type/data is represented only as `unknown`.
+- TDD and tests: the first focused run failed because the module was absent; red follow-ups proved hostile accessors were misclassified as merely unknown and tagged reasoning/provider content was not caught. Final focused tests passed `8/8`; all channel tests passed `10` files and `76/76`, covering all 28 kinds, nested/renamed/encoded attacks, raw tools/errors/provider data, counters, sink, debug, cycles and unknown kinds.
+- Fresh gates: `npm run typecheck`, full Eve/Nitro build with ignored environment loaded opaquely, `git diff --check`, exact path/whitespace review, credential/private-key and artifact scans passed. SHA-256 is `BEE1D640E5C1CB7B8BEF367AADB0CF9EAB8B6B3BEB1A4EDC9021E4D42A6D32A1` for the filter and `583EDF588C92242D80665AC20D98106498EEC274A2CBF27935E46D66DD2227EB` for its tests.
+- Implementation commit: `3db63c5` (`feat(channel): suppress reasoning and internal events`) contains exactly the two owned paths. Conveyed conservative clinical approval remains recorded unsigned without identity/signature attribution. `database_change: false`; no remote request or mutation occurred.
 
 Record routes/event versions, files, migration/config digests, test/eval counts, concurrency/reconnect matrix, raw fixture hashes, privacy scan, commands/exits, reviewers, and commit.
 
