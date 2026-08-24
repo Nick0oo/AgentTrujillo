@@ -9,9 +9,10 @@ Agent Trujillo expone exclusivamente `/creciendo/v1` como interface remota públ
 1. Creciendo obtiene un JWT de Supabase Auth.
 2. `POST /creciendo/v1/child-context` recibe el niño seleccionado y verifica membresía y acceso explícito al niño.
 3. El backend devuelve un contexto firmado, opaco, corto y renovable.
-4. Cada petición usa `Authorization: Bearer …` y `X-Child-Context: …`.
-5. Una sesión de Eve se crea para ese alcance y no permite cambiar de niño.
-6. Cerrar sesión o revocar acceso invalida contextos y streams.
+4. `POST /creciendo/v1/sessions` envía ese token una sola vez como `childContextToken` en el JSON y vuelve a autorizar el alcance antes de fijar la sesión.
+5. Mensajes y cancelación envían el `continuationToken` rotado en JSON; el GET de stream lo envía en `X-Continuation-Token` y reanuda con `Last-Event-ID`.
+6. Cada petición usa `Authorization: Bearer …`; la sesión queda fijada a un solo owner, care space y niño.
+7. Cerrar sesión o revocar acceso invalida contextos y streams aunque un token todavía no haya expirado.
 
 El token de contexto no se guarda en logs ni URLs.
 
@@ -20,7 +21,7 @@ El token de contexto no se guarda en logs ni URLs.
 - JSON versionado en `/creciendo/v1`.
 - Fechas ISO 8601; instantes UTC y zona IANA separada.
 - Unidades clínicas explícitas y permitidas por schema.
-- `Idempotency-Key` obligatoria para comandos.
+- `idempotencyKey` obligatoria dentro del JSON exacto de crear sesión, enviar mensaje y cancelar. `Idempotency-Key` está permitido por CORS por compatibilidad, pero no sustituye el campo versionado ni concede autoridad.
 - `X-Request-Id` generado o normalizado por backend.
 - Paginación por cursor opaco.
 - ETags o `resourceVersion` para evitar sobrescrituras.
@@ -45,17 +46,19 @@ Las rutas estándar `/eve/v1/*` quedan para operación interna y no son la inter
 
 Una part contiene `kind`, `version`, `data` y, cuando aplica, `confirmationId`. El móvil mantiene un registro cerrado de widgets. No se envía JSX, HTML o JavaScript.
 
-Kinds V1:
+Kinds/versiones V1 vinculantes:
 
-- `growth_summary`;
-- `vaccination_status`;
-- `medication_schedule_preview`;
-- `development_observation_prompt`;
-- `nutrition_guidance`;
-- `guardian_confirmation`;
-- `professional_recommendation`;
-- `emergency_recommendation`;
-- `source_list`.
+- `growth_summary` / `growth.summary.v1`;
+- `vaccination_status` / `vaccination.status.v1`;
+- `medication_schedule_preview` / `medication.schedule-preview.v1`;
+- `development_observation_preview` / `development.observation-preview.v1`;
+- `nutrition_guidance` / `nutrition.guidance.v1`;
+- `guardian_confirmation` / `guardian.confirmation.v1`;
+- `professional_recommendation` / `professional.recommendation.v1`;
+- `emergency_recommendation` / `emergency.recommendation.v1`;
+- `source_list` / `sources.list.v1`;
+- `dose_validation` / `medication.dose-validation.v1`;
+- `tool_state` / `tool.state.v1`.
 
 `emergency_recommendation` no admite `actions`, `url`, `phone`, `location` ni `notification`. Un schema que incluya esos campos se rechaza.
 
