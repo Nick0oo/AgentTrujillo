@@ -366,6 +366,16 @@ const productionSessionStream: AuthenticatedChannelHandler = (request, auth, arg
   handleSessionStream(request, auth, {
     ...getProductionSessionStreamDependencies(),
     sessionId: args.params.sessionId ?? "",
+    async abortWork(authorization) {
+      try {
+        if (authorization.session.eveSessionId === null) return;
+        const session = args.getSession(authorization.session.eveSessionId);
+        const resolved = await args.resolveActiveSession({ continuationToken: session.continuationToken });
+        if (resolved?.sessionId === authorization.session.eveSessionId) await session.cancel();
+      } catch {
+        // Stream byte suppression remains authoritative if Eve cancellation is unavailable.
+      }
+    },
   });
 const guardedSessionStream = withProductionChannelAuth(productionSessionStream);
 

@@ -119,6 +119,8 @@ function dependencies(overrides: Partial<SessionStreamRouteDependencies> = {}): 
     pollIntervalMs: 1,
     maxDurationMs: 20,
     authorizeSession: vi.fn(async () => ({ scope, session })),
+    revalidateSession: vi.fn(async () => ({ scope, session })),
+    abortWork: vi.fn(),
     resolveCursor: vi.fn(async () => ({
       ok: true as const,
       afterSequence: 1,
@@ -258,5 +260,79 @@ describe("authorized resumable session stream route", () => {
     const reader = response.body!.getReader();
     expect(new TextDecoder().decode((await reader.read()).value)).toContain(`"eventId":"${EVENT_2}"`);
     await expect(reader.read()).rejects.toMatchObject({ code: "NDJSON_STREAM_FAILED" });
+  });
+
+  it("denies revocation or authorization-provider failure before cursor lookup and headers", async () => {
+    for (const revalidateSession of [
+      vi.fn(async () => createAccessDenied("revoked-private")),
+      vi.fn(async () => { throw new Error("database and membership details"); }),
+    ]) {
+      const resolveCursor = vi.fn();
+      const readEvents = vi.fn();
+      const abortWork = vi.fn();
+      const response = await handleSessionStream(request(), auth, dependencies({
+        revalidateSession,
+        resolveCursor,
+        readEvents,
+        abortWork,
+      }));
+      expect(response.status).toBe(404);
+      const text = await response.text();
+      expect(text).toContain("ACCESS_DENIED");
+      expect(text).not.toContain("private");
+      expect(text).not.toContain("membership");
+      expect(resolveCursor).not.toHaveBeenCalled();
+      expect(readEvents).not.toHaveBeenCalled();
+      expect(abortWork).toHaveBeenCalledOnce();
+    }
+  });
+
+  it("discards queued/live frames and aborts Eve exactly once when access is invalidated after headers", async () => {
+    let invalidation!: () => void;
+    let live = true;
+    const revalidateSession = vi.fn(async () => live
+      ? { scope, session }
+      : createAccessDenied("revoked-private"));
+    const abortWork = vi.fn();
+    const readEvents = vi.fn()
+      .mockResolvedValueOnce([row({ eventId: EVENT_2, sequence: 2, type: "text-delta" })])
+      .mockResolvedValueOnce([row({ eventId: EVENT_3, sequence: 3, type: "message-complete" })]);
+    const response = await handleSessionStream(request(), auth, dependencies({
+      revalidateSession,
+      abortWork,
+      readEvents,
+      pollIntervalMs: 1_000,
+      maxDurationMs: 2_000,
+      subscribeInvalidation(listener) {
+        invalidation = listener;
+        return () => undefined;
+      },
+    }));
+    expect(response.status).toBe(200);
+    const reader = response.body!.getReader();
+    const first = new TextDecoder().decode((await reader.read()).value);
+    expect(first).toContain(`"eventId":"${EVENT_2}"`);
+    live = false;
+    invalidation();
+    await Promise.resolve();
+    await Promise.resolve();
+    await expect(reader.read()).rejects.toMatchObject({ code: "NDJSON_STREAM_ABORTED" });
+    expect(first).not.toContain(EVENT_3);
+    expect(readEvents).toHaveBeenCalledOnce();
+    expect(abortWork).toHaveBeenCalledOnce();
+  });
+
+  it("fails closed if revocation invalidation cannot be subscribed", async () => {
+    const readEvents = vi.fn();
+    const response = await handleSessionStream(request(), auth, dependencies({
+      readEvents,
+      abortWork: vi.fn(),
+      subscribeInvalidation() {
+        throw new Error("realtime private details");
+      },
+    }));
+    expect(response.status).toBe(404);
+    expect(await response.text()).not.toContain("realtime");
+    expect(readEvents).not.toHaveBeenCalled();
   });
 });

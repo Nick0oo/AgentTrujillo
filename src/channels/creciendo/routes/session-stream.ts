@@ -5,7 +5,10 @@ import { z } from "zod";
 import type { AccessDenied } from "../../../../agent/lib/access/access-denied";
 import { createAccessDenied } from "../../../../agent/lib/access/access-denied";
 import { createAuthorizeChildService } from "../../../../agent/lib/access/authorize-child-service";
-import type { AuthorizedChildScope } from "../../../../agent/lib/access/authorized-child-scope";
+import {
+  sameAuthorizedChildScope,
+  type AuthorizedChildScope,
+} from "../../../../agent/lib/access/authorized-child-scope";
 import type { RuntimeConfig } from "../../../../agent/lib/config/env";
 import { createSessionOwnershipRepository } from "../../../../agent/lib/access/session-ownership-repository";
 import type { OwnedSessionRecord } from "../../../../agent/lib/access/session-record";
@@ -18,6 +21,12 @@ import {
 } from "../continuation-token";
 import { createNdjsonStream, NDJSON_CONTENT_TYPE } from "../ndjson-encoder";
 import { mapPreStreamError } from "../stream-error-mapper";
+import {
+  createStreamRevocationGuard,
+  type StreamInvalidationSubscription,
+  type StreamRevocationGuard,
+  type StreamRevocationScheduler,
+} from "../stream-revocation";
 import {
   CRECIENDO_CHANNEL_VERSION,
   CRECIENDO_EVENT_VERSION,
@@ -78,6 +87,14 @@ export type SessionStreamRouteDependencies = Readonly<{
   sessionId: string;
   continuationKeys: ContinuationTokenKeyRing;
   authorizeSession(input: StreamAuthorizationInput): Promise<SessionStreamAuthorization | AccessDenied>;
+  revalidateSession(
+    authorization: SessionStreamAuthorization,
+    auth: AuthenticatedChannelRequest,
+    now: Date,
+  ): Promise<SessionStreamAuthorization | AccessDenied>;
+  abortWork(authorization: SessionStreamAuthorization): Promise<void> | void;
+  subscribeInvalidation?: StreamInvalidationSubscription;
+  revocationScheduler?: StreamRevocationScheduler;
   resolveCursor(input: Readonly<{
     authorization: SessionStreamAuthorization;
     auth: AuthenticatedChannelRequest;
@@ -90,7 +107,7 @@ export type SessionStreamRouteDependencies = Readonly<{
   maxDurationMs?: number;
 }>;
 
-export type SessionStreamRouteBaseDependencies = Omit<SessionStreamRouteDependencies, "sessionId">;
+export type SessionStreamRouteBaseDependencies = Omit<SessionStreamRouteDependencies, "sessionId" | "abortWork">;
 
 const PERSISTED_EVENT_SCHEMA = z.object({
   eventId: z.string().uuid(),
@@ -265,6 +282,7 @@ async function* streamEvents(input: Readonly<{
   pollIntervalMs: number;
   maxDurationMs: number;
   signal: AbortSignal;
+  revocation: StreamRevocationGuard;
   onClose: () => void;
 }>): AsyncGenerator<ChannelEvent> {
   let page = input.initial;
@@ -275,12 +293,14 @@ async function* streamEvents(input: Readonly<{
     if (input.terminalAlreadySeen) return;
     while (true) {
       for (const event of page) {
+        if (!(await input.revocation.checkBeforeEvent())) return;
         yield event;
         afterSequence = event.sequence;
         if (event.terminal) return;
       }
       if (Date.now() >= deadline || input.signal.aborted) return;
       await abortableDelay(Math.min(input.pollIntervalMs, Math.max(1, deadline - Date.now())), input.signal);
+      if (!(await input.revocation.checkBeforeEvent())) return;
       const raw = await input.dependencies.readEvents({
         authorization: input.authorization,
         auth: input.auth,
@@ -304,6 +324,7 @@ export async function handleSessionStream(
   auth: AuthenticatedChannelRequest,
   dependencies: SessionStreamRouteDependencies,
 ): Promise<Response> {
+  let revocation: StreamRevocationGuard | undefined;
   try {
     if (!UUID.test(dependencies.sessionId)) throw new SessionStreamError("ACCESS_DENIED");
     const timing = validateTiming(dependencies);
@@ -331,6 +352,23 @@ export async function handleSessionStream(
     );
     if (!continuation.ok) throw new SessionStreamError("REQUEST_INVALID");
 
+    revocation = createStreamRevocationGuard(authorization.scope, authorization.session, {
+      validate: () => dependencies.revalidateSession(
+        authorization,
+        auth,
+        dependencies.now?.() ?? new Date(),
+      ),
+      abortWork: () => dependencies.abortWork(authorization),
+      ...(dependencies.subscribeInvalidation
+        ? { subscribeInvalidation: dependencies.subscribeInvalidation }
+        : {}),
+      ...(dependencies.revocationScheduler
+        ? { scheduler: dependencies.revocationScheduler }
+        : {}),
+      now: () => dependencies.now?.() ?? new Date(),
+    });
+    if (!(await revocation.subscribe())) throw new SessionStreamError("ACCESS_DENIED");
+
     const resolved = await dependencies.resolveCursor({
       authorization,
       auth,
@@ -351,6 +389,7 @@ export async function handleSessionStream(
       limit: DEFAULT_PAGE_SIZE,
       signal: request.signal,
     });
+    if (!(await revocation.checkBeforeEvent())) throw new SessionStreamError("ACCESS_DENIED");
     if (request.signal.aborted) throw new SessionStreamError("CANCELLED");
     const initial = validatePage(initialRaw, dependencies.sessionId, resolved.afterSequence);
     const initialTerminal = initial.find((event) => event.terminal);
@@ -360,7 +399,9 @@ export async function handleSessionStream(
 
     const streamController = new AbortController();
     const callerAbort = () => streamController.abort(new SessionStreamError("CANCELLED"));
+    const revocationAbort = () => streamController.abort(new SessionStreamError("ACCESS_DENIED"));
     request.signal.addEventListener("abort", callerAbort, { once: true });
+    revocation.signal.addEventListener("abort", revocationAbort, { once: true });
     const generator = streamEvents({
       initial,
       afterSequence: resolved.afterSequence,
@@ -370,7 +411,12 @@ export async function handleSessionStream(
       dependencies,
       ...timing,
       signal: streamController.signal,
-      onClose: () => request.signal.removeEventListener("abort", callerAbort),
+      revocation,
+      onClose: () => {
+        request.signal.removeEventListener("abort", callerAbort);
+        revocation?.signal.removeEventListener("abort", revocationAbort);
+        void revocation?.close();
+      },
     });
     const source: AsyncIterable<ChannelEvent> = {
       [Symbol.asyncIterator]() {
@@ -398,6 +444,7 @@ export async function handleSessionStream(
       },
     });
   } catch (error) {
+    await revocation?.close();
     return safeErrorResponse(error, auth);
   }
 }
@@ -451,6 +498,40 @@ export function createSessionStreamRouteDependencies(config: RuntimeConfig): Ses
         return Object.freeze({ scope, session });
       } catch {
         return createAccessDenied(input.auth.requestId);
+      }
+    },
+    async revalidateSession(
+      authorization: SessionStreamAuthorization,
+      auth: AuthenticatedChannelRequest,
+      now: Date,
+    ): Promise<SessionStreamAuthorization | AccessDenied> {
+      try {
+        const scope = await authorizeChild.authorize({
+          guardian: auth.guardian,
+          requestedChildId: authorization.scope.childId,
+          requiredPermissions: ["read"],
+          requestId: auth.requestId,
+          now,
+        });
+        if ("ok" in scope || !sameAuthorizedChildScope(authorization.scope, scope)) {
+          return createAccessDenied(auth.requestId);
+        }
+        const client = createRequestSupabaseClient({ config, accessToken: auth.guardian.bearerToken });
+        const repository = createSessionOwnershipRepository(config, { createClient: () => client });
+        const session = await repository.refreshLease(scope, authorization.session.productSessionId, auth.requestId);
+        if ("ok" in session
+          || session.ownerUserId !== auth.guardian.userId
+          || session.status !== "active"
+          || session.authorizationExpiresAt <= now
+          || session.authorizationExpiresAt > scope.expiresAt
+          || session.lastSequence < authorization.session.lastSequence
+          || (authorization.session.eveSessionId !== null
+            && session.eveSessionId !== authorization.session.eveSessionId)) {
+          return createAccessDenied(auth.requestId);
+        }
+        return Object.freeze({ scope, session });
+      } catch {
+        return createAccessDenied(auth.requestId);
       }
     },
     async resolveCursor(input): Promise<StreamCursorResolution> {
