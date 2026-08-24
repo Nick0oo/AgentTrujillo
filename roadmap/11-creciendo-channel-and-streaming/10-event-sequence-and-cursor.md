@@ -2,7 +2,7 @@
 id: AT-11-10
 title: Persist monotonic event sequence and cursors
 module: 11-creciendo-channel-and-streaming
-status: in_progress
+status: review
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-05, AT-02-04]
@@ -120,6 +120,21 @@ Attempt guessed session IDs, forged tokens/cursors/authority, reasoning/tool lea
 Consume the raw endpoint with an NDJSON reference client through create/message/stream/reconnect/cancel/revoke/emergency cases; inspect discovery, headers, events, persistence, logs, and mobile fixture compatibility.
 
 ## Completion evidence
+
+Root implementation and self-review recorded on 2026-08-24:
+
+- Outcome: the sole forward migration adds immutable `creciendo_channel_events`, hash-only message-command and two-phase cancel-command ledgers; safe-integer monotonic per-session counters; opaque UUID cursors; a retention floor; a session terminal marker; forced RLS; least grants; exact request-scoped message/cursor/read/cancel RPCs; and a service-role-only projection append RPC with explicit owner/care-space/child/security-version inputs.
+- TDD evidence: the first linked run exited `1` with `1/1` failed because `public.creciendo_channel_events` did not exist. Before application, the complete migration plus the expanded pgTAP suite ran inside one Cloud transaction ending in `ROLLBACK` and passed `79/79`.
+- Implementation commit: `8c7828f` (`feat(channel): persist monotonic event sequence and cursors`). Owned files are the forward migration `20260824100000_channel_event_sequence.sql`, free test ID `038_channel_event_sequence.test.sql`, and the authoritative linked-generated `agent/lib/supabase/database.types.ts`; no invented generated path exists.
+- Cloud identity/drift/recovery: linked project `CreciendoApp` (`yapjiinrjsrothzgzxsv`) was `ACTIVE_HEALTHY`; all initial 50 local/remote migrations matched at head `20260823230000`; affected tables had zero rows; RLS was enabled and forced; authenticated write grants were zero; WAL-G was enabled, PITR disabled, and the backup listing returned no entries. The migration therefore remained additive, transactional and abort-on-conflict, with no reset, delete, truncate or rewrite.
+- Application evidence: official `db push --dry-run` listed only `20260824100000_channel_event_sequence.sql`; the pre-apply rollback audit confirmed the ledger absent and migration unrecorded; the authorized linked push exited `0`; fresh migration listing now matches local/remote at forward head `20260824100000`.
+- Cloud verification: the applied linked test passes `79/79`; fixtures roll back and all three new ledgers remain at zero rows. Post-apply linked lint reports zero errors, all three ledgers retain forced RLS, and authenticated retains zero direct write grants. The resume query uses `creciendo_channel_events_resume_idx` with an `Index Scan`.
+- Concurrency/idempotency evidence: create/message/cancel functions use transaction-scoped advisory locks, event append takes the session row `FOR UPDATE`, and source/idempotency/sequence constraints converge retries. Two simultaneous linked Cloud sessions observed the same transaction advisory lock (`concurrent_lock_observed: true`) without writing data; pgTAP proves canonical replay, conflicting reuse, single message/event effects, monotonic sequence and terminal replay.
+- Authorization/isolation review: every authenticated RPC derives `auth.uid()`, locks an exact owner/care-space/child session, requires `active` status, an unexpired matching authorization version, and current unrevoked membership/child permission. Tests cover guessed IDs, sibling/mixed scope, another session owner, revocation, cursor crossing and immediate RLS withdrawal without existence disclosure.
+- Safety/privacy review: emergency accepts only the exact approved presenter widget plus receipt/payload digests, persists no guardian message, appends exactly one terminal event and requests no Eve dispatch. The generic projector cannot create emergency/cancel events; no event can follow any terminal; recursive deny keys, exact per-event payload shapes, a 300 KiB database bound and immutable triggers exclude reasoning, prompts, raw tools/provider frames, tokens, authority and unbounded internal data.
+- Cancellation/retention review: an authenticated cancel ticket blocks new guardian commands before the external abort, finalizes once with truthful effect state and one terminal event, and replays without a duplicate. Cursor resolution distinguishes invalid from retention gap, and bounded reads cannot bypass the retained floor.
+- Generated/runtime gates: linked type generation wrote `agent/lib/supabase/database.types.ts`; SHA-256 digests were types `AC40604CEFCAD8F16B7C14659958285DA7FECAF7195445654C735C9D9D6EC65D`, migration `BDA6CA96C86B012D0CC64DF41FBEB236CFD39E60D2F5D25D2F312CE744FE6320`, and pgTAP `C47D2A49075C667AA57BA2D60982E28CF76426EEA2DA288AEB8A4CF86AAA2701`. `npm test -- tests/channels` passed `50/50`, `npm run typecheck` exited `0`, and the Eve/Nitro build exited `0` using the ignored environment opaquely without printing or staging any value.
+- Staged review: exactly the three owned paths were staged; cached diff check, forbidden-path/artifact scan, credential/private-key scan and personal generated/schema/grant/trigger/RPC review were clean.
 
 Record routes/event versions, files, migration/config digests, test/eval counts, concurrency/reconnect matrix, raw fixture hashes, privacy scan, commands/exits, reviewers, and commit.
 
