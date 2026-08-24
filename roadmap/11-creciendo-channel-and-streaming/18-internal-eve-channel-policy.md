@@ -2,7 +2,7 @@
 id: AT-11-18
 title: Restrict standard Eve channel to operators
 module: 11-creciendo-channel-and-streaming
-status: ready
+status: in_progress
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-02, AT-11-17]
