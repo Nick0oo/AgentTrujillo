@@ -2,7 +2,7 @@
 id: AT-11-02
 title: Create custom Eve Creciendo channel shell
 module: 11-creciendo-channel-and-streaming
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-01, AT-01-16]
@@ -130,6 +130,8 @@ Root implementation and self-review recorded on 2026-08-24:
 - Security/privacy review: browser origins are exact HTTPS origins, unknown origins fail before handlers, command bodies are capped at 64 KiB by declared and actual bytes, dependency messages are discarded, caller abort/deadline signals propagate, internal headers/cookies are stripped, and no environment, JWT, PHI, Supabase, model, tool, or clinical behavior is present.
 - Database/Cloud evidence: `database_change: false`; no Supabase client, schema, data, Storage, remote mutation, or environment value was read or changed.
 - Staged review: exactly the two owned paths were staged; cached diff check, forbidden artifact/path scan, credential-prefix scan, full diff review, and build-artifact ignore check were clean.
+- Fresh closure verification after the implementation commit: focused `7/7`, all channel `14/14`, typecheck, and configured build each exited `0`; fresh Eve info was `ready` with zero diagnostics and exactly the five canonical Creciendo routes.
+- Residual handoff: `AT-11-03` and the final `AT-11-18` dependency branch are unblocked. The five handlers still return safe `503` by default and cannot expose data until authentication and each route are individually composed by their amended sequential leaves.
 
 ## Commit protocol
 
