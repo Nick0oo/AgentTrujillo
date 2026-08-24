@@ -2,7 +2,7 @@
 id: AT-11-08
 title: Cancel active session work safely
 module: 11-creciendo-channel-and-streaming
-status: in_progress
+status: review
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-07, AT-10-04]
@@ -121,6 +121,16 @@ Consume the raw endpoint with an NDJSON reference client through create/message/
 
 ## Completion evidence
 
+Root implementation and self-review recorded on 2026-08-24:
+
+- Outcome: authenticated `POST /creciendo/v1/sessions/:sessionId/cancel` now parses the strict body with no child/turn/authority input, resolves the owner-filtered child and current `read`+`record` scope, refreshes the exact immutable session binding, verifies the signed continuation audience/security binding, and derives only scoped SHA-256 request/idempotency digests.
+- Durable two-phase cancellation: the request-scoped Cloud `accept_creciendo_session_cancel` RPC atomically revalidates owner/care-space/child/version/expiry/revocation, converges duplicates, binds the current stored turn and commits the cancellation ticket before Eve signaling. Only then does the route call Eve 0.27.13's real `Session.cancel({ turnId })` or channel-local `cancel({ continuationToken, turnId })`; `finalize_creciendo_session_cancel` appends the single immutable monotonic terminal event and converges retries.
+- Effect truth: Eve `accepted` is deliberately represented as `requested/unknown`, because it confirms only consumption of the request. `no_active_turn`, request abort after ticket commit, or Eve failure become `effect_may_have_committed/unknown`, never the false claim `cancelled_before_effect`. A previously persisted emergency/completion terminal returns `already_terminal/committed` without Eve signaling or another event. Committed facts are never deleted or rolled back.
+- Eve isolation: a bound Eve ID is checked against the active channel-local token owner before exact session cancellation. An unbound race may try only HMAC-derived current/previous Creciendo-local tokens; stale ownership is a benign `no_active_turn`. Product continuation JWTs, session IDs, bearer tokens and child authority are never passed as Eve cancellation tokens or logged.
+- TDD/adversarial tests: the first focused run failed because the route module did not exist. Final focused verification passed `16/16`; all channel tests passed `13` files and `101/101`, covering strict input, guessed/revoked/forged access, ticket-before-signal ordering, exact turn guard, create/cancel key parity, bound/unbound/stale Eve ownership, already-terminal emergency protection, accepted/no-active/throw/caller-abort truth, conflict/finalize failure and zero duplicate terminal work.
+- Fresh gates: `npm run typecheck`, full Eve/Nitro build using the ignored environment opaquely, `git diff --check`, exact owned-path review, forbidden artifact scan and credential/private-key scan exited `0`. SHA-256 is `4682F8EF627F5381CE83B0E8B1DF2324A7C1E54867F52DFDD3B0B54619277A78` for the route and `D4ED95E803DD2F3D96F8EDFF00B1A54954C6CC88C69452676241DEC486CDAA1E` for its tests.
+- Implementation commit: `2f055e0` (`feat(channel): cancel active session work safely`) contains exactly the three owned paths. `database_change: false`; it consumes only the already-applied AT-11-10 RPCs and performed no remote mutation.
+
 Record routes/event versions, files, migration/config digests, test/eval counts, concurrency/reconnect matrix, raw fixture hashes, privacy scan, commands/exits, reviewers, and commit.
 
 ## Commit protocol
@@ -129,11 +139,11 @@ Commit exclusive paths with feat(channel): cancel active session work safely; no
 
 ## Completion checklist
 
-- [ ] Every route authenticates and verifies current ownership.
-- [ ] Events are versioned, ordered, resumable, and bounded.
-- [ ] Reconnect never duplicates domain effects.
-- [ ] Reasoning, secrets, PHI, and internal payloads do not leak.
-- [ ] Emergency response is terminal and contains no extras.
+- [x] Every route authenticates and verifies current ownership.
+- [x] Events are versioned, ordered, resumable, and bounded.
+- [x] Reconnect never duplicates domain effects.
+- [x] Reasoning, secrets, PHI, and internal payloads do not leak.
+- [x] Emergency response is terminal and contains no extras.
 
 ## Handoff
 
