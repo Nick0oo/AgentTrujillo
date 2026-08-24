@@ -89,7 +89,7 @@ Post-closure Module 11/`AT-10-21` compatibility correction for `AT-10-09`: the f
 
 ## Active workers
 
-- None. `AT-11-15` is `ready` after verifying completed `AT-11-07`/`AT-11-14`/`AT-02-15`, the 15-second lease monitor contract, request-scoped Cloud reauthorization, and Eve 0.27.13 cancellation semantics.
+- Root owns `AT-11-15` (`in_progress`) and exclusively claims the revocation guard/tests, the stream route/tests, and amended filesystem composition path `agent/channels/creciendo.ts`. No subagent or other Module 11 leaf is active.
 
 
 Cloud-only execution override (2026-08-23): by explicit current user instruction, Module 09 uses the verified linked Supabase Cloud project as its only database source of truth. Local reset/test availability or drift is not an execution gate. Database leaves must verify exact project identity, migration impact, recoverability, generated linked types, and rollback-safe Cloud tests before any remote mutation.
