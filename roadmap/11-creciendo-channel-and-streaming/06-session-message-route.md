@@ -84,7 +84,7 @@ Reauthorize session/child/security version, normalize message, run safety prefli
 
 ## Database and Storage contract
 
-No schema mutation. Use session/event/idempotency repositories and private ticket services through their existing scoped contracts; no raw Storage access.
+No schema mutation. Define and use the strict request-scoped message-command port implemented by AT-11-10's single forward Cloud migration; the port fails closed until its RPC exists and never degrades to a direct table insert or service-role client. Its non-urgent operation atomically accepts one idempotent guardian command before Eve, and its urgent operation atomically records the minimal safety receipt plus exactly one terminal emergency event. No raw Storage access.
 
 ## Authorization and isolation
 
