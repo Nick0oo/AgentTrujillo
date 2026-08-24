@@ -2,7 +2,7 @@
 id: AT-11-06
 title: Accept one authorized session message
 module: 11-creciendo-channel-and-streaming
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-05, AT-04-11, AT-10-33]
@@ -135,6 +135,7 @@ Root implementation and self-review recorded on 2026-08-24 under the conveyed un
 - Cloud ordering constraint: production calls the strict request-scoped `accept_creciendo_session_message` port and fails closed while it is absent. Amendment `f66d535` assigns its authenticated atomic implementation, cross-instance convergence and one immutable emergency event to AT-11-10's sole authorized forward migration; no direct guardian insert, service-role request handling, schema/grant change or remote mutation occurred in this leaf.
 - Clinical-package constraint inherited from completed Module 04: no real emergency package is activated, so the production package provider returns unavailable and the route abstains before persistence/Eve. Synthetic governed-package injection proves both urgent and continue branches without presenting the fixture as production clinical content.
 - Staged review: exactly the three owned paths were staged; cached diff check, credential/private-key scan, forbidden-path/artifact scan and personal full diff review were clean.
+- Fresh closure verification after review: focused `10/10`, all channel `50/50`, `npm run typecheck`, and the configured Eve/Nitro build each exited `0`.
 
 Record routes/event versions, files, migration/config digests, test/eval counts, concurrency/reconnect matrix, raw fixture hashes, privacy scan, commands/exits, reviewers, and commit.
 
@@ -144,11 +145,11 @@ Commit exclusive paths with feat(channel): accept one authorized session message
 
 ## Completion checklist
 
-- [ ] Every route authenticates and verifies current ownership.
-- [ ] Events are versioned, ordered, resumable, and bounded.
-- [ ] Reconnect never duplicates domain effects.
-- [ ] Reasoning, secrets, PHI, and internal payloads do not leak.
-- [ ] Emergency response is terminal and contains no extras.
+- [x] Authentication precedes the route; every message verifies current owner, care space, child, permissions, authorization version, expiry, status and continuation binding.
+- [x] Message acceptance returns the strict versioned bounded response and delegates ordered immutable cursor/event persistence to the exact fail-closed AT-11-10 port.
+- [x] Scoped hashes, same-process convergence and Cloud replay receipts prevent a replay from redispatching Eve or duplicating the emergency terminal effect.
+- [x] Mobile/Eve projections exclude raw authority, bearer, internal continuation, prompts, reasoning, tool payloads and urgent source text.
+- [x] The emergency store input contains only a receipt hash and exact canonical terminal widget, followed by zero Eve/model/tool/workflow calls.
 
 ## Handoff
 
