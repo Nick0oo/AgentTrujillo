@@ -2,7 +2,7 @@
 id: AT-11-17
 title: Prove reconnect, ordering, and cancellation
 module: 11-creciendo-channel-and-streaming
-status: pending
+status: ready
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-08, AT-11-10, AT-11-15, AT-11-16]
@@ -121,6 +121,8 @@ Attempt guessed session IDs, forged tokens/cursors/authority, reasoning/tool lea
 Consume the raw endpoint with an NDJSON reference client through create/message/stream/reconnect/cancel/revoke/emergency cases; inspect discovery, headers, events, persistence, logs, and mobile fixture compatibility.
 
 ## Completion evidence
+
+Root readiness verification recorded on 2026-08-24: AT-11-08 (`2f055e0`), AT-11-10 (`8c7828f`), AT-11-15 (`650e260`) and AT-11-16 (`de0536c`) are completed with focused commits and fresh evidence. The linked Cloud head remains the sole reviewed AT-11-10 migration `20260824100000`; this leaf has `database_change: false` and authorizes no remote mutation. All three exclusive paths are unclaimed. Conservative clinical-contract approval is recorded only as unsigned product-owner conveyance without clinician identity or signature attribution.
 
 Record routes/event versions, files, migration/config digests, test/eval counts, concurrency/reconnect matrix, raw fixture hashes, privacy scan, commands/exits, reviewers, and commit.
 
