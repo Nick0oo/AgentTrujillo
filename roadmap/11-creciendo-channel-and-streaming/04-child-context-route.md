@@ -2,7 +2,7 @@
 id: AT-11-04
 title: Resolve active child context route
 module: 11-creciendo-channel-and-streaming
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-03, AT-02-13]
@@ -132,6 +132,7 @@ Root implementation and self-review recorded on 2026-08-24:
 - Token/replay review: nonce storage contains only SHA-256 keys, is synchronously consumed and capacity/TTL bounded; the JWT remains fixed `HS256`/issuer/audience/type/KID with expiry equal to the minimum of two minutes, scope lease and bearer; tokens/claims/keys are never logged or persisted.
 - Database/Cloud evidence: `database_change: false`; the route performs only request-scoped RLS reads at runtime. No local/Cloud schema, data, migration, grant, policy, Storage, environment file, or remote state was changed.
 - Staged review: exactly the three owned paths were staged; cached diff check, credential/private-key scan, artifact ignore check, and personal full diff review were clean.
+- Fresh closure verification after review: focused route `5/5`, all channel/access `219` passed with one conditional skip, `npm run typecheck`, and configured `npm run build` each exited `0`.
 
 Record routes/event versions, files, migration/config digests, test/eval counts, concurrency/reconnect matrix, raw fixture hashes, privacy scan, commands/exits, reviewers, and commit.
 
@@ -141,11 +142,11 @@ Commit exclusive paths with feat(channel): resolve active child context route; n
 
 ## Completion checklist
 
-- [ ] Every route authenticates and verifies current ownership.
-- [ ] Events are versioned, ordered, resumable, and bounded.
-- [ ] Reconnect never duplicates domain effects.
-- [ ] Reasoning, secrets, PHI, and internal payloads do not leak.
-- [ ] Emergency response is terminal and contains no extras.
+- [x] The child-context route authenticates first and freshly verifies current child/care-space membership, permission, version and expiry.
+- [x] The route emits one strict bounded JSON response and no stream event.
+- [x] Hashed nonce consumption prevents duplicate issuance work within its bounded route lifetime.
+- [x] The response contains only the opaque token and authorized display-safe child projection; internal authority and causes do not leak.
+- [x] The route invokes no model, tool, workflow or emergency behavior.
 
 ## Handoff
 
