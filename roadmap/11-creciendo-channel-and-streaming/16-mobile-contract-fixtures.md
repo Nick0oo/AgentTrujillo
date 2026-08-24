@@ -2,7 +2,7 @@
 id: AT-11-16
 title: Publish mobile channel contract fixtures
 module: 11-creciendo-channel-and-streaming
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-12, AT-10-32]
@@ -137,6 +137,7 @@ Root implementation and self-review recorded on 2026-08-24:
 - TDD evidence: the first focused run failed `3/3` because both contract artifacts were absent. The permanent verifier now imports runtime schemas, parses/re-encodes every byte, checks bounds/order/terminal closure/privacy, verifies all five routes/nine event types/eleven registry versions and passes `3/3`. All channel tests pass `15` files and `111/111`.
 - Fresh gates: `npm run typecheck`, full Eve/Nitro build with the ignored environment used opaquely, `git diff --check`, exact owned-path review, forbidden artifact scan, staged credential/private-key scan and fixture privacy/PHI scan exited `0`. Fixture SHA-256 is `5BCE95342FC00C64F12ECF4C7EEC5157B8961FEFDD0CB45E0B8D0BBA4ED4145A`; human contract SHA-256 is `DBFFFC4D45146BFA9781761B2ECB6D027F990DE4D32715C0B4BB218B2B01F3DB`.
 - Conservative clinical-contract approval is recorded only as unsigned product-owner conveyance, without a clinician identity or signature. Implementation commit `de0536c` (`feat(channel): publish mobile channel contract fixtures`) contains exactly the four amended owned paths. `database_change: false`; no Cloud/provider/deployment request or remote mutation occurred.
+- Fresh closure after roadmap review: the runtime fixture/contract verifier passed `3/3`, `npm run typecheck` and `git diff --check` exited `0`, and the worktree was clean.
 
 Record routes/event versions, files, migration/config digests, test/eval counts, concurrency/reconnect matrix, raw fixture hashes, privacy scan, commands/exits, reviewers, and commit.
 
