@@ -5,6 +5,14 @@ import {
   type HttpRouteDefinition,
 } from "eve/channels";
 
+import { loadRuntimeConfig } from "../lib/config/env";
+import {
+  createCreciendoAuthDependencies,
+  withChannelAuth,
+  type AuthenticatedChannelHandler,
+  type CreciendoAuthDependencies,
+} from "../../src/channels/creciendo/auth-middleware";
+
 export const MAX_REQUEST_BODY_BYTES = 64 * 1_024;
 export const DEFAULT_REQUEST_TIMEOUT_MS = 15_000;
 
@@ -239,13 +247,37 @@ export function createCreciendoChannel(dependencies: CreciendoChannelDependencie
 
 const unavailable: CreciendoRouteHandler = async () => errorResponse(503, "CHANNEL_UNAVAILABLE");
 
+let productionAuthDependencies: CreciendoAuthDependencies | undefined;
+
+function getProductionAuthDependencies(): CreciendoAuthDependencies {
+  productionAuthDependencies ??= createCreciendoAuthDependencies(loadRuntimeConfig(process.env));
+  return productionAuthDependencies;
+}
+
+export function withProductionChannelAuth(handler: AuthenticatedChannelHandler): CreciendoRouteHandler {
+  let authenticated: CreciendoRouteHandler | undefined;
+  return async (request, args) => {
+    if (!authenticated) {
+      try {
+        authenticated = withChannelAuth(handler, getProductionAuthDependencies());
+      } catch {
+        return unavailable(request, args);
+      }
+    }
+    return authenticated(request, args);
+  };
+}
+
+const unavailableAfterAuthentication: AuthenticatedChannelHandler = async () => errorResponse(503, "CHANNEL_UNAVAILABLE");
+const guardedUnavailable = withProductionChannelAuth(unavailableAfterAuthentication);
+
 export default createCreciendoChannel({
   handlers: {
-    childContext: unavailable,
-    createSession: unavailable,
-    sendMessage: unavailable,
-    streamSession: unavailable,
-    cancelSession: unavailable,
+    childContext: guardedUnavailable,
+    createSession: guardedUnavailable,
+    sendMessage: guardedUnavailable,
+    streamSession: guardedUnavailable,
+    cancelSession: guardedUnavailable,
   },
   allowedOrigins: [],
 });
