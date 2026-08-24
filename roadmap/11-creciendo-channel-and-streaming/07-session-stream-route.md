@@ -20,12 +20,14 @@ touches:
     - tests/channels/creciendo/routes/session-stream.test.ts
   modify:
     - agent/channels/creciendo.ts
+    - tests/channels/creciendo/channel-shell.test.ts
   test:
     - tests/channels/creciendo/routes/session-stream.test.ts
 exclusive_paths:
   - src/channels/creciendo/routes/session-stream.ts
   - tests/channels/creciendo/routes/session-stream.test.ts
   - agent/channels/creciendo.ts
+  - tests/channels/creciendo/channel-shell.test.ts
 forbidden_paths:
   - .env
   - supabase/migrations/20260814000000_platform_foundation.sql
