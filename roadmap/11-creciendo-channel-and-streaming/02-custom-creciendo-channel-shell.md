@@ -2,7 +2,7 @@
 id: AT-11-02
 title: Create custom Eve Creciendo channel shell
 module: 11-creciendo-channel-and-streaming
-status: pending
+status: ready
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-01, AT-01-16]

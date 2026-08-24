@@ -59,7 +59,7 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-Module 11 is 1/18 completed. `AT-11-01` closed at implementation commit `b86fc8e`; `AT-11-02` is newly unblocked but remains `pending` until its individual readiness transition. No Module 12 leaf is active.
+Module 11 is 1/18 completed. `AT-11-02` is `ready`: `AT-11-01` and `AT-01-16` are completed, the filesystem-first composition amendment is committed, and its exclusive paths are free. No Module 12 leaf is active.
 
 Root-authorized Module 11 reconciliation (2026-08-24): Eve 0.27.13 is binding; `/creciendo/v1` is the sole five-route public family; the linked Cloud source is `CreciendoApp` (`yapjiinrjsrothzgzxsv`) with verified head `20260823230000`; AT-11-10 owns forward migration `20260824100000`, free pgTAP ID `038`, and authoritative generated target `agent/lib/supabase/database.types.ts`; AT-11-18 modifies the existing internal channel. Only the reviewed AT-11-10 forward migration is authorized for remote application after dry-run and Cloud safety review. Conservative clinical approval for the seven marked Module 11 leaves is recorded as unsigned product-owner conveyance without clinician identity or signature attribution.
 
