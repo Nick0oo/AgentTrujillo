@@ -16,16 +16,16 @@ database_change: true
 requires_clinical_approval: false
 touches:
   create:
-    - supabase/migrations/20260816220000_channel_event_sequence.sql
-    - supabase/tests/035_channel_event_sequence.test.sql
-    - src/generated/database.types.ts
-  modify: []
+    - supabase/migrations/20260824100000_channel_event_sequence.sql
+    - supabase/tests/038_channel_event_sequence.test.sql
+  modify:
+    - agent/lib/supabase/database.types.ts
   test:
-    - supabase/tests/035_channel_event_sequence.test.sql
+    - supabase/tests/038_channel_event_sequence.test.sql
 exclusive_paths:
-  - supabase/migrations/20260816220000_channel_event_sequence.sql
-  - supabase/tests/035_channel_event_sequence.test.sql
-  - src/generated/database.types.ts
+  - supabase/migrations/20260824100000_channel_event_sequence.sql
+  - supabase/tests/038_channel_event_sequence.test.sql
+  - agent/lib/supabase/database.types.ts
 forbidden_paths:
   - .env
   - supabase/migrations/20260814000000_platform_foundation.sql
@@ -49,13 +49,13 @@ Creciendo can create one child-bound session, submit messages, receive ordered a
 
 ## Prerequisites
 
-AT-11-05, AT-02-04 plus installed Eve 0.27.1 channel behavior and current Supabase session schema.
+AT-11-05, AT-02-04 plus installed Eve 0.27.13 channel behavior and current Supabase session schema.
 
 ## Mandatory reading
 
 - Module 11 README and direct prerequisite leaves
 - Root channel, urgent-safety, privacy, and authorization rules
-- Installed Eve 0.27.1 channel/session/stream documentation
+- Installed Eve 0.27.13 channel/session/stream documentation
 - Modules 02, 04, and 10 ownership, preflight, tool, widget, and safe-error contracts
 
 ## Scope
@@ -84,7 +84,7 @@ Serialize append per session using locked counter/advisory strategy, never rely 
 
 ## Database and Storage contract
 
-Use only the declared forward migration with immutable per-session sequence, composite ownership, forced RLS, least grants, generated types, clean/upgrade tests, and no remote apply.
+Use only the declared forward migration with immutable per-session sequence, composite ownership, forced RLS, least grants, linked generated types, upgrade-safe tests, and Cloud rollback-safe verification. Applying this exact migration is authorized only after linked identity, drift, recoverability, dry-run, RLS, grants, and shared-frontend compatibility review.
 
 ## Authorization and isolation
 
@@ -125,7 +125,7 @@ Record routes/event versions, files, migration/config digests, test/eval counts,
 
 ## Commit protocol
 
-Commit exclusive paths with feat(channel): persist monotonic event sequence and cursors; no public deployment, remote mutation, or unrelated edit.
+Commit exclusive paths with feat(channel): persist monotonic event sequence and cursors; the reviewed forward-only AT-11-10 Cloud migration is the sole authorized remote mutation, with no public deployment or unrelated edit.
 
 ## Completion checklist
 

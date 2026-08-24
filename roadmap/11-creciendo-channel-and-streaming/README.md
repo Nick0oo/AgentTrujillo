@@ -7,7 +7,20 @@ This module provides the only public Agent Trujillo transport used by Creciendo:
 - Module 10 tool/widget contract gate passes.
 - Module 02 JWT, AuthorizedChildScope, session ownership, signed context, revocation, and idempotency contracts pass.
 - Module 04 deterministic pre-LLM safety is callable before Eve/model/tool work.
-- Installed Eve 0.27.1 channel/session APIs are verified before coding.
+- Installed Eve 0.27.13 channel/session APIs are verified before coding.
+
+## Root-authorized contract reconciliation — 2026-08-24
+
+The current product-owner instruction corrects the pending Module 11 contract before execution:
+
+- Eve 0.27.13 is the installed and binding framework version; no downgrade or 0.27.1 API assumption is allowed.
+- The only public mobile family is the five-route `/creciendo/v1` surface below. Historical `/v1`, `/v1/chat`, and plural `child-contexts` references are superseded.
+- Supabase Cloud project `CreciendoApp` (`yapjiinrjsrothzgzxsv`) is the sole database source of truth for this module. The verified remote migration head is `20260823230000`, so AT-11-10 owns the forward-only `20260824100000_channel_event_sequence.sql` migration.
+- The free database-test identifier is `038`; historical `035` is already owned by the medication formulary suite.
+- `scripts/generate-database-types.mjs` establishes `agent/lib/supabase/database.types.ts` as the generated authoritative type target. No `src/generated/database.types.ts` path is introduced.
+- `agent/channels/eve.ts` already exists and AT-11-18 modifies it without discarding its permitted internal behavior.
+- The only authorized remote mutation is application of the reviewed AT-11-10 migration after linked identity, drift, recoverability, dry-run, RLS, grants, and shared-frontend compatibility checks. Reset, delete, truncate, destructive rewrites, and all unrelated remote mutations remain forbidden.
+- Conservative clinical-contract approval for AT-11-01, AT-11-06, AT-11-11, AT-11-13, AT-11-14, AT-11-16, and AT-11-17 was conveyed by the product owner. It is recorded as unsigned conveyed approval and is not attributed to a named clinician or represented as Dr. Trujillo's signature.
 
 ## Exit gate
 
@@ -61,7 +74,7 @@ The channel emits safe text, safe tool state, versioned widgets, citations, canc
 ```powershell
 npm test -- tests/channels
 npm run eval -- channel-streaming
-npx supabase test db --local
+npx supabase test db --linked supabase/tests/038_channel_event_sequence.test.sql
 npm run typecheck
 npm run build
 npx eve info

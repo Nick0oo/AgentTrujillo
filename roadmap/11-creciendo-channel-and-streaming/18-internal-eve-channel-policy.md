@@ -16,9 +16,9 @@ database_change: false
 requires_clinical_approval: false
 touches:
   create:
-    - agent/channels/eve.ts
     - tests/channels/eve/internal-channel-policy.test.ts
-  modify: []
+  modify:
+    - agent/channels/eve.ts
   test:
     - tests/channels/eve/internal-channel-policy.test.ts
 exclusive_paths:
@@ -47,13 +47,13 @@ Creciendo can create one child-bound session, submit messages, receive ordered a
 
 ## Prerequisites
 
-AT-11-02, AT-11-17 plus installed Eve 0.27.1 channel behavior and current Supabase session schema.
+AT-11-02, AT-11-17 plus installed Eve 0.27.13 channel behavior and current Supabase session schema.
 
 ## Mandatory reading
 
 - Module 11 README and direct prerequisite leaves
 - Root channel, urgent-safety, privacy, and authorization rules
-- Installed Eve 0.27.1 channel/session/stream documentation
+- Installed Eve 0.27.13 channel/session/stream documentation
 - Modules 02, 04, and 10 ownership, preflight, tool, widget, and safe-error contracts
 
 ## Scope

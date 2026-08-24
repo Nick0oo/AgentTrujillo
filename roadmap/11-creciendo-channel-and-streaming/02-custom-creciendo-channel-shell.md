@@ -47,13 +47,13 @@ Creciendo can create one child-bound session, submit messages, receive ordered a
 
 ## Prerequisites
 
-AT-11-01, AT-01-16 plus installed Eve 0.27.1 channel behavior and current Supabase session schema.
+AT-11-01, AT-01-16 plus installed Eve 0.27.13 channel behavior and current Supabase session schema.
 
 ## Mandatory reading
 
 - Module 11 README and direct prerequisite leaves
 - Root channel, urgent-safety, privacy, and authorization rules
-- Installed Eve 0.27.1 channel/session/stream documentation
+- Installed Eve 0.27.13 channel/session/stream documentation
 - Modules 02, 04, and 10 ownership, preflight, tool, widget, and safe-error contracts
 
 ## Scope
@@ -74,7 +74,7 @@ Never read .env, trust session/child authority from path/body/token alone, expos
 
 ## Interfaces and types
 
-Export the Eve channel registration expected by 0.27.1 plus createCreciendoChannel(deps); route tree is /creciendo/v1 and contains context, sessions, messages, stream, cancel.
+Export the Eve channel registration expected by 0.27.13 plus createCreciendoChannel(deps); route tree is /creciendo/v1 and contains context, sessions, messages, stream, cancel.
 
 ## Technical design
 

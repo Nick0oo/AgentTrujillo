@@ -2,12 +2,12 @@
 
 ## Autoridad
 
-Agent Trujillo expone `/v1` como interface remota. Creciendo puede solicitar una operación, pero el backend decide identidad, niño, país clínico, permisos, reglas y entitlements. Un campo enviado por la app nunca reemplaza estas verificaciones.
+Agent Trujillo expone exclusivamente `/creciendo/v1` como interface remota pública para Creciendo. La app puede solicitar una operación, pero el backend decide identidad, niño, país clínico, permisos, reglas y entitlements. Un campo enviado por la app nunca reemplaza estas verificaciones.
 
 ## Flujo de sesión
 
 1. Creciendo obtiene un JWT de Supabase Auth.
-2. `POST /v1/child-contexts` recibe el niño seleccionado y verifica membresía y acceso explícito al niño.
+2. `POST /creciendo/v1/child-context` recibe el niño seleccionado y verifica membresía y acceso explícito al niño.
 3. El backend devuelve un contexto firmado, opaco, corto y renovable.
 4. Cada petición usa `Authorization: Bearer …` y `X-Child-Context: …`.
 5. Una sesión de Eve se crea para ese alcance y no permite cambiar de niño.
@@ -17,7 +17,7 @@ El token de contexto no se guarda en logs ni URLs.
 
 ## Convenciones
 
-- JSON versionado en `/v1`.
+- JSON versionado en `/creciendo/v1`.
 - Fechas ISO 8601; instantes UTC y zona IANA separada.
 - Unidades clínicas explícitas y permitidas por schema.
 - `Idempotency-Key` obligatoria para comandos.
@@ -27,7 +27,7 @@ El token de contexto no se guarda en logs ni URLs.
 
 ## Streaming
 
-`POST /v1/chat/sessions/{sessionId}/messages` responde con `application/x-ndjson`. Los eventos tienen `sequence`, pueden reanudarse y terminan en `message-complete` o `stream-error`. El canal personalizado de Creciendo usa las sesiones durables de Eve, pero autoriza ownership antes de enviar, continuar, cancelar o abrir un stream.
+`POST /creciendo/v1/sessions/{sessionId}/messages` acepta exactamente un turno autorizado e idempotente. `GET /creciendo/v1/sessions/{sessionId}/stream` responde con `application/x-ndjson`; cada línea contiene un único JSON válido. Los eventos tienen secuencia monotónica persistida, pueden reanudarse desde un cursor opaco verificado y terminan en un evento terminal seguro. El canal personalizado de Creciendo usa sesiones durables de Eve, pero autoriza ownership antes de crear, enviar, continuar, conectar, reanudar o cancelar.
 
 Tipos permitidos:
 
@@ -59,22 +59,17 @@ Kinds V1:
 
 `emergency_recommendation` no admite `actions`, `url`, `phone`, `location` ni `notification`. Un schema que incluya esos campos se rechaza.
 
-## Consultas y comandos
+## Superficie pública canónica
 
-| Recurso | Consulta/comando | Nota de seguridad |
+| Operación | Ruta | Nota de seguridad |
 |---|---|---|
-| niño activo | `POST /v1/child-contexts` | el ID solicitado se autoriza antes de firmar contexto |
-| dashboard | `GET /v1/dashboard` | proyección de un único niño |
-| antropometría | `GET/POST /v1/anthropometry` | escritura confirmada e idempotente |
-| crecimiento | `GET /v1/anthropometry/growth` | cálculo backend con versión |
-| vacunas | `GET /v1/immunization/status` | país proviene del niño |
-| dosis aplicada | `POST /v1/immunization/administrations` | OCR solo produce borrador |
-| medicación | `GET/POST /v1/medication-plans` | no crea prescripción |
-| adherencia | `POST /v1/medication-intakes` | reintentos no duplican |
-| desarrollo | `GET/POST /v1/development-observations` | observación, no diagnóstico |
-| chat | `/v1/chat/sessions` | sesión inmutable por niño |
-| documentos | `POST /v1/documents/upload-ticket` | bucket privado y tipo/tamaño limitados |
-| comercio | `GET /v1/entitlements` | resultado del ledger interno |
+| contexto del niño | `POST /creciendo/v1/child-context` | el ID solicitado se autoriza antes de firmar contexto |
+| crear sesión | `POST /creciendo/v1/sessions` | el alcance del niño queda inmutable y no proviene del cliente |
+| enviar turno | `POST /creciendo/v1/sessions/{sessionId}/messages` | revalida ownership, permiso, versión de seguridad y red flags antes de Eve |
+| conectar o reanudar | `GET /creciendo/v1/sessions/{sessionId}/stream` | cursor opaco; el ID de sesión nunca concede acceso |
+| cancelar | `POST /creciendo/v1/sessions/{sessionId}/cancel` | cancelación idempotente y acotada al turno autorizado |
+
+No existen rutas públicas separadas para invocar tools o consultar autoridad clínica. Esas capacidades permanecen detrás del agente, sus contratos tipados y el alcance autorizado de la sesión.
 
 ## Realtime
 

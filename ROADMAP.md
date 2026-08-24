@@ -59,7 +59,9 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-Module 10 is closed at 33/33. `AT-11-01` is newly unblocked by `AT-10-33` and completed `AT-02-16`, but remains unclaimed and `pending` until the later Module 11 entry/selection review. No Module 11 or 12 leaf is active in this closure.
+Module 10 is closed at 33/33 and its entry gates were replayed successfully against `origin/main` on 2026-08-24. `AT-11-01` is unblocked by `AT-10-33` and completed `AT-02-16`, but remains unclaimed and `pending` until its individual claim commit. No Module 11 or 12 leaf is active at this reconciliation point.
+
+Root-authorized Module 11 reconciliation (2026-08-24): Eve 0.27.13 is binding; `/creciendo/v1` is the sole five-route public family; the linked Cloud source is `CreciendoApp` (`yapjiinrjsrothzgzxsv`) with verified head `20260823230000`; AT-11-10 owns forward migration `20260824100000`, free pgTAP ID `038`, and authoritative generated target `agent/lib/supabase/database.types.ts`; AT-11-18 modifies the existing internal channel. Only the reviewed AT-11-10 forward migration is authorized for remote application after dry-run and Cloud safety review. Conservative clinical approval for the seven marked Module 11 leaves is recorded as unsigned product-owner conveyance without clinician identity or signature attribution.
 
 Root replay-receipt amendment for `AT-10-14`: the medication Cloud RPCs already return a durable `created`/`idempotent_replay` outcome, but the verified repository/application adapters discarded it. The leaf now owns only the exact additive port, plan-service, schedule-service, repository and regression-test paths required to propagate that existing receipt into `withToolIdempotency`. No database/API/schema/clinical rule changes or remote effects are authorized, and all existing record-only service methods remain compatible.
 
