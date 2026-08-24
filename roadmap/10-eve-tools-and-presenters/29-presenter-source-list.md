@@ -2,7 +2,7 @@
 id: AT-10-29
 title: Present compact source citations
 module: 10-eve-tools-and-presenters
-status: in_progress
+status: completed
 execution: sequential
 parallel_group: presenters
 depends_on: [AT-10-07, AT-10-18, AT-10-20]
@@ -127,11 +127,23 @@ Commit exclusive paths with feat(presenter): present compact source citations; n
 
 ## Completion checklist
 
-- [ ] Model schemas contain no authority or clinical-result claims.
-- [ ] Policy order and effects are deterministic and tested.
-- [ ] Tool-to-model output is explicit and privacy-safe.
-- [ ] No diagnosis, prescription, clinician operation, or urgent extra exists.
-- [ ] Eve discovery contains exactly the intended surface.
+- [x] Model schemas contain no authority or clinical-result claims.
+- [x] Policy order and effects are deterministic and tested.
+- [x] Tool-to-model output is explicit and privacy-safe.
+- [x] No diagnosis, prescription, clinician operation, or urgent extra exists.
+- [x] Eve discovery contains exactly the intended surface.
+
+### Recorded 2026-08-23
+
+- Outcome and non-goals: `presentSourceList(handles, registry, locale)` is a pure `sources.list.v1` presenter that resolves trusted citation handles to bounded, deterministic public or private source rows. It performs no authorization decision, clinical calculation, network/filesystem call, document action, model invocation, write, migration, deploy or remote mutation.
+- Implementation commit: `cb1d5c8d7a97548a81d15286cdf8cc10c47f7240` (`feat(presenter): present compact source citations`) created exactly `src/presentation/source-list.ts` and `tests/presentation/source-list.test.ts`.
+- TDD evidence: the initial focused run exited `1` because the presenter module did not exist. The final focused suite passed 16/16; all accumulated presentation tests passed 7 files/88 tests; the broader anthropometry, immunization, runtime and presentation checkpoint passed 42 files/350 tests.
+- Contract review: strict schemas reject added registry/widget fields, stale or revoked sources, unknown/conflicting handles, invalid effective windows, duplicate/unsorted package digests, unsupported locales and more than 32 handles. Requested handles and identical registry rows are deduplicated, then rows are stably sorted by normalized title and handle. Effective and accessed dates remain distinct and exact source/package digests remain only in trusted metadata.
+- Link/privacy review: public links require HTTPS, an allowlisted clinical/government host, no credentials/fragment/port/path traversal, no redirect or sensitive query parameter, no secret-like value and no executable scheme; tracking parameters are removed and remaining query order is canonicalized. Private evidence has a non-clickable label and exposes no URL, storage path, ticket or document content. Accessible summary and text fallback are deterministic in `es-CO` and `en-US`.
+- Clinical/safety review: the presenter preserves supplied source identity and dates without implying endorsement, diagnosis, treatment, professional review or emergency behavior. It introduces no new clinical wording, package, source claim or approval requirement and asserts no personal signature.
+- Fresh gates: presentation 7 files/88 tests; accumulated checkpoint 42 files/350 tests; `npm run typecheck -- --pretty false`, synthetic-config `npm run build` and synthetic-config `npx eve info` exited `0`. Eve `0.27.13` reported ready discovery, 0 errors/0 warnings and the same 10 active tools because presenters are not model-callable tools.
+- Staged review: exactly the two owned paths were staged; `git diff --cached --check`, ownership/forbidden-path/artifact and credential/secret/PII scans passed with zero findings before commit.
+- Exceptions and residual risk: no Supabase Cloud write, provider call or arbitrary link fetch occurred. Authorized private-document actions remain outside this presenter. The versioned trusted payload is ready for Module 11 mobile rendering and Module 12 vaccination-card provenance binding; `AT-10-32` remains gated by the other presenters.
 
 ## Handoff
 

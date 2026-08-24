@@ -32,7 +32,7 @@ These facts do not close pending behavioral gates. Local schema parity, generate
 - Module 08 is **17/17 completed with 0 pending leaves**. Final boundary evidence is recorded at implementation commit `145b3b0` and `docs/verification/nutrition-development.md`.
 - Module 09 is **21/21 completed with 0 pending leaves**. Final isolation evidence is recorded at implementation commit `debbfcf` and `docs/verification/memory-documents.md`.
 - Module 10 execution uses the root-authorized 2026-08-23 contract reconciliation: Eve `0.27.13` supersedes its historical `0.27.1` references, and only `AT-13-01` may execute early after verified `AT-03-11` to supply the provider-neutral catalog required by `AT-10-02`. The rest of Module 13 remains pending behind its general entry gate.
-- Module 10 is **23/33 completed**. `AT-10-01` closed at `13ef49f`; `AT-10-02` at `f0ce01a`; `AT-10-03` at `73ad42a`; `AT-10-04` at `296fad3`; `AT-10-05` at `114b0c6`; `AT-10-06` at `783fc32`; `AT-10-07` at `4af8b5d`; `AT-10-08` at `ae6988c`; `AT-10-09` at `71c8aeb` plus trusted/mobile compatibility correction `9271b9e`; `AT-10-10` at `9e3943f`; `AT-10-11` at `b1bce0e`; `AT-10-12` at `3c4f46d`; `AT-10-13` at `84178dd`; `AT-10-14` at `1dc2dd4`; `AT-10-16` at `c7b9cbe`; `AT-10-18` at `6e70693`; `AT-10-20` at `75b5f4d`; `AT-10-21` at `d34b07f`; `AT-10-22` at `a2a2e19`; `AT-10-23` at `7bed230`; `AT-10-24` at `1b53e5e`; `AT-10-25` at `5c06e75`; and `AT-10-30` at `722afa9`, after the Eve-supported runtime-helper correction in `2ada844`, the explicit replay-fingerprint amendments `43639a7`/`acdeadc`, the safe-error/audit amendment `a01db90`, and the discovery-identity correction `d5ff6e1`.
+- Module 10 is **24/33 completed**. `AT-10-01` closed at `13ef49f`; `AT-10-02` at `f0ce01a`; `AT-10-03` at `73ad42a`; `AT-10-04` at `296fad3`; `AT-10-05` at `114b0c6`; `AT-10-06` at `783fc32`; `AT-10-07` at `4af8b5d`; `AT-10-08` at `ae6988c`; `AT-10-09` at `71c8aeb` plus trusted/mobile compatibility correction `9271b9e`; `AT-10-10` at `9e3943f`; `AT-10-11` at `b1bce0e`; `AT-10-12` at `3c4f46d`; `AT-10-13` at `84178dd`; `AT-10-14` at `1dc2dd4`; `AT-10-16` at `c7b9cbe`; `AT-10-18` at `6e70693`; `AT-10-20` at `75b5f4d`; `AT-10-21` at `d34b07f`; `AT-10-22` at `a2a2e19`; `AT-10-23` at `7bed230`; `AT-10-24` at `1b53e5e`; `AT-10-25` at `5c06e75`; `AT-10-29` at `cb1d5c8`; and `AT-10-30` at `722afa9`, after the Eve-supported runtime-helper correction in `2ada844`, the explicit replay-fingerprint amendments `43639a7`/`acdeadc`, the safe-error/audit amendment `a01db90`, and the discovery-identity correction `d5ff6e1`.
 - The early `AT-13-01` exception is completed at `eb82958` with a provider-neutral, synthetic-test-only catalog. It unblocks `AT-10-02`; all other Module 13 leaves remain pending behind the general Module 13 entry gate.
 
 ## Module ledger
@@ -59,7 +59,7 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-Dependency, approval-reuse and exact path collision checks moved `AT-10-13` through root clinical/security review to completed at `84178dd`. `AT-10-29` remains claimed by the root; presenter execution remains sequential.
+Dependency and exact path checks moved sequential presenter `AT-10-29` through root security/compatibility review to completed at `cb1d5c8`. Remaining tools `AT-10-15`, `AT-10-17` and `AT-10-19` are parallel-ready on disjoint paths; presenters continue one at a time.
 
 Root replay-receipt amendment for `AT-10-14`: the medication Cloud RPCs already return a durable `created`/`idempotent_replay` outcome, but the verified repository/application adapters discarded it. The leaf now owns only the exact additive port, plan-service, schedule-service, repository and regression-test paths required to propagate that existing receipt into `withToolIdempotency`. No database/API/schema/clinical rule changes or remote effects are authorized, and all existing record-only service methods remain compatible.
 
@@ -73,12 +73,12 @@ Post-closure Module 11/`AT-10-21` compatibility correction for `AT-10-09`: the f
 
 ## Active workers
 
-- `/root` — `AT-10-29`, sequential presenter; owns only `src/presentation/source-list.ts` and `tests/presentation/source-list.test.ts`.
+- None.
 
 
 Cloud-only execution override (2026-08-23): by explicit current user instruction, Module 09 uses the verified linked Supabase Cloud project as its only database source of truth. Local reset/test availability or drift is not an execution gate. Database leaves must verify exact project identity, migration impact, recoverability, generated linked types, and rollback-safe Cloud tests before any remote mutation.
 
-The delegated Module 08 leaves used GPT-5.6 Luna with reasoning `max`. Per the explicit user instruction recorded on 2026-08-23, the root implemented and reviewed the remaining leaves directly; no additional subagents were dispatched. Collision and exclusive-path analysis remained in force.
+Delegated implementation leaves use GPT-5.6 Luna with reasoning `max`. The initial Module 10 instruction required direct root execution; the user's later explicit amendment authorized subagents only for genuinely parallel leaves. `AT-10-12` and `AT-10-13` used Luna/max on disjoint paths while the root retained all review, gate, commit and evidence authority. Sequential presenters remain root-owned one at a time.
 
 ## Blockers
 
