@@ -2,7 +2,7 @@
 id: AT-10-23
 title: Present declared medication schedule preview
 module: 10-eve-tools-and-presenters
-status: pending
+status: in_progress
 execution: sequential
 parallel_group: presenters
 depends_on: [AT-10-14]
