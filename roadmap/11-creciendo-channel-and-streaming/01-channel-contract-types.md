@@ -2,7 +2,7 @@
 id: AT-11-01
 title: Define Creciendo channel contracts
 module: 11-creciendo-channel-and-streaming
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-10-33, AT-02-16]
@@ -131,6 +131,8 @@ Root implementation and self-review recorded on 2026-08-24:
 - Ordering/resume review: positive safe-integer sequences, immutable UUID event/session/turn IDs, opaque cursors, bounded frames, idempotency keys, and terminal-event literals are explicit. Reconnect effects remain the responsibility of the later repository/route leaves.
 - Database/Cloud evidence: `database_change: false`; no Supabase client, schema, data, Storage, remote mutation, or environment value was used.
 - Staged review: exactly the two owned paths were staged; `git diff --cached --check`, forbidden-path/artifact scan, credential-prefix scan, runtime/network import scan, and full staged diff review were clean.
+- Fresh closure verification after the implementation commit: the focused test exited `0` with `7/7`, the affected channel/presentation gate exited `0` with `159/159`, `npm run typecheck` exited `0`, and `git show --check b86fc8e` was clean.
+- Residual handoff: `AT-11-02` is unblocked. HTTP discovery/authentication, durable replay, Cloud event storage, mapping, encoding, revocation, and end-to-end effects remain explicitly owned by their later sequential leaves.
 
 ## Commit protocol
 
