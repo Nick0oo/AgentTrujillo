@@ -2,7 +2,7 @@
 id: AT-10-18
 title: Search confirmed child memory
 module: 10-eve-tools-and-presenters
-status: in_progress
+status: completed
 execution: parallel
 parallel_group: eve-tools
 depends_on: [AT-10-07, AT-09-19]
@@ -127,11 +127,23 @@ Commit exclusive paths with feat(tool): search confirmed child memory; no remote
 
 ## Completion checklist
 
-- [ ] Model schemas contain no authority or clinical-result claims.
-- [ ] Policy order and effects are deterministic and tested.
-- [ ] Tool-to-model output is explicit and privacy-safe.
-- [ ] No diagnosis, prescription, clinician operation, or urgent extra exists.
-- [ ] Eve discovery contains exactly the intended surface.
+- [x] Model schemas contain no authority or clinical-result claims.
+- [x] Policy order and effects are deterministic and tested.
+- [x] Tool-to-model output is explicit and privacy-safe.
+- [x] No diagnosis, prescription, clinician operation, or urgent extra exists.
+- [x] Eve discovery contains exactly the intended surface.
+
+### Recorded 2026-08-23
+
+- Outcome and non-goals: `search_child_clinical_memory` is a read-only Eve tool for bounded semantic query/category/time preferences. It derives child, care space, session, authorization version, provider/model/vector policy, cutoff, threshold and limit only from trusted runtime code; it performs no write, approval, remote mutation, diagnosis, prescription, clinician operation or emergency workflow.
+- Implementation commit: `6e70693934f17a714c3e41d67fd97e91138a4db1` (`feat(tool): search confirmed child memory`), containing only `agent/tools/search_child_clinical_memory.ts` and `tests/agent/tools/search-child-clinical-memory.test.ts`.
+- TDD evidence: the initial focused run exited `1` because the tool module did not exist. The worker's final focused suite passed 10/10, its accumulated tool suite 112/112 and its memory/runtime/isolation selection 228/228. Root fresh verification passed 147/147 across the tool, clinical prompt boundary/types/policy, request-scoped memory repository, embedding indexer and session-ownership suites; `npm run typecheck` exited `0`.
+- Authorization and isolation review: the already verified `match_clinical_memory` RPC materializes active session/member/child authorization, exact `care_space_id`, `child_id`, authorization version, embedding model, active lifecycle, confirmed state and retrieval eligibility before vector similarity. The tool calls that typed request-scoped repository exactly once, never retries without scope, and reauthorizes before embedding, before repository access, after the read and before projection. Sibling-identical vectors, forged fields, stale evidence and revocation races fail closed.
+- Prompt/privacy review: repository text remains untrusted data, passes the Module 09 prompt boundary, is emitted only as bounded quoted facts, and is paired with opaque citation handles. Trusted and model schemas are separate and strict; neither exposes actor/care/child/session/memory/source identifiers, vectors, raw rows, prompts, reasoning, provider errors or credentials. Provider identity/vector drift, cancellation and unavailable-provider cases have no fallback and no effect.
+- Clinical review: this leaf reuses the exact memory behavior already fixed by the approved root clinical safety contract and completed Module 09 boundary. It adds no clinical package, source, rule, claim, interpretation or clinical copy and records no personal signature or approver identity.
+- Fresh Eve gates: synthetic process configuration (without reading or editing `.env`) made `npm run build` and `npx eve info` exit `0` on Eve `0.27.13`, with 0 errors/0 warnings. The current exact eight-tool discovery includes `search_child_clinical_memory`; shell/filesystem/arbitrary-web/agent sentinels remain disabled.
+- Staged review: exactly the two owned paths were staged. `git diff --cached --check`, ownership/forbidden-path/artifact checks and the staged credential/key/token scan all exited `0` with no findings before the focused commit.
+- Exceptions and residual risk: no database, migration, schema, Supabase Cloud, provider, deployment or other remote mutation occurred. Durable confirmed/active/eligible prefiltering remains the responsibility of the already verified request-scoped Module 09 repository/RPC; no alternate repository or generic query path was introduced. `AT-10-29`, widget registry/channel integration and Modules 11–12 remain pending.
 
 ## Handoff
 
