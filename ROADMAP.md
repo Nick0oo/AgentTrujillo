@@ -59,7 +59,7 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-Module 11 is 9/18 completed. `AT-11-11` closed at implementation commit `87e563e`: all 28 Eve 0.27.13 event kinds are classified, raw tool/model/reasoning/provider data is non-public, trusted projections are exact and version-negotiated, emergency spoofing fails closed, and focused/channel/typecheck/build gates are green. `AT-11-12` is next in the required sequence; no Module 12 leaf is active.
+Module 11 is 9/18 completed. `AT-11-11` closed at implementation commit `87e563e`. `AT-11-12` is dependency-verified and `ready` to encode only strict bounded channel events as NDJSON; no Module 12 leaf is active.
 
 Root-authorized Module 11 reconciliation (2026-08-24): Eve 0.27.13 is binding; `/creciendo/v1` is the sole five-route public family; the linked Cloud source is `CreciendoApp` (`yapjiinrjsrothzgzxsv`) with verified head `20260823230000`; AT-11-10 owns forward migration `20260824100000`, free pgTAP ID `038`, and authoritative generated target `agent/lib/supabase/database.types.ts`; AT-11-18 modifies the existing internal channel. Only the reviewed AT-11-10 forward migration is authorized for remote application after dry-run and Cloud safety review. Conservative clinical approval for the seven marked Module 11 leaves is recorded as unsigned product-owner conveyance without clinician identity or signature attribution.
 
@@ -85,7 +85,7 @@ Post-closure Module 11/`AT-10-21` compatibility correction for `AT-10-09`: the f
 
 ## Active workers
 
-- None. `AT-11-11` is completed at implementation commit `87e563e`; `AT-11-12` is dependency-eligible but remains unclaimed until its explicit `ready` transition.
+- None. `AT-11-12` is `ready` after verifying completed dependency implementation commit `87e563e`, the strict channel-event parser, and Eve 0.27.13 one-event-per-NDJSON-line streaming semantics.
 
 
 Cloud-only execution override (2026-08-23): by explicit current user instruction, Module 09 uses the verified linked Supabase Cloud project as its only database source of truth. Local reset/test availability or drift is not an execution gate. Database leaves must verify exact project identity, migration impact, recoverability, generated linked types, and rollback-safe Cloud tests before any remote mutation.
