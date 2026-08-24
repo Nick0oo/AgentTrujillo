@@ -2,7 +2,7 @@
 id: AT-10-29
 title: Present compact source citations
 module: 10-eve-tools-and-presenters
-status: pending
+status: in_progress
 execution: sequential
 parallel_group: presenters
 depends_on: [AT-10-07, AT-10-18, AT-10-20]
