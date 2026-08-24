@@ -85,7 +85,7 @@ Post-closure Module 11/`AT-10-21` compatibility correction for `AT-10-09`: the f
 
 ## Active workers
 
-- None. `AT-11-11` is `ready` after verifying completed dependency commits `8c7828f` (`AT-11-10`) and `6bd8663` (`AT-10-32`), Eve `0.27.13`, the installed event union, and conveyed unsigned conservative clinical approval.
+- Root owns `AT-11-11` (`in_progress`) and exclusively claims `src/channels/creciendo/eve-event-mapper.ts` plus `tests/channels/creciendo/eve-event-mapper.test.ts`. No subagent or other Module 11 leaf is active.
 
 
 Cloud-only execution override (2026-08-23): by explicit current user instruction, Module 09 uses the verified linked Supabase Cloud project as its only database source of truth. Local reset/test availability or drift is not an execution gate. Database leaves must verify exact project identity, migration impact, recoverability, generated linked types, and rollback-safe Cloud tests before any remote mutation.

@@ -2,7 +2,7 @@
 id: AT-11-11
 title: Map Eve events to mobile contracts
 module: 11-creciendo-channel-and-streaming
-status: ready
+status: in_progress
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-10, AT-10-32]
