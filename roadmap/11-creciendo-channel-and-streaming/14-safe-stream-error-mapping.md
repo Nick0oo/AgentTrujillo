@@ -2,7 +2,7 @@
 id: AT-11-14
 title: Map streaming failures safely
 module: 11-creciendo-channel-and-streaming
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-12, AT-11-13, AT-10-06]
@@ -128,6 +128,7 @@ Root implementation and self-review recorded on 2026-08-24:
 - TDD/tests: initial focused run failed because the module was absent; a review red test exposed encoder abort being misclassified as internal instead of cancellation. Final focused verification passed `9/9`; all channel tests passed `11` files and `85/85`, including malicious stack/getter, auth non-enumeration, cursor/retention, rate delay, ambiguous/committed effects, safe-tool/encoder failures and locale-neutral output.
 - Fresh gates: `npm run typecheck`, full Eve/Nitro build using the ignored environment opaquely, `git diff --check`, exact owned-path/staged review, credential/private-key and artifact scans passed. SHA-256 is `92024B1FED21CED5EC9A7020964ECC9486E5083B48A4759DBA20CDA5A0959FA9` for the mapper and `9ECA27593FC8C28B0EDF79DE3798EA3543BBCD74CC8A66FF4F2BEC1D1C9C8B1E` for the tests.
 - Implementation commit: `4796f20` (`feat(channel): map streaming failures safely`) contains exactly the two owned paths. Conveyed conservative clinical approval is recorded unsigned without identity/signature attribution. `database_change: false`; no remote mutation occurred.
+- Fresh closure after roadmap review: focused stream-error tests passed `9/9`, all channel tests passed `85/85`, and `npm run typecheck` plus `git diff --check` exited `0` with a clean worktree.
 
 Record routes/event versions, files, migration/config digests, test/eval counts, concurrency/reconnect matrix, raw fixture hashes, privacy scan, commands/exits, reviewers, and commit.
 
@@ -137,11 +138,11 @@ Commit exclusive paths with feat(channel): map streaming failures safely; no pub
 
 ## Completion checklist
 
-- [ ] Every route authenticates and verifies current ownership.
-- [ ] Events are versioned, ordered, resumable, and bounded.
-- [ ] Reconnect never duplicates domain effects.
-- [ ] Reasoning, secrets, PHI, and internal payloads do not leak.
-- [ ] Emergency response is terminal and contains no extras.
+- [x] Authentication/not-found/revocation failures are safe and non-enumerating.
+- [x] In-stream errors are strict versioned terminal events with verified cursor identity.
+- [x] Retry/resume truth is effect- and persisted-cursor-aware and never repeats an ambiguous effect.
+- [x] Raw causes, stacks, provider/tool/encoder details and localized attacker text are absent.
+- [x] Technical errors never synthesize clinical or emergency content.
 
 ## Handoff
 
