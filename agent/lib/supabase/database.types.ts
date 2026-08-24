@@ -108,6 +108,10 @@ export type Database = {
           authorization_version: string
           care_space_id: string
           channel: string
+          channel_cancel_operation_id: string | null
+          channel_retained_from_sequence: number
+          channel_terminal_event_id: string | null
+          channel_terminal_sequence: number | null
           child_id: string
           completed_at: string | null
           created_at: string
@@ -127,6 +131,10 @@ export type Database = {
           authorization_version?: string
           care_space_id: string
           channel: string
+          channel_cancel_operation_id?: string | null
+          channel_retained_from_sequence?: number
+          channel_terminal_event_id?: string | null
+          channel_terminal_sequence?: number | null
           child_id: string
           completed_at?: string | null
           created_at?: string
@@ -146,6 +154,10 @@ export type Database = {
           authorization_version?: string
           care_space_id?: string
           channel?: string
+          channel_cancel_operation_id?: string | null
+          channel_retained_from_sequence?: number
+          channel_terminal_event_id?: string | null
+          channel_terminal_sequence?: number | null
           child_id?: string
           completed_at?: string | null
           created_at?: string
@@ -161,6 +173,20 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "agent_sessions_channel_cancel_operation_fk"
+            columns: ["channel_cancel_operation_id", "id"]
+            isOneToOne: false
+            referencedRelation: "creciendo_cancel_commands"
+            referencedColumns: ["operation_id", "agent_session_id"]
+          },
+          {
+            foreignKeyName: "agent_sessions_channel_terminal_event_fk"
+            columns: ["channel_terminal_event_id", "id"]
+            isOneToOne: false
+            referencedRelation: "creciendo_channel_events"
+            referencedColumns: ["id", "agent_session_id"]
+          },
           {
             foreignKeyName: "agent_sessions_child_fk"
             columns: ["care_space_id", "child_id"]
@@ -1840,6 +1866,239 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "children"
             referencedColumns: ["care_space_id", "id"]
+          },
+        ]
+      }
+      creciendo_cancel_commands: {
+        Row: {
+          accepted_at: string
+          agent_session_id: string
+          care_space_id: string
+          child_id: string
+          final_effect_state: string | null
+          final_outcome: string | null
+          finalized_at: string | null
+          idempotency_key_sha256: string
+          operation_id: string
+          owner_user_id: string
+          reason: string
+          request_sha256: string
+          status: string
+          target_turn_id: string
+          terminal_event_id: string | null
+        }
+        Insert: {
+          accepted_at?: string
+          agent_session_id: string
+          care_space_id: string
+          child_id: string
+          final_effect_state?: string | null
+          final_outcome?: string | null
+          finalized_at?: string | null
+          idempotency_key_sha256: string
+          operation_id: string
+          owner_user_id: string
+          reason: string
+          request_sha256: string
+          status?: string
+          target_turn_id: string
+          terminal_event_id?: string | null
+        }
+        Update: {
+          accepted_at?: string
+          agent_session_id?: string
+          care_space_id?: string
+          child_id?: string
+          final_effect_state?: string | null
+          final_outcome?: string | null
+          finalized_at?: string | null
+          idempotency_key_sha256?: string
+          operation_id?: string
+          owner_user_id?: string
+          reason?: string
+          request_sha256?: string
+          status?: string
+          target_turn_id?: string
+          terminal_event_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creciendo_cancel_commands_event_fk"
+            columns: ["terminal_event_id", "agent_session_id"]
+            isOneToOne: false
+            referencedRelation: "creciendo_channel_events"
+            referencedColumns: ["id", "agent_session_id"]
+          },
+          {
+            foreignKeyName: "creciendo_cancel_commands_session_scope_fk"
+            columns: [
+              "agent_session_id",
+              "care_space_id",
+              "child_id",
+              "owner_user_id",
+            ]
+            isOneToOne: false
+            referencedRelation: "agent_sessions"
+            referencedColumns: [
+              "id",
+              "care_space_id",
+              "child_id",
+              "owner_user_id",
+            ]
+          },
+        ]
+      }
+      creciendo_channel_events: {
+        Row: {
+          agent_session_id: string
+          care_space_id: string
+          child_id: string
+          created_at: string
+          event_type: string
+          event_version: string
+          id: string
+          occurred_at: string
+          owner_user_id: string
+          payload: Json
+          payload_sha256: string
+          sequence: number
+          source_id: string
+          source_kind: string
+          terminal: boolean
+          turn_id: string
+        }
+        Insert: {
+          agent_session_id: string
+          care_space_id: string
+          child_id: string
+          created_at?: string
+          event_type: string
+          event_version?: string
+          id?: string
+          occurred_at: string
+          owner_user_id: string
+          payload: Json
+          payload_sha256: string
+          sequence: number
+          source_id: string
+          source_kind: string
+          terminal: boolean
+          turn_id: string
+        }
+        Update: {
+          agent_session_id?: string
+          care_space_id?: string
+          child_id?: string
+          created_at?: string
+          event_type?: string
+          event_version?: string
+          id?: string
+          occurred_at?: string
+          owner_user_id?: string
+          payload?: Json
+          payload_sha256?: string
+          sequence?: number
+          source_id?: string
+          source_kind?: string
+          terminal?: boolean
+          turn_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creciendo_channel_events_session_scope_fk"
+            columns: [
+              "agent_session_id",
+              "care_space_id",
+              "child_id",
+              "owner_user_id",
+            ]
+            isOneToOne: false
+            referencedRelation: "agent_sessions"
+            referencedColumns: [
+              "id",
+              "care_space_id",
+              "child_id",
+              "owner_user_id",
+            ]
+          },
+        ]
+      }
+      creciendo_session_commands: {
+        Row: {
+          accepted_at: string
+          agent_session_id: string
+          care_space_id: string
+          child_id: string
+          command_kind: string
+          id: string
+          idempotency_key_sha256: string
+          message_id: string
+          owner_user_id: string
+          parts_sha256: string | null
+          request_sha256: string
+          safety_receipt_sha256: string | null
+          terminal_event_id: string | null
+          terminal_payload_sha256: string | null
+          turn_id: string
+        }
+        Insert: {
+          accepted_at?: string
+          agent_session_id: string
+          care_space_id: string
+          child_id: string
+          command_kind: string
+          id?: string
+          idempotency_key_sha256: string
+          message_id: string
+          owner_user_id: string
+          parts_sha256?: string | null
+          request_sha256: string
+          safety_receipt_sha256?: string | null
+          terminal_event_id?: string | null
+          terminal_payload_sha256?: string | null
+          turn_id: string
+        }
+        Update: {
+          accepted_at?: string
+          agent_session_id?: string
+          care_space_id?: string
+          child_id?: string
+          command_kind?: string
+          id?: string
+          idempotency_key_sha256?: string
+          message_id?: string
+          owner_user_id?: string
+          parts_sha256?: string | null
+          request_sha256?: string
+          safety_receipt_sha256?: string | null
+          terminal_event_id?: string | null
+          terminal_payload_sha256?: string | null
+          turn_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creciendo_session_commands_event_fk"
+            columns: ["terminal_event_id", "agent_session_id"]
+            isOneToOne: false
+            referencedRelation: "creciendo_channel_events"
+            referencedColumns: ["id", "agent_session_id"]
+          },
+          {
+            foreignKeyName: "creciendo_session_commands_session_scope_fk"
+            columns: [
+              "agent_session_id",
+              "care_space_id",
+              "child_id",
+              "owner_user_id",
+            ]
+            isOneToOne: false
+            referencedRelation: "agent_sessions"
+            referencedColumns: [
+              "id",
+              "care_space_id",
+              "child_id",
+              "owner_user_id",
+            ]
           },
         ]
       }
@@ -4685,6 +4944,79 @@ export type Database = {
       }
     }
     Functions: {
+      accept_creciendo_session_cancel: {
+        Args: {
+          p_authorization_version: string
+          p_care_space_id: string
+          p_child_id: string
+          p_idempotency_key_sha256: string
+          p_operation_id: string
+          p_product_session_id: string
+          p_reason: string
+          p_request_sha256: string
+        }
+        Returns: {
+          accepted_at: string
+          cancellation_outcome: string
+          cursor: string
+          effect_state: string
+          finalize_required: boolean
+          last_sequence: number
+          operation_id: string
+          outcome: string
+          turn_id: string
+        }[]
+      }
+      accept_creciendo_session_message: {
+        Args: {
+          p_authorization_version: string
+          p_care_space_id: string
+          p_child_id: string
+          p_client_message_id: string
+          p_command_kind: string
+          p_idempotency_key_sha256: string
+          p_parts: Json
+          p_product_session_id: string
+          p_proposed_turn_id: string
+          p_request_sha256: string
+          p_safety_receipt_sha256: string
+          p_terminal_event: Json
+        }
+        Returns: {
+          accepted_at: string
+          cursor: string
+          dispatch_required: boolean
+          eve_session_id: string
+          last_sequence: number
+          message_id: string
+          outcome: string
+          turn_id: string
+        }[]
+      }
+      append_creciendo_channel_event: {
+        Args: {
+          p_authorization_version: string
+          p_care_space_id: string
+          p_child_id: string
+          p_event_type: string
+          p_occurred_at?: string
+          p_owner_user_id: string
+          p_payload: Json
+          p_product_session_id: string
+          p_source_id: string
+          p_source_kind: string
+          p_terminal: boolean
+          p_turn_id: string
+        }
+        Returns: {
+          cursor: string
+          event_id: string
+          last_sequence: number
+          occurred_at: string
+          outcome: string
+          sequence: number
+        }[]
+      }
       bind_owned_eve_session: {
         Args: {
           p_authorization_version: string
@@ -4884,6 +5216,27 @@ export type Database = {
           status: string
         }[]
       }
+      finalize_creciendo_session_cancel: {
+        Args: {
+          p_authorization_version: string
+          p_cancellation_outcome: string
+          p_care_space_id: string
+          p_child_id: string
+          p_effect_state: string
+          p_operation_id: string
+          p_product_session_id: string
+        }
+        Returns: {
+          cancellation_outcome: string
+          cursor: string
+          effect_state: string
+          last_sequence: number
+          occurred_at: string
+          operation_id: string
+          outcome: string
+          turn_id: string
+        }[]
+      }
       get_confirmed_memory: {
         Args: {
           p_authorization_version: string
@@ -5053,6 +5406,27 @@ export type Database = {
         Returns: {
           assessment_id: string
           outcome: string
+        }[]
+      }
+      read_owned_creciendo_events: {
+        Args: {
+          p_after_sequence: number
+          p_authorization_version: string
+          p_care_space_id: string
+          p_child_id: string
+          p_limit?: number
+          p_product_session_id: string
+        }
+        Returns: {
+          cursor: string
+          data: Json
+          event_id: string
+          occurred_at: string
+          sequence: number
+          terminal: boolean
+          turn_id: string
+          type: string
+          version: string
         }[]
       }
       record_confirmed_anthropometry: {
@@ -5319,6 +5693,22 @@ export type Database = {
           membership_version: number
           permissions: string[]
           timezone: string
+        }[]
+      }
+      resolve_owned_creciendo_cursor: {
+        Args: {
+          p_authorization_version: string
+          p_care_space_id: string
+          p_child_id: string
+          p_cursor: string
+          p_product_session_id: string
+        }
+        Returns: {
+          after_sequence: number
+          first_available_sequence: number
+          last_sequence: number
+          outcome: string
+          terminal_event_id: string
         }[]
       }
       supersede_medication_plan: {
