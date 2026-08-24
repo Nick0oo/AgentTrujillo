@@ -2,7 +2,7 @@
 id: AT-11-17
 title: Prove reconnect, ordering, and cancellation
 module: 11-creciendo-channel-and-streaming
-status: review
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-08, AT-11-10, AT-11-15, AT-11-16]
@@ -132,6 +132,7 @@ Root implementation and self-review recorded on 2026-08-24:
 - The resolver correction recognizes semantic module suffixes such as `.v1` before appending `.ts`; this is required only because the new direct handler smoke imports the safety runtime through Node's eval dispatcher. `npm run eval -- tool-contracts` reaches its known Module 10 discovery comparison and reports `discovery_gate`; AT-11-18 explicitly owns the separate Module 11 fixture/baseline and must close it. The preserved tool-contract evaluator itself was not bypassed or replaced.
 - Fresh gates: `npm run typecheck`, full Eve/Nitro build using the ignored environment opaquely, `git diff --check`, exact three-path review, forbidden artifact and staged credential/private-key scans exited `0`. Eval SHA-256 is `4FA8620DF17ACED3A573B988C2423FAED30B8E2A3C25C0FF8E84BE1616167F07`; verification report SHA-256 is `813C7E609DE5CBED7BD322AE27747CAF300B7784A27E3C1A198CE63ECE25F37C`.
 - Implementation commit: `5780416` (`test(channel): prove reconnect, ordering, and cancellation`) contains exactly the three owned paths. Clinical approval remains unsigned product-owner conveyance without clinician attribution; `database_change: false`; no provider/deployment action occurred.
+- Fresh closure after roadmap review: `npm run eval -- channel-streaming` again passed `16/16` with two matching `111/111` runs and zero critical/isolation/leakage findings; `npm run typecheck` and `git diff --check` exited `0`, and the worktree was clean.
 
 Record routes/event versions, files, migration/config digests, test/eval counts, concurrency/reconnect matrix, raw fixture hashes, privacy scan, commands/exits, reviewers, and commit.
 
