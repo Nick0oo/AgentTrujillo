@@ -2,7 +2,7 @@
 id: AT-11-01
 title: Define Creciendo channel contracts
 module: 11-creciendo-channel-and-streaming
-status: ready
+status: in_progress
 execution: sequential
 parallel_group: null
 depends_on: [AT-10-33, AT-02-16]
