@@ -130,6 +130,34 @@ describe("medication lifecycle services", () => {
     await expect(intakeService.record(scope, { planId: plan.id, scheduledFor: "2026-08-16T08:00:00Z", state: "skipped", takenAt: "2026-08-16T08:01:00Z" }, { idempotencyKey: "inconsistent-state", digest: "caller" })).rejects.toThrow("MEDICATION_TAKEN_AT_FORBIDDEN");
   });
 
+  it("denies new or corrected intake facts after the plan is no longer active", async () => {
+    const store = createMemoryStore();
+    const planService = createMedicationPlanService(store, { now: () => new Date("2026-08-16T10:00:00Z") });
+    const plan = await planService.createDraft(scope, input(), { idempotencyKey: "plan-ended-intake", digest: "caller" });
+    await planService.confirm(scope, plan.id, { idempotencyKey: "confirm-ended-intake", digest: "caller" });
+    const intakeService = createMedicationIntakeService(store, { now: () => new Date("2026-08-16T10:00:00Z") });
+    const original = await intakeService.record(
+      scope,
+      { planId: plan.id, scheduledFor: "2026-08-16T08:00:00Z", state: "taken", takenAt: "2026-08-16T08:05:00Z" },
+      { idempotencyKey: "original-ended-intake", digest: "caller" },
+    );
+    await planService.end(scope, plan.id, "completed", { idempotencyKey: "end-intake-plan", digest: "caller" });
+
+    await expect(intakeService.record(
+      scope,
+      { planId: plan.id, scheduledFor: "2026-08-16T09:00:00Z", state: "unknown" },
+      { idempotencyKey: "new-ended-intake", digest: "caller" },
+    )).rejects.toThrow("MEDICATION_PLAN_NOT_ACTIVE");
+    await expect(intakeService.correct(
+      scope,
+      original.id,
+      { planId: plan.id, scheduledFor: "2026-08-16T08:00:00Z", state: "skipped" },
+      { idempotencyKey: "correct-ended-intake", digest: "caller" },
+    )).rejects.toThrow("MEDICATION_PLAN_NOT_ACTIVE");
+    await expect(intakeService.list(scope, plan.id, { from: "2026-08-16T00:00:00Z", to: "2026-08-17T00:00:00Z" }))
+      .resolves.toHaveLength(1);
+  });
+
   it("denies a stale scope before any persistence call", async () => {
     const store = createMemoryStore();
     const service = createMedicationPlanService(store, { now: () => new Date("2026-08-17T00:00:00Z") });
@@ -209,6 +237,13 @@ describe("medication lifecycle services", () => {
     const replayedSchedule = await schedules.materializeWithOutcome(scope, firstDraft.value.id, range, { idempotencyKey: "receipt-schedule", digest: "caller-b" });
     expect(firstSchedule.outcome).toBe("created");
     expect(replayedSchedule).toEqual({ outcome: "replayed", value: firstSchedule.value });
+
+    const intakes = createMedicationIntakeService(store, { now: () => new Date("2026-08-16T10:00:00Z") });
+    const intakeCommand = { planId: firstDraft.value.id, scheduledFor: "2026-08-16T08:00:00Z", state: "unknown" as const };
+    const firstIntake = await intakes.recordWithOutcome(scope, intakeCommand, { idempotencyKey: "receipt-intake", digest: "caller-a" });
+    const replayedIntake = await intakes.recordWithOutcome(scope, intakeCommand, { idempotencyKey: "receipt-intake", digest: "caller-b" });
+    expect(firstIntake.outcome).toBe("created");
+    expect(replayedIntake).toEqual({ outcome: "replayed", value: firstIntake.value });
   });
 
   it("marks adherence source incomplete when active facts conflict", async () => {
