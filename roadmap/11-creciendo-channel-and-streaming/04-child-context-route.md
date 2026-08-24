@@ -2,7 +2,7 @@
 id: AT-11-04
 title: Resolve active child context route
 module: 11-creciendo-channel-and-streaming
-status: in_progress
+status: review
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-03, AT-02-13]
@@ -120,6 +120,18 @@ Attempt guessed session IDs, forged tokens/cursors/authority, reasoning/tool lea
 Consume the raw endpoint with an NDJSON reference client through create/message/stream/reconnect/cancel/revoke/emergency cases; inspect discovery, headers, events, persistence, logs, and mobile fixture compatibility.
 
 ## Completion evidence
+
+Root implementation and self-review recorded on 2026-08-24:
+
+- Outcome: `POST /creciendo/v1/child-context` now parses the strict channel contract, negotiates only registered versions, consumes a bounded hashed per-actor nonce, resolves a fresh `read` scope through Module 02's request-scoped authorization RPC, fetches only the authorized active child's display name under RLS, and issues the fixed-audience two-minute child-context JWT. Production composition remains behind AT-11-03 authentication.
+- TDD evidence: the focused test first exited `1` because the route module did not exist; after implementation `5/5` focused route tests pass for success, contract/version rejection, uniform missing/sibling/foreign/revoked denial, nonce replay, actor isolation, capacity/expiry, summary/signing outage, safe response projection, and zero serialized authority.
+- Implementation commit: `ee295839502be2abd742f44d2caca0b75dc4bd16` (`feat(channel): resolve active child context route`).
+- Owned files: `agent/channels/creciendo.ts`; `src/channels/creciendo/routes/child-context.ts`; `tests/channels/creciendo/routes/child-context.test.ts`.
+- Affected verification before review: `npm test -- tests/channels tests/access` exited `0` with `17/17` files, `219` passed and one conditional skip; `npm run typecheck` and configured `npm run build` exited `0`.
+- Authorization/privacy review: bearer authentication precedes the route; the selected UUID is accepted only at this explicit boundary and is passed to `resolve_authorized_child_scope`; summary lookup predicates exact care space, child, active status and uses the request bearer; no service-role fallback exists; negative targets return identical safe `404 ACCESS_DENIED`; the response omits care space, permissions, authorization version, country, timezone, birth data and clinical data.
+- Token/replay review: nonce storage contains only SHA-256 keys, is synchronously consumed and capacity/TTL bounded; the JWT remains fixed `HS256`/issuer/audience/type/KID with expiry equal to the minimum of two minutes, scope lease and bearer; tokens/claims/keys are never logged or persisted.
+- Database/Cloud evidence: `database_change: false`; the route performs only request-scoped RLS reads at runtime. No local/Cloud schema, data, migration, grant, policy, Storage, environment file, or remote state was changed.
+- Staged review: exactly the three owned paths were staged; cached diff check, credential/private-key scan, artifact ignore check, and personal full diff review were clean.
 
 Record routes/event versions, files, migration/config digests, test/eval counts, concurrency/reconnect matrix, raw fixture hashes, privacy scan, commands/exits, reviewers, and commit.
 
