@@ -2,7 +2,7 @@
 id: AT-11-12
 title: Encode bounded NDJSON frames
 module: 11-creciendo-channel-and-streaming
-status: in_progress
+status: review
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-11]
@@ -118,6 +118,15 @@ Attempt guessed session IDs, forged tokens/cursors/authority, reasoning/tool lea
 Consume the raw endpoint with an NDJSON reference client through create/message/stream/reconnect/cancel/revoke/emergency cases; inspect discovery, headers, events, persistence, logs, and mobile fixture compatibility.
 
 ## Completion evidence
+
+Root implementation and self-review recorded on 2026-08-24:
+
+- Outcome: `encodeNdjsonEvent` exact-parses a `ChannelEvent`, deterministically serializes the schema-ordered projection, UTF-8 encodes the complete value, appends one LF and returns no bytes until the whole bounded frame exists. Content type is exactly `application/x-ndjson; charset=utf-8`; the frame cap is the channel-event cap plus the one delimiter byte.
+- Streaming: `createNdjsonStream` pulls at most one source event per available `ReadableStream` slot with high-water mark `1`, preserves monotonic public sequence, enqueues one full event per chunk, and closes/disposes the iterator immediately after a terminal event. Heartbeats are schema-valid events, never blank lines. Duplicate/regressive sequence fails before the conflicting frame.
+- Failure/cancellation: invalid/extra/circular/BigInt/control/oversized payloads become bounded code-only errors without raw content. Encoding completes before enqueue, so a bad next event cannot create a partial line. Reader cancellation never forwards its reason; external abort exposes only `NDJSON_STREAM_ABORTED`; iterator disposal failures and unknown stream causes are not logged or echoed.
+- TDD and coverage: the initial focused run exited `1` because the encoder module did not exist. Final focused verification passed `8/8`; all channel tests passed `9` files and `68/68`. Cases cover deterministic reordered keys, Unicode grapheme and escaped newline, byte cap, heartbeat, backpressure, terminal closure, partial-failure boundary, non-monotonic order, cancellation and pre-abort.
+- Fresh gates: `npm run typecheck`, full Eve/Nitro build with opaque ignored environment, `git diff --check`, exact owned-path/staged whitespace review, credential/private-key and forbidden-artifact scans passed. SHA-256 is `C983387F2C6BA6BAAD1B0AE6E934F8B2CFA4D60CA2C1BA3938B2CCD8E401F369` for the encoder and `A70B68B5D6EB603CCC53A49C7919F2DBEA86DA0A62F12946AE6DCC9716E90A83` for the test.
+- Implementation commit: `1298c26` (`feat(channel): encode bounded ndjson frames`) contains exactly the two owned paths. `database_change: false`; no Cloud/provider/deployment request or remote mutation occurred.
 
 Record routes/event versions, files, migration/config digests, test/eval counts, concurrency/reconnect matrix, raw fixture hashes, privacy scan, commands/exits, reviewers, and commit.
 
