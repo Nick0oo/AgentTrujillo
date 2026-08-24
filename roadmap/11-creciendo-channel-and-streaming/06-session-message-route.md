@@ -2,7 +2,7 @@
 id: AT-11-06
 title: Accept one authorized session message
 module: 11-creciendo-channel-and-streaming
-status: in_progress
+status: review
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-05, AT-04-11, AT-10-33]
@@ -120,6 +120,21 @@ Attempt guessed session IDs, forged tokens/cursors/authority, reasoning/tool lea
 Consume the raw endpoint with an NDJSON reference client through create/message/stream/reconnect/cancel/revoke/emergency cases; inspect discovery, headers, events, persistence, logs, and mobile fixture compatibility.
 
 ## Completion evidence
+
+Root implementation and self-review recorded on 2026-08-24 under the conveyed unsigned clinical-contract approval:
+
+- Outcome: `POST /creciendo/v1/sessions/:sessionId/messages` now parses only the strict versioned text-part contract, locates the product session through owner-scoped RLS, freshly resolves `read` plus `record` child access, checks owner/care-space/child/authorization version/status/expiry, verifies the audience-bound continuation JWT, calculates trusted chronological age from the authorized child row, and runs `SafetyPreflight` before any command persistence or Eve call.
+- TDD evidence: the focused test first exited `1` because `src/channels/creciendo/routes/session-message.ts` did not exist. After implementation, `10/10` focused tests pass for authorization order, permit-time and pre-Eve revocation, malformed/oversized/unknown input, forged continuation, guessed session, governed-package outage, urgent terminal behavior, persistence conflict/ambiguity, Eve/binding failure, concurrent identical/conflicting idempotency, replay suppression, and the installed Eve 0.27.13 send/resolve/get-session surface.
+- Implementation commit: `1e7079a852b3ed8345124de48a562e3e3a44d0a7` (`feat(channel): accept one authorized session message`).
+- Owned files: `agent/channels/creciendo.ts`; `src/channels/creciendo/routes/session-message.ts`; `tests/channels/creciendo/routes/session-message.test.ts`.
+- Affected verification before review: focused `10/10`; `npm test -- tests/channels` exited `0` with `7/7` files and `50/50` tests; `npm run typecheck` exited `0`; the Eve build executed through Node 24 with the ignored main environment loaded opaquely and required Expo-to-runtime variable aliases mapped in process memory, and exited `0` with a Nitro server build. No environment value was opened, printed, staged or committed; the accidentally copied tracked `.env.example` was restored byte-for-byte to `HEAD` before verification.
+- Safety review: the route invokes `SafetyPreflight.evaluate` before the message-command port and Eve, rechecks the live lease while evaluating, consumes the one-shot continue permit with another recheck, and rechecks again immediately before Eve. The emergency branch projects the evidence-bearing engine result into the strict four-field urgent-decision presenter input, sends the store only a SHA-256 safety receipt plus the canonical emergency widget, emits no raw guardian text there, and never calls Eve resolve/send, model, tool, workflow, notification or bind.
+- Authorization/isolation review: the path ID is only an RLS locator; the body cannot submit child/care-space/owner/permissions/security version/tool authority. Session lookup, live scope resolution, lease refresh, continuation binding, command RPC and Eve binding all recheck the same authenticated actor and immutable product-session scope. Missing, guessed, sibling, foreign, revoked, expired and forged cases collapse to the same non-enumerating denial.
+- Idempotency/effect review: raw idempotency keys are transformed into actor/care-space/child/session-scoped SHA-256 bindings and request bodies into separate fingerprints. Same-process concurrent identical requests share one persistence promise, conflicting reuse is rejected, Cloud replay is authoritative, and an idempotent replay never calls Eve again. A persisted input followed by revocation/provider/bind failure reports `committed` or `unknown` rather than claiming zero effect; an unbound replay may only reconcile an already-existing Eve session and cannot resend the message.
+- Eve/privacy review: the public continuation JWT and the internal Eve continuation are distinct. The internal handle is HMAC-bound to the product session, recovered through Eve's real `resolveActiveSession`/`getSession` APIs, and never returned. Eve receives only bounded text parts plus a minimal Supabase principal; it receives no bearer, child/care-space, permissions, authorization version, prompt, reasoning or tool choice.
+- Cloud ordering constraint: production calls the strict request-scoped `accept_creciendo_session_message` port and fails closed while it is absent. Amendment `f66d535` assigns its authenticated atomic implementation, cross-instance convergence and one immutable emergency event to AT-11-10's sole authorized forward migration; no direct guardian insert, service-role request handling, schema/grant change or remote mutation occurred in this leaf.
+- Clinical-package constraint inherited from completed Module 04: no real emergency package is activated, so the production package provider returns unavailable and the route abstains before persistence/Eve. Synthetic governed-package injection proves both urgent and continue branches without presenting the fixture as production clinical content.
+- Staged review: exactly the three owned paths were staged; cached diff check, credential/private-key scan, forbidden-path/artifact scan and personal full diff review were clean.
 
 Record routes/event versions, files, migration/config digests, test/eval counts, concurrency/reconnect matrix, raw fixture hashes, privacy scan, commands/exits, reviewers, and commit.
 
