@@ -33,6 +33,12 @@ import {
   handleSessionStream,
   type SessionStreamRouteBaseDependencies,
 } from "../../src/channels/creciendo/routes/session-stream";
+import {
+  createEveCancellationPort,
+  createSessionCancelRouteDependencies,
+  handleCancelSession,
+  type SessionCancelRouteBaseDependencies,
+} from "../../src/channels/creciendo/routes/session-cancel";
 
 export const MAX_REQUEST_BODY_BYTES = 64 * 1_024;
 export const DEFAULT_REQUEST_TIMEOUT_MS = 15_000;
@@ -297,9 +303,6 @@ export function withProductionChannelAuth(handler: AuthenticatedChannelHandler):
   };
 }
 
-const unavailableAfterAuthentication: AuthenticatedChannelHandler = async () => errorResponse(503, "CHANNEL_UNAVAILABLE");
-const guardedUnavailable = withProductionChannelAuth(unavailableAfterAuthentication);
-
 let productionChildContextDependencies: ChildContextRouteDependencies | undefined;
 
 function getProductionChildContextDependencies(): ChildContextRouteDependencies {
@@ -366,13 +369,40 @@ const productionSessionStream: AuthenticatedChannelHandler = (request, auth, arg
   });
 const guardedSessionStream = withProductionChannelAuth(productionSessionStream);
 
+let productionSessionCancelRuntime: Readonly<{
+  config: ReturnType<typeof loadRuntimeConfig>;
+  dependencies: SessionCancelRouteBaseDependencies;
+}> | undefined;
+
+function getProductionSessionCancelRuntime() {
+  productionSessionCancelRuntime ??= (() => {
+    const config = loadRuntimeConfig(process.env);
+    return Object.freeze({ config, dependencies: createSessionCancelRouteDependencies(config) });
+  })();
+  return productionSessionCancelRuntime;
+}
+
+const productionSessionCancel: AuthenticatedChannelHandler = (request, auth, args) => {
+  const runtime = getProductionSessionCancelRuntime();
+  return handleCancelSession(request, auth, {
+    ...runtime.dependencies,
+    sessionId: args.params.sessionId ?? "",
+    eve: createEveCancellationPort({
+      cancel: args.cancel,
+      resolveActiveSession: args.resolveActiveSession,
+      getSession: args.getSession,
+    }, runtime.config),
+  });
+};
+const guardedSessionCancel = withProductionChannelAuth(productionSessionCancel);
+
 export default createCreciendoChannel({
   handlers: {
     childContext: guardedChildContext,
     createSession: guardedSessionCreate,
     sendMessage: guardedSessionMessage,
     streamSession: guardedSessionStream,
-    cancelSession: guardedUnavailable,
+    cancelSession: guardedSessionCancel,
   },
   allowedOrigins: [],
 });
