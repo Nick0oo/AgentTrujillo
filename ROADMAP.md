@@ -59,7 +59,7 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-Module 10 is closed at 33/33 and its entry gates were replayed successfully against `origin/main` on 2026-08-24. `AT-11-01` is unblocked by `AT-10-33` and completed `AT-02-16`, but remains unclaimed and `pending` until its individual claim commit. No Module 11 or 12 leaf is active at this reconciliation point.
+Module 10 is closed at 33/33 and its entry gates were replayed successfully against `origin/main` on 2026-08-24. `AT-11-01` is `ready`: `AT-10-33` and `AT-02-16` are completed, the Module 11 reconciliation is committed, conveyed clinical approval is recorded, and its exclusive paths are free. No Module 12 leaf is active.
 
 Root-authorized Module 11 reconciliation (2026-08-24): Eve 0.27.13 is binding; `/creciendo/v1` is the sole five-route public family; the linked Cloud source is `CreciendoApp` (`yapjiinrjsrothzgzxsv`) with verified head `20260823230000`; AT-11-10 owns forward migration `20260824100000`, free pgTAP ID `038`, and authoritative generated target `agent/lib/supabase/database.types.ts`; AT-11-18 modifies the existing internal channel. Only the reviewed AT-11-10 forward migration is authorized for remote application after dry-run and Cloud safety review. Conservative clinical approval for the seven marked Module 11 leaves is recorded as unsigned product-owner conveyance without clinician identity or signature attribution.
 
