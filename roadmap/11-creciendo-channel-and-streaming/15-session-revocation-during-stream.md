@@ -18,12 +18,17 @@ touches:
   create:
     - src/channels/creciendo/stream-revocation.ts
     - tests/channels/creciendo/stream-revocation.test.ts
-  modify: []
+  modify:
+    - src/channels/creciendo/routes/session-stream.ts
+    - tests/channels/creciendo/routes/session-stream.test.ts
   test:
     - tests/channels/creciendo/stream-revocation.test.ts
+    - tests/channels/creciendo/routes/session-stream.test.ts
 exclusive_paths:
   - src/channels/creciendo/stream-revocation.ts
   - tests/channels/creciendo/stream-revocation.test.ts
+  - src/channels/creciendo/routes/session-stream.ts
+  - tests/channels/creciendo/routes/session-stream.test.ts
 forbidden_paths:
   - .env
   - supabase/migrations/20260814000000_platform_foundation.sql

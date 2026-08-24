@@ -18,12 +18,14 @@ touches:
   create:
     - src/channels/creciendo/routes/child-context.ts
     - tests/channels/creciendo/routes/child-context.test.ts
-  modify: []
+  modify:
+    - agent/channels/creciendo.ts
   test:
     - tests/channels/creciendo/routes/child-context.test.ts
 exclusive_paths:
   - src/channels/creciendo/routes/child-context.ts
   - tests/channels/creciendo/routes/child-context.test.ts
+  - agent/channels/creciendo.ts
 forbidden_paths:
   - .env
   - supabase/migrations/20260814000000_platform_foundation.sql

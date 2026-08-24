@@ -17,13 +17,22 @@ requires_clinical_approval: false
 touches:
   create:
     - tests/channels/eve/internal-channel-policy.test.ts
+    - tests/fixtures/runtime/eve-info-module-11.json
   modify:
     - agent/channels/eve.ts
+    - agent/channels/creciendo.ts
+    - scripts/verify-eve-discovery.mjs
+    - tests/runtime/eve-discovery.test.ts
   test:
     - tests/channels/eve/internal-channel-policy.test.ts
+    - tests/runtime/eve-discovery.test.ts
 exclusive_paths:
   - agent/channels/eve.ts
+  - agent/channels/creciendo.ts
   - tests/channels/eve/internal-channel-policy.test.ts
+  - tests/fixtures/runtime/eve-info-module-11.json
+  - scripts/verify-eve-discovery.mjs
+  - tests/runtime/eve-discovery.test.ts
 forbidden_paths:
   - .env
   - supabase/migrations/20260814000000_platform_foundation.sql

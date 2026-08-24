@@ -18,12 +18,15 @@ touches:
   create:
     - tests/evals/channel-streaming.eval.ts
     - docs/verification/creciendo-channel.md
-  modify: []
+  modify:
+    - tests/evals/tool-contracts.eval.ts
   test:
     - docs/verification/creciendo-channel.md
+    - tests/evals/tool-contracts.eval.ts
 exclusive_paths:
   - tests/evals/channel-streaming.eval.ts
   - docs/verification/creciendo-channel.md
+  - tests/evals/tool-contracts.eval.ts
 forbidden_paths:
   - .env
   - supabase/migrations/20260814000000_platform_foundation.sql
