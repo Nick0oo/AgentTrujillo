@@ -12,6 +12,11 @@ import {
   type AuthenticatedChannelHandler,
   type CreciendoAuthDependencies,
 } from "../../src/channels/creciendo/auth-middleware";
+import {
+  createChildContextRouteDependencies,
+  handleChildContext,
+  type ChildContextRouteDependencies,
+} from "../../src/channels/creciendo/routes/child-context";
 
 export const MAX_REQUEST_BODY_BYTES = 64 * 1_024;
 export const DEFAULT_REQUEST_TIMEOUT_MS = 15_000;
@@ -271,9 +276,20 @@ export function withProductionChannelAuth(handler: AuthenticatedChannelHandler):
 const unavailableAfterAuthentication: AuthenticatedChannelHandler = async () => errorResponse(503, "CHANNEL_UNAVAILABLE");
 const guardedUnavailable = withProductionChannelAuth(unavailableAfterAuthentication);
 
+let productionChildContextDependencies: ChildContextRouteDependencies | undefined;
+
+function getProductionChildContextDependencies(): ChildContextRouteDependencies {
+  productionChildContextDependencies ??= createChildContextRouteDependencies(loadRuntimeConfig(process.env));
+  return productionChildContextDependencies;
+}
+
+const productionChildContext: AuthenticatedChannelHandler = (request, auth) =>
+  handleChildContext(request, auth, getProductionChildContextDependencies());
+const guardedChildContext = withProductionChannelAuth(productionChildContext);
+
 export default createCreciendoChannel({
   handlers: {
-    childContext: guardedUnavailable,
+    childContext: guardedChildContext,
     createSession: guardedUnavailable,
     sendMessage: guardedUnavailable,
     streamSession: guardedUnavailable,
