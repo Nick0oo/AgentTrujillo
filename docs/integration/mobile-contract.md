@@ -73,7 +73,9 @@ Kinds/versiones V1 vinculantes:
 | Operación | Ruta | Nota de seguridad |
 |---|---|---|
 | bootstrap inicial | `POST /creciendo/v1/onboarding` | identidad derivada del JWT; crea espacio, membresía, niño, acceso, observaciones declaradas y consentimiento en una transacción |
+| directorio autorizado | `GET /creciendo/v1/children` | devuelve únicamente espacios y niños activos para el tutor autenticado; no concede autoridad por sí mismo |
 | contexto del niño | `POST /creciendo/v1/child-context` | el ID solicitado se autoriza antes de firmar contexto |
+| resumen del dashboard | `GET /creciendo/v1/dashboard` | exige `X-Child-Context`; reautoriza el alcance y devuelve una proyección backend sin cálculos clínicos del móvil |
 | crear sesión | `POST /creciendo/v1/sessions` | el alcance del niño queda inmutable y no proviene del cliente |
 | enviar turno | `POST /creciendo/v1/sessions/{sessionId}/messages` | revalida ownership, permiso, versión de seguridad y red flags antes de Eve |
 | conectar o reanudar | `GET /creciendo/v1/sessions/{sessionId}/stream` | cursor opaco; el ID de sesión nunca concede acceso |
@@ -107,3 +109,12 @@ Cada cambio de contrato exige:
 - prueba de consumo en móvil;
 - compatibilidad con la versión móvil mínima soportada;
 - actualización de estos Markdown.
+
+### Directorio y resumen del dashboard (`AT-11-20`)
+
+Estas lecturas son estrictamente de consulta y no sustituyen la autorización del contexto infantil:
+
+- `GET /creciendo/v1/children` responde `creciendo.directory.v1` con `requestId`, espacios de cuidado y niños autorizados. Cada niño incluye UUID, nombre de presentación, fecha de nacimiento, país clínico y zona horaria IANA.
+- `GET /creciendo/v1/dashboard` requiere `Authorization: Bearer …` y `X-Child-Context: <token opaco>`. El backend verifica el token, membresía, permiso `read`, niño y espacio antes de consultar la proyección.
+- El resumen responde `creciendo.dashboard.v1`, conserva `scopeVersion: authorized-child-scope.v1`, y representa datos clínicos ausentes como `null`. La app no calcula percentiles, edad corregida, elegibilidad, dosis ni reglas.
+- Ambos contratos son `no-store`, rechazan campos desconocidos y nunca exponen datos de un niño no autorizado.

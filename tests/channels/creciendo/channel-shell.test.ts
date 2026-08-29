@@ -1,4 +1,7 @@
+import { Readable } from "node:stream";
+
 import { describe, expect, it, vi } from "vitest";
+import { NodeRequest } from "srvx/node";
 
 import defaultChannel, {
   CRECIENDO_ROUTE_SPECS,
@@ -13,7 +16,9 @@ function handlers(overrides: Partial<CreciendoRouteHandlers> = {}): CreciendoRou
   const ok = vi.fn(async () => Response.json({ ok: true }));
   return {
     onboarding: ok,
+    childDirectory: ok,
     childContext: ok,
+    dashboard: ok,
     createSession: ok,
     sendMessage: ok,
     streamSession: ok,
@@ -38,10 +43,10 @@ async function invoke(
 }
 
 describe("Creciendo Eve channel shell", () => {
-  it("mounts exactly the canonical five-route public surface", () => {
+  it("mounts the canonical public surface", () => {
     const channel = createCreciendoChannel({ handlers: handlers(), allowedOrigins: [ALLOWED_ORIGIN] });
     expect(channel.routes.map(({ method, path }) => ({ method, path }))).toEqual(CRECIENDO_ROUTE_SPECS);
-    expect(channel.routes).toHaveLength(6);
+    expect(channel.routes).toHaveLength(8);
     expect(channel.routes.some(({ path }) => path.startsWith("/eve/"))).toBe(false);
     expect(channel.receive).toBeUndefined();
     expect(channel.cors).toEqual({
@@ -151,6 +156,32 @@ describe("Creciendo Eve channel shell", () => {
     expect(response.headers.get("cache-control")).toBe("no-store");
     expect(response.headers.get("x-content-type-options")).toBe("nosniff");
     expect(response.headers.has("x-powered-by")).toBe(false);
+  });
+
+  it("adapts the srvx NodeRequest without relying on cross-implementation private slots", async () => {
+    const selected = vi.fn(async (request: Request) => {
+      expect(await request.json()).toEqual({ hello: "world" });
+      return Response.json({ ok: true });
+    });
+    const channel = createCreciendoChannel({
+      handlers: handlers({ createSession: selected }),
+      allowedOrigins: [],
+    });
+    const incoming = Object.assign(Readable.from([Buffer.from("{\"hello\":\"world\"}")]), {
+      method: "POST",
+      url: "/creciendo/v1/sessions",
+      headers: { host: "agent.test", "content-type": "application/json", "content-length": "17" },
+      rawHeaders: ["Host", "agent.test", "Content-Type", "application/json", "Content-Length", "17"],
+      complete: true,
+      socket: { remoteAddress: "127.0.0.1", localAddress: "127.0.0.1", localPort: 2000 },
+    });
+    const foreignRequest = new NodeRequest({ req: incoming as never });
+
+    const response = await invoke(channel, "POST", "/creciendo/v1/sessions", foreignRequest as never);
+
+    expect(response.status).toBe(200);
+    expect(await response.json()).toEqual({ ok: true });
+    expect(selected).toHaveBeenCalledOnce();
   });
 
   it("maps dependency failures, caller aborts and deadlines without leaking causes", async () => {

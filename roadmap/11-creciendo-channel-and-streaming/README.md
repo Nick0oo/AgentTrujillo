@@ -37,6 +37,12 @@ The mobile onboarding flow needs one atomic persistence boundary before the acti
 
 The database RPC creates the guardian's initial care space, owner membership, child, child access, declared allergy observations and accepted privacy-consent record in one transaction. A private hash-only operation ledger and a per-guardian transaction lock make same-key retries replay the original IDs and make conflicting payloads return a safe conflict. The RPC refuses to proceed when no active, effective consent definition exists; consent content and legal approval are not invented by this amendment. No production or Cloud mutation is authorized by the amendment.
 
+## Root-authorized directory and dashboard read-model amendment — 2026-08-29
+
+The active-child and dashboard mobile module requires an authenticated read boundary after onboarding. `AT-11-20` adds `GET /creciendo/v1/children` and `GET /creciendo/v1/dashboard` to the composed Creciendo channel. The directory is derived from request-scoped Supabase reads of active child access, care spaces, and children. The dashboard requires the opaque `X-Child-Context` token, reauthorizes the scope, and returns only the strict `creciendo.dashboard.v1` projection.
+
+These routes are read-only, do not grant child authority, do not calculate clinical values in the client, and return safe typed failures. No production or Cloud mutation is authorized by this amendment.
+
 ## Exit gate
 
 All eighteen leaves prove strict authentication/ownership, bounded request/event schemas, terminal emergency handling before LLM, monotonic persisted sequences, cursor/continuation verification, safe Eve event mapping, reasoning suppression, valid one-line NDJSON, phase-aware errors, revocation during stream, mobile fixtures, reconnect/cancel correctness, zero duplicate effects, and no public standard Eve session inspection.
@@ -68,12 +74,15 @@ Types and channel shell lead to authentication and child/session routes. Continu
 | [AT-11-17](17-stream-reconnect-and-cancel-tests.md) | stream reconnect and cancel tests | no |
 | [AT-11-18](18-internal-eve-channel-policy.md) | internal eve channel policy | no |
 | [AT-11-19](19-onboarding-bootstrap.md) | atomic onboarding bootstrap route and persistence | yes |
+| [AT-11-20](20-directory-and-dashboard-read-model.md) | authorized child directory and dashboard read model | no |
 
 ## Public route family
 
 ```text
 POST /creciendo/v1/onboarding
+GET  /creciendo/v1/children
 POST /creciendo/v1/child-context
+GET  /creciendo/v1/dashboard
 POST /creciendo/v1/sessions
 POST /creciendo/v1/sessions/:sessionId/messages
 GET  /creciendo/v1/sessions/:sessionId/stream
