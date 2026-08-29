@@ -40,6 +40,7 @@
     "eve": "0.27.13",
     "jose": "6.2.9",
     "json-canonicalize": "^1.2.0",
+    "workflow": "4.8.5",
     "zod": "4.4.3"
   },
   "devDependencies": {
