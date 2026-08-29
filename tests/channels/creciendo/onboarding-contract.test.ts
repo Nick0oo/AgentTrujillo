@@ -32,6 +32,52 @@ describe("Creciendo onboarding contract", () => {
     expect(ONBOARDING_REQUEST_SCHEMA.safeParse({ ...VALID, child: { ...VALID.child, gestationalAgeWeeks: 36 } }).success).toBe(false);
   });
 
+  test("accepts the optional child identity and birth details", () => {
+    const result = ONBOARDING_REQUEST_SCHEMA.safeParse({
+      ...VALID,
+      child: {
+        ...VALID.child,
+        familyNames: "García López",
+        preferredName: "Leo",
+        timeOfBirth: "14:35",
+        birthTimeZone: "America/Bogota",
+        gestationalAgeDays: null,
+        birthWeightGrams: 3250,
+      },
+    });
+
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.child).toMatchObject({
+        familyNames: "García López",
+        preferredName: "Leo",
+        timeOfBirth: "14:35",
+        birthTimeZone: "America/Bogota",
+        gestationalAgeDays: null,
+        birthWeightGrams: 3250,
+      });
+    }
+  });
+
+  test("rejects inconsistent birth time and timezone or invalid birth weight", () => {
+    expect(ONBOARDING_REQUEST_SCHEMA.safeParse({
+      ...VALID,
+      child: { ...VALID.child, timeOfBirth: "14:35" },
+    }).success).toBe(false);
+    expect(ONBOARDING_REQUEST_SCHEMA.safeParse({
+      ...VALID,
+      child: { ...VALID.child, birthTimeZone: "America/Bogota" },
+    }).success).toBe(false);
+    expect(ONBOARDING_REQUEST_SCHEMA.safeParse({
+      ...VALID,
+      child: { ...VALID.child, birthWeightGrams: 0 },
+    }).success).toBe(false);
+    expect(ONBOARDING_REQUEST_SCHEMA.safeParse({
+      ...VALID,
+      child: { ...VALID.child, gestationalAgeDays: 7 },
+    }).success).toBe(false);
+  });
+
   test("validates the bounded success projection", () => {
     expect(ONBOARDING_RESPONSE_SCHEMA.safeParse({
       contractVersion: "onboarding.v1",

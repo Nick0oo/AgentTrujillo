@@ -121,6 +121,12 @@ export function createRpcOnboardingPersistence(
           p_consent_type: "privacy",
           p_consent_jurisdiction: input.request.child.countryOfCare,
           p_consent_locale: input.request.child.countryOfCare === "CO" ? "es-CO" : "en-US",
+          p_family_names: input.request.child.familyNames,
+          p_preferred_name: input.request.child.preferredName,
+          p_time_of_birth: input.request.child.timeOfBirth,
+          p_birth_time_zone: input.request.child.birthTimeZone,
+          p_gestational_age_days: input.request.child.gestationalAgeDays,
+          p_birth_weight_grams: input.request.child.birthWeightGrams,
         } as never);
         if (result.error) return { error: mapPersistenceError(result.error.message) };
         const row = Array.isArray(result.data) ? result.data[0] : result.data;
