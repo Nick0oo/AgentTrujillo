@@ -4,6 +4,12 @@
 
 Agent Trujillo expone exclusivamente `/creciendo/v1` como interface remota pública para Creciendo. La app puede solicitar una operación, pero el backend decide identidad, niño, país clínico, permisos, reglas y entitlements. Un campo enviado por la app nunca reemplaza estas verificaciones.
 
+## Bootstrap de onboarding
+
+Antes de activar el contexto del niño, la app confirma el borrador mediante `POST /creciendo/v1/onboarding`. El cuerpo versionado es `onboarding.v1`; contiene el nombre del espacio, los datos basales del niño, la relación del tutor, las alergias declaradas y `privacyConsentAccepted: true`. No contiene `guardianId`: el backend lo deriva del JWT autenticado.
+
+La app genera una `idempotencyKey` opaca y la conserva durante los reintentos de la misma confirmación. Puede enviarla también como `Idempotency-Key`, que debe coincidir con el campo JSON. `201`/`created` confirma los IDs `careSpaceId` y `childId`; `200`/`replayed` devuelve los mismos IDs para una repetición idéntica. `409 IDEMPOTENCY_CONFLICT` o `409 ONBOARDING_ALREADY_EXISTS` no se deben convertir en éxito. La app conserva el borrador ante cualquier error y no crea IDs locales.
+
 ## Flujo de sesión
 
 1. Creciendo obtiene un JWT de Supabase Auth.
@@ -66,6 +72,7 @@ Kinds/versiones V1 vinculantes:
 
 | Operación | Ruta | Nota de seguridad |
 |---|---|---|
+| bootstrap inicial | `POST /creciendo/v1/onboarding` | identidad derivada del JWT; crea espacio, membresía, niño, acceso, observaciones declaradas y consentimiento en una transacción |
 | contexto del niño | `POST /creciendo/v1/child-context` | el ID solicitado se autoriza antes de firmar contexto |
 | crear sesión | `POST /creciendo/v1/sessions` | el alcance del niño queda inmutable y no proviene del cliente |
 | enviar turno | `POST /creciendo/v1/sessions/{sessionId}/messages` | revalida ownership, permiso, versión de seguridad y red flags antes de Eve |

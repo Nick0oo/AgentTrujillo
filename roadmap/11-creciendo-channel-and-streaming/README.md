@@ -31,6 +31,12 @@ The current product-owner instruction corrects the pending Module 11 contract be
 - AT-11-16 contract-fixture correction: the frozen v1 event union and binding five-route surface contain no upload-ticket event. AT-11-16 must not invent a signed upload URL; it owns an additive runtime-schema fixture verifier so its NDJSON, routes, versions and closed widget registry remain machine-verifiable. A future upload capability requires a separately reviewed contract version.
 - AT-11-16 transport-document correction: the pre-runtime mobile prose incorrectly prescribed `X-Child-Context` on every request and header-only idempotency. AT-11-16 owns `docs/integration/mobile-contract.md` only to document the completed v1 wire contract: child context token in session-create JSON, continuation token in message/cancel JSON and GET stream header, and exact JSON `idempotencyKey` for commands. Allowed CORS headers are not authority.
 
+## Root-authorized onboarding bootstrap amendment — 2026-08-29
+
+The mobile onboarding flow needs one atomic persistence boundary before the active-child and dashboard modules can consume a created profile. `AT-11-19` adds the authenticated `POST /creciendo/v1/onboarding` route and its forward-only bootstrap migration. The route derives the guardian from the Supabase JWT, accepts only the strict `onboarding.v1` request, and returns only the created care-space/child UUIDs plus `resourceVersion`.
+
+The database RPC creates the guardian's initial care space, owner membership, child, child access, declared allergy observations and accepted privacy-consent record in one transaction. A private hash-only operation ledger and a per-guardian transaction lock make same-key retries replay the original IDs and make conflicting payloads return a safe conflict. The RPC refuses to proceed when no active, effective consent definition exists; consent content and legal approval are not invented by this amendment. No production or Cloud mutation is authorized by the amendment.
+
 ## Exit gate
 
 All eighteen leaves prove strict authentication/ownership, bounded request/event schemas, terminal emergency handling before LLM, monotonic persisted sequences, cursor/continuation verification, safe Eve event mapping, reasoning suppression, valid one-line NDJSON, phase-aware errors, revocation during stream, mobile fixtures, reconnect/cancel correctness, zero duplicate effects, and no public standard Eve session inspection.
@@ -61,10 +67,12 @@ Types and channel shell lead to authentication and child/session routes. Continu
 | [AT-11-16](16-mobile-contract-fixtures.md) | mobile contract fixtures | no |
 | [AT-11-17](17-stream-reconnect-and-cancel-tests.md) | stream reconnect and cancel tests | no |
 | [AT-11-18](18-internal-eve-channel-policy.md) | internal eve channel policy | no |
+| [AT-11-19](19-onboarding-bootstrap.md) | atomic onboarding bootstrap route and persistence | yes |
 
 ## Public route family
 
 ```text
+POST /creciendo/v1/onboarding
 POST /creciendo/v1/child-context
 POST /creciendo/v1/sessions
 POST /creciendo/v1/sessions/:sessionId/messages
@@ -72,7 +80,7 @@ GET  /creciendo/v1/sessions/:sessionId/stream
 POST /creciendo/v1/sessions/:sessionId/cancel
 ```
 
-All routes authenticate. Path/session IDs are locators only; current owner, child association, security version, and token audience are independently verified.
+All routes authenticate. The onboarding route derives the guardian only from the JWT and has no child or care-space locator. Path/session IDs on the remaining routes are locators only; current owner, child association, security version, and token audience are independently verified.
 
 ## Streaming boundary
 

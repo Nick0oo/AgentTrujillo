@@ -125,6 +125,7 @@ describe("Eve discovery gate", () => {
     expect(creciendoRoutes).toEqual([
       { name: "creciendo", kind: "http", method: "GET", urlPath: "/creciendo/v1/sessions/:sessionId/stream" },
       { name: "creciendo", kind: "http", method: "POST", urlPath: "/creciendo/v1/child-context" },
+      { name: "creciendo", kind: "http", method: "POST", urlPath: "/creciendo/v1/onboarding" },
       { name: "creciendo", kind: "http", method: "POST", urlPath: "/creciendo/v1/sessions" },
       { name: "creciendo", kind: "http", method: "POST", urlPath: "/creciendo/v1/sessions/:sessionId/cancel" },
       { name: "creciendo", kind: "http", method: "POST", urlPath: "/creciendo/v1/sessions/:sessionId/messages" },

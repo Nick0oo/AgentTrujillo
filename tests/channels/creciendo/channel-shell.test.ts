@@ -12,6 +12,7 @@ const ALLOWED_ORIGIN = "https://app.creciendo.test";
 function handlers(overrides: Partial<CreciendoRouteHandlers> = {}): CreciendoRouteHandlers {
   const ok = vi.fn(async () => Response.json({ ok: true }));
   return {
+    onboarding: ok,
     childContext: ok,
     createSession: ok,
     sendMessage: ok,
@@ -40,7 +41,7 @@ describe("Creciendo Eve channel shell", () => {
   it("mounts exactly the canonical five-route public surface", () => {
     const channel = createCreciendoChannel({ handlers: handlers(), allowedOrigins: [ALLOWED_ORIGIN] });
     expect(channel.routes.map(({ method, path }) => ({ method, path }))).toEqual(CRECIENDO_ROUTE_SPECS);
-    expect(channel.routes).toHaveLength(5);
+    expect(channel.routes).toHaveLength(6);
     expect(channel.routes.some(({ path }) => path.startsWith("/eve/"))).toBe(false);
     expect(channel.receive).toBeUndefined();
     expect(channel.cors).toEqual({

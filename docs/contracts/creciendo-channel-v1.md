@@ -18,6 +18,7 @@ Every request requires `Authorization: Bearer <Supabase JWT>`. The backend deriv
 
 | Operation | Route | Exact trust material |
 |---|---|---|
+| bootstrap initial care space and child | `POST /creciendo/v1/onboarding` | JWT-derived guardian plus strict `onboarding.v1` body and matching `Idempotency-Key` when present; the backend atomically creates the initial records |
 | authorize selected child | `POST /creciendo/v1/child-context` | JWT plus body `childId`; current membership and child access are checked before a short opaque token is returned |
 | create immutable session | `POST /creciendo/v1/sessions` | JWT plus body `childContextToken`; current scope is revalidated and pinned to one owner, care space and child |
 | submit one turn | `POST /creciendo/v1/sessions/{sessionId}/messages` | JWT plus body `continuationToken`; ownership and red flags are rechecked before Eve/model/tools |
@@ -25,6 +26,12 @@ Every request requires `Authorization: Bearer <Supabase JWT>`. The backend deriv
 | request cancellation | `POST /creciendo/v1/sessions/{sessionId}/cancel` | JWT plus body `continuationToken`; exact active turn and ownership are rechecked |
 
 JSON commands require `Content-Type: application/json`. `X-Child-Context` and `Idempotency-Key` remain allowed by CORS for compatibility, but are not read as authority: the exact v1 fields are `childContextToken` and `idempotencyKey` in JSON. Message and cancel JSON use `continuationToken`; only the GET stream uses `X-Continuation-Token` because it has no request body.
+
+### Onboarding bootstrap
+
+The onboarding request uses `contractVersion: "onboarding.v1"`, a bounded opaque `idempotencyKey`, `careSpace.name`, `child` (`givenNames`, ISO `birthDate`, `referenceSex`, `countryOfCare`, IANA `timezone`, `isPremature`, nullable `gestationalAgeWeeks`, and declared `allergies`), `guardianRelationship`, and `privacyConsentAccepted: true`. The guardian identity is never accepted from the body. A successful first request returns `201` with `status: "created"`, `careSpaceId`, `childId`, and `resourceVersion`; an identical retry returns `200` with the same IDs. Reusing a key for a different canonical request returns `409 IDEMPOTENCY_CONFLICT`. If no active effective privacy-consent definition exists for the selected jurisdiction/locale, the operation fails safely without partial records.
+
+The route's persistence operation creates the care space, owner membership, child, explicit owner child access, declared allergy observations and consent record atomically. The mobile client must preserve the draft on any non-success response and retry a transport-uncertain request with the same idempotency key.
 
 No public route invokes a tool, reads clinical authority, inspects an Eve session or exposes an internal provider. `/eve/v1/*` is not a Creciendo interface and remains disabled publicly or operator-isolated.
 

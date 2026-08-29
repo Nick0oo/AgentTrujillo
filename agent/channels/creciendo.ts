@@ -39,11 +39,17 @@ import {
   handleCancelSession,
   type SessionCancelRouteBaseDependencies,
 } from "../../src/channels/creciendo/routes/session-cancel";
+import {
+  createRpcOnboardingPersistence,
+  handleOnboarding,
+  type OnboardingRouteDependencies,
+} from "../../src/channels/creciendo/routes/onboarding";
 
 export const MAX_REQUEST_BODY_BYTES = 64 * 1_024;
 export const DEFAULT_REQUEST_TIMEOUT_MS = 15_000;
 
 export const CRECIENDO_ROUTE_SPECS = Object.freeze([
+  Object.freeze({ method: "POST" as const, path: "/creciendo/v1/onboarding" }),
   Object.freeze({ method: "POST" as const, path: "/creciendo/v1/child-context" }),
   Object.freeze({ method: "POST" as const, path: "/creciendo/v1/sessions" }),
   Object.freeze({ method: "POST" as const, path: "/creciendo/v1/sessions/:sessionId/messages" }),
@@ -54,6 +60,7 @@ export const CRECIENDO_ROUTE_SPECS = Object.freeze([
 export type CreciendoRouteHandler = HttpRouteDefinition["handler"];
 
 export type CreciendoRouteHandlers = Readonly<{
+  onboarding: CreciendoRouteHandler;
   childContext: CreciendoRouteHandler;
   createSession: CreciendoRouteHandler;
   sendMessage: CreciendoRouteHandler;
@@ -111,7 +118,7 @@ function validateOrigin(origin: string): boolean {
 function validateDependencies(input: CreciendoChannelDependencies): void {
   const handlers = input.handlers;
   if (!handlers
-    || Object.values(handlers).length !== 5
+    || Object.values(handlers).length !== 6
     || Object.values(handlers).some((handler) => typeof handler !== "function")
     || input.allowedOrigins.length > 16
     || new Set(input.allowedOrigins).size !== input.allowedOrigins.length
@@ -271,11 +278,12 @@ export function createCreciendoChannel(dependencies: CreciendoChannelDependencie
       preflight: { statusCode: 204 },
     },
     routes: [
-      POST(CRECIENDO_ROUTE_SPECS[0].path, boundary(dependencies.handlers.childContext, { allowedOrigins, timeoutMs, json: true })),
-      POST(CRECIENDO_ROUTE_SPECS[1].path, boundary(dependencies.handlers.createSession, { allowedOrigins, timeoutMs, json: true })),
-      POST(CRECIENDO_ROUTE_SPECS[2].path, boundary(dependencies.handlers.sendMessage, { allowedOrigins, timeoutMs, json: true })),
-      GET(CRECIENDO_ROUTE_SPECS[3].path, boundary(dependencies.handlers.streamSession, { allowedOrigins, timeoutMs, json: false })),
-      POST(CRECIENDO_ROUTE_SPECS[4].path, boundary(dependencies.handlers.cancelSession, { allowedOrigins, timeoutMs, json: true })),
+      POST(CRECIENDO_ROUTE_SPECS[0].path, boundary(dependencies.handlers.onboarding, { allowedOrigins, timeoutMs, json: true })),
+      POST(CRECIENDO_ROUTE_SPECS[1].path, boundary(dependencies.handlers.childContext, { allowedOrigins, timeoutMs, json: true })),
+      POST(CRECIENDO_ROUTE_SPECS[2].path, boundary(dependencies.handlers.createSession, { allowedOrigins, timeoutMs, json: true })),
+      POST(CRECIENDO_ROUTE_SPECS[3].path, boundary(dependencies.handlers.sendMessage, { allowedOrigins, timeoutMs, json: true })),
+      GET(CRECIENDO_ROUTE_SPECS[4].path, boundary(dependencies.handlers.streamSession, { allowedOrigins, timeoutMs, json: false })),
+      POST(CRECIENDO_ROUTE_SPECS[5].path, boundary(dependencies.handlers.cancelSession, { allowedOrigins, timeoutMs, json: true })),
     ],
   });
 }
@@ -283,6 +291,13 @@ export function createCreciendoChannel(dependencies: CreciendoChannelDependencie
 const unavailable: CreciendoRouteHandler = async () => errorResponse(503, "CHANNEL_UNAVAILABLE");
 
 let productionAuthDependencies: CreciendoAuthDependencies | undefined;
+
+let productionOnboardingDependencies: OnboardingRouteDependencies | undefined;
+
+function getProductionOnboardingDependencies(): OnboardingRouteDependencies {
+  productionOnboardingDependencies ??= Object.freeze({ persistence: createRpcOnboardingPersistence(loadRuntimeConfig(process.env)) });
+  return productionOnboardingDependencies;
+}
 
 function getProductionAuthDependencies(): CreciendoAuthDependencies {
   productionAuthDependencies ??= createCreciendoAuthDependencies(loadRuntimeConfig(process.env));
@@ -405,9 +420,13 @@ const productionSessionCancel: AuthenticatedChannelHandler = (request, auth, arg
   });
 };
 const guardedSessionCancel = withProductionChannelAuth(productionSessionCancel);
+const productionOnboarding: AuthenticatedChannelHandler = (request, auth) =>
+  handleOnboarding(request, auth, getProductionOnboardingDependencies());
+const guardedOnboarding = withProductionChannelAuth(productionOnboarding);
 
 export default createCreciendoChannel({
   handlers: {
+    onboarding: guardedOnboarding,
     childContext: guardedChildContext,
     createSession: guardedSessionCreate,
     sendMessage: guardedSessionMessage,

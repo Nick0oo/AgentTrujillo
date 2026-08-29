@@ -46,6 +46,12 @@
       "name": "creciendo",
       "kind": "http",
       "method": "POST",
+      "urlPath": "/creciendo/v1/onboarding"
+    },
+    {
+      "name": "creciendo",
+      "kind": "http",
+      "method": "POST",
       "urlPath": "/creciendo/v1/sessions"
     },
     {
