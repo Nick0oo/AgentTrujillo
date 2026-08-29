@@ -34,6 +34,18 @@
       "name": "creciendo",
       "kind": "http",
       "method": "GET",
+      "urlPath": "/creciendo/v1/children"
+    },
+    {
+      "name": "creciendo",
+      "kind": "http",
+      "method": "GET",
+      "urlPath": "/creciendo/v1/dashboard"
+    },
+    {
+      "name": "creciendo",
+      "kind": "http",
+      "method": "GET",
       "urlPath": "/creciendo/v1/sessions/:sessionId/stream"
     },
     {

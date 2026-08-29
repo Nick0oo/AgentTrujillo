@@ -89,11 +89,15 @@ export async function handleOnboarding(
   }
 }
 
-function mapPersistenceError(message: string): OnboardingErrorCode {
+export function mapPersistenceError(message: string): OnboardingErrorCode {
   if (message.includes("onboarding_idempotency_conflict")) return "IDEMPOTENCY_CONFLICT";
   if (message.includes("onboarding_already_exists")) return "ONBOARDING_ALREADY_EXISTS";
   if (message.includes("onboarding_consent_definition_unavailable")) return "SERVICE_UNAVAILABLE";
   if (message.includes("not_authenticated")) return "UNAUTHORIZED";
+  if (
+    message.includes("onboarding_request_invalid") ||
+    message.includes("children_birth_weight_grams_check")
+  ) return "INVALID_REQUEST";
   return "SERVICE_UNAVAILABLE";
 }
 

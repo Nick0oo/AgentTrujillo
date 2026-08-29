@@ -36,7 +36,7 @@ export const ONBOARDING_REQUEST_SCHEMA = z.object({
     isPremature: z.boolean(),
     gestationalAgeWeeks: z.number().int().min(20).max(44).nullable(),
     gestationalAgeDays: z.number().int().min(0).max(6).nullable().default(null),
-    birthWeightGrams: z.number().positive().max(10_000).nullable().default(null),
+    birthWeightGrams: z.number().min(200).max(8_000).nullable().default(null),
     allergies: z.array(boundedText(120)).max(20),
   }).strict().superRefine((value, context) => {
     if (value.isPremature && value.gestationalAgeWeeks === null) {

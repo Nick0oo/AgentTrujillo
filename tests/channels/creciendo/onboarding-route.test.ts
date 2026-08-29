@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from "vitest";
 
-import { handleOnboarding, type OnboardingPersistence } from "../../../src/channels/creciendo/routes/onboarding";
+import { handleOnboarding, mapPersistenceError, type OnboardingPersistence } from "../../../src/channels/creciendo/routes/onboarding";
 import type { SupabaseBearerToken } from "../../../agent/lib/supabase/types";
 
 const auth = {
@@ -84,5 +84,11 @@ describe("Creciendo onboarding route", () => {
     );
     expect(response.status).toBe(503);
     expect(await response.json()).toEqual({ contractVersion: "onboarding.v1", status: "error", code: "SERVICE_UNAVAILABLE" });
+  });
+
+  test("maps RPC validation failures to a client-correctable request error", async () => {
+    for (const message of ["onboarding_request_invalid", "new row violates check constraint children_birth_weight_grams_check"]) {
+      expect(mapPersistenceError(message)).toBe("INVALID_REQUEST");
+    }
   });
 });
