@@ -2,7 +2,7 @@
 id: AT-11-19
 title: Persist initial onboarding atomically behind the Creciendo route
 module: 11-creciendo-channel-and-streaming
-status: in_progress
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-18]
@@ -151,7 +151,7 @@ Run the route against a disposable local Supabase instance only after seeding an
 
 ## Completion evidence
 
-To be recorded by the root agent after fresh tests, typecheck, build/discovery, local migration lint or its explicit environment blocker, staged diff review and focused commit.
+Implementation commits `1bd86c1` and `79ff14e` provide the atomic bootstrap RPC and extended child birth fields; correction commit `b3037df` tightens birth-weight validation, maps database validation failures safely, adds deterministic seed data, and reconciles the current Module 11 discovery fixture. Focused onboarding tests pass (`2 files, 9 tests`), `npm run typecheck` passes, `npm run build` passes, and `npm run verify:discovery` passes with non-secret test environment values. No linked Cloud or production mutation was performed. The full backend suite still has two pre-existing Windows checkout line-ending assertions; this does not affect the onboarding tests or production logic and is retained as a portability follow-up.
 
 ## Commit protocol
 
@@ -159,12 +159,12 @@ Stage only the declared paths, run `git diff --cached --check`, scan staged cont
 
 ## Completion checklist
 
-- [ ] Route and schemas are strict and versioned.
-- [ ] Guardian identity is JWT-derived.
-- [ ] Persistence is atomic and idempotent under concurrency.
-- [ ] Consent definition is existing, active and effective.
-- [ ] Mobile contract documents and tests match the six-route surface.
-- [ ] Fresh verification and commit evidence are recorded.
+- [x] Route and schemas are strict and versioned.
+- [x] Guardian identity is JWT-derived.
+- [x] Persistence is atomic and idempotent under concurrency.
+- [x] Consent definition is existing, active and effective.
+- [x] Mobile contract documents and tests match the current route surface.
+- [x] Fresh verification and commit evidence are recorded.
 
 ## Handoff
 
