@@ -1,0 +1,13 @@
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { FatalError, RetryableError } from "workflow";
+import { configureMemoryEmbeddingPorts, embedMemory, memoryEmbeddingWorkflow, type MemoryEmbeddingInput, type MemoryEmbeddingPorts } from "../../src/workflows/memory-embedding";
+
+const INPUT: MemoryEmbeddingInput = Object.freeze({ ownerUserId: "owner", careSpaceId: "space", childId: "child", sessionId: "session", memoryItemId: "item", contentSha256: "a".repeat(64), compatibilityVersion: "embedding.v1", operation: "upsert" });
+function makePorts(overrides: Partial<MemoryEmbeddingPorts> = {}): MemoryEmbeddingPorts { return { loadEligibility: vi.fn().mockResolvedValue({ eligible: true, searchableText: "El tutor reporta sueño estable.", contentSha256: INPUT.contentSha256 }), embedMemory: vi.fn().mockResolvedValue({ vector: Array.from({ length: 768 }, () => 0.01), vectorSha256: "b".repeat(64), inputSha256: "c".repeat(64) }), persistEmbedding: vi.fn().mockResolvedValue("indexed"), removeEmbedding: vi.fn().mockResolvedValue("removed"), ...overrides }; }
+afterEach(() => configureMemoryEmbeddingPorts(null));
+describe("memory embedding workflow", () => {
+  it("indexes only an eligible same-scope version", async () => { const p = makePorts(); configureMemoryEmbeddingPorts(p); await expect(memoryEmbeddingWorkflow(INPUT)).resolves.toEqual({ status: "indexed" }); expect(p.persistEmbedding).toHaveBeenCalled(); });
+  it("removes without embedding when the exact version is revoked", async () => { const p = makePorts({ loadEligibility: vi.fn().mockResolvedValue({ eligible: false, reason: "revoked" }), removeEmbedding: vi.fn().mockResolvedValue("idempotent_replay") }); configureMemoryEmbeddingPorts(p); await expect(memoryEmbeddingWorkflow({ ...INPUT, operation: "remove" })).resolves.toEqual({ status: "idempotent_replay" }); expect(p.embedMemory).not.toHaveBeenCalled(); });
+  it("classifies provider outage as retryable", async () => { const p = makePorts({ embedMemory: vi.fn().mockRejectedValue(new Error("offline")) }); configureMemoryEmbeddingPorts(p); await expect(embedMemory(INPUT, { eligible: true, searchableText: "x", contentSha256: INPUT.contentSha256 })).rejects.toBeInstanceOf(RetryableError); });
+  it("rejects an invalid vector as a permanent failure", async () => { const p = makePorts({ embedMemory: vi.fn().mockResolvedValue({ vector: [1], vectorSha256: "b".repeat(64), inputSha256: "c".repeat(64) }) }); configureMemoryEmbeddingPorts(p); await expect(embedMemory(INPUT, { eligible: true, searchableText: "x", contentSha256: INPUT.contentSha256 })).rejects.toBeInstanceOf(FatalError); });
+});
