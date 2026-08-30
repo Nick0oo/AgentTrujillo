@@ -5544,6 +5544,18 @@ export type Database = {
         Args: { p_error_code: string; p_inbox_id: number }
         Returns: boolean
       }
+      finalize_creciendo_document_upload: {
+        Args: {
+          p_actual_sha256: string
+          p_actual_size_bytes: number
+          p_detected_mime_type: string
+          p_token_sha256: string
+        }
+        Returns: {
+          document_id: string
+          outcome: string
+        }[]
+      }
       finalize_creciendo_session_cancel: {
         Args: {
           p_authorization_version: string
@@ -5599,6 +5611,23 @@ export type Database = {
           supersedes_id: string
           valid_from: string
           valid_until: string
+        }[]
+      }
+      get_creciendo_upload_ticket: {
+        Args: { p_token_sha256: string }
+        Returns: {
+          bucket_id: string
+          care_space_id: string
+          child_id: string
+          document_id: string
+          expected_mime_type: string
+          expected_sha256: string
+          expected_size_bytes: number
+          expires_at: string
+          object_path: string
+          storage_status: string
+          ticket_id: string
+          used_at: string
         }[]
       }
       list_confirmed_memory: {
@@ -5968,6 +5997,26 @@ export type Database = {
           status: string
         }[]
       }
+      register_creciendo_document_transfer_ticket: {
+        Args: {
+          p_care_space_id: string
+          p_child_id: string
+          p_document_id: string
+          p_expected_mime_type: string
+          p_expected_sha256: string
+          p_expected_size_bytes: number
+          p_expires_at: string
+          p_idempotency_key: string
+          p_kind: string
+          p_nonce_sha256: string
+          p_token_sha256: string
+        }
+        Returns: {
+          nonce_sha256: string
+          outcome: string
+          ticket_id: string
+        }[]
+      }
       request_memory_deletion: {
         Args: {
           p_authorization_version: string
@@ -5987,6 +6036,32 @@ export type Database = {
           outcome: string
           request_id: string
           status: string
+        }[]
+      }
+      reserve_creciendo_document_object: {
+        Args: {
+          p_authorization_version: string
+          p_care_space_id: string
+          p_child_id: string
+          p_declared_mime_type: string
+          p_display_name: string
+          p_expected_sha256: string
+          p_expected_size_bytes: number
+          p_idempotency_key: string
+          p_purpose: string
+          p_request_sha256: string
+          p_retention_class: string
+        }
+        Returns: {
+          bucket_id: string
+          declared_mime_type: string
+          document_id: string
+          expected_sha256: string
+          expected_size_bytes: number
+          object_path: string
+          outcome: string
+          reservation_expires_at: string
+          storage_status: string
         }[]
       }
       reserve_document_object: {

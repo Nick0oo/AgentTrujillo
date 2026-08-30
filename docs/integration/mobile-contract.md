@@ -118,3 +118,12 @@ Estas lecturas son estrictamente de consulta y no sustituyen la autorización de
 - `GET /creciendo/v1/dashboard` requiere `Authorization: Bearer …` y `X-Child-Context: <token opaco>`. El backend verifica el token, membresía, permiso `read`, niño y espacio antes de consultar la proyección.
 - El resumen responde `creciendo.dashboard.v1`, conserva `scopeVersion: authorized-child-scope.v1`, y representa datos clínicos ausentes como `null`. La app no calcula percentiles, edad corregida, elegibilidad, dosis ni reglas.
 - Ambos contratos son `no-store`, rechazan campos desconocidos y nunca exponen datos de un niño no autorizado.
+
+### Documentos privados (`AT-11-21`)
+
+- `GET /creciendo/v1/documents` requiere `X-Child-Context` y devuelve como máximo 100 metadatos estrictos del niño activo; no devuelve bucket, ruta ni IDs de autoridad.
+- `POST /creciendo/v1/documents/upload-ticket` requiere `manage_documents`, `Idempotency-Key` y el mismo `idempotencyKey` dentro del JSON. El ticket es de máximo cinco minutos.
+- `PUT /creciendo/v1/documents/upload` requiere JWT, `X-Child-Context`, `X-Document-Transfer-Token`, `content-length`, `content-type` y `x-content-sha256`; el backend comprueba tamaño, MIME y hash antes de finalizar la reserva.
+- `POST /creciendo/v1/documents/download-ticket` requiere `read` e `idempotencyKey`; solo entrega un enlace HTTPS de dos minutos para un documento activo y limpio.
+- `GET /creciendo/v1/documents/{documentId}/ocr-draft` devuelve únicamente borradores no confiables. Ninguna ruta convierte OCR en un hecho clínico confirmado.
+- La app no escribe tablas Supabase directamente ni usa URLs de Storage de dos horas como tickets de subida.

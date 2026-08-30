@@ -87,6 +87,8 @@ describe("private-document contracts", () => {
       auditId: IDs.event,
     };
     expect(ticketSchemas.upload.parse(upload)).toEqual(upload);
+    expect(ticketSchemas.upload.parse({ ...upload, uploadUrl: "http://10.0.2.2:2001/creciendo/v1/documents/upload" }).uploadUrl).toBe("http://10.0.2.2:2001/creciendo/v1/documents/upload");
+    expect(ticketSchemas.upload.safeParse({ ...upload, uploadUrl: "http://remote.example.invalid/upload" }).success).toBe(false);
     expect(ticketSchemas.download.parse(download)).toEqual(download);
     expect(ticketSchemas.upload.safeParse({ ...upload, expiresAt: "2026-08-23T12:05:01.000Z" }).success).toBe(false);
     expect(ticketSchemas.upload.safeParse({ ...upload, serviceRoleKey: "secret" }).success).toBe(false);

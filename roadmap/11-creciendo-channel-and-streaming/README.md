@@ -43,6 +43,14 @@ The active-child and dashboard mobile module requires an authenticated read boun
 
 These routes are read-only, do not grant child authority, do not calculate clinical values in the client, and return safe typed failures. No production or Cloud mutation is authorized by this amendment.
 
+## Root-authorized private-documents transport amendment — 2026-08-30
+
+The mobile Module 07 gate found that the completed private-document application services were not composed into a public Creciendo transport. `AT-11-21` adds the separate `creciendo.documents.v1` HTTP contract for child-scoped listing, short-lived upload tickets, bounded binary upload, signed downloads, and draft-only OCR visibility. It does not modify the frozen `creciendo.channel.v1` event union and does not manufacture a chat session for document uploads.
+
+The amendment also owns a forward-only persistence ledger and a document-only authorization input because the already-applied reservation RPC requires a chat `p_session_id`. A raw Supabase Storage upload URL is non-conforming because its platform TTL exceeds the five-minute upload-ticket policy. No remote migration or deployment is authorized until the reviewed contract, dry-run, linked identity and rollback-only assertions pass.
+
+`20260830100100_creciendo_documents_transport_convergence.sql` is a local forward-only convergence correction for environments that had already applied the first AT-11-21 draft before its private-ledger hardening. It moves that ledger into `app_private`, adds the ticket RPC boundary, and never resets or rewrites document data.
+
 ## Exit gate
 
 All eighteen leaves prove strict authentication/ownership, bounded request/event schemas, terminal emergency handling before LLM, monotonic persisted sequences, cursor/continuation verification, safe Eve event mapping, reasoning suppression, valid one-line NDJSON, phase-aware errors, revocation during stream, mobile fixtures, reconnect/cancel correctness, zero duplicate effects, and no public standard Eve session inspection.
@@ -75,6 +83,7 @@ Types and channel shell lead to authentication and child/session routes. Continu
 | [AT-11-18](18-internal-eve-channel-policy.md) | internal eve channel policy | no |
 | [AT-11-19](19-onboarding-bootstrap.md) | atomic onboarding bootstrap route and persistence | yes |
 | [AT-11-20](20-directory-and-dashboard-read-model.md) | authorized child directory and dashboard read model | no |
+| [AT-11-21](21-private-documents-public-contract.md) | authorized private documents transport | yes |
 
 ## Public route family
 

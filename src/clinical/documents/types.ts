@@ -127,6 +127,11 @@ const DIGEST = z.string().regex(/^[a-f0-9]{64}$/u);
 const INSTANT = z.string().datetime({ offset: true });
 const DATE = z.string().regex(/^\d{4}-\d{2}-\d{2}$/u);
 const TEXT = (max: number) => z.string().min(1).max(max).refine((value) => value.trim().length > 0, "non_empty");
+const LOCAL_DEVELOPMENT_HOSTS = new Set(["localhost", "127.0.0.1", "::1", "10.0.2.2"]);
+const UPLOAD_URL = z.string().url().refine((value) => {
+  const url = new URL(value);
+  return url.protocol === "https:" || (url.protocol === "http:" && LOCAL_DEVELOPMENT_HOSTS.has(url.hostname));
+}, "https_or_local_development_only");
 const HTTPS_URL = z.string().url().refine((value) => new URL(value).protocol === "https:", "https_only");
 const MIME = z.string().regex(/^[a-z0-9!#$&^_.+-]+\/[a-z0-9!#$&^_.+-]+$/iu).max(128);
 const PURPOSE = z.enum(["avatar", "vaccine_record", "clinical_attachment", "generated_report", "clinical_source"]);
@@ -187,7 +192,7 @@ function boundedTicket(value: { issuedAt: string; expiresAt: string }, context: 
 
 export const uploadTicketSchema = TICKET_BASE.extend({
   kind: z.literal("upload"),
-  uploadUrl: HTTPS_URL,
+  uploadUrl: UPLOAD_URL,
   requiredHeaders: z.record(z.string().min(1).max(128), z.string().max(512)).refine((headers) => headers["x-upsert"] === "false", "upsert_forbidden"),
   sizeBytes: z.number().int().positive().max(52_428_800),
   mimeType: MIME,

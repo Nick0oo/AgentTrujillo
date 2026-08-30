@@ -23,6 +23,11 @@ function handlers(overrides: Partial<CreciendoRouteHandlers> = {}): CreciendoRou
     sendMessage: ok,
     streamSession: ok,
     cancelSession: ok,
+    documentList: ok,
+    uploadTicket: ok,
+    documentUpload: ok,
+    downloadTicket: ok,
+    ocrDraft: ok,
     ...overrides,
   };
 }
@@ -35,7 +40,7 @@ function route(channel: ReturnType<typeof createCreciendoChannel>, method: strin
 
 async function invoke(
   channel: ReturnType<typeof createCreciendoChannel>,
-  method: "GET" | "POST",
+  method: "GET" | "POST" | "PUT",
   path: string,
   request: Request,
 ) {
@@ -46,12 +51,12 @@ describe("Creciendo Eve channel shell", () => {
   it("mounts the canonical public surface", () => {
     const channel = createCreciendoChannel({ handlers: handlers(), allowedOrigins: [ALLOWED_ORIGIN] });
     expect(channel.routes.map(({ method, path }) => ({ method, path }))).toEqual(CRECIENDO_ROUTE_SPECS);
-    expect(channel.routes).toHaveLength(8);
+    expect(channel.routes).toHaveLength(13);
     expect(channel.routes.some(({ path }) => path.startsWith("/eve/"))).toBe(false);
     expect(channel.receive).toBeUndefined();
     expect(channel.cors).toEqual({
       origin: [ALLOWED_ORIGIN],
-      methods: ["GET", "POST"],
+      methods: ["GET", "POST", "PUT"],
       allowHeaders: [
         "Authorization",
         "Content-Type",
@@ -62,6 +67,7 @@ describe("Creciendo Eve channel shell", () => {
         "X-Creciendo-Channel-Version",
         "X-Creciendo-Event-Version",
         "X-Request-Id",
+        "X-Content-SHA256",
       ],
       exposeHeaders: [
         "Content-Type",

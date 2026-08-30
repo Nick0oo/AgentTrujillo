@@ -6,7 +6,8 @@ export type PrivilegedOperation =
   | "workflow:memory-embedding"
   | "workflow:reminder-projection"
   | "webhook:billing-ledger"
-  | "maintenance:retention";
+  | "maintenance:retention"
+  | "channel:document-transfer";
 
 export type PrivilegedJobScope = Readonly<{
   readonly [privilegedJobScopeBrand]: true;
@@ -26,4 +27,5 @@ export const PRIVILEGED_OPERATIONS: readonly PrivilegedOperation[] = Object.free
   "workflow:reminder-projection",
   "webhook:billing-ledger",
   "maintenance:retention",
+  "channel:document-transfer",
 ]);

@@ -1,6 +1,7 @@
 import {
   GET,
   POST,
+  PUT,
   defineChannel,
   type HttpRouteDefinition,
 } from "eve/channels";
@@ -10,6 +11,7 @@ import {
   createCreciendoAuthDependencies,
   withChannelAuth,
   type AuthenticatedChannelHandler,
+  type AuthenticatedChannelRequest,
   type CreciendoAuthDependencies,
 } from "../../src/channels/creciendo/auth-middleware";
 import {
@@ -54,6 +56,16 @@ import {
   handleDashboard,
   type DashboardResolver,
 } from "../../src/channels/creciendo/routes/dashboard";
+import {
+  handleDocumentList,
+  handleUploadTicket,
+  handleDocumentUpload,
+  handleDownloadTicket,
+  handleOcrDraft,
+  type DocumentRouteDependencies,
+} from "../../src/channels/creciendo/routes/documents";
+import { createDocumentRouteDependencies } from "../../src/channels/creciendo/routes/documents";
+import { createSupabaseDocumentPersistence } from "../../src/channels/creciendo/document-persistence";
 import type { ChildContextTokenService } from "../lib/access/child-context-token";
 import type { AuthorizeChildService } from "../lib/access/authorize-child-service";
 
@@ -69,6 +81,11 @@ export const CRECIENDO_ROUTE_SPECS = Object.freeze([
   Object.freeze({ method: "POST" as const, path: "/creciendo/v1/sessions/:sessionId/messages" }),
   Object.freeze({ method: "GET" as const, path: "/creciendo/v1/sessions/:sessionId/stream" }),
   Object.freeze({ method: "POST" as const, path: "/creciendo/v1/sessions/:sessionId/cancel" }),
+  Object.freeze({ method: "GET" as const, path: "/creciendo/v1/documents" }),
+  Object.freeze({ method: "POST" as const, path: "/creciendo/v1/documents/upload-ticket" }),
+  Object.freeze({ method: "PUT" as const, path: "/creciendo/v1/documents/upload" }),
+  Object.freeze({ method: "POST" as const, path: "/creciendo/v1/documents/download-ticket" }),
+  Object.freeze({ method: "GET" as const, path: "/creciendo/v1/documents/:documentId/ocr-draft" }),
 ]);
 
 export type CreciendoRouteHandler = HttpRouteDefinition["handler"];
@@ -82,6 +99,11 @@ export type CreciendoRouteHandlers = Readonly<{
   sendMessage: CreciendoRouteHandler;
   streamSession: CreciendoRouteHandler;
   cancelSession: CreciendoRouteHandler;
+  documentList: CreciendoRouteHandler;
+  uploadTicket: CreciendoRouteHandler;
+  documentUpload: CreciendoRouteHandler;
+  downloadTicket: CreciendoRouteHandler;
+  ocrDraft: CreciendoRouteHandler;
 }>;
 
 export type CreciendoChannelDependencies = Readonly<{
@@ -134,7 +156,7 @@ function validateOrigin(origin: string): boolean {
 function validateDependencies(input: CreciendoChannelDependencies): void {
   const handlers = input.handlers;
   if (!handlers
-    || Object.values(handlers).length !== 8
+    || Object.values(handlers).length !== 13
     || Object.values(handlers).some((handler) => typeof handler !== "function")
     || input.allowedOrigins.length > 16
     || new Set(input.allowedOrigins).size !== input.allowedOrigins.length
@@ -156,9 +178,9 @@ function declaredLength(request: Request): number | null {
   return value;
 }
 
-async function readBoundedBody(request: Request, signal: AbortSignal): Promise<Uint8Array<ArrayBuffer>> {
+async function readBoundedBody(request: Request, signal: AbortSignal, maxBytes: number): Promise<Uint8Array<ArrayBuffer>> {
   const declared = declaredLength(request);
-  if (declared !== null && declared > MAX_REQUEST_BODY_BYTES) {
+  if (declared !== null && declared > maxBytes) {
     throw new BoundaryError(413, "REQUEST_TOO_LARGE");
   }
   if (request.body === null) return new Uint8Array();
@@ -174,7 +196,7 @@ async function readBoundedBody(request: Request, signal: AbortSignal): Promise<U
       const next = await reader.read();
       if (next.done) break;
       total += next.value.byteLength;
-      if (total > MAX_REQUEST_BODY_BYTES) {
+      if (total > maxBytes) {
         await reader.cancel();
         throw new BoundaryError(413, "REQUEST_TOO_LARGE");
       }
@@ -220,7 +242,7 @@ function abortPromise(signal: AbortSignal): Promise<never> {
 
 function boundary(
   handler: CreciendoRouteHandler,
-  input: Readonly<{ allowedOrigins: ReadonlySet<string>; timeoutMs: number; json: boolean }>,
+  input: Readonly<{ allowedOrigins: ReadonlySet<string>; timeoutMs: number; json: boolean; readBody?: boolean; maxBodyBytes?: number }>,
 ): CreciendoRouteHandler {
   return async (request, args) => {
     const origin = request.headers.get("origin");
@@ -240,7 +262,8 @@ function boundary(
     }, input.timeoutMs);
 
     try {
-      const body = input.json ? await readBoundedBody(request, controller.signal) : undefined;
+      const shouldReadBody = input.readBody ?? input.json;
+      const body = shouldReadBody ? await readBoundedBody(request, controller.signal, input.maxBodyBytes ?? MAX_REQUEST_BODY_BYTES) : undefined;
       const boundedRequest = new Request(request.url, {
         method: request.method,
         headers: new Headers(request.headers),
@@ -272,7 +295,7 @@ export function createCreciendoChannel(dependencies: CreciendoChannelDependencie
   return defineChannel({
     cors: {
       origin: [...dependencies.allowedOrigins],
-      methods: ["GET", "POST"],
+      methods: ["GET", "POST", "PUT"],
       allowHeaders: [
         "Authorization",
         "Content-Type",
@@ -283,6 +306,7 @@ export function createCreciendoChannel(dependencies: CreciendoChannelDependencie
         "X-Creciendo-Channel-Version",
         "X-Creciendo-Event-Version",
         "X-Request-Id",
+        "X-Content-SHA256",
       ],
       exposeHeaders: [
         "Content-Type",
@@ -304,6 +328,11 @@ export function createCreciendoChannel(dependencies: CreciendoChannelDependencie
       POST(CRECIENDO_ROUTE_SPECS[5].path, boundary(dependencies.handlers.sendMessage, { allowedOrigins, timeoutMs, json: true })),
       GET(CRECIENDO_ROUTE_SPECS[6].path, boundary(dependencies.handlers.streamSession, { allowedOrigins, timeoutMs, json: false })),
       POST(CRECIENDO_ROUTE_SPECS[7].path, boundary(dependencies.handlers.cancelSession, { allowedOrigins, timeoutMs, json: true })),
+      GET(CRECIENDO_ROUTE_SPECS[8].path, boundary(dependencies.handlers.documentList, { allowedOrigins, timeoutMs, json: false, readBody: false })),
+      POST(CRECIENDO_ROUTE_SPECS[9].path, boundary(dependencies.handlers.uploadTicket, { allowedOrigins, timeoutMs, json: true })),
+      PUT(CRECIENDO_ROUTE_SPECS[10].path, boundary(dependencies.handlers.documentUpload, { allowedOrigins, timeoutMs, json: false, readBody: false, maxBodyBytes: 52_428_800 })),
+      POST(CRECIENDO_ROUTE_SPECS[11].path, boundary(dependencies.handlers.downloadTicket, { allowedOrigins, timeoutMs, json: true })),
+      GET(CRECIENDO_ROUTE_SPECS[12].path, boundary(dependencies.handlers.ocrDraft, { allowedOrigins, timeoutMs, json: false, readBody: false })),
     ],
   });
 }
@@ -470,6 +499,31 @@ const productionOnboarding: AuthenticatedChannelHandler = (request, auth) =>
   handleOnboarding(request, auth, getProductionOnboardingDependencies());
 const guardedOnboarding = withProductionChannelAuth(productionOnboarding);
 
+function getProductionDocumentDependencies(request: Request, auth: AuthenticatedChannelRequest): DocumentRouteDependencies {
+  const config = loadRuntimeConfig(process.env);
+  return createDocumentRouteDependencies(config, createSupabaseDocumentPersistence({
+    config,
+    auth,
+    baseUrl: new URL(request.url).origin,
+  }));
+}
+
+const productionDocumentList: AuthenticatedChannelHandler = (request, auth) =>
+  handleDocumentList(request, auth, getProductionDocumentDependencies(request, auth));
+const guardedDocumentList = withProductionChannelAuth(productionDocumentList);
+const productionUploadTicket: AuthenticatedChannelHandler = (request, auth) =>
+  handleUploadTicket(request, auth, getProductionDocumentDependencies(request, auth));
+const guardedUploadTicket = withProductionChannelAuth(productionUploadTicket);
+const productionDocumentUpload: AuthenticatedChannelHandler = (request, auth) =>
+  handleDocumentUpload(request, auth, getProductionDocumentDependencies(request, auth));
+const guardedDocumentUpload = withProductionChannelAuth(productionDocumentUpload);
+const productionDownloadTicket: AuthenticatedChannelHandler = (request, auth) =>
+  handleDownloadTicket(request, auth, getProductionDocumentDependencies(request, auth));
+const guardedDownloadTicket = withProductionChannelAuth(productionDownloadTicket);
+const productionOcrDraft: AuthenticatedChannelHandler = (request, auth, args) =>
+  handleOcrDraft(request, auth, getProductionDocumentDependencies(request, auth), args);
+const guardedOcrDraft = withProductionChannelAuth(productionOcrDraft);
+
 export default createCreciendoChannel({
   handlers: {
     onboarding: guardedOnboarding,
@@ -480,6 +534,11 @@ export default createCreciendoChannel({
     sendMessage: guardedSessionMessage,
     streamSession: guardedSessionStream,
     cancelSession: guardedSessionCancel,
+    documentList: guardedDocumentList,
+    uploadTicket: guardedUploadTicket,
+    documentUpload: guardedDocumentUpload,
+    downloadTicket: guardedDownloadTicket,
+    ocrDraft: guardedOcrDraft,
   },
   allowedOrigins: [],
 });
