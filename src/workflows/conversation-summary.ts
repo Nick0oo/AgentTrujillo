@@ -67,9 +67,17 @@ export type ConversationSummaryResult =
   | Readonly<{ status: "persisted"; outcome: "created" | "idempotent_replay"; candidateId: string }>;
 
 let ports: ConversationSummaryPorts | null = null;
+const PORTS_KEY = Symbol.for("agent-trujillo.workflow.conversation-summary.ports");
+
+type RuntimeGlobal = typeof globalThis & {
+  [PORTS_KEY]?: ConversationSummaryPorts;
+};
 
 export function configureConversationSummaryPorts(value: ConversationSummaryPorts | null): void {
   ports = value;
+  const runtimeGlobal = globalThis as RuntimeGlobal;
+  if (value) runtimeGlobal[PORTS_KEY] = value;
+  else delete runtimeGlobal[PORTS_KEY];
 }
 
 function parseInput(value: unknown): ConversationSummaryInput {
@@ -79,8 +87,9 @@ function parseInput(value: unknown): ConversationSummaryInput {
 }
 
 function requirePorts(): ConversationSummaryPorts {
-  if (!ports) throw new FatalError("SUMMARY_RUNTIME_UNCONFIGURED");
-  return ports;
+  const configured = ports ?? (globalThis as RuntimeGlobal)[PORTS_KEY];
+  if (!configured) throw new FatalError("SUMMARY_RUNTIME_UNCONFIGURED");
+  return configured;
 }
 
 function validateMessage(message: ConversationMessage, input: ConversationSummaryInput): boolean {

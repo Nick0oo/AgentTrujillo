@@ -55,7 +55,10 @@ describe("conversation summary workflow runtime", () => {
       persistCandidate: async () => ({ outcome: "created", candidateId: IDS.candidateId }),
     });
 
-    const run = await start(conversationSummaryWorkflow, [INPUT]);
+    // @workflow/vitest builds from src/workflows, so the runtime id is relative
+    // to that directory while this test file is transformed from the project root.
+    const runtimeWorkflow = { workflowId: "workflow//./conversation-summary//conversationSummaryWorkflow" } as unknown as typeof conversationSummaryWorkflow;
+    const run = await start(runtimeWorkflow, [INPUT]);
     const result = await run.returnValue;
 
     expect(result).toEqual({ status: "persisted", outcome: "created", candidateId: IDS.candidateId });
