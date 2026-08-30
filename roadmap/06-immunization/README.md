@@ -91,3 +91,7 @@ Production contains two active basic packages and schedules: 49 CO rules and 6 U
 ## Handoff
 
 Module `10` exposes administration registration and schedule evaluation tools; mobile receives accessible structured statuses, citations, dates, and evidence IDs—not clinical orders.
+
+## Revalidation — 2026-08-29
+
+The closed module was re-run after the persistence/Realtime work: `npm run test:immunization` passed 11 files and 50 tests; `npm run eval:immunization` passed CO 2/2 and US 2/2 with zero critical discrepancies, cross-country mixes, or provenance gaps. No immunization facts, packages, releases, production rows, or remote state were changed.
