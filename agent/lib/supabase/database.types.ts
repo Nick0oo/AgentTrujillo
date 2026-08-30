@@ -7,11 +7,6 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instantiate createClient with right options
-  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
-  __InternalSupabase: {
-    PostgrestVersion: "14.5"
-  }
   public: {
     Tables: {
       agent_commands: {
@@ -4067,6 +4062,183 @@ export type Database = {
           },
         ]
       }
+      projection_checkpoints: {
+        Row: {
+          care_space_id: string
+          child_id: string
+          last_sequence: number
+          owner_user_id: string
+          product_session_id: string
+          projector_name: string
+          projector_version: string
+          updated_at: string
+        }
+        Insert: {
+          care_space_id: string
+          child_id: string
+          last_sequence?: number
+          owner_user_id: string
+          product_session_id: string
+          projector_name: string
+          projector_version: string
+          updated_at?: string
+        }
+        Update: {
+          care_space_id?: string
+          child_id?: string
+          last_sequence?: number
+          owner_user_id?: string
+          product_session_id?: string
+          projector_name?: string
+          projector_version?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "projection_checkpoint_child_fk"
+            columns: ["care_space_id", "child_id"]
+            isOneToOne: false
+            referencedRelation: "children"
+            referencedColumns: ["care_space_id", "id"]
+          },
+        ]
+      }
+      projection_inbox: {
+        Row: {
+          attempt_count: number
+          care_space_id: string
+          child_id: string
+          claimed_at: string
+          completed_at: string | null
+          created_at: string
+          id: number
+          input_sha256: string
+          last_error_code: string | null
+          owner_user_id: string
+          product_session_id: string
+          projector_name: string
+          projector_version: string
+          result_sha256: string | null
+          source_event_id: string
+          source_event_version: string
+          source_sequence: number
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          attempt_count?: number
+          care_space_id: string
+          child_id: string
+          claimed_at?: string
+          completed_at?: string | null
+          created_at?: string
+          id?: never
+          input_sha256: string
+          last_error_code?: string | null
+          owner_user_id: string
+          product_session_id: string
+          projector_name: string
+          projector_version: string
+          result_sha256?: string | null
+          source_event_id: string
+          source_event_version: string
+          source_sequence: number
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          attempt_count?: number
+          care_space_id?: string
+          child_id?: string
+          claimed_at?: string
+          completed_at?: string | null
+          created_at?: string
+          id?: never
+          input_sha256?: string
+          last_error_code?: string | null
+          owner_user_id?: string
+          product_session_id?: string
+          projector_name?: string
+          projector_version?: string
+          result_sha256?: string | null
+          source_event_id?: string
+          source_event_version?: string
+          source_sequence?: number
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "projection_inbox_child_fk"
+            columns: ["care_space_id", "child_id"]
+            isOneToOne: false
+            referencedRelation: "children"
+            referencedColumns: ["care_space_id", "id"]
+          },
+        ]
+      }
+      projection_quarantine: {
+        Row: {
+          care_space_id: string
+          child_id: string
+          created_at: string
+          error_code: string | null
+          id: number
+          input_sha256: string
+          metadata_redacted: Json
+          owner_user_id: string
+          product_session_id: string
+          projector_name: string
+          projector_version: string
+          reason: string
+          source_event_id: string
+          source_event_version: string
+          source_sequence: number
+        }
+        Insert: {
+          care_space_id: string
+          child_id: string
+          created_at?: string
+          error_code?: string | null
+          id?: never
+          input_sha256: string
+          metadata_redacted?: Json
+          owner_user_id: string
+          product_session_id: string
+          projector_name: string
+          projector_version: string
+          reason: string
+          source_event_id: string
+          source_event_version: string
+          source_sequence: number
+        }
+        Update: {
+          care_space_id?: string
+          child_id?: string
+          created_at?: string
+          error_code?: string | null
+          id?: never
+          input_sha256?: string
+          metadata_redacted?: Json
+          owner_user_id?: string
+          product_session_id?: string
+          projector_name?: string
+          projector_version?: string
+          reason?: string
+          source_event_id?: string
+          source_event_version?: string
+          source_sequence?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "projection_quarantine_child_fk"
+            columns: ["care_space_id", "child_id"]
+            isOneToOne: false
+            referencedRelation: "children"
+            referencedColumns: ["care_space_id", "id"]
+          },
+        ]
+      }
       purchases: {
         Row: {
           billing_product_id: string
@@ -5080,6 +5252,28 @@ export type Database = {
           source_span_start: number
         }[]
       }
+      claim_projection_source: {
+        Args: {
+          p_care_space_id: string
+          p_child_id: string
+          p_input_sha256: string
+          p_owner_user_id: string
+          p_product_session_id: string
+          p_projector_name: string
+          p_projector_version: string
+          p_source_event_id: string
+          p_source_event_version: string
+          p_source_sequence: number
+        }
+        Returns: {
+          claim_status: string
+          inbox_id: number
+        }[]
+      }
+      complete_projection_source: {
+        Args: { p_inbox_id: number; p_result_sha256?: string }
+        Returns: boolean
+      }
       correct_medication_intake: {
         Args: {
           p_actual_quantity_lexeme: string
@@ -5101,6 +5295,63 @@ export type Database = {
           outcome: string
         }[]
       }
+      create_onboarding:
+        | {
+            Args: {
+              p_allergies: string[]
+              p_birth_date: string
+              p_care_space_name: string
+              p_consent_jurisdiction: string
+              p_consent_locale: string
+              p_consent_type: string
+              p_country_of_care: string
+              p_gestational_age_weeks: number
+              p_given_names: string
+              p_guardian_relationship: string
+              p_idempotency_key: string
+              p_is_premature: boolean
+              p_reference_sex: string
+              p_request_sha256: string
+              p_timezone: string
+            }
+            Returns: {
+              care_space_id: string
+              child_id: string
+              outcome: string
+              resource_version: number
+            }[]
+          }
+        | {
+            Args: {
+              p_allergies: string[]
+              p_birth_date: string
+              p_birth_time_zone: string
+              p_birth_weight_grams: number
+              p_care_space_name: string
+              p_consent_jurisdiction: string
+              p_consent_locale: string
+              p_consent_type: string
+              p_country_of_care: string
+              p_family_names: string
+              p_gestational_age_days: number
+              p_gestational_age_weeks: number
+              p_given_names: string
+              p_guardian_relationship: string
+              p_idempotency_key: string
+              p_is_premature: boolean
+              p_preferred_name: string
+              p_reference_sex: string
+              p_request_sha256: string
+              p_time_of_birth: string
+              p_timezone: string
+            }
+            Returns: {
+              care_space_id: string
+              child_id: string
+              outcome: string
+              resource_version: number
+            }[]
+          }
       create_owned_agent_session: {
         Args: {
           p_authorization_expires_at: string
@@ -5215,6 +5466,10 @@ export type Database = {
           request_id: string
           status: string
         }[]
+      }
+      fail_projection_source: {
+        Args: { p_error_code: string; p_inbox_id: number }
+        Returns: boolean
       }
       finalize_creciendo_session_cancel: {
         Args: {
@@ -5407,6 +5662,15 @@ export type Database = {
           assessment_id: string
           outcome: string
         }[]
+      }
+      quarantine_projection_source: {
+        Args: {
+          p_error_code?: string
+          p_inbox_id: number
+          p_metadata_redacted?: Json
+          p_reason: string
+        }
+        Returns: boolean
       }
       read_owned_creciendo_events: {
         Args: {
