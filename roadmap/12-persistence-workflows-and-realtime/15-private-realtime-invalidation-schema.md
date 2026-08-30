@@ -2,7 +2,7 @@
 id: AT-12-15
 title: Create private Realtime invalidation outbox
 module: 12-persistence-workflows-and-realtime
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-12-05, AT-02-07]
@@ -16,16 +16,18 @@ database_change: true
 requires_clinical_approval: false
 touches:
   create:
-    - supabase/migrations/20260816240000_private_realtime_invalidations.sql
-    - supabase/tests/037_private_realtime_invalidations.test.sql
-    - src/generated/database.types.ts
+    - supabase/migrations/20260829120000_private_realtime_invalidations.sql
+    - supabase/tests/047_private_realtime_invalidations.test.sql
+    - agent/lib/supabase/database.types.ts
   modify: []
   test:
-    - supabase/tests/037_private_realtime_invalidations.test.sql
+    - supabase/tests/047_private_realtime_invalidations.test.sql
+    - supabase/tests/050_realtime_publication_hardening.test.sql
 exclusive_paths:
-  - supabase/migrations/20260816240000_private_realtime_invalidations.sql
-  - supabase/tests/037_private_realtime_invalidations.test.sql
-  - src/generated/database.types.ts
+  - supabase/migrations/20260829120000_private_realtime_invalidations.sql
+  - supabase/tests/047_private_realtime_invalidations.test.sql
+  - agent/lib/supabase/database.types.ts
+  - supabase/tests/050_realtime_publication_hardening.test.sql
 forbidden_paths:
   - .env
   - supabase/migrations/20260814000000_platform_foundation.sql
@@ -34,6 +36,20 @@ forbidden_paths:
 commit:
   message: "feat(realtime): create private realtime invalidation outbox"
 ---
+
+## Contract amendment — 2026-08-29
+
+The original paths were stale in this checkout: the database type generator writes to
+`agent/lib/supabase/database.types.ts`, and test number `037` is already owned by the
+memory-candidate hardening suite. The original migration timestamp also predates later
+applied migrations. The additive forward path is therefore amended to the next
+available migration timestamp and test number above. No behavior, authorization,
+privacy, or remote-state requirement changes.
+
+The existing publication regression test is also amended because it intentionally
+asserted that invalidations were premature before this leaf. It now asserts that the
+single private invalidation relation is the only published public relation and updates
+the forced-RLS count for that additive table.
 
 ## Outcome
 
@@ -136,5 +152,7 @@ Commit exclusive paths with feat(realtime): create private realtime invalidation
 - [ ] Urgent decisions create no workflow or notification.
 
 ## Handoff
+
+Evidence: implementation commit `5788793`; local database reset and migration application passed; focused SQL test `047_private_realtime_invalidations.test.sql` passed 25/25; updated publication regression `050_realtime_publication_hardening.test.sql` passed 11/11; `npm run generate:database-types`, `npm run verify:database-types`, `npm run typecheck`, and local Supabase lint passed. Generated type checksum: `sha256:258c2b58dd7bfaab8b7db499a85941eb78624d206b73e2a433bca401fe946ccf`. The full DB suite still has pre-existing failures in historical fixtures unrelated to this leaf; no remote migration or data mutation was performed.
 
 Only frontmatter blocks IDs become eligible after fresh workflow/local-database evidence and commit.

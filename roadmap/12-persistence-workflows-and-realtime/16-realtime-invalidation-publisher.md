@@ -2,7 +2,7 @@
 id: AT-12-16
 title: Publish minimal invalidations transactionally
 module: 12-persistence-workflows-and-realtime
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-12-15]
@@ -134,5 +134,7 @@ Commit exclusive paths with feat(realtime): publish minimal invalidations transa
 - [ ] Urgent decisions create no workflow or notification.
 
 ## Handoff
+
+Evidence: implementation commit `0f33f88`; focused test `tests/realtime/invalidation-publisher.test.ts` passed 8/8 and `npm run typecheck` passed. The publisher is transaction-port based, validates active child scope and bounded opaque IDs/versions, delegates to the server-only append contract, and classifies replay/conflict/transient outcomes. No direct client broadcast, schema mutation, remote operation, PHI, or urgent path was added.
 
 Only frontmatter blocks IDs become eligible after fresh workflow/local-database evidence and commit.

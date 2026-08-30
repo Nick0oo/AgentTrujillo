@@ -2,7 +2,7 @@
 id: AT-12-17
 title: Define client invalidation reconciliation
 module: 12-persistence-workflows-and-realtime
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-12-16, AT-11-16]
@@ -134,5 +134,7 @@ Commit exclusive paths with feat(realtime): define client invalidation reconcili
 - [ ] Urgent decisions create no workflow or notification.
 
 ## Handoff
+
+Evidence: implementation commit `fe977b3`; focused contract suite `tests/contracts/realtime-reconciliation.test.ts` passed 7/7. The versioned contract covers private scope-derived topics, opaque metadata only, monotonic cursor/version handling, authorized refetch, reconnect/backfill, stale-cache behavior, child switching, revocation, deletion, and the urgent/PHI boundary. No mobile or remote state was changed.
 
 Only frontmatter blocks IDs become eligible after fresh workflow/local-database evidence and commit.

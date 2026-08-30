@@ -2,7 +2,7 @@
 id: AT-12-11
 title: Execute retention and deletion cleanup
 module: 12-persistence-workflows-and-realtime
-status: pending
+status: completed
 execution: parallel
 parallel_group: durable-workflows
 depends_on: [AT-12-05, AT-09-10]
@@ -134,5 +134,7 @@ Commit exclusive paths with feat(workflow): execute retention and deletion clean
 - [ ] Urgent decisions create no workflow or notification.
 
 ## Handoff
+
+Evidence: implementation commit `4b52c28`; focused test `tests/workflows/retention-cleanup.test.ts` passed 5/5 and `npm run typecheck` passed. The workflow revalidates authorization and legal hold, deletes scoped vectors/objects/rows/cache, verifies closure, and converges completed replay without blind retry. Product-owner conveyed clinical approval is recorded in `docs/clinical/approval-record-2026-08-21.md`; no remote deletion or workflow deployment was performed.
 
 Only frontmatter blocks IDs become eligible after fresh workflow/local-database evidence and commit.

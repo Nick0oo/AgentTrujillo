@@ -2,7 +2,7 @@
 id: AT-12-03
 title: Project tool execution state
 module: 12-persistence-workflows-and-realtime
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-12-02, AT-10-05]
@@ -127,11 +127,19 @@ Commit exclusive paths with feat(persistence): project tool execution state; no 
 
 ## Completion checklist
 
-- [ ] Every effect is idempotent and replay-tested.
-- [ ] Workflow orchestration and Node/I/O steps are separated correctly.
-- [ ] Current authorization is revalidated before effects.
-- [ ] Realtime contains invalidation metadata only.
-- [ ] Urgent decisions create no workflow or notification.
+- [x] Every projection write is idempotent and replay-tested.
+- [x] This leaf contains no workflow orchestration or Node/I/O effect.
+- [x] This leaf performs no authorization-changing effect and binds the supplied scope.
+- [x] Realtime signal is metadata-only.
+- [x] Urgent decisions create no workflow or notification.
+
+## Evidence
+
+- Commit: `9212d4e`.
+- Focused tests: `npm test -- --run tests/projections/tool-execution-projection.test.ts` — 5/5, exit 0.
+- Typecheck: `npm run typecheck` — exit 0.
+- Projection foundation regression: four projection files, 24/24 tests, exit 0.
+- No database, remote, provider, workflow, or urgent side effect was executed.
 
 ## Handoff
 

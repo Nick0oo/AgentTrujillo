@@ -2,7 +2,7 @@
 id: AT-12-07
 title: Index memory with a durable workflow
 module: 12-persistence-workflows-and-realtime
-status: pending
+status: completed
 execution: parallel
 parallel_group: durable-workflows
 depends_on: [AT-12-05, AT-09-07]
@@ -134,5 +134,7 @@ Commit exclusive paths with feat(workflow): index memory with a durable workflow
 - [ ] Urgent decisions create no workflow or notification.
 
 ## Handoff
+
+Evidence: implementation commit `ade9c2e`; focused test `tests/workflows/memory-embedding.test.ts` passed 4/4 and `npm run typecheck` passed. The workflow indexes only active confirmed memory, validates child/session scope and 768-dimensional vectors, and keeps remove/upsert replay behavior explicit. No remote workflow deployment or clinical activation was performed.
 
 Only frontmatter blocks IDs become eligible after fresh workflow/local-database evidence and commit.

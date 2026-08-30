@@ -2,7 +2,7 @@
 id: AT-12-06
 title: Build durable conversation summaries
 module: 12-persistence-workflows-and-realtime
-status: pending
+status: completed
 execution: parallel
 parallel_group: durable-workflows
 depends_on: [AT-12-05, AT-09-03]
@@ -18,6 +18,7 @@ touches:
   create:
     - src/workflows/conversation-summary.ts
     - tests/workflows/conversation-summary.test.ts
+    - tests/workflows/conversation-summary.integration.ts
     - package.json
     - package-lock.json
     - vitest.workflow.config.ts
@@ -27,6 +28,7 @@ touches:
 exclusive_paths:
   - src/workflows/conversation-summary.ts
   - tests/workflows/conversation-summary.test.ts
+  - tests/workflows/conversation-summary.integration.ts
   - package.json
   - package-lock.json
   - vitest.workflow.config.ts
@@ -140,5 +142,7 @@ Commit exclusive paths with feat(workflow): build durable conversation summaries
 - [ ] Urgent decisions create no workflow or notification.
 
 ## Handoff
+
+Evidence: implementation commits `745a1e7` and `898706f`; focused unit suite passed 7/7, `npm run test:workflow -- --reporter dot` passed 1/1 with `@workflow/vitest`, and `npm run typecheck` passed. The workflow creates only unconfirmed, citation-bound summaries, skips urgent sessions, separates orchestration from step adapters, and classifies fatal/retryable failures. Product-owner conveyed clinical approval is recorded in `docs/clinical/approval-record-2026-08-21.md`; no remote workflow deployment or clinical activation was performed.
 
 Only frontmatter blocks IDs become eligible after fresh workflow/local-database evidence and commit.

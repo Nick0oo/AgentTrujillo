@@ -2,7 +2,7 @@
 id: AT-12-09
 title: Reevaluate children after package release
 module: 12-persistence-workflows-and-realtime
-status: pending
+status: completed
 execution: parallel
 parallel_group: durable-workflows
 depends_on: [AT-12-05, AT-03-09, AT-06-13]
@@ -134,5 +134,7 @@ Commit exclusive paths with feat(workflow): reevaluate children after package re
 - [ ] Urgent decisions create no workflow or notification.
 
 ## Handoff
+
+Evidence: implementation commit `340f57e`; focused test `tests/workflows/clinical-package-reevaluation.test.ts` passed 4/4 and `npm run typecheck` passed. The workflow bounds affected children, enforces country/package scope, and isolates each reevaluation as a retryable typed effect. Product-owner conveyed clinical approval is recorded in `docs/clinical/approval-record-2026-08-21.md`; no package activation or remote workflow deployment was performed.
 
 Only frontmatter blocks IDs become eligible after fresh workflow/local-database evidence and commit.

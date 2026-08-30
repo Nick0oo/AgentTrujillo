@@ -2,7 +2,7 @@
 id: AT-12-10
 title: Process private documents durably
 module: 12-persistence-workflows-and-realtime
-status: pending
+status: completed
 execution: parallel
 parallel_group: durable-workflows
 depends_on: [AT-12-05, AT-09-18]
@@ -134,5 +134,7 @@ Commit exclusive paths with feat(workflow): process private documents durably; n
 - [ ] Urgent decisions create no workflow or notification.
 
 ## Handoff
+
+Evidence: implementation commit `1bf619c`; focused test `tests/workflows/document-processing.test.ts` passed 5/5 and `npm run typecheck` passed. The workflow verifies private object identity/hash/version, quarantines non-clean scans, persists only untrusted confirmation-required drafts, and cleans up partial effects. Product-owner conveyed clinical approval is recorded in `docs/clinical/approval-record-2026-08-21.md`; no remote workflow deployment or document mutation was performed.
 
 Only frontmatter blocks IDs become eligible after fresh workflow/local-database evidence and commit.
