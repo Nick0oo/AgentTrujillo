@@ -1,4 +1,5 @@
 import { RetryableError } from "workflow";
+import { defineSchedule } from "eve/schedules";
 
 export const RETENTION_SCHEDULE = Object.freeze({
   cron: "0 * * * *",
@@ -87,3 +88,10 @@ export async function retentionSchedule(): Promise<RetentionScheduleResult> {
     if (locked) await runtimePorts.releaseLock(RETENTION_SCHEDULE.lockKey).catch(() => undefined);
   }
 }
+
+export default defineSchedule({
+  cron: RETENTION_SCHEDULE.cron,
+  async run() {
+    await retentionSchedule();
+  },
+});
