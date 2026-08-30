@@ -330,7 +330,7 @@ export function createCreciendoChannel(dependencies: CreciendoChannelDependencie
       POST(CRECIENDO_ROUTE_SPECS[7].path, boundary(dependencies.handlers.cancelSession, { allowedOrigins, timeoutMs, json: true })),
       GET(CRECIENDO_ROUTE_SPECS[8].path, boundary(dependencies.handlers.documentList, { allowedOrigins, timeoutMs, json: false, readBody: false })),
       POST(CRECIENDO_ROUTE_SPECS[9].path, boundary(dependencies.handlers.uploadTicket, { allowedOrigins, timeoutMs, json: true })),
-      PUT(CRECIENDO_ROUTE_SPECS[10].path, boundary(dependencies.handlers.documentUpload, { allowedOrigins, timeoutMs, json: false, readBody: false, maxBodyBytes: 52_428_800 })),
+      PUT(CRECIENDO_ROUTE_SPECS[10].path, boundary(dependencies.handlers.documentUpload, { allowedOrigins, timeoutMs, json: false, readBody: true, maxBodyBytes: 52_428_800 })),
       POST(CRECIENDO_ROUTE_SPECS[11].path, boundary(dependencies.handlers.downloadTicket, { allowedOrigins, timeoutMs, json: true })),
       GET(CRECIENDO_ROUTE_SPECS[12].path, boundary(dependencies.handlers.ocrDraft, { allowedOrigins, timeoutMs, json: false, readBody: false })),
     ],

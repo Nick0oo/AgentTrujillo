@@ -17,6 +17,7 @@ const INPUT = z.object({
   checksum: z.object({ algorithm: z.literal("sha256"), value: DIGEST }).strict(),
   consent: z.object({ granted: z.literal(true), purpose: z.literal("document_upload") }).strict(),
   retentionClass: z.enum(["ephemeral_upload", "child_record", "generated_artifact", "clinical_source"]),
+  idempotencyKey: z.string().regex(/^[A-Za-z0-9][A-Za-z0-9._:-]{0,199}$/u).optional(),
 }).strict();
 
 type UploadRule = Readonly<{

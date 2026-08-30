@@ -132,7 +132,10 @@ const UPLOAD_URL = z.string().url().refine((value) => {
   const url = new URL(value);
   return url.protocol === "https:" || (url.protocol === "http:" && LOCAL_DEVELOPMENT_HOSTS.has(url.hostname));
 }, "https_or_local_development_only");
-const HTTPS_URL = z.string().url().refine((value) => new URL(value).protocol === "https:", "https_only");
+const PRIVATE_DOWNLOAD_URL = z.string().url().refine((value) => {
+  const url = new URL(value);
+  return url.protocol === "https:" || (url.protocol === "http:" && LOCAL_DEVELOPMENT_HOSTS.has(url.hostname));
+}, "https_or_local_development_only");
 const MIME = z.string().regex(/^[a-z0-9!#$&^_.+-]+\/[a-z0-9!#$&^_.+-]+$/iu).max(128);
 const PURPOSE = z.enum(["avatar", "vaccine_record", "clinical_attachment", "generated_report", "clinical_source"]);
 const BUCKET = z.enum(["avatars", "vaccine-documents", "clinical-attachments", "generated-reports", "clinical-sources"]);
@@ -201,7 +204,7 @@ export const uploadTicketSchema = TICKET_BASE.extend({
 
 export const downloadTicketSchema = TICKET_BASE.extend({
   kind: z.literal("download"),
-  downloadUrl: HTTPS_URL,
+  downloadUrl: PRIVATE_DOWNLOAD_URL,
   displayName: TEXT(256),
   contentDisposition: z.literal("attachment"),
   auditId: UUID,

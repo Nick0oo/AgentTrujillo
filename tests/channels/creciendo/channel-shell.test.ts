@@ -164,6 +164,27 @@ describe("Creciendo Eve channel shell", () => {
     expect(response.headers.has("x-powered-by")).toBe(false);
   });
 
+  it("preserves the binary body for the private document upload route", async () => {
+    const selected = vi.fn(async (request: Request) => {
+      expect(new Uint8Array(await request.arrayBuffer())).toEqual(new Uint8Array([1, 2, 3, 4]));
+      return Response.json({ ok: true });
+    });
+    const channel = createCreciendoChannel({
+      handlers: handlers({ documentUpload: selected }),
+      allowedOrigins: [],
+    });
+    const response = await invoke(channel, "PUT", "/creciendo/v1/documents/upload", new Request(
+      "https://agent.test/creciendo/v1/documents/upload",
+      {
+        method: "PUT",
+        headers: { "content-type": "image/png", "content-length": "4" },
+        body: new Uint8Array([1, 2, 3, 4]),
+      },
+    ));
+    expect(response.status).toBe(200);
+    expect(selected).toHaveBeenCalledOnce();
+  });
+
   it("adapts the srvx NodeRequest without relying on cross-implementation private slots", async () => {
     const selected = vi.fn(async (request: Request) => {
       expect(await request.json()).toEqual({ hello: "world" });
