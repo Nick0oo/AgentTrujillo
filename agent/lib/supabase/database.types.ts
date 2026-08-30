@@ -4306,6 +4306,63 @@ export type Database = {
           },
         ]
       }
+      realtime_invalidations: {
+        Row: {
+          care_space_id: string
+          child_id: string
+          created_at: string
+          expires_at: string
+          id: number
+          resource_id: string
+          resource_kind: string
+          resource_version: number
+          sequence: number
+          session_id: string | null
+          source_event_id: string
+        }
+        Insert: {
+          care_space_id: string
+          child_id: string
+          created_at?: string
+          expires_at?: string
+          id?: never
+          resource_id: string
+          resource_kind: string
+          resource_version: number
+          sequence: number
+          session_id?: string | null
+          source_event_id: string
+        }
+        Update: {
+          care_space_id?: string
+          child_id?: string
+          created_at?: string
+          expires_at?: string
+          id?: never
+          resource_id?: string
+          resource_kind?: string
+          resource_version?: number
+          sequence?: number
+          session_id?: string | null
+          source_event_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "realtime_invalidations_child_fk"
+            columns: ["care_space_id", "child_id"]
+            isOneToOne: false
+            referencedRelation: "children"
+            referencedColumns: ["care_space_id", "id"]
+          },
+          {
+            foreignKeyName: "realtime_invalidations_session_fk"
+            columns: ["session_id", "care_space_id", "child_id"]
+            isOneToOne: false
+            referencedRelation: "agent_sessions"
+            referencedColumns: ["id", "care_space_id", "child_id"]
+          },
+        ]
+      }
       safety_evaluations: {
         Row: {
           agent_session_id: string | null
@@ -5187,6 +5244,22 @@ export type Database = {
           occurred_at: string
           outcome: string
           sequence: number
+        }[]
+      }
+      append_realtime_invalidation: {
+        Args: {
+          p_care_space_id: string
+          p_child_id: string
+          p_resource_id: string
+          p_resource_kind: string
+          p_resource_version: number
+          p_session_id: string
+          p_source_event_id: string
+        }
+        Returns: {
+          invalidation_id: number
+          invalidation_sequence: number
+          outcome: string
         }[]
       }
       bind_owned_eve_session: {
