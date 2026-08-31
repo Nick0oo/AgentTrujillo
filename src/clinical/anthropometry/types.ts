@@ -86,6 +86,7 @@ export type ConfirmedMeasurement = Readonly<{
   timeZone: string;
   measurementMethod: MeasurementMethod;
   provenanceType: MeasurementProvenance;
+  sourceNote?: string | null;
   recordedBy: string;
   validationStatus: MeasurementValidationStatus;
   inputFingerprint: string;

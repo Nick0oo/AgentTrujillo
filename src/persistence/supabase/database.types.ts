@@ -229,6 +229,7 @@ export type Database = {
           recorded_by: string
           rounding_mode: string | null
           scope_fingerprint: string | null
+          source_note: string | null
           supersedes_measurement_id: string | null
           supersession_reason: string | null
           time_zone: string
@@ -265,6 +266,7 @@ export type Database = {
           recorded_by: string
           rounding_mode?: string | null
           scope_fingerprint?: string | null
+          source_note?: string | null
           supersedes_measurement_id?: string | null
           supersession_reason?: string | null
           time_zone: string
@@ -301,6 +303,7 @@ export type Database = {
           recorded_by?: string
           rounding_mode?: string | null
           scope_fingerprint?: string | null
+          source_note?: string | null
           supersedes_measurement_id?: string | null
           supersession_reason?: string | null
           time_zone?: string

@@ -19,6 +19,9 @@ function handlers(overrides: Partial<CreciendoRouteHandlers> = {}): CreciendoRou
     childDirectory: ok,
     childContext: ok,
     dashboard: ok,
+    anthropometryCreate: ok,
+    anthropometryList: ok,
+    growthSummary: ok,
     createSession: ok,
     sendMessage: ok,
     streamSession: ok,
@@ -51,7 +54,7 @@ describe("Creciendo Eve channel shell", () => {
   it("mounts the canonical public surface", () => {
     const channel = createCreciendoChannel({ handlers: handlers(), allowedOrigins: [ALLOWED_ORIGIN] });
     expect(channel.routes.map(({ method, path }) => ({ method, path }))).toEqual(CRECIENDO_ROUTE_SPECS);
-    expect(channel.routes).toHaveLength(13);
+    expect(channel.routes).toHaveLength(16);
     expect(channel.routes.some(({ path }) => path.startsWith("/eve/"))).toBe(false);
     expect(channel.receive).toBeUndefined();
     expect(channel.cors).toEqual({

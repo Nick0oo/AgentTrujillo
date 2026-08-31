@@ -66,8 +66,16 @@ import {
 } from "../../src/channels/creciendo/routes/documents";
 import { createDocumentRouteDependencies } from "../../src/channels/creciendo/routes/documents";
 import { createSupabaseDocumentPersistence } from "../../src/channels/creciendo/document-persistence";
-import type { ChildContextTokenService } from "../lib/access/child-context-token";
-import type { AuthorizeChildService } from "../lib/access/authorize-child-service";
+import {
+  handleAnthropometryCreate,
+  handleAnthropometryList,
+  handleGrowthSummary,
+  createGrowthScopeResolver,
+  type AnthropometryRouteDependencies,
+} from "../../src/channels/creciendo/routes/anthropometry";
+import { createSupabaseAnthropometryPersistence } from "../../src/channels/creciendo/anthropometry-persistence";
+import { createChildContextTokenService, type ChildContextTokenService } from "../lib/access/child-context-token";
+import { createAuthorizeChildService, type AuthorizeChildService } from "../lib/access/authorize-child-service";
 
 export const MAX_REQUEST_BODY_BYTES = 64 * 1_024;
 export const DEFAULT_REQUEST_TIMEOUT_MS = 15_000;
@@ -77,6 +85,9 @@ export const CRECIENDO_ROUTE_SPECS = Object.freeze([
   Object.freeze({ method: "GET" as const, path: "/creciendo/v1/children" }),
   Object.freeze({ method: "POST" as const, path: "/creciendo/v1/child-context" }),
   Object.freeze({ method: "GET" as const, path: "/creciendo/v1/dashboard" }),
+  Object.freeze({ method: "POST" as const, path: "/creciendo/v1/anthropometry" }),
+  Object.freeze({ method: "GET" as const, path: "/creciendo/v1/anthropometry" }),
+  Object.freeze({ method: "GET" as const, path: "/creciendo/v1/anthropometry/growth" }),
   Object.freeze({ method: "POST" as const, path: "/creciendo/v1/sessions" }),
   Object.freeze({ method: "POST" as const, path: "/creciendo/v1/sessions/:sessionId/messages" }),
   Object.freeze({ method: "GET" as const, path: "/creciendo/v1/sessions/:sessionId/stream" }),
@@ -95,6 +106,9 @@ export type CreciendoRouteHandlers = Readonly<{
   childDirectory: CreciendoRouteHandler;
   childContext: CreciendoRouteHandler;
   dashboard: CreciendoRouteHandler;
+  anthropometryCreate: CreciendoRouteHandler;
+  anthropometryList: CreciendoRouteHandler;
+  growthSummary: CreciendoRouteHandler;
   createSession: CreciendoRouteHandler;
   sendMessage: CreciendoRouteHandler;
   streamSession: CreciendoRouteHandler;
@@ -156,7 +170,7 @@ function validateOrigin(origin: string): boolean {
 function validateDependencies(input: CreciendoChannelDependencies): void {
   const handlers = input.handlers;
   if (!handlers
-    || Object.values(handlers).length !== 13
+    || Object.values(handlers).length !== 16
     || Object.values(handlers).some((handler) => typeof handler !== "function")
     || input.allowedOrigins.length > 16
     || new Set(input.allowedOrigins).size !== input.allowedOrigins.length
@@ -324,15 +338,18 @@ export function createCreciendoChannel(dependencies: CreciendoChannelDependencie
       GET(CRECIENDO_ROUTE_SPECS[1].path, boundary(dependencies.handlers.childDirectory, { allowedOrigins, timeoutMs, json: false })),
       POST(CRECIENDO_ROUTE_SPECS[2].path, boundary(dependencies.handlers.childContext, { allowedOrigins, timeoutMs, json: true })),
       GET(CRECIENDO_ROUTE_SPECS[3].path, boundary(dependencies.handlers.dashboard, { allowedOrigins, timeoutMs, json: false })),
-      POST(CRECIENDO_ROUTE_SPECS[4].path, boundary(dependencies.handlers.createSession, { allowedOrigins, timeoutMs, json: true })),
-      POST(CRECIENDO_ROUTE_SPECS[5].path, boundary(dependencies.handlers.sendMessage, { allowedOrigins, timeoutMs, json: true })),
-      GET(CRECIENDO_ROUTE_SPECS[6].path, boundary(dependencies.handlers.streamSession, { allowedOrigins, timeoutMs, json: false })),
-      POST(CRECIENDO_ROUTE_SPECS[7].path, boundary(dependencies.handlers.cancelSession, { allowedOrigins, timeoutMs, json: true })),
-      GET(CRECIENDO_ROUTE_SPECS[8].path, boundary(dependencies.handlers.documentList, { allowedOrigins, timeoutMs, json: false, readBody: false })),
-      POST(CRECIENDO_ROUTE_SPECS[9].path, boundary(dependencies.handlers.uploadTicket, { allowedOrigins, timeoutMs, json: true })),
-      PUT(CRECIENDO_ROUTE_SPECS[10].path, boundary(dependencies.handlers.documentUpload, { allowedOrigins, timeoutMs, json: false, readBody: true, maxBodyBytes: 52_428_800 })),
-      POST(CRECIENDO_ROUTE_SPECS[11].path, boundary(dependencies.handlers.downloadTicket, { allowedOrigins, timeoutMs, json: true })),
-      GET(CRECIENDO_ROUTE_SPECS[12].path, boundary(dependencies.handlers.ocrDraft, { allowedOrigins, timeoutMs, json: false, readBody: false })),
+      POST(CRECIENDO_ROUTE_SPECS[4].path, boundary(dependencies.handlers.anthropometryCreate, { allowedOrigins, timeoutMs, json: true })),
+      GET(CRECIENDO_ROUTE_SPECS[5].path, boundary(dependencies.handlers.anthropometryList, { allowedOrigins, timeoutMs, json: false, readBody: false })),
+      GET(CRECIENDO_ROUTE_SPECS[6].path, boundary(dependencies.handlers.growthSummary, { allowedOrigins, timeoutMs, json: false, readBody: false })),
+      POST(CRECIENDO_ROUTE_SPECS[7].path, boundary(dependencies.handlers.createSession, { allowedOrigins, timeoutMs, json: true })),
+      POST(CRECIENDO_ROUTE_SPECS[8].path, boundary(dependencies.handlers.sendMessage, { allowedOrigins, timeoutMs, json: true })),
+      GET(CRECIENDO_ROUTE_SPECS[9].path, boundary(dependencies.handlers.streamSession, { allowedOrigins, timeoutMs, json: false })),
+      POST(CRECIENDO_ROUTE_SPECS[10].path, boundary(dependencies.handlers.cancelSession, { allowedOrigins, timeoutMs, json: true })),
+      GET(CRECIENDO_ROUTE_SPECS[11].path, boundary(dependencies.handlers.documentList, { allowedOrigins, timeoutMs, json: false, readBody: false })),
+      POST(CRECIENDO_ROUTE_SPECS[12].path, boundary(dependencies.handlers.uploadTicket, { allowedOrigins, timeoutMs, json: true })),
+      PUT(CRECIENDO_ROUTE_SPECS[13].path, boundary(dependencies.handlers.documentUpload, { allowedOrigins, timeoutMs, json: false, readBody: true, maxBodyBytes: 52_428_800 })),
+      POST(CRECIENDO_ROUTE_SPECS[14].path, boundary(dependencies.handlers.downloadTicket, { allowedOrigins, timeoutMs, json: true })),
+      GET(CRECIENDO_ROUTE_SPECS[15].path, boundary(dependencies.handlers.ocrDraft, { allowedOrigins, timeoutMs, json: false, readBody: false })),
     ],
   });
 }
@@ -403,6 +420,27 @@ function getProductionDashboardDependencies() {
 const productionDashboard: AuthenticatedChannelHandler = (request, auth) =>
   handleDashboard(request, auth, getProductionDashboardDependencies());
 const guardedDashboard = withProductionChannelAuth(productionDashboard);
+
+function getProductionAnthropometryDependencies(auth: AuthenticatedChannelRequest): AnthropometryRouteDependencies {
+  const config = loadRuntimeConfig(process.env);
+  return Object.freeze({
+    scope: createGrowthScopeResolver({
+      tokens: createChildContextTokenService(config),
+      authorizeChild: createAuthorizeChildService(config),
+    }),
+    persistence: createSupabaseAnthropometryPersistence({ config, auth }),
+  });
+}
+
+const productionAnthropometryCreate: AuthenticatedChannelHandler = (request, auth) =>
+  handleAnthropometryCreate(request, auth, getProductionAnthropometryDependencies(auth));
+const productionAnthropometryList: AuthenticatedChannelHandler = (request, auth) =>
+  handleAnthropometryList(request, auth, getProductionAnthropometryDependencies(auth));
+const productionGrowthSummary: AuthenticatedChannelHandler = (request, auth) =>
+  handleGrowthSummary(request, auth, getProductionAnthropometryDependencies(auth));
+const guardedAnthropometryCreate = withProductionChannelAuth(productionAnthropometryCreate);
+const guardedAnthropometryList = withProductionChannelAuth(productionAnthropometryList);
+const guardedGrowthSummary = withProductionChannelAuth(productionGrowthSummary);
 
 let productionSessionCreateDependencies: SessionCreateRouteDependencies | undefined;
 
@@ -530,6 +568,9 @@ export default createCreciendoChannel({
     childDirectory: guardedChildDirectory,
     childContext: guardedChildContext,
     dashboard: guardedDashboard,
+    anthropometryCreate: guardedAnthropometryCreate,
+    anthropometryList: guardedAnthropometryList,
+    growthSummary: guardedGrowthSummary,
     createSession: guardedSessionCreate,
     sendMessage: guardedSessionMessage,
     streamSession: guardedSessionStream,
