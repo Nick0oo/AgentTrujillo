@@ -28,7 +28,7 @@ These facts do not close pending behavioral gates. Local schema parity, generate
 - Documentation design: `completed` at commit `08ed71a`.
 - Documentation implementation plan: `completed` at commit `2ba542b`.
 - Atomic roadmap authoring: modules `01` through `15` completed and cross-module verification passed; see [verification evidence](docs/verification/2026-08-16-agent-roadmap.md).
-- Product implementation: modules `01` through `09` completed with fresh runtime and Cloud evidence. Module `07` exact minimal formularies were released in `54e615c`; conveyed approval is recorded without a personal signature.
+- Product implementation: modules `01` through `04` and `06` through `09` remain completed with fresh runtime and Cloud evidence. Module `05` root-authorized amendment `AT-05-17` is in progress to activate exact growth packages locally without remote mutation. Module `07` exact minimal formularies were released in `54e615c`; conveyed approval is recorded without a personal signature.
 - Module 08 is **17/17 completed with 0 pending leaves**. Final boundary evidence is recorded at implementation commit `145b3b0` and `docs/verification/nutrition-development.md`.
 - Module 09 is **21/21 completed with 0 pending leaves**. Final isolation evidence is recorded at implementation commit `debbfcf` and `docs/verification/memory-documents.md`.
 - Module 10 execution uses the root-authorized 2026-08-23 contract reconciliation: Eve `0.27.13` supersedes its historical `0.27.1` references, and only `AT-13-01` may execute early after verified `AT-03-11` to supply the provider-neutral catalog required by `AT-10-02`. The rest of Module 13 remains pending behind its general entry gate.
@@ -44,7 +44,7 @@ These facts do not close pending behavioral gates. Local schema parity, generate
 | 02 | Access and session isolation | completed | completed | Zero cross-space, cross-child, and cross-session access | [Module 02](roadmap/02-access-and-session-isolation/README.md) |
 | 03 | Clinical governance | completed | completed | Only approved, versioned, checksum-matching packages resolve | [Module 03](roadmap/03-clinical-governance/README.md) |
 | 04 | Safety and emergency boundary | completed | completed | Critical red flags bypass the LLM and emit approved emergency-only copy | [Module 04](roadmap/04-safety-and-emergency-boundary/README.md) |
-| 05 | Anthropometry and growth | completed | completed | Reproducible age, Z-score, percentile, and growth-series results | [Module 05](roadmap/05-anthropometry-and-growth/README.md) |
+| 05 | Anthropometry and growth | completed | in_progress | Reproducible age, Z-score, percentile, and growth-series results | [Module 05](roadmap/05-anthropometry-and-growth/README.md) |
 | 06 | Immunization | completed | completed | PAI and ACIP evaluations are separate, reproducible, and source-traceable | [Module 06](roadmap/06-immunization/README.md) |
 | 07 | Medication and adherence | completed | completed | Declared-dose validation is conservative and plans/intakes are idempotent | [Module 07](roadmap/07-medication-and-adherence/README.md) |
 | 08 | Nutrition and development | completed | completed | Guidance stays educational and EAD-3 remains professional-only | [Module 08](roadmap/08-nutrition-and-development/README.md) |
@@ -59,6 +59,8 @@ These facts do not close pending behavioral gates. Local schema parity, generate
 Modules are ordered by their load-bearing dependencies. Leaves inside a module may declare safe parallel groups after their shared contracts are complete.
 
 ## Ready queue
+
+`AT-05-17` is in progress under root ownership. It depends only on completed `AT-03-12`, `AT-05-15`, `AT-05-16`, and `AT-11-19`, with committed Creciendo anthropometry transport prerequisite `5c7c655`. It owns local canonical package artifacts, data-only migration `20260902110000`, pgTAP fixture `048`, governed provider/builder integration, and LF fixture closure. No linked Supabase mutation, Storage upload, deployment, production activation, or US market activation is authorized.
 
 Module 11's original 18/18 leaves remain completed. `AT-11-18` closed at implementation commit `3a0b152`: the standard Eve route family is production/preview fail-closed, local loopback operations remain available, and exact Module 11 discovery plus the tool-contract gate pass. Root-authorized amendment `AT-11-19` is completed at `b3037df` after the atomic onboarding implementation and extended birth-field corrections; its migration has not been applied to Cloud or production. The full backend suite retains two Windows checkout line-ending assertions as a portability follow-up. `AT-12-01` is now eligible for dependency review; no Module 12 implementation has started.
 
@@ -100,6 +102,7 @@ Post-closure Module 11/`AT-10-21` compatibility correction for `AT-10-09`: the f
 
 ## Active workers
 
+- Root: `AT-05-17` is in progress on the exact paths declared by its leaf. Existing local anthropometry, source-governance, and Creciendo composition changes are preserved and may be integrated only where the leaf explicitly owns them. Migration `20260902100000` and the in-review `AT-11-20` paths remain outside this work.
 - Root: `AT-12-17` is completed; `AT-12-12` remains pending on `AT-13-08`, `AT-12-14` remains pending on `AT-13-11`, and `AT-12-18` cannot start until those prerequisites and the completed workflow leaves are freshly reviewed. `AT-12-15` closed at `5788793`, `AT-12-16` at `0f33f88`, and `AT-12-17` at `fe977b3`. `AT-12-01` closed at `84ae407`, `AT-12-02` at `8301bc7`, `AT-12-03` at `9212d4e`, `AT-12-04` at `b30b5af`, and `AT-12-05` at `cd23928` plus runner `1be6240`. The pinned Workflow DevKit dependency is `workflow@4.8.5`.
 
 

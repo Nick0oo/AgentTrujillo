@@ -4,9 +4,9 @@ This module records confirmed weight, recumbent length, standing height, and hea
 
 ## Current implementation status
 
-All sixteen leaves, including the 2026-08-21 Cloud source-registry amendment, are complete. The audit corrected ambiguous CDC infant/child rows, made the US 24-month transition depend on completed calendar months, prevented post-transition infant-chart selection, and implemented the CDC 2022 extended-BMI algorithm only after measured eligibility. Seventeen current official source artifacts were re-fetched and matched their pinned hashes before their metadata was registered in production.
+The original sixteen leaves, including the 2026-08-21 Cloud source-registry amendment, are complete. Root-authorized `AT-05-17` is in progress to bind the existing deterministic engine and exact datasets into country-separated governed packages and the already committed Creciendo anthropometry route. The audit corrected ambiguous CDC infant/child rows, made the US 24-month transition depend on completed calendar months, prevented post-transition infant-chart selection, and implemented the CDC 2022 extended-BMI algorithm only after measured eligibility. Seventeen current official source artifacts were re-fetched and matched their pinned hashes before their metadata was registered in production.
 
-Production has zero patient measurements/assessments and zero active growth packages, which is the correct state before real use. Source metadata is `reviewed`, not activated. A future module `10` tool must resolve a checksum-bound module `03` package before calling these deterministic engines.
+The linked production state is unchanged by `AT-05-17`: this amendment develops and verifies package activation locally and authorizes no remote migration, private-artifact upload, deployment, market activation, or patient-data mutation. The route must resolve a checksum-bound module `03` package before calling the deterministic engines.
 
 ## Entry gate
 
@@ -17,7 +17,7 @@ Production has zero patient measurements/assessments and zero active growth pack
 
 ## Exit gate
 
-All sixteen leaves are complete and fresh evidence proves:
+The original sixteen leaves are complete. `AT-05-17` returns the module to complete only when fresh evidence additionally proves:
 
 - age calculations are calendar/timezone exact and shared by every domain;
 - corrected age is explicit, versioned, bounded, and never inferred when gestation data/rules are missing;
@@ -61,6 +61,8 @@ AT-04-14 + AT-03-11 -> AT-05-01 -+-> AT-05-02 -> AT-05-03 -+
                                                                                       |
                                                                                       v
 AT-05-15 <- AT-05-13 <- AT-05-14 <---------------------------------------------------+
+
+AT-03-12 + AT-05-16 + AT-11-19 + transport 5c7c655 -> AT-05-17
 ```
 
 WHO and CDC dataset leaves `07`/`08` run sequentially because both own `package.json`; their country-specific data and engines remain separate. Age and unit branches converge before capture validation. All later work is sequential because numerical/storage contracts are shared.
@@ -85,6 +87,7 @@ WHO and CDC dataset leaves `07`/`08` run sequentially because both own `package.
 | [AT-05-14](14-anthropometry-repository.md) | Persist scoped facts/assessments | yes | no | `AT-05-12` |
 | [AT-05-15](15-growth-reproducibility-tests.md) | Prove independent numerical parity | no | no | `AT-05-13` |
 | [AT-05-16](16-production-source-registry-amendment.md) | Register verified WHO/CDC source metadata in Cloud | yes | no | `AT-05-07`, `AT-05-08` |
+| [AT-05-17](17-governed-growth-package-activation.md) | Activate checksum-bound CO/US growth packages locally and require them on the Creciendo route | yes | yes | `AT-03-12`, `AT-05-15`, `AT-05-16`, `AT-11-19` |
 
 ## Clinical boundary
 
