@@ -74,6 +74,11 @@ import {
   type AnthropometryRouteDependencies,
 } from "../../src/channels/creciendo/routes/anthropometry";
 import { createSupabaseAnthropometryPersistence } from "../../src/channels/creciendo/anthropometry-persistence";
+import {
+  createImmunizationStatusRouteDependencies,
+  handleImmunizationStatus,
+  type ImmunizationStatusRouteDependencies,
+} from "../../src/channels/creciendo/routes/immunization-status";
 import { createChildContextTokenService, type ChildContextTokenService } from "../lib/access/child-context-token";
 import { createAuthorizeChildService, type AuthorizeChildService } from "../lib/access/authorize-child-service";
 
@@ -97,6 +102,7 @@ export const CRECIENDO_ROUTE_SPECS = Object.freeze([
   Object.freeze({ method: "PUT" as const, path: "/creciendo/v1/documents/upload" }),
   Object.freeze({ method: "POST" as const, path: "/creciendo/v1/documents/download-ticket" }),
   Object.freeze({ method: "GET" as const, path: "/creciendo/v1/documents/:documentId/ocr-draft" }),
+  Object.freeze({ method: "GET" as const, path: "/creciendo/v1/immunization/status" }),
 ]);
 
 export type CreciendoRouteHandler = HttpRouteDefinition["handler"];
@@ -118,6 +124,7 @@ export type CreciendoRouteHandlers = Readonly<{
   documentUpload: CreciendoRouteHandler;
   downloadTicket: CreciendoRouteHandler;
   ocrDraft: CreciendoRouteHandler;
+  immunizationStatus: CreciendoRouteHandler;
 }>;
 
 export type CreciendoChannelDependencies = Readonly<{
@@ -170,7 +177,7 @@ function validateOrigin(origin: string): boolean {
 function validateDependencies(input: CreciendoChannelDependencies): void {
   const handlers = input.handlers;
   if (!handlers
-    || Object.values(handlers).length !== 16
+    || Object.values(handlers).length !== 17
     || Object.values(handlers).some((handler) => typeof handler !== "function")
     || input.allowedOrigins.length > 16
     || new Set(input.allowedOrigins).size !== input.allowedOrigins.length
@@ -350,6 +357,7 @@ export function createCreciendoChannel(dependencies: CreciendoChannelDependencie
       PUT(CRECIENDO_ROUTE_SPECS[13].path, boundary(dependencies.handlers.documentUpload, { allowedOrigins, timeoutMs, json: false, readBody: true, maxBodyBytes: 52_428_800 })),
       POST(CRECIENDO_ROUTE_SPECS[14].path, boundary(dependencies.handlers.downloadTicket, { allowedOrigins, timeoutMs, json: true })),
       GET(CRECIENDO_ROUTE_SPECS[15].path, boundary(dependencies.handlers.ocrDraft, { allowedOrigins, timeoutMs, json: false, readBody: false })),
+      GET(CRECIENDO_ROUTE_SPECS[16].path, boundary(dependencies.handlers.immunizationStatus, { allowedOrigins, timeoutMs, json: false, readBody: false })),
     ],
   });
 }
@@ -420,6 +428,17 @@ function getProductionDashboardDependencies() {
 const productionDashboard: AuthenticatedChannelHandler = (request, auth) =>
   handleDashboard(request, auth, getProductionDashboardDependencies());
 const guardedDashboard = withProductionChannelAuth(productionDashboard);
+
+let productionImmunizationStatusDependencies: ImmunizationStatusRouteDependencies | undefined;
+
+function getProductionImmunizationStatusDependencies(): ImmunizationStatusRouteDependencies {
+  productionImmunizationStatusDependencies ??= createImmunizationStatusRouteDependencies(loadRuntimeConfig(process.env));
+  return productionImmunizationStatusDependencies;
+}
+
+const productionImmunizationStatus: AuthenticatedChannelHandler = (request, auth) =>
+  handleImmunizationStatus(request, auth, getProductionImmunizationStatusDependencies());
+const guardedImmunizationStatus = withProductionChannelAuth(productionImmunizationStatus);
 
 function getProductionAnthropometryDependencies(auth: AuthenticatedChannelRequest): AnthropometryRouteDependencies {
   const config = loadRuntimeConfig(process.env);
@@ -580,6 +599,7 @@ export default createCreciendoChannel({
     documentUpload: guardedDocumentUpload,
     downloadTicket: guardedDownloadTicket,
     ocrDraft: guardedOcrDraft,
+    immunizationStatus: guardedImmunizationStatus,
   },
   allowedOrigins: [],
 });

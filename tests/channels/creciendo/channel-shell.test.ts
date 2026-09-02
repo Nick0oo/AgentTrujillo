@@ -22,6 +22,7 @@ function handlers(overrides: Partial<CreciendoRouteHandlers> = {}): CreciendoRou
     anthropometryCreate: ok,
     anthropometryList: ok,
     growthSummary: ok,
+    immunizationStatus: ok,
     createSession: ok,
     sendMessage: ok,
     streamSession: ok,
@@ -54,7 +55,7 @@ describe("Creciendo Eve channel shell", () => {
   it("mounts the canonical public surface", () => {
     const channel = createCreciendoChannel({ handlers: handlers(), allowedOrigins: [ALLOWED_ORIGIN] });
     expect(channel.routes.map(({ method, path }) => ({ method, path }))).toEqual(CRECIENDO_ROUTE_SPECS);
-    expect(channel.routes).toHaveLength(16);
+    expect(channel.routes).toHaveLength(17);
     expect(channel.routes.some(({ path }) => path.startsWith("/eve/"))).toBe(false);
     expect(channel.receive).toBeUndefined();
     expect(channel.cors).toEqual({
@@ -93,6 +94,18 @@ describe("Creciendo Eve channel shell", () => {
     ), {} as never);
     expect(response.status).toBe(503);
     expect(await response.json()).toEqual({ ok: false, code: "CHANNEL_UNAVAILABLE" });
+  });
+
+  it("mounts immunization status as an authenticated bodyless GET", async () => {
+    const routeHandlers = handlers();
+    const channel = createCreciendoChannel({ handlers: routeHandlers, allowedOrigins: [] });
+    const response = await invoke(channel, "GET", "/creciendo/v1/immunization/status", new Request(
+      "https://agent.test/creciendo/v1/immunization/status",
+      { method: "GET", headers: { authorization: "Bearer token", "x-child-context": "signed-context" } },
+    ));
+
+    expect(response.status).toBe(200);
+    expect(routeHandlers.immunizationStatus).toHaveBeenCalledTimes(1);
   });
 
   it("rejects an unapproved browser origin before invoking a dependency", async () => {

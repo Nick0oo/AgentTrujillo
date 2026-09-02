@@ -58,6 +58,12 @@
       "name": "creciendo",
       "kind": "http",
       "method": "GET",
+      "urlPath": "/creciendo/v1/immunization/status"
+    },
+    {
+      "name": "creciendo",
+      "kind": "http",
+      "method": "GET",
       "urlPath": "/creciendo/v1/sessions/:sessionId/stream"
     },
     {
