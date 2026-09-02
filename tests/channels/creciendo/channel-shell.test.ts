@@ -32,6 +32,7 @@ function handlers(overrides: Partial<CreciendoRouteHandlers> = {}): CreciendoRou
     documentUpload: ok,
     downloadTicket: ok,
     ocrDraft: ok,
+    immunizationAdministration: ok,
     ...overrides,
   };
 }
@@ -55,7 +56,7 @@ describe("Creciendo Eve channel shell", () => {
   it("mounts the canonical public surface", () => {
     const channel = createCreciendoChannel({ handlers: handlers(), allowedOrigins: [ALLOWED_ORIGIN] });
     expect(channel.routes.map(({ method, path }) => ({ method, path }))).toEqual(CRECIENDO_ROUTE_SPECS);
-    expect(channel.routes).toHaveLength(17);
+    expect(channel.routes).toHaveLength(18);
     expect(channel.routes.some(({ path }) => path.startsWith("/eve/"))).toBe(false);
     expect(channel.receive).toBeUndefined();
     expect(channel.cors).toEqual({
@@ -106,6 +107,18 @@ describe("Creciendo Eve channel shell", () => {
 
     expect(response.status).toBe(200);
     expect(routeHandlers.immunizationStatus).toHaveBeenCalledTimes(1);
+  });
+
+  it("mounts immunization administration as a JSON POST", async () => {
+    const routeHandlers = handlers();
+    const channel = createCreciendoChannel({ handlers: routeHandlers, allowedOrigins: [] });
+    const response = await invoke(channel, "POST", "/creciendo/v1/immunization/administrations", new Request(
+      "https://agent.test/creciendo/v1/immunization/administrations",
+      { method: "POST", headers: { "content-type": "application/json" }, body: "{}" },
+    ));
+
+    expect(response.status).toBe(200);
+    expect(routeHandlers.immunizationAdministration).toHaveBeenCalledTimes(1);
   });
 
   it("rejects an unapproved browser origin before invoking a dependency", async () => {
