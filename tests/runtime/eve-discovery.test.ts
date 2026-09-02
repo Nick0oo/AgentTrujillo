@@ -133,6 +133,7 @@ describe("Eve discovery gate", () => {
       { name: "creciendo", kind: "http", method: "POST", urlPath: "/creciendo/v1/documents/download-ticket" },
       { name: "creciendo", kind: "http", method: "POST", urlPath: "/creciendo/v1/documents/upload-ticket" },
       { name: "creciendo", kind: "http", method: "POST", urlPath: "/creciendo/v1/immunization/administrations" },
+      { name: "creciendo", kind: "http", method: "POST", urlPath: "/creciendo/v1/immunization/administration-drafts" },
       { name: "creciendo", kind: "http", method: "POST", urlPath: "/creciendo/v1/onboarding" },
       { name: "creciendo", kind: "http", method: "POST", urlPath: "/creciendo/v1/sessions" },
       { name: "creciendo", kind: "http", method: "POST", urlPath: "/creciendo/v1/sessions/:sessionId/cancel" },

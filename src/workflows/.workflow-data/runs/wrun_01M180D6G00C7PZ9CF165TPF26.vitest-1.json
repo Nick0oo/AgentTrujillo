@@ -1,0 +1,27 @@
+{
+  "runId": "wrun_01M180D6G00C7PZ9CF165TPF26",
+  "deploymentId": "dpl_local@4.4.0",
+  "workflowName": "workflow//./src/workflows/conversation-summary//conversationSummaryWorkflow",
+  "specVersion": 3,
+  "executionContext": {
+    "traceCarrier": {},
+    "workflowCoreVersion": "4.8.5",
+    "features": {
+      "encryption": false
+    }
+  },
+  "input": {
+    "__type": "Uint8Array",
+    "data": "ZGV2bFtbMV0seyJvd25lclVzZXJJZCI6MiwiY2FyZVNwYWNlSWQiOjMsImNoaWxkSWQiOjQsInNlc3Npb25JZCI6NSwic291cmNlU2Vzc2lvbklkIjo1LCJzb3VyY2VEaWdlc3QiOjYsImN1dG9mZkF0Ijo3LCJwcm9tcHRWZXJzaW9uIjo4LCJzY2hlbWFWZXJzaW9uIjo5LCJpZGVtcG90ZW5jeUtleSI6MTB9LCIwMDAwMDAwMC0wMDAwLTQwMDAtODAwMC0wMDAwMDAxMjAwMDEiLCIwMDAwMDAwMC0wMDAwLTQwMDAtODAwMC0wMDAwMDAxMjAwMDIiLCIwMDAwMDAwMC0wMDAwLTQwMDAtODAwMC0wMDAwMDAxMjAwMDMiLCIwMDAwMDAwMC0wMDAwLTQwMDAtODAwMC0wMDAwMDAxMjAwMDQiLCJhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhIiwiMjAyNi0wOC0yOVQxMjowMDowMC4wMDBaIiwic3VtbWFyeS1wcm9tcHQudjEiLCJzdW1tYXJ5LWNhbmRpZGF0ZS52MSIsInN1bW1hcnk6aW50ZWdyYXRpb24iXQ=="
+  },
+  "createdAt": "2026-08-30T00:16:45.119Z",
+  "startedAt": "2026-08-30T00:16:45.148Z",
+  "status": "failed",
+  "error": {
+    "message": "Workflow \"workflow//./src/workflows/conversation-summary//conversationSummaryWorkflow\" is not registered in the current deployment. This usually means a run was started against a deployment that does not have this workflow, or there was a build/bundling issue.\n\nLearn more: https://useworkflow.dev/err/workflow-not-registered",
+    "stack": "WorkflowNotRegisteredError: Workflow \"workflow//./src/workflows/conversation-summary//conversationSummaryWorkflow\" is not registered in the current deployment. This usually means a run was started against a deployment that does not have this workflow, or there was a build/bundling issue.\n\nLearn more: https://useworkflow.dev/err/workflow-not-registered\n    at file:///C:/Users/ACER/Documents/OIDUTS-88/projects/AgentTrujillo/node_modules/@workflow/core/dist/workflow.js:606:19\n    at processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at trace (file:///C:/Users/ACER/Documents/OIDUTS-88/projects/AgentTrujillo/node_modules/@workflow/core/dist/telemetry.js:75:16)\n    at file:///C:/Users/ACER/Documents/OIDUTS-88/projects/AgentTrujillo/node_modules/@workflow/core/dist/runtime.js:516:36\n    at trace (file:///C:/Users/ACER/Documents/OIDUTS-88/projects/AgentTrujillo/node_modules/@workflow/core/dist/telemetry.js:75:16)\n    at file:///C:/Users/ACER/Documents/OIDUTS-88/projects/AgentTrujillo/node_modules/@workflow/core/dist/runtime.js:512:42\n    at trace (file:///C:/Users/ACER/Documents/OIDUTS-88/projects/AgentTrujillo/node_modules/@workflow/core/dist/telemetry.js:75:16)\n    at file:///C:/Users/ACER/Documents/OIDUTS-88/projects/AgentTrujillo/node_modules/@workflow/core/dist/runtime.js:166:20\n    at file:///C:/Users/ACER/Documents/OIDUTS-88/projects/AgentTrujillo/node_modules/@workflow/core/dist/runtime.js:164:16\n    at file:///C:/Users/ACER/Documents/OIDUTS-88/projects/AgentTrujillo/node_modules/@workflow/world-local/dist/queue.js:277:32",
+    "code": "RUNTIME_ERROR"
+  },
+  "completedAt": "2026-08-30T00:16:46.128Z",
+  "updatedAt": "2026-08-30T00:16:46.128Z"
+}

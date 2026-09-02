@@ -9,7 +9,7 @@ export type ClinicalDomain =
 export type CountryCode = "CO" | "US" | "GLOBAL";
 export type ClinicalJurisdiction = CountryCode;
 
-export type ClinicalAuthority = "MINSALUD_PAI" | "CDC_ACIP" | "WHO" | "INVIMA" | "NLM_DAILYMED" | "NLM_RXNORM" | "FDA";
+export type ClinicalAuthority = "MINSALUD_PAI" | "CDC_ACIP" | "CDC_NCHS" | "WHO" | "INVIMA" | "NLM_DAILYMED" | "NLM_RXNORM" | "FDA";
 
 declare const sha256HexBrand: unique symbol;
 export type Sha256Hex = string & { readonly [sha256HexBrand]: true };

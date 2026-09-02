@@ -11,6 +11,11 @@ import type { RecordConfirmedInput } from "../../clinical/anthropometry/reposito
 import type { ConfirmedMeasurement } from "../../clinical/anthropometry/types.ts";
 import type { RepositoryAccessResult } from "../../clinical/anthropometry/repository.ts";
 import type { AnthropometryRouteMeasurement, AnthropometryCreateRequest, GrowthPersistence } from "./routes/anthropometry.ts";
+import {
+  buildDevOnlyGrowthSummary,
+  type DevOnlyGrowthChild,
+  type DevOnlyGrowthMeasurement,
+} from "./dev-only-growth-summary.ts";
 
 type PersistenceResult = Readonly<{ code: string }>;
 
@@ -72,6 +77,59 @@ function confirmation(now: Date, input: AnthropometryCreateRequest, scope: Autho
     confirmationSha256: hash(JSON.stringify({ scope: scope.childId, measurement: input.measurement, confirmedAt: now.toISOString() })),
     expiresAt: new Date(now.getTime() + 5 * 60 * 1000).toISOString(),
   });
+}
+
+function devOnlyGrowthEnabled(config: RuntimeConfig): boolean {
+  return config.appEnv === "development" && process.env.CRECIMIENTO_GROWTH_MODE === "DEV_ONLY";
+}
+
+async function devOnlySummary(
+  client: ReturnType<typeof createRequestSupabaseClient>,
+  scope: AuthorizedChildScope,
+  signal: AbortSignal,
+): Promise<Readonly<Omit<import("./routes/anthropometry.ts").GrowthSummaryResponse, "version" | "requestId">> | null> {
+  if (signal.aborted) return null;
+  const [childResult, measurementsResult] = await Promise.all([
+    client.from("children").select("date_of_birth, sex_for_growth, country_of_care, time_zone")
+      .eq("id", scope.childId).eq("care_space_id", scope.careSpaceId).eq("status", "active").maybeSingle(),
+    client.from("anthropometric_measurements")
+      .select("id, measurement_type, normalized_value_lexeme, normalized_unit, occurred_at, measurement_method")
+      .eq("child_id", scope.childId).eq("care_space_id", scope.careSpaceId).eq("validation_status", "confirmed")
+      .order("occurred_at", { ascending: true }).limit(48),
+  ]);
+  if (signal.aborted || childResult.error || measurementsResult.error || !childResult.data || !Array.isArray(measurementsResult.data)) return null;
+  const child = childResult.data as unknown as Record<string, unknown>;
+  if (typeof child.date_of_birth !== "string"
+    || (child.sex_for_growth !== "female" && child.sex_for_growth !== "male")
+    || (child.country_of_care !== "CO" && child.country_of_care !== "US")
+    || typeof child.time_zone !== "string") return null;
+  const measurements: DevOnlyGrowthMeasurement[] = [];
+  for (const row of measurementsResult.data as unknown as Array<Record<string, unknown>>) {
+    if (typeof row.id !== "string" || typeof row.measurement_type !== "string"
+      || typeof row.normalized_value_lexeme !== "string" || (row.normalized_unit !== "kg" && row.normalized_unit !== "cm")
+      || typeof row.occurred_at !== "string" || typeof row.measurement_method !== "string") continue;
+    if (!["weight", "recumbent_length", "standing_height", "head_circumference"].includes(row.measurement_type)) continue;
+    if (!["digital_scale", "mechanical_scale", "length_board", "stadiometer", "tape_measure", "unknown"].includes(row.measurement_method)) continue;
+    measurements.push({
+      id: row.id,
+      measurementType: row.measurement_type as DevOnlyGrowthMeasurement["measurementType"],
+      value: row.normalized_value_lexeme,
+      unit: row.normalized_unit,
+      occurredAt: row.occurred_at,
+      measurementMethod: row.measurement_method as DevOnlyGrowthMeasurement["measurementMethod"],
+    });
+  }
+  const input: DevOnlyGrowthChild = {
+    dateOfBirth: child.date_of_birth.slice(0, 10),
+    sexForGrowth: child.sex_for_growth,
+    countryOfCare: child.country_of_care,
+    timeZone: child.time_zone,
+  };
+  try {
+    return buildDevOnlyGrowthSummary({ child: input, measurements, now: new Date() });
+  } catch {
+    return null;
+  }
 }
 
 export function createSupabaseAnthropometryPersistence(input: Readonly<{
@@ -163,7 +221,11 @@ export function createSupabaseAnthropometryPersistence(input: Readonly<{
       }
       return measurements;
     },
-    async summary(_scope, _auth, _signal) {
+    async summary(scope, _auth, signal) {
+      if (devOnlyGrowthEnabled(input.config)) {
+        const local = await devOnlySummary(client, scope, signal);
+        if (local) return local;
+      }
       return { status: "unavailable" as const, code: "RULE_UNAVAILABLE" as const, points: [] as [] };
     },
   };

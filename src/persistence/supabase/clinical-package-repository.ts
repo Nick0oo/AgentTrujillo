@@ -32,12 +32,16 @@ function sourceFor(row: SourceRow, query: ClinicalPackageQuery): ClinicalSourceR
   const allowedAuthorities: readonly ClinicalAuthority[] = query.domain === "immunization"
     ? query.countryCode === "CO" ? ["MINSALUD_PAI"] : ["CDC_ACIP"]
     : query.domain === "medication"
-      ? query.countryCode === "CO" ? ["INVIMA"] : ["NLM_DAILYMED", "NLM_RXNORM", "FDA"]
-      : query.countryCode === "GLOBAL" ? ["WHO"] : [];
+    ? query.countryCode === "CO" ? ["INVIMA"] : ["NLM_DAILYMED", "NLM_RXNORM", "FDA"]
+      : query.domain === "growth" && query.countryCode === "US" ? ["WHO", "CDC_NCHS"]
+        : ["WHO"];
   const authority = allowedAuthorities.find((candidate) => candidate === row.authority);
   const artifactSha256 = asSha256(row.artifact_sha256);
   const jurisdiction = asCountry(row.jurisdiction);
-  if (!authority || jurisdiction !== query.countryCode || row.status !== "approved"
+  const jurisdictionMatches = query.domain === "growth"
+    ? jurisdiction === query.countryCode || jurisdiction === "GLOBAL"
+    : jurisdiction === query.countryCode;
+  if (!authority || !jurisdiction || !jurisdictionMatches || row.status !== "approved"
     || !artifactSha256 || !row.license?.trim() || !row.retrieved_at
     || !ISO_DATE.test(row.published_at ?? row.retrieved_at.slice(0, 10))) return null;
   return Object.freeze({

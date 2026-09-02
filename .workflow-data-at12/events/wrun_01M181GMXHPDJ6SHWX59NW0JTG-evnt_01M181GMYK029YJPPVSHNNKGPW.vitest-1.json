@@ -1,0 +1,22 @@
+{
+  "eventType": "run_created",
+  "specVersion": 3,
+  "eventData": {
+    "deploymentId": "dpl_local@4.4.0",
+    "workflowName": "workflow//./conversation-summary//conversationSummaryWorkflow",
+    "input": {
+      "__type": "Uint8Array",
+      "data": "ZGV2bFtbMV0seyJvd25lclVzZXJJZCI6MiwiY2FyZVNwYWNlSWQiOjMsImNoaWxkSWQiOjQsInNlc3Npb25JZCI6NSwic291cmNlU2Vzc2lvbklkIjo1LCJzb3VyY2VEaWdlc3QiOjYsImN1dG9mZkF0Ijo3LCJwcm9tcHRWZXJzaW9uIjo4LCJzY2hlbWFWZXJzaW9uIjo5LCJpZGVtcG90ZW5jeUtleSI6MTB9LCIwMDAwMDAwMC0wMDAwLTQwMDAtODAwMC0wMDAwMDAxMjAwMDEiLCIwMDAwMDAwMC0wMDAwLTQwMDAtODAwMC0wMDAwMDAxMjAwMDIiLCIwMDAwMDAwMC0wMDAwLTQwMDAtODAwMC0wMDAwMDAxMjAwMDMiLCIwMDAwMDAwMC0wMDAwLTQwMDAtODAwMC0wMDAwMDAxMjAwMDQiLCJhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhIiwiMjAyNi0wOC0yOVQxMjowMDowMC4wMDBaIiwic3VtbWFyeS1wcm9tcHQudjEiLCJzdW1tYXJ5LWNhbmRpZGF0ZS52MSIsInN1bW1hcnk6aW50ZWdyYXRpb24iXQ=="
+    },
+    "executionContext": {
+      "traceCarrier": {},
+      "workflowCoreVersion": "4.8.5",
+      "features": {
+        "encryption": false
+      }
+    }
+  },
+  "runId": "wrun_01M181GMXHPDJ6SHWX59NW0JTG",
+  "eventId": "evnt_01M181GMYK029YJPPVSHNNKGPW",
+  "createdAt": "2026-08-30T00:36:06.739Z"
+}

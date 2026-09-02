@@ -1,0 +1,14 @@
+{
+  "workflowFiles": [
+    "C:/Users/ACER/Documents/OIDUTS-88/projects/AgentTrujillo/src/workflows/conversation-summary.ts"
+  ],
+  "serdeOnlyFiles": [
+    "C:/Users/ACER/Documents/OIDUTS-88/projects/AgentTrujillo/.eve/dev-runtime/snapshots/mtetdybu-8d87edff-c06b-4fb1-8ed7-42e6a00cdd44/source/.eve/compile/authored-modules/d84c8f47b9d3e63887fc250bf966f448eafbcf4b3508aebc688172d621190d66.mjs",
+    "C:/Users/ACER/Documents/OIDUTS-88/projects/AgentTrujillo/.eve/dev-runtime/snapshots/mtetgcw7-270408bc-8414-424b-bc46-d9f6120251ab/source/.eve/compile/authored-modules/e703a0b0d40864a2e81c32fa9036aa6745bf2da09090f45ef03598f7267ca844.mjs",
+    "C:/Users/ACER/Documents/OIDUTS-88/projects/AgentTrujillo/.eve/dev-runtime/snapshots/mtewr9u1-3e8fd19c-bc1e-4b8e-8fce-a4dc212fd56f/source/.eve/compile/authored-modules/ddf49a724d4ec5c4b72a1fe1603213db43aa97abe0d9afc16d68e6fc9e8346c5.mjs",
+    "C:/Users/ACER/Documents/OIDUTS-88/projects/AgentTrujillo/.eve/dev-runtime/snapshots/mtewra44-adc2050e-2017-476e-83b5-525ae1d94244/source/.eve/compile/authored-modules/ddf49a724d4ec5c4b72a1fe1603213db43aa97abe0d9afc16d68e6fc9e8346c5.mjs",
+    "C:/Users/ACER/Documents/OIDUTS-88/projects/AgentTrujillo/.eve/dev-runtime/snapshots/mteztyxr-fa8d39f4-18bd-401f-a364-72a5c3670e81/source/.eve/compile/authored-modules/2d8b17f5d637d7ce8b159b3481bc7ff04be129651189757aaf35151f11704191.mjs",
+    "C:/Users/ACER/Documents/OIDUTS-88/projects/AgentTrujillo/.eve/dev-runtime/snapshots/mtezu0im-ebe39365-d755-45a1-96ae-e0dcae4dcdd5/source/.eve/compile/authored-modules/2d8b17f5d637d7ce8b159b3481bc7ff04be129651189757aaf35151f11704191.mjs",
+    "C:/Users/ACER/Documents/OIDUTS-88/projects/AgentTrujillo/node_modules/@workflow/builders/dist/serde-checker.js"
+  ]
+}

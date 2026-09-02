@@ -1,0 +1,14 @@
+{
+  "eventType": "run_failed",
+  "specVersion": 3,
+  "eventData": {
+    "error": {
+      "message": "Workflow \"workflow//./src/workflows/conversation-summary//conversationSummaryWorkflow\" is not registered in the current deployment. This usually means a run was started against a deployment that does not have this workflow, or there was a build/bundling issue.\n\nLearn more: https://useworkflow.dev/err/workflow-not-registered",
+      "stack": "WorkflowNotRegisteredError: Workflow \"workflow//./src/workflows/conversation-summary//conversationSummaryWorkflow\" is not registered in the current deployment. This usually means a run was started against a deployment that does not have this workflow, or there was a build/bundling issue.\n\nLearn more: https://useworkflow.dev/err/workflow-not-registered\n    at file:///C:/Users/ACER/Documents/OIDUTS-88/projects/AgentTrujillo/node_modules/@workflow/core/dist/workflow.js:606:19\n    at processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at trace (file:///C:/Users/ACER/Documents/OIDUTS-88/projects/AgentTrujillo/node_modules/@workflow/core/dist/telemetry.js:75:16)\n    at file:///C:/Users/ACER/Documents/OIDUTS-88/projects/AgentTrujillo/node_modules/@workflow/core/dist/runtime.js:516:36\n    at trace (file:///C:/Users/ACER/Documents/OIDUTS-88/projects/AgentTrujillo/node_modules/@workflow/core/dist/telemetry.js:75:16)\n    at file:///C:/Users/ACER/Documents/OIDUTS-88/projects/AgentTrujillo/node_modules/@workflow/core/dist/runtime.js:512:42\n    at trace (file:///C:/Users/ACER/Documents/OIDUTS-88/projects/AgentTrujillo/node_modules/@workflow/core/dist/telemetry.js:75:16)\n    at file:///C:/Users/ACER/Documents/OIDUTS-88/projects/AgentTrujillo/node_modules/@workflow/core/dist/runtime.js:166:20\n    at file:///C:/Users/ACER/Documents/OIDUTS-88/projects/AgentTrujillo/node_modules/@workflow/core/dist/runtime.js:164:16\n    at file:///C:/Users/ACER/Documents/OIDUTS-88/projects/AgentTrujillo/node_modules/@workflow/world-local/dist/queue.js:277:32"
+    },
+    "errorCode": "RUNTIME_ERROR"
+  },
+  "runId": "wrun_01M180D6G00C7PZ9CF165TPF26",
+  "eventId": "evnt_01M180D7HG80JEES6DD081CEY8",
+  "createdAt": "2026-08-30T00:16:46.128Z"
+}

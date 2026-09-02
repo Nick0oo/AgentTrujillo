@@ -82,6 +82,8 @@ const ADMINISTRATION_REQUEST = z.object({
   administeredOn: DATE,
   productLabel: SAFE_TEXT.optional(),
   productIdentifier: CODE.optional(),
+  doseLabel: SAFE_TEXT.optional(),
+  lotNumber: SAFE_TEXT.optional(),
   location: SAFE_TEXT.optional(),
   evidenceDraftId: CODE,
   confirmed: z.literal(true),

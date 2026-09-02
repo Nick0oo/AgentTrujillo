@@ -94,6 +94,12 @@
       "name": "creciendo",
       "kind": "http",
       "method": "POST",
+      "urlPath": "/creciendo/v1/immunization/administration-drafts"
+    },
+    {
+      "name": "creciendo",
+      "kind": "http",
+      "method": "POST",
       "urlPath": "/creciendo/v1/onboarding"
     },
     {

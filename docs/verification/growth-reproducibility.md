@@ -38,3 +38,28 @@ The numerical and byte-repeatability gates are provider-free and use only synthe
 Corrected age remains fail-closed when no approved prematurity policy is supplied. This is represented as `rule_unavailable`; no clinical boundary or policy is invented in code. The static engines and datasets are ready for a future module `10` consumer, but that consumer must first resolve an active checksum-bound module `03` package.
 
 No real patient data or production rows are used by the reproducibility fixtures.
+
+## Local `DEV_ONLY` route probe
+
+On 2026-09-01, Docker-local Supabase and Agent Trujillo were probed without
+using the linked project. A synthetic local account was confirmed, then the
+authenticated Creciendo flow created a care space and child, issued a child
+context, recorded confirmed weights, and returned them from history. With the
+explicit `CRECIMIENTO_GROWTH_MODE=DEV_ONLY` marker, the growth endpoint
+returned `200` with three calculated WHO points, including Z-scores,
+percentiles, and citation handles. The local database still contains zero
+active growth packages and zero active releases: this probe exercises the
+pinned embedded dataset and existing calculation engine only, and does not
+constitute production package approval.
+
+The repeatable account helper is
+`scripts/seed-dev-only-local-user.ps1`. It requires an email and password,
+reads keys only from `supabase status`, and rejects any non-loopback API URL.
+The local launcher sets the `DEV_ONLY` marker and tolerates stopped optional
+Supabase containers. WHO/CDC loaders use the repository asset path only in
+that explicit local mode when the `eve` compiled-module path cannot provide
+the files; production remains fail-closed until the approved package and
+release gate is satisfied. The authenticated route probe is
+`scripts/probe-dev-only-growth.ps1`; it validates local health, sign-in,
+authorized child directory, child context, history, and growth summary while
+printing only status codes, counts, and DEV_ONLY provenance identifiers.

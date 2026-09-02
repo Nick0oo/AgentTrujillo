@@ -84,12 +84,14 @@ Types and channel shell lead to authentication and child/session routes. Continu
 | [AT-11-19](19-onboarding-bootstrap.md) | atomic onboarding bootstrap route and persistence | yes |
 | [AT-11-20](20-directory-and-dashboard-read-model.md) | authorized child directory and dashboard read model | no |
 | [AT-11-21](21-private-documents-public-contract.md) | authorized private documents transport | yes |
+| [AT-11-22](22-add-child-existing-care-space.md) | add child to an existing care space | yes |
 
 ## Public route family
 
 ```text
 POST /creciendo/v1/onboarding
 GET  /creciendo/v1/children
+POST /creciendo/v1/children
 POST /creciendo/v1/child-context
 GET  /creciendo/v1/dashboard
 POST /creciendo/v1/sessions

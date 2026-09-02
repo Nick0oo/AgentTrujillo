@@ -1,0 +1,11 @@
+{
+  "eventType": "step_started",
+  "specVersion": 3,
+  "correlationId": "step_01M181GMYXS2J48PXNKJYHAZ11",
+  "eventData": {
+    "stepName": "step//./conversation-summary//persistCandidates"
+  },
+  "runId": "wrun_01M181GMXHPDJ6SHWX59NW0JTG",
+  "eventId": "evnt_01M181GPE6P4BE6G4VG7H1T8GE",
+  "createdAt": "2026-08-30T00:36:08.262Z"
+}

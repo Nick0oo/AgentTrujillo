@@ -1,0 +1,16 @@
+{
+  "eventType": "step_created",
+  "specVersion": 3,
+  "correlationId": "step_01M181GMYXS2J48PXNKJYHAZ10",
+  "eventData": {
+    "stepName": "step//./conversation-summary//validateCandidatePolicy",
+    "workflowName": "workflow//./conversation-summary//conversationSummaryWorkflow",
+    "input": {
+      "__type": "Uint8Array",
+      "data": "ZGV2bFt7ImFyZ3MiOjEsImNsb3N1cmVWYXJzIjotMSwidGhpc1ZhbCI6LTF9LFsyXSx7InRleHQiOjMsImNpdGF0aW9ucyI6NH0sIkVsIHR1dG9yIHJlcG9ydGEgdW5hIG1lam9yw61hIGRlbCBzdWXDsW8uIixbNV0seyJtZXNzYWdlSWQiOjYsInN0YXJ0Ijo3LCJlbmQiOjh9LCIwMDAwMDAwMC0wMDAwLTQwMDAtODAwMC0wMDAwMDAxMjAwMDUiLDAsMjNd"
+    }
+  },
+  "runId": "wrun_01M181GMXHPDJ6SHWX59NW0JTG",
+  "eventId": "evnt_01M181GNVNW3AHRWRGH1DN8J70",
+  "createdAt": "2026-08-30T00:36:07.669Z"
+}

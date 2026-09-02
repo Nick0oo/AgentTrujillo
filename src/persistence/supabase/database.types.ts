@@ -4895,6 +4895,7 @@ export type Database = {
           country_code: string
           created_at: string
           dose_label: string | null
+          draft_expires_at: string | null
           id: string
           idempotency_key: string
           input_fingerprint: string | null
@@ -4923,6 +4924,7 @@ export type Database = {
           country_code: string
           created_at?: string
           dose_label?: string | null
+          draft_expires_at?: string | null
           id?: string
           idempotency_key: string
           input_fingerprint?: string | null
@@ -4951,6 +4953,7 @@ export type Database = {
           country_code?: string
           created_at?: string
           dose_label?: string | null
+          draft_expires_at?: string | null
           id?: string
           idempotency_key?: string
           input_fingerprint?: string | null
@@ -5829,6 +5832,31 @@ export type Database = {
         Returns: {
           assessment_ids: string[]
           measurement_id: string
+          outcome: string
+        }[]
+      }
+      create_vaccine_administration_draft: {
+        Args: {
+          p_administration_site: string
+          p_administered_on: string
+          p_care_space_id: string
+          p_catalog_digest: string
+          p_catalog_version: string
+          p_child_id: string
+          p_confirmation_sha256: string
+          p_country_code: string
+          p_dose_label: string
+          p_draft_expires_at: string
+          p_idempotency_key: string
+          p_input_fingerprint: string
+          p_lot_number: string
+          p_provenance_type: string
+          p_source_digest: string
+          p_vaccine_product_id: string
+        }
+        Returns: {
+          draft_expires_at: string
+          draft_id: string
           outcome: string
         }[]
       }

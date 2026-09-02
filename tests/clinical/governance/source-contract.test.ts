@@ -40,6 +40,13 @@ describe("clinical source provenance contract", () => {
       jurisdiction: "US",
       sourceUri: "https://www.cdc.gov/acip/vaccine-recommendations/index.html",
     }],
+    ["CDC NCHS growth reference", {
+      ...baseCandidate,
+      authority: "CDC_NCHS",
+      jurisdiction: "US",
+      domain: "growth",
+      sourceUri: "https://www.cdc.gov/growthcharts/data/zscore/wtage.csv",
+    }],
     ["WHO global standard", {
       ...baseCandidate,
       authority: "WHO",
@@ -99,6 +106,23 @@ describe("clinical source provenance contract", () => {
       sourceUri: "https://www.who.int/teams/immunization-vaccines-and-biologicals/policies/who-recommendations-for-routine-immunization---summary-tables",
     });
     expect(countryFallback).toMatchObject({ ok: false, code: "AUTHORITY_JURISDICTION_MISMATCH" });
+  });
+
+  it("keeps CDC NCHS separate from CDC ACIP for US growth", () => {
+    expect(isPrimaryAuthority("CDC_NCHS", "US", "growth")).toBe(true);
+    expect(isPrimaryAuthority("CDC", "US", "growth")).toBe(false);
+    expect(isPrimaryAuthority("CDC_NCHS", "US", "immunization")).toBe(false);
+
+    const result = validate({
+      ...baseCandidate,
+      authority: "CDC_NCHS",
+      jurisdiction: "US",
+      domain: "growth",
+      sourceUri: "https://www.cdc.gov/growthcharts/data/zscore/wtage.csv",
+    });
+
+    expect(result).toMatchObject({ ok: true, status: "accepted" });
+    if (result.ok) expect(result.source.authority).toBe("CDC_NCHS");
   });
 
   it("rejects secondary authorities", () => {

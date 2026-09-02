@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { canonicalize } from "json-canonicalize";
 
 import { deepFreeze } from "./value-objects.ts";
@@ -42,6 +43,16 @@ function digest(value: Uint8Array): string {
   return createHash("sha256").update(value).digest("hex");
 }
 
+function devOnlyReadAsset(relativePath: string): Buffer {
+  try {
+    return readFileSync(new URL(relativePath, import.meta.url));
+  } catch (error) {
+    const missing = error && typeof error === "object" && "code" in error && error.code === "ENOENT";
+    if (!missing || process.env.CRECIMIENTO_GROWTH_MODE !== "DEV_ONLY") throw error;
+    return readFileSync(resolve(process.cwd(), "src/clinical/anthropometry", relativePath));
+  }
+}
+
 function createLookup(rows: readonly CdcLmsRow[]) {
   const logical = new Map<string, CdcLmsRow[]>();
   const exact = new Map<string, CdcLmsRow>();
@@ -72,10 +83,8 @@ function makeDataset(manifest: CdcDatasetManifest, rows: readonly CdcLmsRow[]): 
 }
 
 export function loadCdcDataset(expectedDigest?: string): CdcGrowthDataset {
-  const manifestUrl = new URL("./data/cdc/manifest.json", import.meta.url);
-  const normalizedUrl = new URL("./data/cdc/normalized-v1.json", import.meta.url);
-  const manifest = JSON.parse(readFileSync(manifestUrl, "utf8")) as CdcDatasetManifest & { extendedNormalizedDigest: string; extendedRowCount: number };
-  const bytes = readFileSync(normalizedUrl);
+  const manifest = JSON.parse(devOnlyReadAsset("./data/cdc/manifest.json").toString("utf8")) as CdcDatasetManifest & { extendedNormalizedDigest: string; extendedRowCount: number };
+  const bytes = devOnlyReadAsset("./data/cdc/normalized-v1.json");
   if (digest(bytes) !== manifest.normalizedDigest || (expectedDigest && manifest.normalizedDigest !== expectedDigest)) throw new Error("CDC_DATASET_DIGEST_MISMATCH");
   const payload = JSON.parse(bytes.toString("utf8")) as { rows: CdcLmsRow[]; extendedRows: CdcLmsRow[] };
   if (payload.rows.length !== manifest.rowCount || payload.extendedRows.length !== manifest.extendedRowCount) throw new Error("CDC_DATASET_ROW_COUNT_MISMATCH");

@@ -1,0 +1,18 @@
+{
+  "stepFiles": [
+    "C:/Users/ACER/Documents/OIDUTS-88/projects/AgentTrujillo/node_modules/workflow/dist/stdlib.js",
+    "C:/Users/ACER/Documents/OIDUTS-88/projects/AgentTrujillo/src/workflows/conversation-summary.ts",
+    "C:/Users/ACER/Documents/OIDUTS-88/projects/AgentTrujillo/src/workflows/document-processing.ts",
+    "C:/Users/ACER/Documents/OIDUTS-88/projects/AgentTrujillo/src/workflows/memory-embedding.ts",
+    "C:/Users/ACER/Documents/OIDUTS-88/projects/AgentTrujillo/src/workflows/retention-cleanup.ts",
+    "C:/Users/ACER/Documents/OIDUTS-88/projects/AgentTrujillo/src/workflows/vaccination-card-pdf.ts"
+  ],
+  "workflowFiles": [
+    "C:/Users/ACER/Documents/OIDUTS-88/projects/AgentTrujillo/src/workflows/conversation-summary.ts",
+    "C:/Users/ACER/Documents/OIDUTS-88/projects/AgentTrujillo/src/workflows/document-processing.ts",
+    "C:/Users/ACER/Documents/OIDUTS-88/projects/AgentTrujillo/src/workflows/memory-embedding.ts",
+    "C:/Users/ACER/Documents/OIDUTS-88/projects/AgentTrujillo/src/workflows/retention-cleanup.ts",
+    "C:/Users/ACER/Documents/OIDUTS-88/projects/AgentTrujillo/src/workflows/vaccination-card-pdf.ts"
+  ],
+  "serdeOnlyFiles": []
+}

@@ -13,7 +13,7 @@ Campos de fuente obligatorios al incorporar una fuente: `authority`, `jurisdicti
 | OMS | 0–5 años | datasets de longitud/talla, peso, IMC, peso para longitud/talla y perímetro cefálico | [WHO Child Growth Standards](https://www.who.int/tools/child-growth-standards/standards) |
 | OMS | Prematuridad/bajo peso | fundamento clínico para cuidado y edad corregida | [WHO recommendations for care of the preterm or low-birth-weight infant](https://www.who.int/publications/i/item/9789240058262) |
 | AAP | Prematuros | selección de curvas prematuras y transición a OMS | [AAP Preterm Infant Growth Tools](https://www.aap.org/en/patient-care/newborn-infant-and-early-childhood-nutrition/newborn-and-infant-nutrition-assessment-tools/preterm-infant-growth-tools/) |
-| CDC | EE. UU. | referencia de curvas recomendadas por edad en contexto estadounidense | [CDC Growth Charts](https://www.cdc.gov/growthcharts/) |
+| CDC/NCHS (`CDC_NCHS`) | EE. UU. | referencia de curvas recomendadas por edad en contexto estadounidense | [CDC Growth Charts](https://www.cdc.gov/growthcharts/) |
 
 Decisión pendiente de aprobación clínica de paquete, no de arquitectura: estándar exacto de prematuros, edad postmenstrual de transición y límite de uso de edad corregida. Hasta aprobarlo, el motor debe devolver `RULE_UNAVAILABLE` para ese segmento.
 

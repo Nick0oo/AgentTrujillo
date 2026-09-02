@@ -52,6 +52,11 @@ import {
   type ChildDirectoryResolver,
 } from "../../src/channels/creciendo/routes/child-directory";
 import {
+  createRpcAddChildPersistence,
+  handleAddChild,
+  type AddChildRouteDependencies,
+} from "../../src/channels/creciendo/routes/add-child";
+import {
   createDashboardRouteDependencies,
   handleDashboard,
   type DashboardResolver,
@@ -84,6 +89,15 @@ import {
   handleImmunizationAdministration,
   type ImmunizationAdministrationRouteDependencies,
 } from "../../src/channels/creciendo/routes/immunization-administration";
+import {
+  createImmunizationAdministrationDraftRouteDependencies,
+  handleImmunizationAdministrationDraft,
+  type ImmunizationAdministrationDraftRouteDependencies,
+} from "../../src/channels/creciendo/routes/immunization-administration-draft";
+import {
+  createSupabaseImmunizationAdministrationCommand,
+  createSupabaseImmunizationAdministrationDraftCommand,
+} from "../../src/channels/creciendo/immunization-persistence";
 import { createChildContextTokenService, type ChildContextTokenService } from "../lib/access/child-context-token";
 import { createAuthorizeChildService, type AuthorizeChildService } from "../lib/access/authorize-child-service";
 
@@ -93,6 +107,7 @@ export const DEFAULT_REQUEST_TIMEOUT_MS = 15_000;
 export const CRECIENDO_ROUTE_SPECS = Object.freeze([
   Object.freeze({ method: "POST" as const, path: "/creciendo/v1/onboarding" }),
   Object.freeze({ method: "GET" as const, path: "/creciendo/v1/children" }),
+  Object.freeze({ method: "POST" as const, path: "/creciendo/v1/children" }),
   Object.freeze({ method: "POST" as const, path: "/creciendo/v1/child-context" }),
   Object.freeze({ method: "GET" as const, path: "/creciendo/v1/dashboard" }),
   Object.freeze({ method: "POST" as const, path: "/creciendo/v1/anthropometry" }),
@@ -109,6 +124,7 @@ export const CRECIENDO_ROUTE_SPECS = Object.freeze([
   Object.freeze({ method: "GET" as const, path: "/creciendo/v1/documents/:documentId/ocr-draft" }),
   Object.freeze({ method: "GET" as const, path: "/creciendo/v1/immunization/status" }),
   Object.freeze({ method: "POST" as const, path: "/creciendo/v1/immunization/administrations" }),
+  Object.freeze({ method: "POST" as const, path: "/creciendo/v1/immunization/administration-drafts" }),
 ]);
 
 export type CreciendoRouteHandler = HttpRouteDefinition["handler"];
@@ -116,6 +132,7 @@ export type CreciendoRouteHandler = HttpRouteDefinition["handler"];
 export type CreciendoRouteHandlers = Readonly<{
   onboarding: CreciendoRouteHandler;
   childDirectory: CreciendoRouteHandler;
+  addChild: CreciendoRouteHandler;
   childContext: CreciendoRouteHandler;
   dashboard: CreciendoRouteHandler;
   anthropometryCreate: CreciendoRouteHandler;
@@ -132,6 +149,7 @@ export type CreciendoRouteHandlers = Readonly<{
   ocrDraft: CreciendoRouteHandler;
   immunizationStatus: CreciendoRouteHandler;
   immunizationAdministration: CreciendoRouteHandler;
+  immunizationAdministrationDraft: CreciendoRouteHandler;
 }>;
 
 export type CreciendoChannelDependencies = Readonly<{
@@ -184,7 +202,7 @@ function validateOrigin(origin: string): boolean {
 function validateDependencies(input: CreciendoChannelDependencies): void {
   const handlers = input.handlers;
   if (!handlers
-    || Object.values(handlers).length !== 18
+    || Object.values(handlers).length !== 20
     || Object.values(handlers).some((handler) => typeof handler !== "function")
     || input.allowedOrigins.length > 16
     || new Set(input.allowedOrigins).size !== input.allowedOrigins.length
@@ -350,22 +368,24 @@ export function createCreciendoChannel(dependencies: CreciendoChannelDependencie
     routes: [
       POST(CRECIENDO_ROUTE_SPECS[0].path, boundary(dependencies.handlers.onboarding, { allowedOrigins, timeoutMs, json: true })),
       GET(CRECIENDO_ROUTE_SPECS[1].path, boundary(dependencies.handlers.childDirectory, { allowedOrigins, timeoutMs, json: false })),
-      POST(CRECIENDO_ROUTE_SPECS[2].path, boundary(dependencies.handlers.childContext, { allowedOrigins, timeoutMs, json: true })),
-      GET(CRECIENDO_ROUTE_SPECS[3].path, boundary(dependencies.handlers.dashboard, { allowedOrigins, timeoutMs, json: false })),
-      POST(CRECIENDO_ROUTE_SPECS[4].path, boundary(dependencies.handlers.anthropometryCreate, { allowedOrigins, timeoutMs, json: true })),
-      GET(CRECIENDO_ROUTE_SPECS[5].path, boundary(dependencies.handlers.anthropometryList, { allowedOrigins, timeoutMs, json: false, readBody: false })),
-      GET(CRECIENDO_ROUTE_SPECS[6].path, boundary(dependencies.handlers.growthSummary, { allowedOrigins, timeoutMs, json: false, readBody: false })),
-      POST(CRECIENDO_ROUTE_SPECS[7].path, boundary(dependencies.handlers.createSession, { allowedOrigins, timeoutMs, json: true })),
-      POST(CRECIENDO_ROUTE_SPECS[8].path, boundary(dependencies.handlers.sendMessage, { allowedOrigins, timeoutMs, json: true })),
-      GET(CRECIENDO_ROUTE_SPECS[9].path, boundary(dependencies.handlers.streamSession, { allowedOrigins, timeoutMs, json: false })),
-      POST(CRECIENDO_ROUTE_SPECS[10].path, boundary(dependencies.handlers.cancelSession, { allowedOrigins, timeoutMs, json: true })),
-      GET(CRECIENDO_ROUTE_SPECS[11].path, boundary(dependencies.handlers.documentList, { allowedOrigins, timeoutMs, json: false, readBody: false })),
-      POST(CRECIENDO_ROUTE_SPECS[12].path, boundary(dependencies.handlers.uploadTicket, { allowedOrigins, timeoutMs, json: true })),
-      PUT(CRECIENDO_ROUTE_SPECS[13].path, boundary(dependencies.handlers.documentUpload, { allowedOrigins, timeoutMs, json: false, readBody: true, maxBodyBytes: 52_428_800 })),
-      POST(CRECIENDO_ROUTE_SPECS[14].path, boundary(dependencies.handlers.downloadTicket, { allowedOrigins, timeoutMs, json: true })),
-      GET(CRECIENDO_ROUTE_SPECS[15].path, boundary(dependencies.handlers.ocrDraft, { allowedOrigins, timeoutMs, json: false, readBody: false })),
-      GET(CRECIENDO_ROUTE_SPECS[16].path, boundary(dependencies.handlers.immunizationStatus, { allowedOrigins, timeoutMs, json: false, readBody: false })),
-      POST(CRECIENDO_ROUTE_SPECS[17].path, boundary(dependencies.handlers.immunizationAdministration, { allowedOrigins, timeoutMs, json: true })),
+      POST(CRECIENDO_ROUTE_SPECS[2].path, boundary(dependencies.handlers.addChild, { allowedOrigins, timeoutMs, json: true })),
+      POST(CRECIENDO_ROUTE_SPECS[3].path, boundary(dependencies.handlers.childContext, { allowedOrigins, timeoutMs, json: true })),
+      GET(CRECIENDO_ROUTE_SPECS[4].path, boundary(dependencies.handlers.dashboard, { allowedOrigins, timeoutMs, json: false })),
+      POST(CRECIENDO_ROUTE_SPECS[5].path, boundary(dependencies.handlers.anthropometryCreate, { allowedOrigins, timeoutMs, json: true })),
+      GET(CRECIENDO_ROUTE_SPECS[6].path, boundary(dependencies.handlers.anthropometryList, { allowedOrigins, timeoutMs, json: false, readBody: false })),
+      GET(CRECIENDO_ROUTE_SPECS[7].path, boundary(dependencies.handlers.growthSummary, { allowedOrigins, timeoutMs, json: false, readBody: false })),
+      POST(CRECIENDO_ROUTE_SPECS[8].path, boundary(dependencies.handlers.createSession, { allowedOrigins, timeoutMs, json: true })),
+      POST(CRECIENDO_ROUTE_SPECS[9].path, boundary(dependencies.handlers.sendMessage, { allowedOrigins, timeoutMs, json: true })),
+      GET(CRECIENDO_ROUTE_SPECS[10].path, boundary(dependencies.handlers.streamSession, { allowedOrigins, timeoutMs, json: false })),
+      POST(CRECIENDO_ROUTE_SPECS[11].path, boundary(dependencies.handlers.cancelSession, { allowedOrigins, timeoutMs, json: true })),
+      GET(CRECIENDO_ROUTE_SPECS[12].path, boundary(dependencies.handlers.documentList, { allowedOrigins, timeoutMs, json: false, readBody: false })),
+      POST(CRECIENDO_ROUTE_SPECS[13].path, boundary(dependencies.handlers.uploadTicket, { allowedOrigins, timeoutMs, json: true })),
+      PUT(CRECIENDO_ROUTE_SPECS[14].path, boundary(dependencies.handlers.documentUpload, { allowedOrigins, timeoutMs, json: false, readBody: true, maxBodyBytes: 52_428_800 })),
+      POST(CRECIENDO_ROUTE_SPECS[15].path, boundary(dependencies.handlers.downloadTicket, { allowedOrigins, timeoutMs, json: true })),
+      GET(CRECIENDO_ROUTE_SPECS[16].path, boundary(dependencies.handlers.ocrDraft, { allowedOrigins, timeoutMs, json: false, readBody: false })),
+      GET(CRECIENDO_ROUTE_SPECS[17].path, boundary(dependencies.handlers.immunizationStatus, { allowedOrigins, timeoutMs, json: false, readBody: false })),
+      POST(CRECIENDO_ROUTE_SPECS[18].path, boundary(dependencies.handlers.immunizationAdministration, { allowedOrigins, timeoutMs, json: true })),
+      POST(CRECIENDO_ROUTE_SPECS[19].path, boundary(dependencies.handlers.immunizationAdministrationDraft, { allowedOrigins, timeoutMs, json: true })),
     ],
   });
 }
@@ -375,10 +395,16 @@ const unavailable: CreciendoRouteHandler = async () => errorResponse(503, "CHANN
 let productionAuthDependencies: CreciendoAuthDependencies | undefined;
 
 let productionOnboardingDependencies: OnboardingRouteDependencies | undefined;
+let productionAddChildDependencies: AddChildRouteDependencies | undefined;
 
 function getProductionOnboardingDependencies(): OnboardingRouteDependencies {
   productionOnboardingDependencies ??= Object.freeze({ persistence: createRpcOnboardingPersistence(loadRuntimeConfig(process.env)) });
   return productionOnboardingDependencies;
+}
+
+function getProductionAddChildDependencies(): AddChildRouteDependencies {
+  productionAddChildDependencies ??= Object.freeze({ persistence: createRpcAddChildPersistence(loadRuntimeConfig(process.env)) });
+  return productionAddChildDependencies;
 }
 
 function getProductionAuthDependencies(): CreciendoAuthDependencies {
@@ -448,16 +474,23 @@ const productionImmunizationStatus: AuthenticatedChannelHandler = (request, auth
   handleImmunizationStatus(request, auth, getProductionImmunizationStatusDependencies());
 const guardedImmunizationStatus = withProductionChannelAuth(productionImmunizationStatus);
 
-let productionImmunizationAdministrationDependencies: ImmunizationAdministrationRouteDependencies | undefined;
-
-function getProductionImmunizationAdministrationDependencies(): ImmunizationAdministrationRouteDependencies {
-  productionImmunizationAdministrationDependencies ??= createImmunizationAdministrationRouteDependencies(loadRuntimeConfig(process.env));
-  return productionImmunizationAdministrationDependencies;
+function getProductionImmunizationAdministrationDependencies(auth: AuthenticatedChannelRequest): ImmunizationAdministrationRouteDependencies {
+  const config = loadRuntimeConfig(process.env);
+  return createImmunizationAdministrationRouteDependencies(config, createSupabaseImmunizationAdministrationCommand({ config, auth }));
 }
 
 const productionImmunizationAdministration: AuthenticatedChannelHandler = (request, auth) =>
-  handleImmunizationAdministration(request, auth, getProductionImmunizationAdministrationDependencies());
+  handleImmunizationAdministration(request, auth, getProductionImmunizationAdministrationDependencies(auth));
 const guardedImmunizationAdministration = withProductionChannelAuth(productionImmunizationAdministration);
+
+function getProductionImmunizationAdministrationDraftDependencies(auth: AuthenticatedChannelRequest): ImmunizationAdministrationDraftRouteDependencies {
+  const config = loadRuntimeConfig(process.env);
+  return createImmunizationAdministrationDraftRouteDependencies(config, createSupabaseImmunizationAdministrationDraftCommand({ config, auth }));
+}
+
+const productionImmunizationAdministrationDraft: AuthenticatedChannelHandler = (request, auth) =>
+  handleImmunizationAdministrationDraft(request, auth, getProductionImmunizationAdministrationDraftDependencies(auth));
+const guardedImmunizationAdministrationDraft = withProductionChannelAuth(productionImmunizationAdministrationDraft);
 
 function getProductionAnthropometryDependencies(auth: AuthenticatedChannelRequest): AnthropometryRouteDependencies {
   const config = loadRuntimeConfig(process.env);
@@ -574,6 +607,8 @@ const guardedSessionCancel = withProductionChannelAuth(productionSessionCancel);
 const productionOnboarding: AuthenticatedChannelHandler = (request, auth) =>
   handleOnboarding(request, auth, getProductionOnboardingDependencies());
 const guardedOnboarding = withProductionChannelAuth(productionOnboarding);
+const productionAddChild: AuthenticatedChannelHandler = (request, auth) => handleAddChild(request, auth, getProductionAddChildDependencies());
+const guardedAddChild = withProductionChannelAuth(productionAddChild);
 
 function getProductionDocumentDependencies(request: Request, auth: AuthenticatedChannelRequest): DocumentRouteDependencies {
   const config = loadRuntimeConfig(process.env);
@@ -604,6 +639,7 @@ export default createCreciendoChannel({
   handlers: {
     onboarding: guardedOnboarding,
     childDirectory: guardedChildDirectory,
+    addChild: guardedAddChild,
     childContext: guardedChildContext,
     dashboard: guardedDashboard,
     anthropometryCreate: guardedAnthropometryCreate,
@@ -620,6 +656,7 @@ export default createCreciendoChannel({
     ocrDraft: guardedOcrDraft,
     immunizationStatus: guardedImmunizationStatus,
     immunizationAdministration: guardedImmunizationAdministration,
+    immunizationAdministrationDraft: guardedImmunizationAdministrationDraft,
   },
   allowedOrigins: [],
 });
