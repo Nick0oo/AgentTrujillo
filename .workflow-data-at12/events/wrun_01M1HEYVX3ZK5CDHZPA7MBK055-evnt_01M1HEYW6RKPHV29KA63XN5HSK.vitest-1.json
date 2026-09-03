@@ -1,0 +1,11 @@
+{
+  "eventType": "step_started",
+  "specVersion": 3,
+  "correlationId": "step_01M1HEYVY0E04QT49020J2ZS5R",
+  "eventData": {
+    "stepName": "step//./conversation-summary//loadEligibleMessages"
+  },
+  "runId": "wrun_01M1HEYVX3ZK5CDHZPA7MBK055",
+  "eventId": "evnt_01M1HEYW6RKPHV29KA63XN5HSK",
+  "createdAt": "2026-09-02T16:24:14.296Z"
+}

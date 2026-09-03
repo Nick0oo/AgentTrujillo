@@ -1,0 +1,11 @@
+{
+  "eventType": "step_started",
+  "specVersion": 3,
+  "correlationId": "step_01M1HEYVY0E04QT49020J2ZS5T",
+  "eventData": {
+    "stepName": "step//./conversation-summary//validateCandidatePolicy"
+  },
+  "runId": "wrun_01M1HEYVX3ZK5CDHZPA7MBK055",
+  "eventId": "evnt_01M1HEYWJX5XSNJNX0WMJQCZ92",
+  "createdAt": "2026-09-02T16:24:14.685Z"
+}

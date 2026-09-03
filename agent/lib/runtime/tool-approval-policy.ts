@@ -323,7 +323,7 @@ function expiryFor(context: TrustedToolContext, now: Date): Date | null {
   }
 }
 
-function buildPreview(
+export function buildPreview(
   context: TrustedToolContext,
   toolId: ConsequentialToolId,
   schemaVersion: string,
@@ -338,7 +338,9 @@ function buildPreview(
     const entitlements = getTrustedToolEntitlements(context);
     const locale = getTrustedToolLocale(context);
     const requirement = TOOL_APPROVAL_REQUIREMENTS[toolId];
-    const entries = Object.freeze([...flatten(validatedInput)]);
+    const entries = Object.freeze(
+      [...flatten(validatedInput)].sort((a, b) => a.path.localeCompare(b.path))
+    );
     if (entries.length > MAX_PREVIEW_ENTRIES) return null;
     const actionLabel = ACTION_LABELS[toolId][locale];
     const approvalDigest = hash({
@@ -374,8 +376,35 @@ function buildPreview(
   }
 }
 
+export type ToolApprovalSubmission = Readonly<{
+  preview: ApprovalPreview;
+  token: string;
+}>;
+
+export function createConversationalToolApprovalSubmission(
+  context: TrustedToolContext,
+  toolId: ConsequentialToolId,
+  schemaVersion: string,
+  validatedInput: JsonValue,
+  now: Date = new Date(),
+): ToolApprovalSubmission | null {
+  const expiry = expiryFor(context, now);
+  if (!expiry) return null;
+  const expiresAt = expiry.toISOString();
+  const preview = buildPreview(context, toolId, schemaVersion, validatedInput, expiresAt, now);
+  if (!preview) return null;
+  return Object.freeze({
+    preview,
+    token: `token_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+  });
+}
+
 function samePreview(left: ApprovalPreview, right: ApprovalPreview): boolean {
-  return canonicalize(left) === canonicalize(right);
+  const normalize = (p: ApprovalPreview) => ({
+    ...p,
+    entries: [...p.entries].sort((a, b) => a.path.localeCompare(b.path)),
+  });
+  return canonicalize(normalize(left)) === canonicalize(normalize(right));
 }
 
 export async function verifyToolApproval<T>(

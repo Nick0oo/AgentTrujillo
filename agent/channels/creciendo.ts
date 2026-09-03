@@ -7,6 +7,9 @@ import {
 } from "eve/channels";
 
 import { loadRuntimeConfig } from "../lib/config/env";
+import { ensureProductionToolContextFactoryInstalled } from "../lib/runtime/production-tool-context";
+
+ensureProductionToolContextFactoryInstalled();
 import {
   createCreciendoAuthDependencies,
   withChannelAuth,
@@ -188,10 +191,12 @@ function errorResponse(status: number, code: BoundaryCode): Response {
 function validateOrigin(origin: string): boolean {
   try {
     const parsed = new URL(origin);
-    return parsed.protocol === "https:"
+    const isLocalhost = parsed.hostname === "localhost" || parsed.hostname === "127.0.0.1";
+    const allowedProtocol = isLocalhost ? (parsed.protocol === "http:" || parsed.protocol === "https:") : parsed.protocol === "https:";
+    return allowedProtocol
       && parsed.username === ""
       && parsed.password === ""
-      && parsed.pathname === "/"
+      && (parsed.pathname === "/" || parsed.pathname === "")
       && parsed.search === ""
       && parsed.hash === "";
   } catch {
@@ -353,6 +358,7 @@ export function createCreciendoChannel(dependencies: CreciendoChannelDependencie
         "X-Creciendo-Event-Version",
         "X-Request-Id",
         "X-Content-SHA256",
+        "ngrok-skip-browser-warning",
       ],
       exposeHeaders: [
         "Content-Type",
@@ -530,13 +536,13 @@ let productionSessionMessageRuntime: Readonly<{
 }> | undefined;
 
 function getProductionSessionMessageRuntime() {
-  productionSessionMessageRuntime ??= (() => {
+  if (process.env.APP_ENV === "development" || !productionSessionMessageRuntime) {
     const config = loadRuntimeConfig(process.env);
-    return Object.freeze({
+    productionSessionMessageRuntime = Object.freeze({
       config,
       dependencies: createSessionMessageRouteDependencies(config),
     });
-  })();
+  }
   return productionSessionMessageRuntime;
 }
 
@@ -658,5 +664,9 @@ export default createCreciendoChannel({
     immunizationAdministration: guardedImmunizationAdministration,
     immunizationAdministrationDraft: guardedImmunizationAdministrationDraft,
   },
-  allowedOrigins: [],
+  allowedOrigins: [
+    "https://creciendo.app",
+    "http://localhost:8081",
+    "http://127.0.0.1:8081",
+  ],
 });

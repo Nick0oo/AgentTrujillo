@@ -1,7 +1,7 @@
 {
   "eventType": "step_completed",
   "specVersion": 3,
-  "correlationId": "step_01M181GMYXS2J48PXNKJYHAZ11",
+  "correlationId": "step_01M1HEYVY0E04QT49020J2ZS5V",
   "eventData": {
     "stepName": "step//./conversation-summary//persistCandidates",
     "workflowName": "workflow//./conversation-summary//conversationSummaryWorkflow",
@@ -10,7 +10,7 @@
       "data": "ZGV2bFt7InN0YXR1cyI6MSwib3V0Y29tZSI6MiwiY2FuZGlkYXRlSWQiOjN9LCJwZXJzaXN0ZWQiLCJjcmVhdGVkIiwiMDAwMDAwMDAtMDAwMC00MDAwLTgwMDAtMDAwMDAwMTIwMDA2Il0="
     }
   },
-  "runId": "wrun_01M181GMXHPDJ6SHWX59NW0JTG",
-  "eventId": "evnt_01M181GPEF8STKMMYDZ6E5ZRNZ",
-  "createdAt": "2026-08-30T00:36:08.271Z"
+  "runId": "wrun_01M1HEYVX3ZK5CDHZPA7MBK055",
+  "eventId": "evnt_01M1HEYWRZ4WMWDK1HX84GQA7B",
+  "createdAt": "2026-09-02T16:24:14.879Z"
 }

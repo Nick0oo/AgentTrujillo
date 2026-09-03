@@ -119,10 +119,22 @@ export async function resolveTrustedToolContextForEve(
       || actor.userId !== current.principalId
       || session.eveSessionId !== eveContext.session.id
       || trace.toolCallId !== eveContext.callId
-      || getTrustedToolAbortSignal(trusted) !== eveContext.abortSignal) return invalid();
+      || getTrustedToolAbortSignal(trusted) !== eveContext.abortSignal) {
+      console.error("[resolveTrustedToolContextForEve Validation Mismatch]:", {
+        scopeActor: scope.actorUserId,
+        currentPrincipal: current.principalId,
+        actorUserId: actor.userId,
+        sessionEveId: session.eveSessionId,
+        eveContextSessionId: eveContext.session.id,
+        traceToolCallId: trace.toolCallId,
+        eveContextCallId: eveContext.callId,
+      });
+      return invalid();
+    }
     return trusted;
   } catch (error) {
     if (error instanceof TrustedToolContextError && error.code === "TOOL_CONTEXT_CANCELLED") throw error;
+    console.error("[resolveTrustedToolContextForEve Catch Error]:", error);
     return invalid();
   }
 }

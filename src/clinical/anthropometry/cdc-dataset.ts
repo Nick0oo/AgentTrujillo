@@ -48,7 +48,11 @@ function devOnlyReadAsset(relativePath: string): Buffer {
     return readFileSync(new URL(relativePath, import.meta.url));
   } catch (error) {
     const missing = error && typeof error === "object" && "code" in error && error.code === "ENOENT";
-    if (!missing || process.env.CRECIMIENTO_GROWTH_MODE !== "DEV_ONLY") throw error;
+    const allowDevFallback =
+      process.env.CRECIMIENTO_GROWTH_MODE === "DEV_ONLY" ||
+      process.env.APP_ENV === "development" ||
+      process.env.NODE_ENV !== "production";
+    if (!missing || !allowDevFallback) throw error;
     return readFileSync(resolve(process.cwd(), "src/clinical/anthropometry", relativePath));
   }
 }
