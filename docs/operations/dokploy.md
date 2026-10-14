@@ -21,7 +21,10 @@ modificadas; no recibe correos ni textos de los commits.
 La validación de CI recibe configuración sintética explícita. Las instrucciones
 permanentes conservan los límites del contrato aprobado sobre jurisdicción,
 cálculos deterministas y datos insuficientes. Los archivos con checksums o
-fixtures exactos usan LF mediante `.gitattributes` también en Windows.
+fixtures exactos usan LF mediante `.gitattributes` también en Windows. Cinco
+archivos del algoritmo de crecimiento conservan CRLF en todas las plataformas
+porque esos son los bytes registrados en los artefactos aprobados. La regla
+evita modificar artefactos clínicos o sus checksums para acomodar el checkout.
 
 Después se comprueban salud y autorización en el dominio HTTPS. La aceptación
 del webhook significa que el despliegue fue encolado. Confirmar también en los

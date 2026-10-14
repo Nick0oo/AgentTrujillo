@@ -1,4 +1,4 @@
-# These contracts and governed checksums depend on exact LF repository bytes.
+# Preserve the exact checkout bytes used by contracts and governed checksums.
 agent/tools/bash.ts text eol=lf
 agent/tools/read_file.ts text eol=lf
 agent/tools/write_file.ts text eol=lf
@@ -6,3 +6,11 @@ agent/tools/glob.ts text eol=lf
 agent/tools/grep.ts text eol=lf
 tests/fixtures/channel/creciendo-v1.ndjson text eol=lf
 docs/clinical/approval-record-2026-09-02-growth.md text eol=lf
+
+# The approved growth artifacts recorded these implementation files as CRLF.
+# Preserve that representation on Linux as well as Windows.
+src/clinical/anthropometry/chronological-age.ts text eol=crlf
+src/clinical/anthropometry/standard-selector.ts text eol=crlf
+src/clinical/anthropometry/z-score.ts text eol=crlf
+src/clinical/anthropometry/percentile.ts text eol=crlf
+src/clinical/anthropometry/growth-assessment.ts text eol=crlf
