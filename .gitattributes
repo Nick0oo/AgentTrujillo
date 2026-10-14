@@ -1,0 +1,8 @@
+# These contracts and governed checksums depend on exact LF repository bytes.
+agent/tools/bash.ts text eol=lf
+agent/tools/read_file.ts text eol=lf
+agent/tools/write_file.ts text eol=lf
+agent/tools/glob.ts text eol=lf
+agent/tools/grep.ts text eol=lf
+tests/fixtures/channel/creciendo-v1.ndjson text eol=lf
+docs/clinical/approval-record-2026-09-02-growth.md text eol=lf

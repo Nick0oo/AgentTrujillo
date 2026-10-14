@@ -25,6 +25,22 @@ These facts do not close pending behavioral gates. Local schema parity, generate
 
 ## Current roadmap state
 
+- Root-directed deployment preparation (2026-10-14): the user selected Dokploy,
+  deployment from `main` after their pull request, and
+  `https://agent.creciendo.com.co`. Root owns `.github/workflows/dokploy.yml`,
+  `Dockerfile`, `.dockerignore`, `.gitattributes`, `scripts/ci/deploy-dokploy.mjs`,
+  `scripts/ci/smoke-backend.mjs`, `tests/ci/dokploy.test.ts`, and
+  `docs/operations/dokploy.md`. This is an explicitly authorized alternative to
+  the pending Vercel topology; it does not complete Module 15 readiness. The
+  same preparation restores existing approved permanent-instruction clauses in
+  `agent/instructions.md` after fresh contract tests exposed missing
+  jurisdiction, deterministic-calculation and insufficient-data boundaries.
+  Root also owns `tests/channels/creciendo/channel-shell.test.ts` to reconcile
+  stale skeleton assertions with the already-composed authenticated channel
+  and its current CORS headers; no runtime route or
+  authorization behavior changes as part of this test correction.
+  Runtime deployment remains pending main merge and Dokploy configuration.
+
 - Documentation design: `completed` at commit `08ed71a`.
 - Documentation implementation plan: `completed` at commit `2ba542b`.
 - Atomic roadmap authoring: modules `01` through `15` completed and cross-module verification passed; see [verification evidence](docs/verification/2026-08-16-agent-roadmap.md).

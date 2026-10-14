@@ -75,6 +75,7 @@ describe("Creciendo Eve channel shell", () => {
         "X-Creciendo-Event-Version",
         "X-Request-Id",
         "X-Content-SHA256",
+        "ngrok-skip-browser-warning",
       ],
       exposeHeaders: [
         "Content-Type",
@@ -89,14 +90,18 @@ describe("Creciendo Eve channel shell", () => {
     });
   });
 
-  it("keeps the discovered default channel fail closed until route dependencies are composed", async () => {
+  it("rejects anonymous requests on the composed default channel", async () => {
     expect(defaultChannel.routes.map(({ method, path }) => ({ method, path }))).toEqual(CRECIENDO_ROUTE_SPECS);
     const response = await route(defaultChannel, "POST", "/creciendo/v1/sessions").handler(new Request(
       "https://agent.test/creciendo/v1/sessions",
-      { method: "POST", headers: { "content-type": "application/json" }, body: "{}" },
+      { method: "POST", headers: { "content-type": "application/json", "x-request-id": "test-anonymous-session" }, body: "{}" },
     ), {} as never);
-    expect(response.status).toBe(503);
-    expect(await response.json()).toEqual({ ok: false, code: "CHANNEL_UNAVAILABLE" });
+    expect(response.status).toBe(401);
+    expect(await response.json()).toEqual({
+      ok: false,
+      code: "AUTHENTICATION_REQUIRED",
+      requestId: "test-anonymous-session",
+    });
   });
 
   it("mounts immunization status as an authenticated bodyless GET", async () => {
