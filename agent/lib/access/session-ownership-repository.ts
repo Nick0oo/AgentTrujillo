@@ -70,7 +70,7 @@ export function createSessionOwnershipRepository(
     async create(scope, input, requestId = "session") {
       try {
         const client = clientFor(scope);
-        return oneRow(await client.rpc("create_owned_agent_session", {
+        const res = await client.rpc("create_owned_agent_session", {
           p_care_space_id: scope.careSpaceId,
           p_child_id: scope.childId,
           p_authorization_version: scope.authorizationVersion,
@@ -78,8 +78,20 @@ export function createSessionOwnershipRepository(
           p_channel: input.channel,
           p_initial_model: input.initialModel,
           p_initial_configuration: input.initialConfiguration ?? {},
-        }), scope, requestId);
-      } catch {
+        });
+        if (res.error) {
+          console.error('[create_owned_agent_session RPC ERROR]:', res.error);
+        }
+        if (!res.data || (Array.isArray(res.data) && res.data.length === 0)) {
+          console.error('[create_owned_agent_session RETURNED EMPTY DATA]:', {
+            scope,
+            input,
+            data: res.data
+          });
+        }
+        return oneRow(res, scope, requestId);
+      } catch (err) {
+        console.error('[create_owned_agent_session CATCH]:', err);
         return createAccessDenied(requestId);
       }
     },

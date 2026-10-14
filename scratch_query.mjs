@@ -3,9 +3,10 @@ dotenv.config();
 
 async function run() {
   const query = `
-    SELECT column_name, column_default, is_nullable, data_type
-    FROM information_schema.columns 
-    WHERE table_name = 'development_observations';
+    SELECT id, created_at, owner_user_id, care_space_id, child_id, status, channel
+    FROM public.agent_sessions
+    ORDER BY created_at DESC
+    LIMIT 5;
   `;
 
   const res = await fetch('https://api.supabase.com/v1/projects/yapjiinrjsrothzgzxsv/database/query', {
