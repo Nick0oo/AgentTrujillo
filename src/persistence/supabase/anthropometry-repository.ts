@@ -73,6 +73,7 @@ function measurementFrom(row: Row): ConfirmedMeasurement | null {
     timeZone: String(row.time_zone),
     measurementMethod: String(row.measurement_method ?? "unknown") as ConfirmedMeasurement["measurementMethod"],
     provenanceType: String(row.provenance_type ?? "import") as ConfirmedMeasurement["provenanceType"],
+    sourceNote: typeof row.source_note === "string" ? row.source_note : null,
     recordedBy,
     validationStatus,
     inputFingerprint,

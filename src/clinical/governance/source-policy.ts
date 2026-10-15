@@ -45,6 +45,9 @@ const PRIMARY_AUTHORITY_POLICY: Readonly<Record<ClinicalAuthority, Readonly<Part
   CDC_ACIP: {
     US: ["immunization"],
   },
+  CDC_NCHS: {
+    US: ["growth"],
+  },
   WHO: {
     GLOBAL: ["growth", "immunization", "development", "nutrition", "emergency"],
   },
@@ -62,6 +65,8 @@ const AUTHORITY_ALIASES: Readonly<Record<string, ClinicalAuthority>> = {
   PAI: "MINSALUD_PAI",
   CDC: "CDC_ACIP",
   CDC_ACIP: "CDC_ACIP",
+  CDC_NCHS: "CDC_NCHS",
+  CDC_GROWTH: "CDC_NCHS",
   WHO: "WHO",
   WORLD_HEALTH_ORGANIZATION: "WHO",
   INVIMA: "INVIMA",
@@ -75,6 +80,7 @@ const AUTHORITY_ALIASES: Readonly<Record<string, ClinicalAuthority>> = {
 const AUTHORITY_HOSTS: Readonly<Record<ClinicalAuthority, readonly string[]>> = {
   MINSALUD_PAI: ["minsalud.gov.co"],
   CDC_ACIP: ["cdc.gov"],
+  CDC_NCHS: ["cdc.gov"],
   WHO: ["who.int"],
   INVIMA: ["invima.gov.co"],
   NLM_DAILYMED: ["dailymed.nlm.nih.gov"],

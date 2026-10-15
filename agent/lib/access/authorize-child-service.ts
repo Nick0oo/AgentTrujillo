@@ -72,7 +72,7 @@ export function createAuthorizeChildService(
         const membershipExpiry = row.membership_valid_until ? new Date(row.membership_valid_until) : undefined;
         const accessExpiry = row.access_valid_until ? new Date(row.access_valid_until) : undefined;
         const expiresAt = [
-          new Date(now.getTime() + 5 * 60 * 1000),
+          new Date(now.getTime() + 270 * 1000), // 4.5 minutos para evitar fallos por reloj adelantado respecto a Postgres
           input.guardian.expiresAt,
           membershipExpiry,
           accessExpiry,

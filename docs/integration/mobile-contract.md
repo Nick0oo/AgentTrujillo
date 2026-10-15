@@ -4,6 +4,12 @@
 
 Agent Trujillo expone exclusivamente `/creciendo/v1` como interface remota pública para Creciendo. La app puede solicitar una operación, pero el backend decide identidad, niño, país clínico, permisos, reglas y entitlements. Un campo enviado por la app nunca reemplaza estas verificaciones.
 
+## Bootstrap de onboarding
+
+Antes de activar el contexto del niño, la app confirma el borrador mediante `POST /creciendo/v1/onboarding`. El cuerpo versionado es `onboarding.v1`; contiene el nombre del espacio, los datos basales del niño, la relación del tutor, las alergias declaradas y `privacyConsentAccepted: true`. No contiene `guardianId`: el backend lo deriva del JWT autenticado.
+
+La app genera una `idempotencyKey` opaca y la conserva durante los reintentos de la misma confirmación. Puede enviarla también como `Idempotency-Key`, que debe coincidir con el campo JSON. `201`/`created` confirma los IDs `careSpaceId` y `childId`; `200`/`replayed` devuelve los mismos IDs para una repetición idéntica. `409 IDEMPOTENCY_CONFLICT` o `409 ONBOARDING_ALREADY_EXISTS` no se deben convertir en éxito. La app conserva el borrador ante cualquier error y no crea IDs locales.
+
 ## Flujo de sesión
 
 1. Creciendo obtiene un JWT de Supabase Auth.
@@ -66,7 +72,10 @@ Kinds/versiones V1 vinculantes:
 
 | Operación | Ruta | Nota de seguridad |
 |---|---|---|
+| bootstrap inicial | `POST /creciendo/v1/onboarding` | identidad derivada del JWT; crea espacio, membresía, niño, acceso, observaciones declaradas y consentimiento en una transacción |
+| directorio autorizado | `GET /creciendo/v1/children` | devuelve únicamente espacios y niños activos para el tutor autenticado; no concede autoridad por sí mismo |
 | contexto del niño | `POST /creciendo/v1/child-context` | el ID solicitado se autoriza antes de firmar contexto |
+| resumen del dashboard | `GET /creciendo/v1/dashboard` | exige `X-Child-Context`; reautoriza el alcance y devuelve una proyección backend sin cálculos clínicos del móvil |
 | crear sesión | `POST /creciendo/v1/sessions` | el alcance del niño queda inmutable y no proviene del cliente |
 | enviar turno | `POST /creciendo/v1/sessions/{sessionId}/messages` | revalida ownership, permiso, versión de seguridad y red flags antes de Eve |
 | conectar o reanudar | `GET /creciendo/v1/sessions/{sessionId}/stream` | cursor opaco; el ID de sesión nunca concede acceso |
@@ -100,3 +109,21 @@ Cada cambio de contrato exige:
 - prueba de consumo en móvil;
 - compatibilidad con la versión móvil mínima soportada;
 - actualización de estos Markdown.
+
+### Directorio y resumen del dashboard (`AT-11-20`)
+
+Estas lecturas son estrictamente de consulta y no sustituyen la autorización del contexto infantil:
+
+- `GET /creciendo/v1/children` responde `creciendo.directory.v1` con `requestId`, espacios de cuidado y niños autorizados. Cada niño incluye UUID, nombre de presentación, fecha de nacimiento, país clínico y zona horaria IANA.
+- `GET /creciendo/v1/dashboard` requiere `Authorization: Bearer …` y `X-Child-Context: <token opaco>`. El backend verifica el token, membresía, permiso `read`, niño y espacio antes de consultar la proyección.
+- El resumen responde `creciendo.dashboard.v1`, conserva `scopeVersion: authorized-child-scope.v1`, y representa datos clínicos ausentes como `null`. La app no calcula percentiles, edad corregida, elegibilidad, dosis ni reglas.
+- Ambos contratos son `no-store`, rechazan campos desconocidos y nunca exponen datos de un niño no autorizado.
+
+### Documentos privados (`AT-11-21`)
+
+- `GET /creciendo/v1/documents` requiere `X-Child-Context` y devuelve como máximo 100 metadatos estrictos del niño activo; no devuelve bucket, ruta ni IDs de autoridad.
+- `POST /creciendo/v1/documents/upload-ticket` requiere `manage_documents`, `Idempotency-Key` y el mismo `idempotencyKey` dentro del JSON. El ticket es de máximo cinco minutos.
+- `PUT /creciendo/v1/documents/upload` requiere JWT, `X-Child-Context`, `X-Document-Transfer-Token`, `content-length`, `content-type` y `x-content-sha256`; el backend comprueba tamaño, MIME y hash antes de finalizar la reserva.
+- `POST /creciendo/v1/documents/download-ticket` requiere `read` e `idempotencyKey`; solo entrega un enlace HTTPS de dos minutos para un documento activo y limpio.
+- `GET /creciendo/v1/documents/{documentId}/ocr-draft` devuelve únicamente borradores no confiables. Ninguna ruta convierte OCR en un hecho clínico confirmado.
+- La app no escribe tablas Supabase directamente ni usa URLs de Storage de dos horas como tickets de subida.

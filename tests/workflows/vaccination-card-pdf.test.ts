@@ -1,0 +1,13 @@
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { FatalError, RetryableError } from "workflow";
+import { configureVaccinationCardPdfPorts, vaccinationCardPdfWorkflow, type VaccinationCardPdfInput, type VaccinationCardPdfPorts } from "../../src/workflows/vaccination-card-pdf";
+
+const INPUT: VaccinationCardPdfInput = Object.freeze({ ownerUserId: "owner", careSpaceId: "space", childId: "child", sessionId: "session", documentId: "document", factsDigest: "a".repeat(64), country: "CO", templateVersion: "pai.v1" });
+function makePorts(overrides: Partial<VaccinationCardPdfPorts> = {}): VaccinationCardPdfPorts { return { loadSnapshot: vi.fn().mockResolvedValue({ documentId: INPUT.documentId, factsDigest: INPUT.factsDigest, country: INPUT.country, rows: 2 }), renderPdf: vi.fn().mockResolvedValue({ renderId: "render-1", bytesSha256: "b".repeat(64), sizeBytes: 128 }), uploadPrivateObject: vi.fn().mockResolvedValue("uploaded"), finalizeDocument: vi.fn().mockResolvedValue("finalized"), cleanupPartial: vi.fn().mockResolvedValue(undefined), ...overrides }; }
+afterEach(() => configureVaccinationCardPdfPorts(null));
+describe("vaccination card PDF workflow", () => {
+  it("renders, privately uploads, and finalizes the exact country snapshot", async () => { const p = makePorts(); configureVaccinationCardPdfPorts(p); await expect(vaccinationCardPdfWorkflow(INPUT)).resolves.toEqual({ status: "finalized" }); expect(p.renderPdf).toHaveBeenCalledWith(expect.objectContaining({ country: "CO" }), "pai.v1"); });
+  it("does not merge a snapshot from another country", async () => { const p = makePorts({ loadSnapshot: vi.fn().mockResolvedValue({ documentId: INPUT.documentId, factsDigest: INPUT.factsDigest, country: "US", rows: 2 }) }); configureVaccinationCardPdfPorts(p); await expect(vaccinationCardPdfWorkflow(INPUT)).rejects.toBeInstanceOf(FatalError); });
+  it("cleans the reserved object after a finalization failure", async () => { const p = makePorts({ finalizeDocument: vi.fn().mockRejectedValue(new Error("outage")) }); configureVaccinationCardPdfPorts(p); await expect(vaccinationCardPdfWorkflow(INPUT)).rejects.toBeInstanceOf(RetryableError); expect(p.cleanupPartial).toHaveBeenCalled(); });
+  it("is replay-safe when upload and finalization already succeeded", async () => { const p = makePorts({ uploadPrivateObject: vi.fn().mockResolvedValue("idempotent_replay"), finalizeDocument: vi.fn().mockResolvedValue("idempotent_replay") }); configureVaccinationCardPdfPorts(p); await expect(vaccinationCardPdfWorkflow(INPUT)).resolves.toEqual({ status: "idempotent_replay" }); });
+});

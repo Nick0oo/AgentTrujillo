@@ -123,11 +123,22 @@ describe("Eve discovery gate", () => {
     expect(module11.authoredTools).toEqual(EXPECTED_TOOLS);
     expect(module11.diagnostics).toEqual({ errors: 0, warnings: 0 });
     expect(creciendoRoutes).toEqual([
+      { name: "creciendo", kind: "http", method: "GET", urlPath: "/creciendo/v1/children" },
+      { name: "creciendo", kind: "http", method: "GET", urlPath: "/creciendo/v1/dashboard" },
+      { name: "creciendo", kind: "http", method: "GET", urlPath: "/creciendo/v1/documents" },
+      { name: "creciendo", kind: "http", method: "GET", urlPath: "/creciendo/v1/documents/:documentId/ocr-draft" },
+      { name: "creciendo", kind: "http", method: "GET", urlPath: "/creciendo/v1/immunization/status" },
       { name: "creciendo", kind: "http", method: "GET", urlPath: "/creciendo/v1/sessions/:sessionId/stream" },
       { name: "creciendo", kind: "http", method: "POST", urlPath: "/creciendo/v1/child-context" },
+      { name: "creciendo", kind: "http", method: "POST", urlPath: "/creciendo/v1/documents/download-ticket" },
+      { name: "creciendo", kind: "http", method: "POST", urlPath: "/creciendo/v1/documents/upload-ticket" },
+      { name: "creciendo", kind: "http", method: "POST", urlPath: "/creciendo/v1/immunization/administrations" },
+      { name: "creciendo", kind: "http", method: "POST", urlPath: "/creciendo/v1/immunization/administration-drafts" },
+      { name: "creciendo", kind: "http", method: "POST", urlPath: "/creciendo/v1/onboarding" },
       { name: "creciendo", kind: "http", method: "POST", urlPath: "/creciendo/v1/sessions" },
       { name: "creciendo", kind: "http", method: "POST", urlPath: "/creciendo/v1/sessions/:sessionId/cancel" },
       { name: "creciendo", kind: "http", method: "POST", urlPath: "/creciendo/v1/sessions/:sessionId/messages" },
+      { name: "creciendo", kind: "http", method: "PUT", urlPath: "/creciendo/v1/documents/upload" },
     ]);
     expect(eveRoutes).toHaveLength(6);
     expect(module11.channels).not.toContainEqual(expect.objectContaining({ urlPath: "/v1/chat" }));

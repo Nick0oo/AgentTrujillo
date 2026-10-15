@@ -125,9 +125,12 @@ export async function handleCreateSession(
       capabilities,
       now,
     });
-    if (!stored.ok) return stored.code === "conflict"
-      ? safeError(409, "CONFLICT")
-      : safeError(503, "PERSISTENCE_UNAVAILABLE", stored.effectState);
+    if (!stored.ok) {
+      console.error('[SessionCreate stored.ok is false]:', stored);
+      return stored.code === "conflict"
+        ? safeError(409, "CONFLICT")
+        : safeError(503, "PERSISTENCE_UNAVAILABLE", stored.effectState);
+    }
     effectCommitted = true;
     const session = stored.session;
     if (session.eveSessionId !== null
@@ -138,7 +141,10 @@ export async function handleCreateSession(
       || session.childId !== freshScope.childId
       || session.authorizationVersion !== freshScope.authorizationVersion
       || session.authorizationExpiresAt <= now
-      || session.authorizationExpiresAt > freshScope.expiresAt) return safeError(503, "PERSISTENCE_UNAVAILABLE");
+      || session.authorizationExpiresAt > freshScope.expiresAt) {
+      console.error('[SessionCreate session validation failed]:', { session, freshScope, now });
+      return safeError(503, "PERSISTENCE_UNAVAILABLE");
+    }
     const continuationToken = await issueContinuationToken({ scope: freshScope, session, lastSequence: 0 }, dependencies.continuationKeys, now);
     const response = SESSION_CREATE_RESPONSE_SCHEMA.parse({
       version: CRECIENDO_CHANNEL_VERSION,
@@ -153,7 +159,8 @@ export async function handleCreateSession(
       status: stored.outcome === "created" ? 201 : 200,
       headers: { "cache-control": "no-store", "x-content-type-options": "nosniff" },
     });
-  } catch {
+  } catch (err) {
+    console.error('[SessionCreate unhandled error]:', err);
     return safeError(503, "PERSISTENCE_UNAVAILABLE", effectCommitted ? "committed" : persistenceAttempted ? "unknown" : "none");
   }
 }
@@ -238,8 +245,13 @@ function createSessionStore(config: Pick<RuntimeConfig, "supabaseUrl" | "supabas
           create_request_sha256: requestSha256,
         },
       }, input.auth.requestId);
-      return "ok" in created ? { ok: false, code: "unavailable", effectState: "unknown" } : { ok: true, outcome: "created", session: created };
-    } catch {
+      if ("ok" in created) {
+        console.error('[SessionCreate repository.create FAILED]:', created);
+        return { ok: false, code: "unavailable", effectState: "unknown" };
+      }
+      return { ok: true, outcome: "created", session: created };
+    } catch (err) {
+      console.error('[SessionCreate store catch error]:', err);
       return { ok: false, code: "unavailable", effectState: createAttempted ? "unknown" : "none" };
     }
   });

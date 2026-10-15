@@ -15,6 +15,7 @@ const FIXTURE_PATH = new URL("../../fixtures/channel/creciendo-v1.ndjson", impor
 const CONTRACT_PATH = new URL("../../../docs/contracts/creciendo-channel-v1.md", import.meta.url);
 
 const ROUTES = Object.freeze([
+  "POST /creciendo/v1/onboarding",
   "POST /creciendo/v1/child-context",
   "POST /creciendo/v1/sessions",
   "POST /creciendo/v1/sessions/{sessionId}/messages",
@@ -91,7 +92,7 @@ describe("Creciendo v1 mobile contract artifacts", () => {
     expect(emergencyJson).not.toMatch(/action|button|url|phone|location|notification|appointment|handoff/iu);
   });
 
-  it("publishes the exact five routes, closed widget versions and compatibility policy", async () => {
+  it("publishes the exact six routes, closed widget versions and compatibility policy", async () => {
     const contract = await readFile(CONTRACT_PATH, "utf8");
     expect(contract).toContain(CRECIENDO_CHANNEL_VERSION);
     expect(contract).toContain(CRECIENDO_EVENT_VERSION);

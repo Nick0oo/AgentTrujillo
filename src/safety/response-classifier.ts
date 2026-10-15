@@ -7,14 +7,14 @@ export type RequestClassification = Readonly<{
 }>;
 
 const patterns: readonly Readonly<{ behavior: ProhibitedClinicalBehavior; code: string; pattern: RegExp }>[] = [
-  { behavior: "diagnosis", code: "DIAGNOSIS_REQUEST", pattern: /(?:diagn[oó]stic|what does|what is|qué tiene|es una|confirma|descarta|rule out|condition|enfermedad)/iu },
-  { behavior: "prescription", code: "PRESCRIPTION_REQUEST", pattern: /(?:prescrib|recet|indique|manda|should i give|qué le doy|what should .* take)/iu },
-  { behavior: "medicine_selection", code: "MEDICINE_SELECTION", pattern: /(?:medicin|medication|antibiotic|ibuprofen|acetaminophen|paracetamol|choose .* drug|qué medicamento)/iu },
-  { behavior: "dose_authorization", code: "DOSE_AUTHORIZATION", pattern: /(?:safe to give|seguro darle|is this dose|esta dosis|how much|cu[aá]nto .* dosis|mg\s*\/|ml\s*\/)/iu },
-  { behavior: "treatment_plan", code: "TREATMENT_PLAN", pattern: /(?:treat|tratamiento|first aid|remedio|home care|qué hago para curar)/iu },
-  { behavior: "false_reassurance", code: "FALSE_REASSURANCE", pattern: /(?:definitely safe|nothing to worry|no es nada|est[aá] bien seguro|not serious|don'?t worry)/iu },
-  { behavior: "professional_operation", code: "PROFESSIONAL_OPERATION", pattern: /(?:book|appointment|schedule|call|phone|contact|message the doctor|cita|agenda|llama|tel[eé]fono|contacte|escr[ií]bale|m[aá]ndale)/iu },
-  { behavior: "urgent_decoration", code: "URGENT_DECORATION", pattern: /(?:ambulance|911|emergency number|map|direcci[oó]n|urgencias.*bot[oó]n|notification|alerta)/iu },
+  { behavior: "diagnosis", code: "DIAGNOSIS_REQUEST", pattern: /(?:diagn[oó]stic|qu[eé]\s+diagn[oó]stico\s+tiene|confirmar?\s+(?:el\s+)?diagn[oó]stico|descartar?\s+(?:el\s+)?diagn[oó]stico|rule\s+out\s+(?:the\s+)?diagnosis)/iu },
+  { behavior: "prescription", code: "PRESCRIPTION_REQUEST", pattern: /(?:prescrib|recet|qu[eé]\s+le\s+doy\b|should\s+i\s+give|what\s+should\s+.*\s+take)/iu },
+  { behavior: "medicine_selection", code: "MEDICINE_SELECTION", pattern: /(?:ibuprofen|acetaminophen|paracetamol|choose\s+.*\s+drug|qu[eé]\s+medicamento)/iu },
+  { behavior: "dose_authorization", code: "DOSE_AUTHORIZATION", pattern: /(?:safe\s+to\s+give|seguro\s+darle|is\s+this\s+dose|esta\s+dosis|cu[aá]nto\s+.*(?:de\s+)?dosis|mg\s*\/|ml\s*\/)/iu },
+  { behavior: "treatment_plan", code: "TREATMENT_PLAN", pattern: /(?:tratamiento\s+para\s+curar|remedio\s+casero\s+para\s+curar|home\s+care|qu[eé]\s+hago\s+para\s+curar)/iu },
+  { behavior: "false_reassurance", code: "FALSE_REASSURANCE", pattern: /(?:definitely\s+safe|nothing\s+to\s+worry|no\s+es\s+nada\b|est[aá]\s+bien\s+seguro|not\s+serious|don'?t\s+worry)/iu },
+  { behavior: "professional_operation", code: "PROFESSIONAL_OPERATION", pattern: /(?:book\s+(?:an?\s+)?appointment|schedule\s+(?:an?\s+)?appointment|call\s+(?:the\s+)?(?:doctor|pediatrician|clinic|hospital)|message\s+the\s+doctor|agend(?:ar?|a)\s+(?:una\s+)?cita\s+m[eé]dica|pedir\s+(?:una\s+)?cita\s+m[eé]dica|llamar?\s+al\s+(?:m[eé]dico|pediatra|doctor)|contactar?\s+al\s+(?:m[eé]dico|pediatra))/iu },
+  { behavior: "urgent_decoration", code: "URGENT_DECORATION", pattern: /(?:ambulance|911|emergency\s+number|urgencias.*bot[oó]n)/iu },
 ];
 
 export function classifyClinicalRequest(text: string): RequestClassification {

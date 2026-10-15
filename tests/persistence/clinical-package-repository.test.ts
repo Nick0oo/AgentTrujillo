@@ -71,4 +71,42 @@ describe("Supabase clinical package repository", () => {
     expect(result).toHaveLength(1);
     expect(result[0]?.location.path).toBe(`v1/medication/CO/${artifactSha256}.json`);
   });
+
+  it("resolves a growth package from the global WHO source for a country query", async () => {
+    const sourceSet = createHash("sha256").update(canonicalize([{ id: "growth-source", artifactSha256: sourceArtifactSha256, status: "approved" }])).digest("hex");
+    const values: Record<string, unknown> = {
+      clinical_rule_packs: [{ id: "growth-pack", domain: "growth", country_code: "CO", version: "2026.who.1", locale: "es-CO", status: "active", effective_from: "2026-08-22", effective_until: null, artifact_sha256: artifactSha256 }],
+      clinical_rule_pack_sources: [{ rule_pack_id: "growth-pack", source_id: "growth-source", purpose: "normative" }],
+      clinical_sources: [{ id: "growth-source", authority: "WHO", jurisdiction: "GLOBAL", title: "WHO growth standards", source_uri: "https://www.who.int/tools/child-growth-standards", citation: null, published_at: "2006-01-01", retrieved_at: "2026-08-22T13:00:00.000Z", effective_from: null, effective_until: null, license: "official", artifact_sha256: sourceArtifactSha256, status: "approved" }],
+      clinical_package_releases: [{ id: "growth-release", rule_pack_id: "growth-pack", artifact_sha256: artifactSha256, algorithm_id: "growth-algorithm", approval_id: "growth-approval", domain: "growth", country_code: "CO", locale: "es-CO", action: "release", status: "active" }],
+      clinical_algorithms: [{ id: "growth-algorithm", algorithm_key: "growth-who-v1", version: "1.0.0", domain: "growth", implementation_sha256: "e".repeat(64), test_vector_sha256: "f".repeat(64), artifact_schema_versions: ["v1"], entrypoint: "growth", runtime: "node24", status: "active" }],
+      clinical_approvals: [{ id: "growth-approval", rule_pack_id: "growth-pack", artifact_sha256: artifactSha256, algorithm_id: "growth-algorithm", algorithm_implementation_sha256: "e".repeat(64), source_set_sha256: sourceSet, manifest_sha256: "1".repeat(64), approval_provenance: "product_owner_conveyed", approver_subject: null, approver_role: "clinical_approver", conveyance_record_sha256: "2".repeat(64), decision: "approved", decided_at: "2026-08-22T13:00:00.000Z", request_id: "00000000-0000-4000-8000-000000000004", withdrawal_of: null }],
+    };
+    const repository = createClinicalPackageRepository({ from: (table: string) => queryFor(values[table]) } as never);
+
+    const result = await repository.findCandidates({ domain: "growth", countryCode: "CO", locale: "es-CO", referenceDate: "2026-08-22", artifactSchemaVersion: "v1" });
+
+    expect(result).toHaveLength(1);
+    expect(result[0]?.sources).toEqual([expect.objectContaining({ authority: "WHO", jurisdiction: "GLOBAL" })]);
+    expect(result[0]?.location.path).toBe(`v1/growth/CO/${artifactSha256}.json`);
+  });
+
+  it("resolves a US growth package from the CDC NCHS source", async () => {
+    const sourceSet = createHash("sha256").update(canonicalize([{ id: "cdc-growth-source", artifactSha256: sourceArtifactSha256, status: "approved" }])).digest("hex");
+    const values: Record<string, unknown> = {
+      clinical_rule_packs: [{ id: "us-growth-pack", domain: "growth", country_code: "US", version: "2026.cdc.1", locale: "en-US", status: "active", effective_from: "2026-08-22", effective_until: null, artifact_sha256: artifactSha256 }],
+      clinical_rule_pack_sources: [{ rule_pack_id: "us-growth-pack", source_id: "cdc-growth-source", purpose: "normative" }],
+      clinical_sources: [{ id: "cdc-growth-source", authority: "CDC_NCHS", jurisdiction: "US", title: "CDC growth reference", source_uri: "https://www.cdc.gov/growthcharts/data/zscore/wtage.csv", citation: null, published_at: "2000-01-01", retrieved_at: "2026-08-22T13:00:00.000Z", effective_from: null, effective_until: null, license: "official", artifact_sha256: sourceArtifactSha256, status: "approved" }],
+      clinical_package_releases: [{ id: "us-growth-release", rule_pack_id: "us-growth-pack", artifact_sha256: artifactSha256, algorithm_id: "us-growth-algorithm", approval_id: "us-growth-approval", domain: "growth", country_code: "US", locale: "en-US", action: "release", status: "active" }],
+      clinical_algorithms: [{ id: "us-growth-algorithm", algorithm_key: "growth-cdc-nchs-v1", version: "1.0.0", domain: "growth", implementation_sha256: "e".repeat(64), test_vector_sha256: "f".repeat(64), artifact_schema_versions: ["v1"], entrypoint: "growth", runtime: "node24", status: "active" }],
+      clinical_approvals: [{ id: "us-growth-approval", rule_pack_id: "us-growth-pack", artifact_sha256: artifactSha256, algorithm_id: "us-growth-algorithm", algorithm_implementation_sha256: "e".repeat(64), source_set_sha256: sourceSet, manifest_sha256: "1".repeat(64), approval_provenance: "product_owner_conveyed", approver_subject: null, approver_role: "clinical_approver", conveyance_record_sha256: "2".repeat(64), decision: "approved", decided_at: "2026-08-22T13:00:00.000Z", request_id: "00000000-0000-4000-8000-000000000004", withdrawal_of: null }],
+    };
+    const repository = createClinicalPackageRepository({ from: (table: string) => queryFor(values[table]) } as never);
+
+    const result = await repository.findCandidates({ domain: "growth", countryCode: "US", locale: "en-US", referenceDate: "2026-08-22", artifactSchemaVersion: "v1" });
+
+    expect(result).toHaveLength(1);
+    expect(result[0]?.sources).toEqual([expect.objectContaining({ authority: "CDC_NCHS", jurisdiction: "US" })]);
+    expect(result[0]?.location.path).toBe(`v1/growth/US/${artifactSha256}.json`);
+  });
 });

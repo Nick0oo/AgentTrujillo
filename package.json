@@ -25,6 +25,7 @@
     "eval:runtime:json": "eve eval runtime --strict --max-concurrency 1 --json",
     "eval": "node --experimental-transform-types tests/evals/tool-contracts.eval.ts",
     "test": "vitest run",
+    "test:workflow": "vitest run --config vitest.workflow.config.ts",
     "test:watch": "vitest",
     "test:runtime": "vitest run tests/runtime",
     "test:immunization": "vitest run tests/clinical/immunization tests/persistence/immunization-repository.test.ts tests/persistence/clinical-package-repository.test.ts",
@@ -40,10 +41,12 @@
     "eve": "0.27.13",
     "jose": "6.2.9",
     "json-canonicalize": "^1.2.0",
+    "workflow": "4.8.5",
     "zod": "4.4.3"
   },
   "devDependencies": {
     "@types/node": "24.x",
+    "@workflow/vitest": "^4.0.21",
     "just-bash": "3.4.1",
     "supabase": "^2.114.0",
     "typescript": "7.0.2",

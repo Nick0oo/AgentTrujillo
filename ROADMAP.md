@@ -25,15 +25,31 @@ These facts do not close pending behavioral gates. Local schema parity, generate
 
 ## Current roadmap state
 
+- Root-directed deployment preparation (2026-10-14): the user selected Dokploy,
+  deployment from `main` after their pull request, and
+  `https://agent.creciendo.com.co`. Root owns `.github/workflows/dokploy.yml`,
+  `Dockerfile`, `.dockerignore`, `.gitattributes`, `scripts/ci/deploy-dokploy.mjs`,
+  `scripts/ci/smoke-backend.mjs`, `tests/ci/dokploy.test.ts`, and
+  `docs/operations/dokploy.md`. This is an explicitly authorized alternative to
+  the pending Vercel topology; it does not complete Module 15 readiness. The
+  same preparation restores existing approved permanent-instruction clauses in
+  `agent/instructions.md` after fresh contract tests exposed missing
+  jurisdiction, deterministic-calculation and insufficient-data boundaries.
+  Root also owns `tests/channels/creciendo/channel-shell.test.ts` to reconcile
+  stale skeleton assertions with the already-composed authenticated channel
+  and its current CORS headers; no runtime route or
+  authorization behavior changes as part of this test correction.
+  Runtime deployment remains pending main merge and Dokploy configuration.
+
 - Documentation design: `completed` at commit `08ed71a`.
 - Documentation implementation plan: `completed` at commit `2ba542b`.
 - Atomic roadmap authoring: modules `01` through `15` completed and cross-module verification passed; see [verification evidence](docs/verification/2026-08-16-agent-roadmap.md).
-- Product implementation: modules `01` through `09` completed with fresh runtime and Cloud evidence. Module `07` exact minimal formularies were released in `54e615c`; conveyed approval is recorded without a personal signature.
+- Product implementation: modules `01` through `04` and `06` through `09` remain completed with fresh runtime and Cloud evidence. Module `05` root-authorized amendment `AT-05-17` is in progress to activate exact growth packages locally without remote mutation. Module `07` exact minimal formularies were released in `54e615c`; conveyed approval is recorded without a personal signature.
 - Module 08 is **17/17 completed with 0 pending leaves**. Final boundary evidence is recorded at implementation commit `145b3b0` and `docs/verification/nutrition-development.md`.
 - Module 09 is **21/21 completed with 0 pending leaves**. Final isolation evidence is recorded at implementation commit `debbfcf` and `docs/verification/memory-documents.md`.
 - Module 10 execution uses the root-authorized 2026-08-23 contract reconciliation: Eve `0.27.13` supersedes its historical `0.27.1` references, and only `AT-13-01` may execute early after verified `AT-03-11` to supply the provider-neutral catalog required by `AT-10-02`. The rest of Module 13 remains pending behind its general entry gate.
 - Module 10 is **33/33 completed with 0 pending leaves**. `AT-10-01` closed at `13ef49f`; `AT-10-02` at `f0ce01a`; `AT-10-03` at `73ad42a`; `AT-10-04` at `296fad3`; `AT-10-05` at `114b0c6`; `AT-10-06` at `783fc32`; `AT-10-07` at `4af8b5d`; `AT-10-08` at `ae6988c`; `AT-10-09` at `71c8aeb` plus trusted/mobile compatibility correction `9271b9e`; `AT-10-10` at `9e3943f`; `AT-10-11` at `b1bce0e`; `AT-10-12` at `3c4f46d`; `AT-10-13` at `84178dd`; `AT-10-14` at `1dc2dd4`; `AT-10-15` at `9f10223`; `AT-10-16` at `c7b9cbe`; `AT-10-17` at `39fa910`; `AT-10-18` at `6e70693`; `AT-10-19` at `7ac4682`; `AT-10-20` at `75b5f4d`; `AT-10-21` at `d34b07f`; `AT-10-22` at `a2a2e19`; `AT-10-23` at `7bed230`; `AT-10-24` at `1b53e5e`; `AT-10-25` at `5c06e75`; `AT-10-26` at `311dc62`; `AT-10-27` at `1020998`; `AT-10-28` at `6a99955`; `AT-10-29` at `cb1d5c8`; `AT-10-30` at `722afa9`; `AT-10-31` at `d9fb08a`; `AT-10-32` at `6bd8663`; and `AT-10-33` at `ca418b1`, after the Eve-supported runtime-helper correction in `2ada844`, the explicit replay-fingerprint amendments `43639a7`/`acdeadc`, the safe-error/audit amendment `a01db90`, the discovery-identity correction `d5ff6e1`, and the final independent-review amendment `bc41c61`.
-- Module 11 is **18/18 completed with 0 pending leaves**. The final internal-channel/discovery boundary closed at implementation commit `3a0b152`; module-wide release evidence is recorded in `docs/verification/creciendo-channel.md`. `/creciendo/v1` is the sole public product transport, while `/eve/v1` is fail-closed in preview/production and limited to local loopback operations in development/test.
+- Module 11's original **18/18 leaves are completed** and root-authorized amendment `AT-11-19` is completed at commits `1bd86c1`, `79ff14e`, and `b3037df`; the original internal-channel/discovery evidence remains recorded in `docs/verification/creciendo-channel.md`. `/creciendo/v1` is the sole public product transport, while `/eve/v1` is fail-closed in preview/production and limited to local loopback operations in development/test.
 - The early `AT-13-01` exception is completed at `eb82958` with a provider-neutral, synthetic-test-only catalog. It unblocks `AT-10-02`; all other Module 13 leaves remain pending behind the general Module 13 entry gate.
 
 ## Module ledger
@@ -44,7 +60,7 @@ These facts do not close pending behavioral gates. Local schema parity, generate
 | 02 | Access and session isolation | completed | completed | Zero cross-space, cross-child, and cross-session access | [Module 02](roadmap/02-access-and-session-isolation/README.md) |
 | 03 | Clinical governance | completed | completed | Only approved, versioned, checksum-matching packages resolve | [Module 03](roadmap/03-clinical-governance/README.md) |
 | 04 | Safety and emergency boundary | completed | completed | Critical red flags bypass the LLM and emit approved emergency-only copy | [Module 04](roadmap/04-safety-and-emergency-boundary/README.md) |
-| 05 | Anthropometry and growth | completed | completed | Reproducible age, Z-score, percentile, and growth-series results | [Module 05](roadmap/05-anthropometry-and-growth/README.md) |
+| 05 | Anthropometry and growth | completed | in_progress | Reproducible age, Z-score, percentile, and growth-series results | [Module 05](roadmap/05-anthropometry-and-growth/README.md) |
 | 06 | Immunization | completed | completed | PAI and ACIP evaluations are separate, reproducible, and source-traceable | [Module 06](roadmap/06-immunization/README.md) |
 | 07 | Medication and adherence | completed | completed | Declared-dose validation is conservative and plans/intakes are idempotent | [Module 07](roadmap/07-medication-and-adherence/README.md) |
 | 08 | Nutrition and development | completed | completed | Guidance stays educational and EAD-3 remains professional-only | [Module 08](roadmap/08-nutrition-and-development/README.md) |
@@ -60,7 +76,9 @@ Modules are ordered by their load-bearing dependencies. Leaves inside a module m
 
 ## Ready queue
 
-Module 11 is 18/18 completed. `AT-11-18` closed at implementation commit `3a0b152`: the standard Eve route family is production/preview fail-closed, local loopback operations remain available, and exact Module 11 discovery plus the tool-contract gate pass. Final release evidence records 117/117 channel tests, 16/16 critical streaming evals, 547/547 tool-contract tests, 79/79 rollback-safe Cloud assertions, exact linked types/build/discovery, and zero forbidden-path/credential/public-leakage findings. `AT-12-01` is dependency-eligible but remains pending and unclaimed; no Module 12 implementation has started.
+`AT-05-17` is in progress under root ownership. It depends only on completed `AT-03-12`, `AT-05-15`, `AT-05-16`, and `AT-11-19`, with committed Creciendo anthropometry transport prerequisite `5c7c655`. It owns local canonical package artifacts, data-only migration `20260902110000`, pgTAP fixture `048`, governed provider/builder integration, and LF fixture closure. No linked Supabase mutation, Storage upload, deployment, production activation, or US market activation is authorized.
+
+Module 11's original 18/18 leaves remain completed. `AT-11-18` closed at implementation commit `3a0b152`: the standard Eve route family is production/preview fail-closed, local loopback operations remain available, and exact Module 11 discovery plus the tool-contract gate pass. Root-authorized amendment `AT-11-19` is completed at `b3037df` after the atomic onboarding implementation and extended birth-field corrections; its migration has not been applied to Cloud or production. The full backend suite retains two Windows checkout line-ending assertions as a portability follow-up. `AT-12-01` is now eligible for dependency review; no Module 12 implementation has started.
 
 Root-authorized Module 11 reconciliation (2026-08-24): Eve 0.27.13 is binding; `/creciendo/v1` is the sole five-route public family; the linked Cloud source is `CreciendoApp` (`yapjiinrjsrothzgzxsv`) with verified head `20260823230000`; AT-11-10 owns forward migration `20260824100000`, free pgTAP ID `038`, and authoritative generated target `agent/lib/supabase/database.types.ts`; AT-11-18 modifies the existing internal channel. Only the reviewed AT-11-10 forward migration is authorized for remote application after dry-run and Cloud safety review. Conservative clinical approval for the seven marked Module 11 leaves is recorded as unsigned product-owner conveyance without clinician identity or signature attribution.
 
@@ -78,6 +96,12 @@ Module 11 mobile-fixture amendment (2026-08-24): the AT-11-16 signed-upload fixt
 
 Module 11 mobile-transport prose amendment (2026-08-24): `docs/integration/mobile-contract.md` predates the completed v1 request schemas and incorrectly says every request sends `X-Child-Context` and idempotency only as a header. AT-11-16 additionally owns that document solely to record the already completed exact transport: session-create JSON carries `childContextToken`; message/cancel JSON and GET stream header carry continuation tokens; command JSON carries `idempotencyKey`. CORS allow-list entries do not grant authority. No runtime contract, schema, route, database or remote state changes.
 
+Root-authorized onboarding bootstrap amendment (2026-08-29): `AT-11-19` adds the strict `onboarding.v1` `POST /creciendo/v1/onboarding` route, its authenticated JWT-derived guardian boundary, and the forward-only `20260829100000_onboarding_bootstrap.sql` migration. The transaction creates the initial care space, owner membership, child, explicit child access, guardian-declared allergy observations and privacy consent; a private hash-only ledger plus per-guardian advisory lock makes retries deterministic under concurrency. Active consent definitions remain a prerequisite; no legal content is invented. The amendment updates the exact discovery fixture and mobile integration contract, and authorizes no linked Cloud, production, deployment or destructive operation.
+
+Module 12 projection-runner path amendment (2026-08-29): `AT-12-05` requires an exported `runProjectionBatch` interface, but its original frontmatter omitted the runner and its test from `touches`/`exclusive_paths`; it also named a generated-types path not used by this repository. The leaf now owns `src/projections/projection-runner.ts`, its focused test, and the existing generator target `agent/lib/supabase/database.types.ts`. This is an ownership/path correction only; it adds no public route, authority, clinical behavior, remote migration, or remote data mutation.
+
+Module 12 private Realtime path amendment (2026-08-29): `AT-12-15` originally named a historical migration timestamp, occupied SQL test number `037`, and a stale generated-types path. It now owns the next forward migration `20260829120000_private_realtime_invalidations.sql`, free SQL test `047`, the existing generator target, and the necessary update to the publication regression `050` so it expects exactly one safe public invalidation relation. `AT-12-15` closed at `5788793`; `AT-12-16` closed at `0f33f88`; `AT-12-17` closed at `fe977b3`. This is an additive local-schema and typed transaction-boundary correction; no remote mutation, clinical payload, client write, or urgent notification is authorized.
+
 Root replay-receipt amendment for `AT-10-14`: the medication Cloud RPCs already return a durable `created`/`idempotent_replay` outcome, but the verified repository/application adapters discarded it. The leaf now owns only the exact additive port, plan-service, schedule-service, repository and regression-test paths required to propagate that existing receipt into `withToolIdempotency`. No database/API/schema/clinical rule changes or remote effects are authorized, and all existing record-only service methods remain compatible.
 
 Root correction before `AT-10-09`: Eve's public tool context requires one shared fail-closed factory bridge to the branded request-scoped context, and branded safe errors must survive the idempotency wrapper. `AT-10-09` owns the explicitly added bridge/idempotency integration paths; no model authority, credential, per-user global state or new clinical behavior is authorized.
@@ -94,7 +118,8 @@ Post-closure Module 11/`AT-10-21` compatibility correction for `AT-10-09`: the f
 
 ## Active workers
 
-- None. Module 11 is completed; `AT-12-01` is dependency-eligible but remains pending and unclaimed as instructed.
+- Root: `AT-05-17` is in progress on the exact paths declared by its leaf. Existing local anthropometry, source-governance, and Creciendo composition changes are preserved and may be integrated only where the leaf explicitly owns them. Migration `20260902100000` and the in-review `AT-11-20` paths remain outside this work.
+- Root: `AT-12-17` is completed; `AT-12-12` remains pending on `AT-13-08`, `AT-12-14` remains pending on `AT-13-11`, and `AT-12-18` cannot start until those prerequisites and the completed workflow leaves are freshly reviewed. `AT-12-15` closed at `5788793`, `AT-12-16` at `0f33f88`, and `AT-12-17` at `fe977b3`. `AT-12-01` closed at `84ae407`, `AT-12-02` at `8301bc7`, `AT-12-03` at `9212d4e`, `AT-12-04` at `b30b5af`, and `AT-12-05` at `cd23928` plus runner `1be6240`. The pinned Workflow DevKit dependency is `workflow@4.8.5`.
 
 
 Cloud-only execution override (2026-08-23): by explicit current user instruction, Module 09 uses the verified linked Supabase Cloud project as its only database source of truth. Local reset/test availability or drift is not an execution gate. Database leaves must verify exact project identity, migration impact, recoverability, generated linked types, and rollback-safe Cloud tests before any remote mutation.

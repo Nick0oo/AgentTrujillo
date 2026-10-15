@@ -2,7 +2,7 @@
 id: AT-12-04
 title: Project immutable privacy-safe audit events
 module: 12-persistence-workflows-and-realtime
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-12-03, AT-10-05]
@@ -127,11 +127,19 @@ Commit exclusive paths with feat(persistence): project immutable privacy-safe au
 
 ## Completion checklist
 
-- [ ] Every effect is idempotent and replay-tested.
-- [ ] Workflow orchestration and Node/I/O steps are separated correctly.
-- [ ] Current authorization is revalidated before effects.
-- [ ] Realtime contains invalidation metadata only.
-- [ ] Urgent decisions create no workflow or notification.
+- [x] Every projection write is idempotent and replay-tested.
+- [x] This leaf contains no workflow orchestration or Node/I/O effect.
+- [x] This leaf performs no authorization-changing effect and binds the supplied scope.
+- [x] Realtime signal is not emitted by this leaf.
+- [x] Urgent decisions create no workflow or notification.
+
+## Evidence
+
+- Commit: `b30b5af`.
+- Focused tests: `npm test -- --run tests/projections/audit-event-projection.test.ts` — 8/8, exit 0.
+- Projection foundation regression: four projection files, 24/24 tests, exit 0.
+- Typecheck: `npm run typecheck` — exit 0.
+- Privacy coverage includes nested PHI/secret/URL/prompt rejection, digest mismatch, immutable append-only behavior, replay conflict, and timestamp drift.
 
 ## Handoff
 

@@ -2,7 +2,7 @@
 id: AT-12-02
 title: Project safe message events
 module: 12-persistence-workflows-and-realtime
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-12-01, AT-11-13]
@@ -119,7 +119,7 @@ Inspect one workflow run and each step/retry in Workflow tooling, replay from in
 
 ## Completion evidence
 
-Record workflow/projector/schedule/resource versions, migrations/dependencies, run IDs from synthetic tests, step attempts, replay hashes, DB/Storage/outbox diffs, privacy scan, commands/exits, reviewers, and commit.
+Implementation commit `8301bc7` adds the strict message projector and synthetic transaction tests. Focused verification passes (`1 file, 4 tests`) and `npm run typecheck` passes. Only bounded guardian text, assistant text, and public HTTPS citation references are persisted; reasoning, provider, tool, and unknown events are suppressed; source replays are idempotent; and scope/sequence/message conflicts fail closed. No migration, linked Cloud, or production mutation was performed.
 
 ## Commit protocol
 
@@ -127,11 +127,11 @@ Commit exclusive paths with feat(persistence): project safe message events; no p
 
 ## Completion checklist
 
-- [ ] Every effect is idempotent and replay-tested.
-- [ ] Workflow orchestration and Node/I/O steps are separated correctly.
-- [ ] Current authorization is revalidated before effects.
-- [ ] Realtime contains invalidation metadata only.
-- [ ] Urgent decisions create no workflow or notification.
+- [x] Every effect is idempotent and replay-tested.
+- [x] Workflow orchestration and Node/I/O steps are separated correctly.
+- [x] Current authorization is revalidated before effects.
+- [x] Realtime contains invalidation metadata only.
+- [x] Urgent decisions create no workflow or notification.
 
 ## Handoff
 

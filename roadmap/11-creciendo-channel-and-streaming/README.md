@@ -31,6 +31,26 @@ The current product-owner instruction corrects the pending Module 11 contract be
 - AT-11-16 contract-fixture correction: the frozen v1 event union and binding five-route surface contain no upload-ticket event. AT-11-16 must not invent a signed upload URL; it owns an additive runtime-schema fixture verifier so its NDJSON, routes, versions and closed widget registry remain machine-verifiable. A future upload capability requires a separately reviewed contract version.
 - AT-11-16 transport-document correction: the pre-runtime mobile prose incorrectly prescribed `X-Child-Context` on every request and header-only idempotency. AT-11-16 owns `docs/integration/mobile-contract.md` only to document the completed v1 wire contract: child context token in session-create JSON, continuation token in message/cancel JSON and GET stream header, and exact JSON `idempotencyKey` for commands. Allowed CORS headers are not authority.
 
+## Root-authorized onboarding bootstrap amendment — 2026-08-29
+
+The mobile onboarding flow needs one atomic persistence boundary before the active-child and dashboard modules can consume a created profile. `AT-11-19` adds the authenticated `POST /creciendo/v1/onboarding` route and its forward-only bootstrap migration. The route derives the guardian from the Supabase JWT, accepts only the strict `onboarding.v1` request, and returns only the created care-space/child UUIDs plus `resourceVersion`.
+
+The database RPC creates the guardian's initial care space, owner membership, child, child access, declared allergy observations and accepted privacy-consent record in one transaction. A private hash-only operation ledger and a per-guardian transaction lock make same-key retries replay the original IDs and make conflicting payloads return a safe conflict. The RPC refuses to proceed when no active, effective consent definition exists; consent content and legal approval are not invented by this amendment. No production or Cloud mutation is authorized by the amendment.
+
+## Root-authorized directory and dashboard read-model amendment — 2026-08-29
+
+The active-child and dashboard mobile module requires an authenticated read boundary after onboarding. `AT-11-20` adds `GET /creciendo/v1/children` and `GET /creciendo/v1/dashboard` to the composed Creciendo channel. The directory is derived from request-scoped Supabase reads of active child access, care spaces, and children. The dashboard requires the opaque `X-Child-Context` token, reauthorizes the scope, and returns only the strict `creciendo.dashboard.v1` projection.
+
+These routes are read-only, do not grant child authority, do not calculate clinical values in the client, and return safe typed failures. No production or Cloud mutation is authorized by this amendment.
+
+## Root-authorized private-documents transport amendment — 2026-08-30
+
+The mobile Module 07 gate found that the completed private-document application services were not composed into a public Creciendo transport. `AT-11-21` adds the separate `creciendo.documents.v1` HTTP contract for child-scoped listing, short-lived upload tickets, bounded binary upload, signed downloads, and draft-only OCR visibility. It does not modify the frozen `creciendo.channel.v1` event union and does not manufacture a chat session for document uploads.
+
+The amendment also owns a forward-only persistence ledger and a document-only authorization input because the already-applied reservation RPC requires a chat `p_session_id`. A raw Supabase Storage upload URL is non-conforming because its platform TTL exceeds the five-minute upload-ticket policy. No remote migration or deployment is authorized until the reviewed contract, dry-run, linked identity and rollback-only assertions pass.
+
+`20260830100100_creciendo_documents_transport_convergence.sql` is a local forward-only convergence correction for environments that had already applied the first AT-11-21 draft before its private-ledger hardening. It moves that ledger into `app_private`, adds the ticket RPC boundary, and never resets or rewrites document data.
+
 ## Exit gate
 
 All eighteen leaves prove strict authentication/ownership, bounded request/event schemas, terminal emergency handling before LLM, monotonic persisted sequences, cursor/continuation verification, safe Eve event mapping, reasoning suppression, valid one-line NDJSON, phase-aware errors, revocation during stream, mobile fixtures, reconnect/cancel correctness, zero duplicate effects, and no public standard Eve session inspection.
@@ -61,18 +81,26 @@ Types and channel shell lead to authentication and child/session routes. Continu
 | [AT-11-16](16-mobile-contract-fixtures.md) | mobile contract fixtures | no |
 | [AT-11-17](17-stream-reconnect-and-cancel-tests.md) | stream reconnect and cancel tests | no |
 | [AT-11-18](18-internal-eve-channel-policy.md) | internal eve channel policy | no |
+| [AT-11-19](19-onboarding-bootstrap.md) | atomic onboarding bootstrap route and persistence | yes |
+| [AT-11-20](20-directory-and-dashboard-read-model.md) | authorized child directory and dashboard read model | no |
+| [AT-11-21](21-private-documents-public-contract.md) | authorized private documents transport | yes |
+| [AT-11-22](22-add-child-existing-care-space.md) | add child to an existing care space | yes |
 
 ## Public route family
 
 ```text
+POST /creciendo/v1/onboarding
+GET  /creciendo/v1/children
+POST /creciendo/v1/children
 POST /creciendo/v1/child-context
+GET  /creciendo/v1/dashboard
 POST /creciendo/v1/sessions
 POST /creciendo/v1/sessions/:sessionId/messages
 GET  /creciendo/v1/sessions/:sessionId/stream
 POST /creciendo/v1/sessions/:sessionId/cancel
 ```
 
-All routes authenticate. Path/session IDs are locators only; current owner, child association, security version, and token audience are independently verified.
+All routes authenticate. The onboarding route derives the guardian only from the JWT and has no child or care-space locator. Path/session IDs on the remaining routes are locators only; current owner, child association, security version, and token audience are independently verified.
 
 ## Streaming boundary
 

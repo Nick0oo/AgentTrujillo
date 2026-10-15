@@ -34,6 +34,14 @@ describe("document upload metadata policy", () => {
     });
   });
 
+  it("accepts the public upload envelope idempotency key while evaluating metadata", () => {
+    expect(evaluateUploadMetadata({ ...valid, idempotencyKey: "upload-1" }, DEFAULT_DOCUMENT_UPLOAD_POLICY, new Date("2026-08-23T12:00:00Z"))).toMatchObject({
+      ok: true,
+      status: "allowed",
+      metadata: { displayName: "Carnet de vacunación.pdf", bucket: "vaccine-documents" },
+    });
+  });
+
   it.each([
     [{ ...valid, fileName: "record.pdf.exe" }, "SUSPICIOUS_FILE_NAME"],
     [{ ...valid, fileName: "../record.pdf" }, "SUSPICIOUS_FILE_NAME"],

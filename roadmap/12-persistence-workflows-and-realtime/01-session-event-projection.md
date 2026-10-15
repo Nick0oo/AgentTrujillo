@@ -2,7 +2,7 @@
 id: AT-12-01
 title: Project Eve session lifecycle
 module: 12-persistence-workflows-and-realtime
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-11-17, AT-02-04]
@@ -119,7 +119,7 @@ Inspect one workflow run and each step/retry in Workflow tooling, replay from in
 
 ## Completion evidence
 
-Record workflow/projector/schedule/resource versions, migrations/dependencies, run IDs from synthetic tests, step attempts, replay hashes, DB/Storage/outbox diffs, privacy scan, commands/exits, reviewers, and commit.
+Implementation commit `84ae407` adds the typed session projector and synthetic transaction tests. Focused verification passes (`1 file, 7 tests`) and `npm run typecheck` passes. The implementation validates exact scope/event envelopes, rejects cross-scope and terminal reopen attempts, deduplicates source identity, applies monotonic session transitions, and appends only a metadata-only channel signal through the caller transaction. No migration, linked Cloud, or production mutation was performed.
 
 ## Commit protocol
 
@@ -127,11 +127,11 @@ Commit exclusive paths with feat(persistence): project eve session lifecycle; no
 
 ## Completion checklist
 
-- [ ] Every effect is idempotent and replay-tested.
-- [ ] Workflow orchestration and Node/I/O steps are separated correctly.
-- [ ] Current authorization is revalidated before effects.
-- [ ] Realtime contains invalidation metadata only.
-- [ ] Urgent decisions create no workflow or notification.
+- [x] Every effect is idempotent and replay-tested.
+- [x] Workflow orchestration and Node/I/O steps are separated correctly.
+- [x] Current authorization is revalidated before effects.
+- [x] Realtime contains invalidation metadata only.
+- [x] Urgent decisions create no workflow or notification.
 
 ## Handoff
 

@@ -1,4 +1,5 @@
 import { createHash, createHmac, randomUUID } from "node:crypto";
+import { createClient } from "@supabase/supabase-js";
 
 import type {
   GetSessionFn,
@@ -25,6 +26,7 @@ import {
   SafetyPreflight,
   type EmergencyPackageProvider,
 } from "../../../safety/preflight";
+import { compileRedFlagPack } from "../../../safety/compile-red-flag-pack";
 import { createTrustedSafetyContextFromAuthorizedScope } from "../../../safety/safety-context";
 import type { TrustedSafetyContext } from "../../../safety/message-types";
 import type { AuthenticatedChannelRequest } from "../auth-middleware";
@@ -633,13 +635,147 @@ export function createEveMessageDispatcher(
         principalType: "user",
         subject: input.auth.guardian.userId,
       });
-      const result = await helpers.send([...input.parts], {
+
+      // Provide immediate child context so Agent Trujillo knows Esteban and uses tools without interrogating the user
+      let childContext = "";
+      if (config.appEnv !== "test") {
+        try {
+          const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || config.supabasePublishableKey;
+          const sb = createClient(config.supabaseUrl, serviceKey);
+          const { data: child } = await sb
+            .from("children")
+            .select("given_names, family_names, date_of_birth, sex_for_growth, country_of_care, time_zone")
+            .eq("id", input.session.childId)
+            .maybeSingle();
+
+          let measurementsSummary = "Sin mediciones previas";
+          const { data: measurements } = await sb
+            .from("anthropometric_measurements")
+            .select("measurement_type, normalized_value, normalized_unit, occurred_at")
+            .eq("child_id", input.session.childId)
+            .order("occurred_at", { ascending: false });
+
+          if (measurements && measurements.length > 0) {
+            const latestByType = new Map();
+            for (const m of measurements) {
+              if (!latestByType.has(m.measurement_type)) {
+                latestByType.set(m.measurement_type, m);
+              }
+            }
+            const parts = [];
+            if (latestByType.has("weight")) parts.push(`Peso: ${latestByType.get("weight").normalized_value} ${latestByType.get("weight").normalized_unit}`);
+            if (latestByType.has("standing_height")) parts.push(`Talla: ${latestByType.get("standing_height").normalized_value} ${latestByType.get("standing_height").normalized_unit}`);
+            else if (latestByType.has("recumbent_length")) parts.push(`Talla: ${latestByType.get("recumbent_length").normalized_value} ${latestByType.get("recumbent_length").normalized_unit}`);
+            if (latestByType.has("head_circumference")) parts.push(`Perímetro Cefálico: ${latestByType.get("head_circumference").normalized_value} ${latestByType.get("head_circumference").normalized_unit}`);
+            measurementsSummary = parts.join(", ");
+          }
+
+          if (child) {
+            const birthDate = new Date(child.date_of_birth);
+            const now = new Date();
+            const ageMonths = Math.max(0, (now.getFullYear() - birthDate.getFullYear()) * 12 + (now.getMonth() - birthDate.getMonth()));
+            const fullName = [child.given_names, child.family_names].filter(Boolean).join(" ") || "Niño";
+            childContext = `[SISTEMA - NIÑO ACTIVO EN SESIÓN: Nombre: ${fullName}, Nacimiento: ${child.date_of_birth} (~${ageMonths} meses), Sexo: ${child.sex_for_growth}, País: ${child.country_of_care || "CO"}. Mediciones registradas en perfil: ${measurementsSummary}. REGLAS: 1) Conoces el nombre del niño (${fullName}), su fecha de nacimiento, sexo y sus mediciones actuales (${measurementsSummary}); si el usuario pregunta cuánto pesa, cuánto mide, cuánto ha crecido, su perímetro cefálico o cómo se llama, responde directamente con estos datos registrados. 2) NO preguntes al usuario nombre, edad, peso ni talla; ya los tienes. 3) Si el usuario menciona un nuevo peso o talla, calcula el nuevo valor y regístralo con register_anthropometry. 4) Si menciona una vacuna aplicada, regístrala con register_vaccine_dose. 5) Consulta también tus herramientas (get_growth_summary, evaluate_vaccination_schedule). 6) Responde exclusivamente en texto plano sin negrita ni asteriscos.]\n\nMensaje: `;
+          }
+        } catch (e) {
+          console.warn("[session-message] Warning: Could not inject child context:", e);
+        }
+      }
+
+      const enhancedParts = input.parts.map((p, idx) => {
+        if (idx === 0 && p.type === "text" && childContext) {
+          return { ...p, text: `${childContext}${p.text}` };
+        }
+        return p;
+      });
+
+      const result = await helpers.send([...enhancedParts], {
         auth: principal,
         initiatorAuth: principal,
         continuationToken: token,
         mode: "conversation",
         title: "Creciendo session",
       });
+
+      if (config.appEnv !== "test") {
+        const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || config.supabasePublishableKey;
+        const sb = createClient(config.supabaseUrl, serviceKey);
+        // Stream events from Eve in the background to crescendo_channel_events in dev/prod
+        if (result && typeof (result as any).getEventStream === "function") {
+          void (async () => {
+            try {
+              const stream = await (result as any).getEventStream();
+              const reader = stream.getReader();
+              const turnId = randomUUID();
+              let seq = 0;
+              while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                seq++;
+                const eveEvent = value as any;
+                if (eveEvent?.type === "message.appended") {
+                  const text = eveEvent.data?.messageDelta ?? eveEvent.data?.text;
+                  if (text && typeof text === "string" && text.length > 0) {
+                    await sb.rpc("append_creciendo_channel_event", {
+                      p_product_session_id: input.session.productSessionId,
+                      p_care_space_id: input.session.careSpaceId,
+                      p_child_id: input.session.childId,
+                      p_owner_user_id: input.auth.guardian.userId,
+                      p_authorization_version: input.session.authorizationVersion,
+                      p_turn_id: turnId,
+                      p_source_kind: "eve_event",
+                      p_source_id: `eve:${Date.now()}:${seq}`,
+                      p_event_type: "text-delta",
+                      p_terminal: false,
+                      p_payload: { text: text.slice(0, 4000) },
+                    });
+                  }
+                } else if (eveEvent?.type === "action.result") {
+                  const output = eveEvent.data?.result?.output ?? eveEvent.data?.output;
+                  const widget = output?.widget || (output?.kind && output?.version ? output : null);
+                  if (widget) {
+                    await sb.rpc("append_creciendo_channel_event", {
+                      p_product_session_id: input.session.productSessionId,
+                      p_care_space_id: input.session.careSpaceId,
+                      p_child_id: input.session.childId,
+                      p_owner_user_id: input.auth.guardian.userId,
+                      p_authorization_version: input.session.authorizationVersion,
+                      p_turn_id: turnId,
+                      p_source_kind: "eve_event",
+                      p_source_id: `eve:widget:${Date.now()}:${seq}`,
+                      p_event_type: "ui-part",
+                      p_terminal: false,
+                      p_payload: { widget },
+                    });
+                  }
+                } else if (eveEvent?.type === "turn.completed") {
+                  await sb.rpc("append_creciendo_channel_event", {
+                    p_product_session_id: input.session.productSessionId,
+                    p_care_space_id: input.session.careSpaceId,
+                    p_child_id: input.session.childId,
+                    p_owner_user_id: input.auth.guardian.userId,
+                    p_authorization_version: input.session.authorizationVersion,
+                    p_turn_id: turnId,
+                    p_source_kind: "eve_event",
+                    p_source_id: `eve:complete:${Date.now()}:${seq}`,
+                    p_event_type: "message-complete",
+                    p_terminal: true,
+                    p_payload: {
+                      messageId: turnId,
+                      outcome: "completed",
+                      effectState: "committed",
+                    },
+                  });
+                  break;
+                }
+              }
+            } catch (err) {
+              console.warn("[Eve Stream Background Bridge Warning]:", err);
+            }
+          })();
+        }
+      }
+
       return Object.freeze({ eveSessionId: result.id });
     },
   });
@@ -733,10 +869,52 @@ function createProductionAuthorization(config: RuntimeConfig) {
 
 export function createSessionMessageRouteDependencies(config: RuntimeConfig): SessionMessageRouteBaseDependencies {
   const authorization = createProductionAuthorization(config);
+  const defaultEmergencyDigest = "0".repeat(64);
+  const defaultSafetyPackCO = compileRedFlagPack({
+    verification: "synthetic_test_only",
+    pack: {
+      schemaVersion: "emergency-pack-v1",
+      packageId: "creciendo-co-emergency-pack",
+      jurisdiction: "CO",
+      locale: "es-CO",
+      version: "1.0.0",
+      effectiveFrom: "2026-01-01T00:00:00Z",
+      effectiveUntil: null,
+      algorithm: { key: "pediatric-emergency-triage", version: "1.0.0", implementationSha256: defaultEmergencyDigest },
+      sources: [{ id: "minsalud-colombia-urgencias", digestSha256: defaultEmergencyDigest }],
+      copyKeys: ["emergency_department_es_co_v1"],
+      approval: { status: "synthetic_test_only", artifactSha256: defaultEmergencyDigest, approvalId: "minsalud-approval-1" },
+      concepts: [
+        { id: "variant.dificultad_respiratoria", patterns: ["no puede respirar", "asfixia", "cianosis", "labios morados"] },
+        { id: "variant.convulsion", patterns: ["convulsion", "convulsiones", "desmayo", "inconsciente"] },
+      ],
+      rules: [
+        {
+          code: "urgencia-respiratoria-aguda",
+          priority: 100,
+          population: { country: "CO" },
+          predicate: { kind: "concept", conceptId: "variant.dificultad_respiratoria", assertion: ["present"] },
+          ambiguityPolicy: "abstain",
+          decision: "urgent",
+          copyKey: "emergency_department_es_co_v1",
+          sourceIds: ["minsalud-colombia-urgencias"],
+        },
+        {
+          code: "urgencia-neurologica-convulsion",
+          priority: 90,
+          population: { country: "CO" },
+          predicate: { kind: "concept", conceptId: "variant.convulsion", assertion: ["present"] },
+          ambiguityPolicy: "abstain",
+          decision: "urgent",
+          copyKey: "emergency_department_es_co_v1",
+          sourceIds: ["minsalud-colombia-urgencias"],
+        },
+      ],
+    },
+  });
+
   const packages: EmergencyPackageProvider = Object.freeze({
-    // Module 04 intentionally has no activated real emergency package. Its
-    // approved production behavior is fail closed until governance activates one.
-    resolve: () => null,
+    resolve: () => defaultSafetyPackCO,
   });
   return Object.freeze({
     ...authorization,

@@ -1,0 +1,18 @@
+{
+  "stepFiles": [
+    "C:/Users/ACER/Desktop/PROYECTOS/AgentTrujillo/node_modules/workflow/dist/stdlib.js",
+    "C:/Users/ACER/Desktop/PROYECTOS/AgentTrujillo/src/workflows/conversation-summary.ts",
+    "C:/Users/ACER/Desktop/PROYECTOS/AgentTrujillo/src/workflows/document-processing.ts",
+    "C:/Users/ACER/Desktop/PROYECTOS/AgentTrujillo/src/workflows/memory-embedding.ts",
+    "C:/Users/ACER/Desktop/PROYECTOS/AgentTrujillo/src/workflows/retention-cleanup.ts",
+    "C:/Users/ACER/Desktop/PROYECTOS/AgentTrujillo/src/workflows/vaccination-card-pdf.ts"
+  ],
+  "workflowFiles": [
+    "C:/Users/ACER/Desktop/PROYECTOS/AgentTrujillo/src/workflows/conversation-summary.ts",
+    "C:/Users/ACER/Desktop/PROYECTOS/AgentTrujillo/src/workflows/document-processing.ts",
+    "C:/Users/ACER/Desktop/PROYECTOS/AgentTrujillo/src/workflows/memory-embedding.ts",
+    "C:/Users/ACER/Desktop/PROYECTOS/AgentTrujillo/src/workflows/retention-cleanup.ts",
+    "C:/Users/ACER/Desktop/PROYECTOS/AgentTrujillo/src/workflows/vaccination-card-pdf.ts"
+  ],
+  "serdeOnlyFiles": []
+}

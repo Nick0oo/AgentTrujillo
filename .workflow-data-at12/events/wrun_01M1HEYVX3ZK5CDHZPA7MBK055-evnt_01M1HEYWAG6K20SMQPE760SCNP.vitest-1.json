@@ -1,0 +1,16 @@
+{
+  "eventType": "step_created",
+  "specVersion": 3,
+  "correlationId": "step_01M1HEYVY0E04QT49020J2ZS5S",
+  "eventData": {
+    "stepName": "step//./conversation-summary//generateCandidateSummary",
+    "workflowName": "workflow//./conversation-summary//conversationSummaryWorkflow",
+    "input": {
+      "__type": "Uint8Array",
+      "data": "ZGV2bFt7ImFyZ3MiOjEsImNsb3N1cmVWYXJzIjotMSwidGhpc1ZhbCI6LTF9LFsyXSx7InN0YXR1cyI6MywiaW5wdXQiOjQsIm1lc3NhZ2VzIjoxNH0sImxvYWRlZCIseyJvd25lclVzZXJJZCI6NSwiY2FyZVNwYWNlSWQiOjYsImNoaWxkSWQiOjcsInNlc3Npb25JZCI6OCwic291cmNlU2Vzc2lvbklkIjo4LCJzb3VyY2VEaWdlc3QiOjksImN1dG9mZkF0IjoxMCwicHJvbXB0VmVyc2lvbiI6MTEsInNjaGVtYVZlcnNpb24iOjEyLCJpZGVtcG90ZW5jeUtleSI6MTN9LCIwMDAwMDAwMC0wMDAwLTQwMDAtODAwMC0wMDAwMDAxMjAwMDEiLCIwMDAwMDAwMC0wMDAwLTQwMDAtODAwMC0wMDAwMDAxMjAwMDIiLCIwMDAwMDAwMC0wMDAwLTQwMDAtODAwMC0wMDAwMDAxMjAwMDMiLCIwMDAwMDAwMC0wMDAwLTQwMDAtODAwMC0wMDAwMDAxMjAwMDQiLCJhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhIiwiMjAyNi0wOC0yOVQxMjowMDowMC4wMDBaIiwic3VtbWFyeS1wcm9tcHQudjEiLCJzdW1tYXJ5LWNhbmRpZGF0ZS52MSIsInN1bW1hcnk6aW50ZWdyYXRpb24iLFsxNV0seyJpZCI6MTYsIm93bmVyVXNlcklkIjo1LCJjYXJlU3BhY2VJZCI6NiwiY2hpbGRJZCI6Nywic2Vzc2lvbklkIjo4LCJzZXF1ZW5jZSI6MTcsImFjdG9yIjoxOCwic3RhdHVzIjoxOSwib2NjdXJyZWRBdCI6MjAsInRleHQiOjIxfSwiMDAwMDAwMDAtMDAwMC00MDAwLTgwMDAtMDAwMDAwMTIwMDA1IiwxLCJndWFyZGlhbiIsImNvbXBsZXRlZCIsIjIwMjYtMDgtMjlUMTE6MDA6MDAuMDAwWiIsIkVsIG5pw7FvIGR1ZXJtZSBtZWpvci4iXQ=="
+    }
+  },
+  "runId": "wrun_01M1HEYVX3ZK5CDHZPA7MBK055",
+  "eventId": "evnt_01M1HEYWAG6K20SMQPE760SCNP",
+  "createdAt": "2026-09-02T16:24:14.416Z"
+}

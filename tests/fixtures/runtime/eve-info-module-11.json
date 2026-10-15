@@ -34,6 +34,36 @@
       "name": "creciendo",
       "kind": "http",
       "method": "GET",
+      "urlPath": "/creciendo/v1/children"
+    },
+    {
+      "name": "creciendo",
+      "kind": "http",
+      "method": "GET",
+      "urlPath": "/creciendo/v1/dashboard"
+    },
+    {
+      "name": "creciendo",
+      "kind": "http",
+      "method": "GET",
+      "urlPath": "/creciendo/v1/documents"
+    },
+    {
+      "name": "creciendo",
+      "kind": "http",
+      "method": "GET",
+      "urlPath": "/creciendo/v1/documents/:documentId/ocr-draft"
+    },
+    {
+      "name": "creciendo",
+      "kind": "http",
+      "method": "GET",
+      "urlPath": "/creciendo/v1/immunization/status"
+    },
+    {
+      "name": "creciendo",
+      "kind": "http",
+      "method": "GET",
       "urlPath": "/creciendo/v1/sessions/:sessionId/stream"
     },
     {
@@ -41,6 +71,36 @@
       "kind": "http",
       "method": "POST",
       "urlPath": "/creciendo/v1/child-context"
+    },
+    {
+      "name": "creciendo",
+      "kind": "http",
+      "method": "POST",
+      "urlPath": "/creciendo/v1/documents/download-ticket"
+    },
+    {
+      "name": "creciendo",
+      "kind": "http",
+      "method": "POST",
+      "urlPath": "/creciendo/v1/documents/upload-ticket"
+    },
+    {
+      "name": "creciendo",
+      "kind": "http",
+      "method": "POST",
+      "urlPath": "/creciendo/v1/immunization/administrations"
+    },
+    {
+      "name": "creciendo",
+      "kind": "http",
+      "method": "POST",
+      "urlPath": "/creciendo/v1/immunization/administration-drafts"
+    },
+    {
+      "name": "creciendo",
+      "kind": "http",
+      "method": "POST",
+      "urlPath": "/creciendo/v1/onboarding"
     },
     {
       "name": "creciendo",
@@ -59,6 +119,12 @@
       "kind": "http",
       "method": "POST",
       "urlPath": "/creciendo/v1/sessions/:sessionId/messages"
+    },
+    {
+      "name": "creciendo",
+      "kind": "http",
+      "method": "PUT",
+      "urlPath": "/creciendo/v1/documents/upload"
     },
     {
       "name": "eve",

@@ -1,0 +1,59 @@
+{
+  "schemaVersion": "1",
+  "header": {
+    "schemaVersion": "1",
+    "domain": "growth",
+    "countryCode": "CO",
+    "locale": "es-CO",
+    "version": "1.0.0",
+    "effectiveFrom": "2026-09-02",
+    "effectiveUntil": null,
+    "algorithm": {
+      "key": "growth-assessment-governed-v1",
+      "version": "1.0.0",
+      "implementationSha256": "d71673e49bd8c82baa321e0a994c07d992c9889f0ace98e8670a678004690517",
+      "supportedSchemaVersion": "1"
+    },
+    "sourceReferences": [
+      { "sourceId": "bb8fc1b9-b96e-4506-9608-626e8c6a7f6f", "purpose": "WHO head circumference-for-age boys", "artifactSha256": "296038a15de807ee74940627bd1ddc638e68b223b410b4ca3ccf1ff4a8b5770a" },
+      { "sourceId": "e64a533e-b50b-4d74-836f-7b7c14403bd3", "purpose": "WHO head circumference-for-age girls", "artifactSha256": "134cd53ca39f0f55b0b3c2bc6c94278c83d9945842bc64088464f73effcd12e7" },
+      { "sourceId": "79715fd8-18bc-4362-94d5-507b65ef1542", "purpose": "WHO length-for-age boys 0-2", "artifactSha256": "ccfd8e455141c9a39dd728d99b7d7e080a925b06ea4a4d7592229665713dba54" },
+      { "sourceId": "bbc17adc-eb76-4ba3-afe5-91ec687f513f", "purpose": "WHO height-for-age boys 2-5", "artifactSha256": "a44ed06039e0a9dd6920e4a4d928395c541c9732662e49eacd489d2194ccc80d" },
+      { "sourceId": "2e360506-72f3-404a-aca4-129efddc3b3c", "purpose": "WHO length-for-age girls 0-2", "artifactSha256": "6757f5eb96b51ab5cdb4828105929c78b1fb3d73b0fd8fa65682ad9f60f8c083" },
+      { "sourceId": "82c889ea-eccc-4115-b399-b9e45c6da96a", "purpose": "WHO height-for-age girls 2-5", "artifactSha256": "a976c56a6d36885cc32bf77c5539ca066e396ef2adad06011cd71d9eb0f0eb5c" },
+      { "sourceId": "f99044e8-9159-43a0-b32e-cbf1bf2eddf3", "purpose": "WHO weight-for-age boys", "artifactSha256": "f8f5a77b944ff7a8c1524e76f9d33f8a93cc423d23c2e7f2b10ba6b96a428e69" },
+      { "sourceId": "f2723d5a-adf3-4c04-8dff-6c99b655f847", "purpose": "WHO weight-for-age girls", "artifactSha256": "01e9a6fda2f3723dbc74d3c86bfbfcb9f6d474367d1d7b4a804501a2debd2ef1" }
+    ],
+    "payloadSchema": "growth-package.v1"
+  },
+  "payload": {
+    "packageKey": "growth-co-who-v1",
+    "countryCode": "CO",
+    "locale": "es-CO",
+    "transitionPolicy": "who_0_to_60_months",
+    "datasetDigests": {
+      "WHO_2006": "ae46179c20aa021b3dd7b6aa2758b8afc520c7cfa330eedaf67381bb58b84568"
+    },
+    "allowedIndicators": ["weight_for_age", "length_for_age", "height_for_age", "head_circumference_for_age"],
+    "prematurityPolicy": "rule_unavailable",
+    "copy": {
+      "summaryTitle": "Crecimiento",
+      "withinExpected": "Dentro del rango de referencia para esta medición.",
+      "reviewRequired": "Conviene revisar este resultado con el pediatra.",
+      "unavailable": "No hay una referencia aprobada disponible para esta medición.",
+      "disclaimer": "Este resultado es descriptivo y no es un diagnóstico."
+    },
+    "algorithmFiles": [
+      { "path": "src/clinical/anthropometry/chronological-age.ts", "sha256": "8d596dad1e73f16a4b413428d850301b058486bd001ac8167eb519f2a3a0ba58" },
+      { "path": "src/clinical/anthropometry/standard-selector.ts", "sha256": "39dcc8681e0e70a0a6b45b768d866ce9d566a88891fca904e87959406eab5bc3" },
+      { "path": "src/clinical/anthropometry/z-score.ts", "sha256": "28681a945badf39b8866e0dae08654f9b277d30dea898af650e0f747e55a5ca1" },
+      { "path": "src/clinical/anthropometry/percentile.ts", "sha256": "5851979d08c3a995c33ad775d35c08ef90a005313e46321ff198d03891f76382" },
+      { "path": "src/clinical/anthropometry/growth-assessment.ts", "sha256": "7cf162a0d4b06fbfa3c2d450884cf08fde30564946c13aec840f062b7c89c777" }
+    ],
+    "fixtureDigest": "2d98d6e0dc0dd3930f799397d788977bd9f5b1103ee61ffa6fa229b6f9cd11a0"
+  },
+  "fixtures": [
+    { "id": "who-male-weight-birth-median", "expectedDataset": "WHO_2006", "expectedStatus": "calculated" },
+    { "id": "corrected-age-without-approved-policy", "expectedStatus": "rule_unavailable" }
+  ]
+}

@@ -1,0 +1,19 @@
+import { afterEach, describe, expect, it, vi } from "vitest";
+import retentionScheduleDefinition, { configureRetentionSchedulePorts, retentionSchedule, type RetentionCandidate, type RetentionSchedulePorts } from "../../agent/schedules/retention";
+
+const CANDIDATE: RetentionCandidate = Object.freeze({ ownerUserId: "owner-1", careSpaceId: "space-1", childId: "child-1", memoryItemId: "memory-1", requestId: "request-1", requestSha256: "a".repeat(64), deadline: "2026-08-29T12:00:00.000Z", legalHold: false });
+function makePorts(overrides: Partial<RetentionSchedulePorts> = {}): RetentionSchedulePorts { return { acquireLock: vi.fn().mockResolvedValue(true), discoverEligible: vi.fn().mockResolvedValue({ items: [CANDIDATE], nextCursor: null }), startCleanupWorkflow: vi.fn().mockResolvedValue({ runId: "wrun_retention_1" }), releaseLock: vi.fn().mockResolvedValue(undefined), ...overrides }; }
+afterEach(() => configureRetentionSchedulePorts(null));
+
+describe("retention schedule", () => {
+  it("exports the EVE schedule definition", () => {
+    expect(retentionScheduleDefinition).toMatchObject({ cron: "0 * * * *" });
+    expect(typeof retentionScheduleDefinition.run).toBe("function");
+  });
+
+  it("starts bounded cleanup with a deterministic key and releases the lock", async () => { const ports = makePorts(); configureRetentionSchedulePorts(ports); await expect(retentionSchedule()).resolves.toEqual({ status: "completed", started: 1, failed: 0, nextCursor: null }); expect(ports.startCleanupWorkflow).toHaveBeenCalledWith(CANDIDATE, expect.stringContaining("request-1")); expect(ports.releaseLock).toHaveBeenCalledOnce(); });
+  it("suppresses overlapping ticks", async () => { const ports = makePorts({ acquireLock: vi.fn().mockResolvedValue(false) }); configureRetentionSchedulePorts(ports); await expect(retentionSchedule()).resolves.toEqual({ status: "overlap", started: 0, failed: 0, nextCursor: null }); expect(ports.discoverEligible).not.toHaveBeenCalled(); });
+  it("does not schedule legal-hold candidates", async () => { const ports = makePorts({ discoverEligible: vi.fn().mockResolvedValue({ items: [], nextCursor: null }) }); configureRetentionSchedulePorts(ports); await expect(retentionSchedule()).resolves.toEqual({ status: "completed", started: 0, failed: 0, nextCursor: null }); expect(ports.startCleanupWorkflow).not.toHaveBeenCalled(); });
+  it("bounds a large backlog to the configured maximum and preserves the cursor", async () => { const page = Array.from({ length: 100 }, (_, index) => ({ ...CANDIDATE, requestId: `request-${index}` })); const ports = makePorts({ discoverEligible: vi.fn().mockResolvedValue({ items: page, nextCursor: "more" }) }); configureRetentionSchedulePorts(ports); await expect(retentionSchedule()).resolves.toMatchObject({ status: "completed", started: 100, failed: 0, nextCursor: "more" }); expect(ports.startCleanupWorkflow).toHaveBeenCalledTimes(100); });
+  it("reports provider start failures for a safe retry", async () => { const ports = makePorts({ startCleanupWorkflow: vi.fn().mockRejectedValue(new Error("offline")) }); configureRetentionSchedulePorts(ports); await expect(retentionSchedule()).resolves.toMatchObject({ status: "retryable", started: 0, failed: 1 }); });
+});

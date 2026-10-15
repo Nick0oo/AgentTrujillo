@@ -1,4 +1,7 @@
+import { Readable } from "node:stream";
+
 import { describe, expect, it, vi } from "vitest";
+import { NodeRequest } from "srvx/node";
 
 import defaultChannel, {
   CRECIENDO_ROUTE_SPECS,
@@ -12,11 +15,26 @@ const ALLOWED_ORIGIN = "https://app.creciendo.test";
 function handlers(overrides: Partial<CreciendoRouteHandlers> = {}): CreciendoRouteHandlers {
   const ok = vi.fn(async () => Response.json({ ok: true }));
   return {
+    onboarding: ok,
+    childDirectory: ok,
+    addChild: ok,
     childContext: ok,
+    dashboard: ok,
+    anthropometryCreate: ok,
+    anthropometryList: ok,
+    growthSummary: ok,
+    immunizationStatus: ok,
     createSession: ok,
     sendMessage: ok,
     streamSession: ok,
     cancelSession: ok,
+    documentList: ok,
+    uploadTicket: ok,
+    documentUpload: ok,
+    downloadTicket: ok,
+    ocrDraft: ok,
+    immunizationAdministration: ok,
+    immunizationAdministrationDraft: ok,
     ...overrides,
   };
 }
@@ -29,7 +47,7 @@ function route(channel: ReturnType<typeof createCreciendoChannel>, method: strin
 
 async function invoke(
   channel: ReturnType<typeof createCreciendoChannel>,
-  method: "GET" | "POST",
+  method: "GET" | "POST" | "PUT",
   path: string,
   request: Request,
 ) {
@@ -37,15 +55,15 @@ async function invoke(
 }
 
 describe("Creciendo Eve channel shell", () => {
-  it("mounts exactly the canonical five-route public surface", () => {
+  it("mounts the canonical public surface", () => {
     const channel = createCreciendoChannel({ handlers: handlers(), allowedOrigins: [ALLOWED_ORIGIN] });
     expect(channel.routes.map(({ method, path }) => ({ method, path }))).toEqual(CRECIENDO_ROUTE_SPECS);
-    expect(channel.routes).toHaveLength(5);
+    expect(channel.routes).toHaveLength(20);
     expect(channel.routes.some(({ path }) => path.startsWith("/eve/"))).toBe(false);
     expect(channel.receive).toBeUndefined();
     expect(channel.cors).toEqual({
       origin: [ALLOWED_ORIGIN],
-      methods: ["GET", "POST"],
+      methods: ["GET", "POST", "PUT"],
       allowHeaders: [
         "Authorization",
         "Content-Type",
@@ -56,6 +74,8 @@ describe("Creciendo Eve channel shell", () => {
         "X-Creciendo-Channel-Version",
         "X-Creciendo-Event-Version",
         "X-Request-Id",
+        "X-Content-SHA256",
+        "ngrok-skip-browser-warning",
       ],
       exposeHeaders: [
         "Content-Type",
@@ -70,14 +90,42 @@ describe("Creciendo Eve channel shell", () => {
     });
   });
 
-  it("keeps the discovered default channel fail closed until route dependencies are composed", async () => {
+  it("rejects anonymous requests on the composed default channel", async () => {
     expect(defaultChannel.routes.map(({ method, path }) => ({ method, path }))).toEqual(CRECIENDO_ROUTE_SPECS);
     const response = await route(defaultChannel, "POST", "/creciendo/v1/sessions").handler(new Request(
       "https://agent.test/creciendo/v1/sessions",
-      { method: "POST", headers: { "content-type": "application/json" }, body: "{}" },
+      { method: "POST", headers: { "content-type": "application/json", "x-request-id": "test-anonymous-session" }, body: "{}" },
     ), {} as never);
-    expect(response.status).toBe(503);
-    expect(await response.json()).toEqual({ ok: false, code: "CHANNEL_UNAVAILABLE" });
+    expect(response.status).toBe(401);
+    expect(await response.json()).toEqual({
+      ok: false,
+      code: "AUTHENTICATION_REQUIRED",
+      requestId: "test-anonymous-session",
+    });
+  });
+
+  it("mounts immunization status as an authenticated bodyless GET", async () => {
+    const routeHandlers = handlers();
+    const channel = createCreciendoChannel({ handlers: routeHandlers, allowedOrigins: [] });
+    const response = await invoke(channel, "GET", "/creciendo/v1/immunization/status", new Request(
+      "https://agent.test/creciendo/v1/immunization/status",
+      { method: "GET", headers: { authorization: "Bearer token", "x-child-context": "signed-context" } },
+    ));
+
+    expect(response.status).toBe(200);
+    expect(routeHandlers.immunizationStatus).toHaveBeenCalledTimes(1);
+  });
+
+  it("mounts immunization administration as a JSON POST", async () => {
+    const routeHandlers = handlers();
+    const channel = createCreciendoChannel({ handlers: routeHandlers, allowedOrigins: [] });
+    const response = await invoke(channel, "POST", "/creciendo/v1/immunization/administrations", new Request(
+      "https://agent.test/creciendo/v1/immunization/administrations",
+      { method: "POST", headers: { "content-type": "application/json" }, body: "{}" },
+    ));
+
+    expect(response.status).toBe(200);
+    expect(routeHandlers.immunizationAdministration).toHaveBeenCalledTimes(1);
   });
 
   it("rejects an unapproved browser origin before invoking a dependency", async () => {
@@ -150,6 +198,53 @@ describe("Creciendo Eve channel shell", () => {
     expect(response.headers.get("cache-control")).toBe("no-store");
     expect(response.headers.get("x-content-type-options")).toBe("nosniff");
     expect(response.headers.has("x-powered-by")).toBe(false);
+  });
+
+  it("preserves the binary body for the private document upload route", async () => {
+    const selected = vi.fn(async (request: Request) => {
+      expect(new Uint8Array(await request.arrayBuffer())).toEqual(new Uint8Array([1, 2, 3, 4]));
+      return Response.json({ ok: true });
+    });
+    const channel = createCreciendoChannel({
+      handlers: handlers({ documentUpload: selected }),
+      allowedOrigins: [],
+    });
+    const response = await invoke(channel, "PUT", "/creciendo/v1/documents/upload", new Request(
+      "https://agent.test/creciendo/v1/documents/upload",
+      {
+        method: "PUT",
+        headers: { "content-type": "image/png", "content-length": "4" },
+        body: new Uint8Array([1, 2, 3, 4]),
+      },
+    ));
+    expect(response.status).toBe(200);
+    expect(selected).toHaveBeenCalledOnce();
+  });
+
+  it("adapts the srvx NodeRequest without relying on cross-implementation private slots", async () => {
+    const selected = vi.fn(async (request: Request) => {
+      expect(await request.json()).toEqual({ hello: "world" });
+      return Response.json({ ok: true });
+    });
+    const channel = createCreciendoChannel({
+      handlers: handlers({ createSession: selected }),
+      allowedOrigins: [],
+    });
+    const incoming = Object.assign(Readable.from([Buffer.from("{\"hello\":\"world\"}")]), {
+      method: "POST",
+      url: "/creciendo/v1/sessions",
+      headers: { host: "agent.test", "content-type": "application/json", "content-length": "17" },
+      rawHeaders: ["Host", "agent.test", "Content-Type", "application/json", "Content-Length", "17"],
+      complete: true,
+      socket: { remoteAddress: "127.0.0.1", localAddress: "127.0.0.1", localPort: 2000 },
+    });
+    const foreignRequest = new NodeRequest({ req: incoming as never });
+
+    const response = await invoke(channel, "POST", "/creciendo/v1/sessions", foreignRequest as never);
+
+    expect(response.status).toBe(200);
+    expect(await response.json()).toEqual({ ok: true });
+    expect(selected).toHaveBeenCalledOnce();
   });
 
   it("maps dependency failures, caller aborts and deadlines without leaking causes", async () => {

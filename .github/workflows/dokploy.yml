@@ -1,0 +1,75 @@
+name: Backend checks and Dokploy deployment
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main, app_v1]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dokploy-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      APP_ENV: test
+      GOOGLE_GENERATIVE_AI_API_KEY: ci-placeholder-not-a-real-google-key
+      SUPABASE_URL: https://ci.invalid
+      SUPABASE_PUBLISHABLE_KEY: ci-placeholder-not-a-real-supabase-key
+      CHILD_CONTEXT_SIGNING_KEY: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      CHILD_CONTEXT_SIGNING_KID: ci-placeholder
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 24.19.0
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run test:workflow
+      - name: Build the production container without live credentials
+        run: docker build --tag agent-trujillo:ci .
+      - name: Check health and authentication in the container
+        shell: bash
+        run: |
+          set -euo pipefail
+          trap 'docker rm --force agent-trujillo-ci >/dev/null 2>&1 || true' EXIT
+          docker run --detach --name agent-trujillo-ci --publish 127.0.0.1:3000:3000 \
+            --env GOOGLE_GENERATIVE_AI_API_KEY=ci-placeholder-not-a-real-google-key \
+            --env SUPABASE_URL=https://ci.invalid \
+            --env SUPABASE_PUBLISHABLE_KEY=ci-placeholder-not-a-real-supabase-key \
+            --env CHILD_CONTEXT_SIGNING_KEY=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA \
+            --env CHILD_CONTEXT_SIGNING_KID=ci-placeholder \
+            agent-trujillo:ci
+          node scripts/ci/smoke-backend.mjs
+
+  deploy:
+    needs: verify
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    environment:
+      name: production
+      url: https://agent.creciendo.com.co
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 24.19.0
+      - name: Trigger Dokploy for main
+        env:
+          DOKPLOY_WEBHOOK_URL: ${{ secrets.DOKPLOY_WEBHOOK_URL }}
+        run: node scripts/ci/deploy-dokploy.mjs
+      - name: Wait for the public backend
+        env:
+          AGENT_PUBLIC_URL: https://agent.creciendo.com.co
+          SMOKE_TIMEOUT_MS: '900000'
+        run: node scripts/ci/smoke-backend.mjs

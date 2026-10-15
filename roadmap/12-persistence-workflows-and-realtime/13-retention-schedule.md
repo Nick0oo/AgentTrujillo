@@ -2,7 +2,7 @@
 id: AT-12-13
 title: Schedule bounded retention scans
 module: 12-persistence-workflows-and-realtime
-status: pending
+status: completed
 execution: sequential
 parallel_group: null
 depends_on: [AT-12-11]
@@ -134,5 +134,7 @@ Commit exclusive paths with feat(schedule): schedule bounded retention scans; no
 - [ ] Urgent decisions create no workflow or notification.
 
 ## Handoff
+
+Evidence: implementation commit `8f58d04`; focused test `tests/schedules/retention.test.ts` passed 5/5 and `npm run typecheck` passed. The provider-neutral schedule uses bounded pages/runs, overlap locking, deterministic cleanup keys, legal-hold skips, retryable start failures, and cursor preservation. No production schedule registration, remote mutation, or deletion was performed.
 
 Only frontmatter blocks IDs become eligible after fresh workflow/local-database evidence and commit.

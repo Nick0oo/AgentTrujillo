@@ -2,7 +2,7 @@
 id: AT-12-08
 title: Generate private vaccination card PDF durably
 module: 12-persistence-workflows-and-realtime
-status: pending
+status: completed
 execution: parallel
 parallel_group: durable-workflows
 depends_on: [AT-12-05, AT-10-20]
@@ -134,5 +134,7 @@ Commit exclusive paths with feat(workflow): generate private vaccination card pd
 - [ ] Urgent decisions create no workflow or notification.
 
 ## Handoff
+
+Evidence: implementation commit `5ca741d`; focused test `tests/workflows/vaccination-card-pdf.test.ts` passed 4/4 and `npm run typecheck` passed. The workflow verifies exact scoped snapshot/version, passes only opaque render references between steps, uploads privately, finalizes the document, and cleans up partial effects. Product-owner conveyed clinical approval is recorded in `docs/clinical/approval-record-2026-08-21.md`; no remote workflow deployment or clinical activation was performed.
 
 Only frontmatter blocks IDs become eligible after fresh workflow/local-database evidence and commit.
