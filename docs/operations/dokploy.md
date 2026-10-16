@@ -86,17 +86,71 @@ y `CHILD_CONTEXT_PREVIOUS_SIGNING_KID` mientras existan tokens anteriores.
 `SUPABASE_JWT_ISSUER`, si se configura, debe ser exactamente la URL Supabase más
 `/auth/v1`; `SUPABASE_JWT_AUDIENCE` debe ser `authenticated`.
 
+### Valores de producción y clave de contexto
+
+Para una instalación nueva, estos valores no contienen secretos:
+
+```dotenv
+APP_ENV=production
+NODE_ENV=production
+EVE_INTERNAL_CHANNEL_MODE=disabled
+CHILD_CONTEXT_SIGNING_KID=prod-key-1
+PORT=3000
+NITRO_PORT=3000
+WORKFLOW_LOCAL_BASE_URL=http://127.0.0.1:3000
+WORKFLOW_LOCAL_DATA_DIR=/app/.eve/.workflow-data
+```
+
+Eliminar `CRECIMIENTO_GROWTH_MODE=DEV_ONLY` del Environment de Dokploy. No existe
+un valor `PRODUCTION` equivalente. La ruta de resumen actual solo ejecuta el
+cálculo de desarrollo con `APP_ENV=development` y ese marcador; en producción
+responde `RULE_UNAVAILABLE`. Desplegar el contenedor no activa las curvas de
+crecimiento ni sustituye la integración de paquetes clínicos pendiente.
+
+`CHILD_CONTEXT_SIGNING_KID` es una etiqueta pública que identifica la clave,
+no la clave secreta. `dev-key-1` pasa la validación de formato, pero para una
+clave nueva de producción se recomienda `prod-key-1`. Configurar también
+`CHILD_CONTEXT_SIGNING_KEY` con una clave aleatoria exclusiva de producción
+de al menos 32 bytes, codificada en base64url. Puede generarse localmente con:
+
+```powershell
+node -e "console.log(require('node:crypto').randomBytes(32).toString('base64url'))"
+```
+
+Copiar el resultado directamente al Environment de Dokploy; no guardarlo en
+Git ni compartirlo por chat. No regenerar la clave en cada despliegue ni
+renombrar un KID ya usado sin planificar la rotación del par completo.
+
 El Dockerfile compila con valores sintéticos. No copiar `.env`, tokens de
 Supabase Management, claves Apple ni datos locales al contexto Docker.
 Las migraciones Supabase no se aplican automáticamente al desplegar.
 
 ## Comprobación y siguiente paso iOS
 
-Verificación local del 14 de octubre de 2026: TypeScript y YAML válidos;
-suite general con 1.845 tests aprobados y uno omitido; suite de workflows con
-un test aprobado. El build Docker local está pendiente de terminar tras un
-corte de red descargando dependencias. Actions también lo construye y prueba
-antes de permitir el paso de despliegue.
+La revisión del 16 de octubre de 2026 confirmó que el PR #14 ya fue integrado
+en `main` (`37af884`). En [Actions 38810287099](https://github.com/Nick0oo/AgentTrujillo/actions/runs/38810287099)
+pasaron TypeScript, tests, tests de workflows, construcción Docker y smoke
+del contenedor. El despliegue falló después, al activar el webhook, con
+`DOKPLOY_WEBHOOK_HTTP_301`; la comprobación del dominio público no llegó a
+ejecutarse. Esa ejecución acredita el contenedor, no un despliegue público.
+
+### Si el webhook devuelve HTTP 301
+
+El script rechaza redirecciones deliberadamente. Dokploy puede devolver 301
+cuando la rama o los watch paths no coinciden; también debe descartarse una
+redirección del proxy hacia otra URL del panel. No seguir la redirección ni
+tratar 301 como despliegue exitoso.
+
+1. En la aplicación de Dokploy, confirmar repositorio `Nick0oo/AgentTrujillo`,
+   rama `main`, **Auto Deploy** activado y **Watch paths** vacío.
+2. Confirmar que el secreto `DOKPLOY_WEBHOOK_URL` de GitHub contiene la URL
+   completa vigente de esa aplicación; si el panel cambió a HTTPS, actualizar
+   el secreto con el destino definitivo.
+3. En la ejecución de Actions fallida, usar **Re-run failed jobs** después de
+   guardar la configuración. Esto vuelve a ejecutar el despliegue sin repetir
+   el job `verify` que ya pasó para ese commit.
+4. Confirmar commit y resultado en Dokploy y esperar que el smoke público
+   pase con HTTPS antes de usar el backend en el build de tienda.
 
 ```powershell
 $env:AGENT_PUBLIC_URL = 'https://agent.creciendo.com.co'
