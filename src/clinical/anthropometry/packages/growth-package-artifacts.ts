@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 
 import { canonicalize } from "json-canonicalize";
 
@@ -69,7 +70,13 @@ function manifestSha256(country: GrowthPackageCountry): Sha256Hex {
 }
 
 function loadArtifact(country: GrowthPackageCountry, fileName: string): GrowthPackageArtifactIdentity {
-  const source = readFileSync(new URL(fileName, import.meta.url), "utf8");
+  let source: string;
+  try {
+    source = readFileSync(new URL(fileName, import.meta.url), "utf8");
+  } catch (error) {
+    if (!error || typeof error !== "object" || !("code" in error) || error.code !== "ENOENT") throw error;
+    source = readFileSync(resolve(process.cwd(), "src/clinical/anthropometry/packages", fileName), "utf8");
+  }
   const parsed = parseRulePackArtifact(source);
   const payload = GROWTH_PACKAGE_PAYLOAD_SCHEMA.parse(parsed.payload);
   if (parsed.header.countryCode !== country || payload.countryCode !== country) throw new Error("GROWTH_PACKAGE_IDENTITY_MISMATCH");

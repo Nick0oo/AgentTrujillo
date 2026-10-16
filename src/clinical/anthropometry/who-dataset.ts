@@ -38,23 +38,19 @@ function digest(value: Uint8Array): string {
   return createHash("sha256").update(value).digest("hex");
 }
 
-function devOnlyReadAsset(relativePath: string): Buffer {
+function readBundledAsset(relativePath: string): Buffer {
   try {
     return readFileSync(new URL(relativePath, import.meta.url));
   } catch (error) {
     const missing = error && typeof error === "object" && "code" in error && error.code === "ENOENT";
-    const allowDevFallback =
-      process.env.CRECIMIENTO_GROWTH_MODE === "DEV_ONLY" ||
-      process.env.APP_ENV === "development" ||
-      process.env.NODE_ENV !== "production";
-    if (!missing || !allowDevFallback) throw error;
+    if (!missing) throw error;
     return readFileSync(resolve(process.cwd(), "src/clinical/anthropometry", relativePath));
   }
 }
 
 function readVerifiedAsset(): Readonly<{ manifest: WhoDatasetManifest; rows: readonly WhoReferenceRow[] }> {
-  const manifest = JSON.parse(devOnlyReadAsset("./data/who/manifest.json").toString("utf8")) as WhoDatasetManifest;
-  const bytes = devOnlyReadAsset("./data/who/normalized-v1.json");
+  const manifest = JSON.parse(readBundledAsset("./data/who/manifest.json").toString("utf8")) as WhoDatasetManifest;
+  const bytes = readBundledAsset("./data/who/normalized-v1.json");
   if (digest(bytes) !== manifest.normalizedDigest) throw new Error("WHO_DATASET_DIGEST_MISMATCH");
   const payload = JSON.parse(bytes.toString("utf8")) as { rows: WhoReferenceRow[] };
   if (payload.rows.length !== manifest.rowCount) throw new Error("WHO_DATASET_ROW_COUNT_MISMATCH");

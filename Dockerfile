@@ -30,6 +30,9 @@ ENV NODE_ENV=production \
 
 COPY --from=build --chown=node:node /app/.output ./.output
 COPY --from=build --chown=node:node /app/.eve ./.eve
+# Ship the exact, reviewed clinical files used by the compiled server. Dataset
+# loaders and the governed provider verify their checksums before evaluation.
+COPY --from=build --chown=node:node /app/src/clinical/anthropometry ./src/clinical/anthropometry
 COPY --chown=node:node scripts/ci/smoke-backend.mjs ./scripts/ci/smoke-backend.mjs
 RUN mkdir -p /app/.eve/.workflow-data && chown node:node /app/.eve/.workflow-data
 
