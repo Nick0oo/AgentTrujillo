@@ -4,6 +4,9 @@ Destino autorizado el 14 de octubre de 2026: Dokploy, rama `main`, dominio
 `https://agent.creciendo.com.co`. Los cambios se preparan en `app_v1` y llegan a
 `main` mediante pull request. Esta configuración es una alternativa solicitada
 por el usuario a la topología Vercel del roadmap; no cierra sus gates pendientes.
+El 16 de octubre el usuario precisó la topología: GitHub Actions construye y
+publica la imagen en GHCR; Dokploy descarga esa imagen y ejecuta el contenedor.
+El servidor de Dokploy no clona ni compila el repositorio.
 
 ## GitHub Actions
 
@@ -12,11 +15,23 @@ En `Nick0oo/AgentTrujillo`, crear el secreto de Actions
 del repositorio o del environment `production`. La URL contiene una credencial
 y nunca debe aparecer en el repositorio o en logs.
 
-El workflow `.github/workflows/dokploy.yml` valida `app_v1` y los pull requests hacia `main`.
-Cada push a `main` ejecuta TypeScript, tests, tests de workflows, construcción
-Docker y smoke del contenedor con credenciales sintéticas. Solo después activa
-el webhook. Dokploy recibe un evento push para `main`, el SHA y las rutas
-modificadas; no recibe correos ni textos de los commits.
+El workflow `.github/workflows/dokploy.yml` valida `app_v1` y los pull requests
+hacia `main` con TypeScript, tests, tests de workflows, construcción Docker y
+smoke. Para `main`, el job `verify` valida el código y el job `deploy` construye
+la imagen `linux/amd64` en GitHub y comprueba salud y autorización con
+credenciales sintéticas antes de publicar esa misma imagen.
+
+La imagen se publica en `ghcr.io/nick0oo/agent-trujillo` con las etiquetas
+`sha-<SHA completo del commit>` y `main`, y etiquetas OCI de repositorio y
+revisión. La autenticación de escritura usa el `GITHUB_TOKEN` automático, con
+`packages: write` limitado al job `deploy`; no requiere un PAT de escritura.
+PRs y `app_v1` no publican imágenes ni activan Dokploy.
+
+Solo tras publicar ambas etiquetas se activa el webhook. Dokploy recibe un
+evento `registry_package` con la imagen y etiqueta `main` y el SHA; no recibe
+correos, textos originales de commits ni claves de producción. Debe tener
+proveedor **Docker**, no GitHub/Git. La concurrencia de `main` serializa el
+pipeline que actualiza la etiqueta `main` y activa el despliegue.
 
 La validación de CI recibe configuración sintética explícita. Las instrucciones
 permanentes conservan los límites del contrato aprobado sobre jurisdicción,
@@ -29,28 +44,33 @@ evita modificar artefactos clínicos o sus checksums para acomodar el checkout.
 Después se comprueban salud y autorización en el dominio HTTPS. La aceptación
 del webhook significa que el despliegue fue encolado. Confirmar también en los
 logs de Dokploy el commit que realmente se construyó; el smoke HTTP comprueba
-disponibilidad y límites de acceso, no una conversación autenticada completa.
+disponibilidad y límites de acceso, no una conversación autenticada completa
+ni la revisión OCI que realmente ejecuta el servidor.
 
 ## Configuración de la aplicación en Dokploy
 
 | Campo | Valor |
 | --- | --- |
-| Repositorio | `Nick0oo/AgentTrujillo` |
-| Rama | `main` |
-| Build type | Dockerfile |
-| Dockerfile | `Dockerfile` |
-| Build context | `.` |
+| Provider | Docker |
+| Docker Image | `ghcr.io/nick0oo/agent-trujillo:main` |
+| Registry URL | `ghcr.io` |
+| Username | `Nick0oo` |
+| Password | PAT classic con `read:packages`, configurado directamente en Dokploy |
 | Puerto de aplicación | `3000` |
 | Dominio | `agent.creciendo.com.co` |
 | HTTPS | Activado, certificado válido |
 | Réplicas | `1` |
 | Volumen persistente | `/app/.eve/.workflow-data` |
-| Watch paths | Vacío para este primer despliegue |
 
-Activar **Auto Deploy** para que acepte el webhook. Usar Git genérico si se
-necesita que Actions sea el único disparador; la integración GitHub de Dokploy
-puede disparar despliegues directamente al push antes de que termine Actions.
-No añadir un webhook directo de GitHub en paralelo al disparador del workflow.
+Activar **Auto Deploy** para que acepte el webhook enviado por Actions después
+de publicar. No añadir un webhook directo de push de GitHub ni seleccionar
+Nixpacks o Dockerfile como constructor en el servidor. El `Dockerfile` del
+repositorio se ejecuta en GitHub Actions.
+
+El primer push crea el paquete de GHCR con visibilidad privada. Conservar esa
+visibilidad. Configurar un token classic de `Nick0oo` con `read:packages` en el
+campo Password de Docker; no es la contraseña de GitHub ni el `GITHUB_TOKEN`
+temporal de Actions. No guardar este token en el repositorio o en el móvil.
 
 El volumen debe ser escribible por el usuario `node` (UID/GID `1000:1000`).
 Usar una sola réplica con el Workflow world local. Eve necesita sus callbacks
@@ -136,19 +156,20 @@ ejecutarse. Esa ejecución acredita el contenedor, no un despliegue público.
 
 ### Si el webhook devuelve HTTP 301
 
-El script rechaza redirecciones deliberadamente. Dokploy puede devolver 301
-cuando la rama o los watch paths no coinciden; también debe descartarse una
+El script rechaza redirecciones deliberadamente. Con el proveedor Docker,
+Dokploy puede devolver 301 cuando la imagen o etiqueta no coinciden; con el
+antiguo proveedor Git, también ocurría con una rama sin configurar. Descartar una
 redirección del proxy hacia otra URL del panel. No seguir la redirección ni
 tratar 301 como despliegue exitoso.
 
-1. En la aplicación de Dokploy, confirmar repositorio `Nick0oo/AgentTrujillo`,
-   rama `main`, **Auto Deploy** activado y **Watch paths** vacío.
+1. En la aplicación de Dokploy, confirmar proveedor **Docker**, imagen
+   `ghcr.io/nick0oo/agent-trujillo:main` y **Auto Deploy** activado.
 2. Confirmar que el secreto `DOKPLOY_WEBHOOK_URL` de GitHub contiene la URL
    completa vigente de esa aplicación; si el panel cambió a HTTPS, actualizar
    el secreto con el destino definitivo.
-3. En la ejecución de Actions fallida, usar **Re-run failed jobs** después de
-   guardar la configuración. Esto vuelve a ejecutar el despliegue sin repetir
-   el job `verify` que ya pasó para ese commit.
+3. Ejecutar el nuevo workflow de GHCR integrado en `main`. No reejecutar el
+   workflow antiguo de `37af884`, que no publica imágenes. Una vez vigente el
+   nuevo workflow, **Re-run failed jobs** permite reintentar su job `deploy`.
 4. Confirmar commit y resultado en Dokploy y esperar que el smoke público
    pase con HTTPS antes de usar el backend en el build de tienda.
 
@@ -168,10 +189,16 @@ Luego generar el build iOS production y subirlo a App Store Connect.
 
 ## Recuperación
 
-Para volver a una versión anterior, usar un commit conocido de `main` mediante
-un revert revisado y dejar que pase el mismo workflow. Conservar el volumen de
+Para recuperar una imagen anterior, seleccionar en Dokploy la etiqueta
+`ghcr.io/nick0oo/agent-trujillo:sha-<SHA completo>` de una publicación conocida y
+desplegar manualmente. Mientras esté fijada esa etiqueta, el webhook para
+`main` no coincide y no debe aceptarse como despliegue exitoso. Para retomar
+despliegues automáticos, volver a `:main`. Otra opción es un revert revisado en
+`main` para construir y publicar la corrección. Conservar el volumen de
 workflows. Si el pipeline falla después de aceptar el webhook, revisar primero
 el despliegue ya encolado; no asumir que el servidor quedó sin cambios.
 
 Referencias: [Self-hosting de Eve](../../node_modules/eve/docs/guides/deployment/self-hosting.md),
 [Auto Deploy de Dokploy](https://docs.dokploy.com/docs/core/auto-deploy).
+Ver también [imágenes precompiladas en Dokploy](https://docs.dokploy.com/docs/core/applications/going-production)
+y [GHCR y autenticación](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry).

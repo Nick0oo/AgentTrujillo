@@ -46,6 +46,13 @@ These facts do not close pending behavioral gates. Local schema parity, generate
   production environment values, signing-key/KID setup, the current production
   growth-summary limitation, and webhook troubleshooting. Runtime deployment
   remains pending Dokploy configuration and successful public smoke.
+  The user then clarified that the server must pull a prebuilt image from
+  GHCR. Root owns the existing deployment files and adjusts the workflow to
+  build and smoke the release image on GitHub, publish private GHCR tags
+  `sha-<commit>` and `main` with the job-scoped GITHUB_TOKEN, and send a registry
+  webhook after publishing. Dokploy uses the Docker provider rather than a
+  server-side source build. Its private-image read credential and public smoke
+  remain external prerequisites; no clinical readiness status changes.
 
 - Documentation design: `completed` at commit `08ed71a`.
 - Documentation implementation plan: `completed` at commit `2ba542b`.

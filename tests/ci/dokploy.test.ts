@@ -24,22 +24,22 @@ describe('Dokploy deployment boundary', () => {
     expect(() => deploymentPayload({ ...env, GITHUB_EVENT_NAME: 'pull_request' })).toThrow('DEPLOYMENT_REQUIRES_MAIN');
   });
 
-  it('forwards only commit identifiers and changed paths', () => {
+  it('announces the GHCR image without forwarding private commit details', () => {
     const payload = deploymentPayload(env, {
       sender: { email: 'private@example.invalid' },
       commits: [{ added: ['Dockerfile'], author: { email: 'private@example.invalid' }, message: 'private text' }],
     });
-    expect(payload.ref).toBe('refs/heads/main');
-    expect(payload.commits[0].added).toEqual(['Dockerfile']);
+    expect(payload.registry_package.package_version.package_url).toBe('ghcr.io/nick0oo/agent-trujillo:main');
+    expect(payload.head_commit.id).toBe(env.GITHUB_SHA);
     expect(JSON.stringify(payload)).not.toContain('private');
   });
 
-  it('sends a push payload and rejects redirects without disclosing the webhook', async () => {
+  it('sends a registry event and rejects redirects without disclosing the webhook', async () => {
     const fetchFn = vi.fn().mockResolvedValue(new Response('secret body', { status: 301 }));
     await expect(triggerDokploy(env, {}, fetchFn)).rejects.toThrow('DOKPLOY_WEBHOOK_HTTP_301');
     const options = fetchFn.mock.calls[0][1];
     expect(options.redirect).toBe('manual');
-    expect(options.headers['x-github-event']).toBe('push');
+    expect(options.headers['x-github-event']).toBe('registry_package');
   });
 
   it('redacts connection failures', async () => {

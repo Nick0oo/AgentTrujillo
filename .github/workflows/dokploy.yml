@@ -1,4 +1,4 @@
-name: Backend checks and Dokploy deployment
+name: Backend checks, GHCR image and Dokploy deployment
 
 on:
   pull_request:
@@ -36,8 +36,10 @@ jobs:
       - run: npm test
       - run: npm run test:workflow
       - name: Build the production container without live credentials
+        if: github.ref != 'refs/heads/main'
         run: docker build --tag agent-trujillo:ci .
       - name: Check health and authentication in the container
+        if: github.ref != 'refs/heads/main'
         shell: bash
         run: |
           set -euo pipefail
@@ -55,7 +57,12 @@ jobs:
     needs: verify
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 40
+    permissions:
+      contents: read
+      packages: write
+    env:
+      IMAGE_NAME: ghcr.io/nick0oo/agent-trujillo
     environment:
       name: production
       url: https://agent.creciendo.com.co
@@ -64,7 +71,39 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 24.19.0
-      - name: Trigger Dokploy for main
+      - name: Build the release image on GitHub
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker build --platform linux/amd64 \
+            --label org.opencontainers.image.source=https://github.com/Nick0oo/AgentTrujillo \
+            --label "org.opencontainers.image.revision=$GITHUB_SHA" \
+            --tag "$IMAGE_NAME:sha-$GITHUB_SHA" .
+      - name: Check the exact image before publishing
+        shell: bash
+        run: |
+          set -euo pipefail
+          trap 'docker rm --force agent-trujillo-ci >/dev/null 2>&1 || true' EXIT
+          docker run --detach --name agent-trujillo-ci --publish 127.0.0.1:3000:3000 \
+            --env GOOGLE_GENERATIVE_AI_API_KEY=ci-placeholder-not-a-real-google-key \
+            --env SUPABASE_URL=https://ci.invalid \
+            --env SUPABASE_PUBLISHABLE_KEY=ci-placeholder-not-a-real-supabase-key \
+            --env CHILD_CONTEXT_SIGNING_KEY=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA \
+            --env CHILD_CONTEXT_SIGNING_KID=ci-placeholder \
+            "$IMAGE_NAME:sha-$GITHUB_SHA"
+          node scripts/ci/smoke-backend.mjs
+      - name: Publish the checked image to GHCR
+        shell: bash
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          trap 'docker logout ghcr.io >/dev/null 2>&1 || true' EXIT
+          printf '%s' "$GHCR_TOKEN" | docker login ghcr.io --username "$GITHUB_ACTOR" --password-stdin
+          docker push "$IMAGE_NAME:sha-$GITHUB_SHA"
+          docker tag "$IMAGE_NAME:sha-$GITHUB_SHA" "$IMAGE_NAME:main"
+          docker push "$IMAGE_NAME:main"
+      - name: Tell Dokploy to pull the published main image
         env:
           DOKPLOY_WEBHOOK_URL: ${{ secrets.DOKPLOY_WEBHOOK_URL }}
         run: node scripts/ci/deploy-dokploy.mjs
