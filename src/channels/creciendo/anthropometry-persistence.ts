@@ -12,10 +12,12 @@ import type { ConfirmedMeasurement } from "../../clinical/anthropometry/types.ts
 import type { RepositoryAccessResult } from "../../clinical/anthropometry/repository.ts";
 import type { AnthropometryRouteMeasurement, AnthropometryCreateRequest, GrowthPersistence } from "./routes/anthropometry.ts";
 import {
-  buildDevOnlyGrowthSummary,
-  type DevOnlyGrowthChild,
-  type DevOnlyGrowthMeasurement,
-} from "./dev-only-growth-summary.ts";
+  buildGovernedGrowthSummary,
+  type GovernedGrowthChild,
+  type GovernedGrowthMeasurement,
+} from "./governed-growth-summary.ts";
+
+import { createGrowthPackageProvider } from "./growth-package-provider.ts";
 
 type PersistenceResult = Readonly<{ code: string }>;
 
@@ -79,23 +81,21 @@ function confirmation(now: Date, input: AnthropometryCreateRequest, scope: Autho
   });
 }
 
-function devOnlyGrowthEnabled(config: RuntimeConfig): boolean {
-  return config.appEnv === "development" && process.env.CRECIMIENTO_GROWTH_MODE === "DEV_ONLY";
-}
-
-async function devOnlySummary(
+async function governedSummary(
   client: ReturnType<typeof createRequestSupabaseClient>,
   scope: AuthorizedChildScope,
   signal: AbortSignal,
 ): Promise<Readonly<Omit<import("./routes/anthropometry.ts").GrowthSummaryResponse, "version" | "requestId">> | null> {
   if (signal.aborted) return null;
+  const resolvedPackage = await createGrowthPackageProvider(client).resolve({ scope, referenceDate: localDate(new Date().toISOString(), scope.timezone), signal });
+  if (!resolvedPackage) return null;
   const [childResult, measurementsResult] = await Promise.all([
-    client.from("children").select("date_of_birth, sex_for_growth, country_of_care, time_zone")
+    client.from("children").select("date_of_birth, sex_for_growth, country_of_care, time_zone, gestational_age_weeks, gestational_age_days")
       .eq("id", scope.childId).eq("care_space_id", scope.careSpaceId).eq("status", "active").maybeSingle(),
     client.from("anthropometric_measurements")
       .select("id, measurement_type, normalized_value_lexeme, normalized_unit, occurred_at, measurement_method")
       .eq("child_id", scope.childId).eq("care_space_id", scope.careSpaceId).eq("validation_status", "confirmed")
-      .order("occurred_at", { ascending: true }).limit(48),
+      .order("occurred_at", { ascending: false }).order("id", { ascending: false }).limit(48),
   ]);
   if (signal.aborted || childResult.error || measurementsResult.error || !childResult.data || !Array.isArray(measurementsResult.data)) return null;
   const child = childResult.data as unknown as Record<string, unknown>;
@@ -103,7 +103,7 @@ async function devOnlySummary(
     || (child.sex_for_growth !== "female" && child.sex_for_growth !== "male")
     || (child.country_of_care !== "CO" && child.country_of_care !== "US")
     || typeof child.time_zone !== "string") return null;
-  const measurements: DevOnlyGrowthMeasurement[] = [];
+  const measurements: GovernedGrowthMeasurement[] = [];
   for (const row of measurementsResult.data as unknown as Array<Record<string, unknown>>) {
     if (typeof row.id !== "string" || typeof row.measurement_type !== "string"
       || typeof row.normalized_value_lexeme !== "string" || (row.normalized_unit !== "kg" && row.normalized_unit !== "cm")
@@ -112,21 +112,24 @@ async function devOnlySummary(
     if (!["digital_scale", "mechanical_scale", "length_board", "stadiometer", "tape_measure", "unknown"].includes(row.measurement_method)) continue;
     measurements.push({
       id: row.id,
-      measurementType: row.measurement_type as DevOnlyGrowthMeasurement["measurementType"],
+      measurementType: row.measurement_type as GovernedGrowthMeasurement["measurementType"],
       value: row.normalized_value_lexeme,
       unit: row.normalized_unit,
       occurredAt: row.occurred_at,
-      measurementMethod: row.measurement_method as DevOnlyGrowthMeasurement["measurementMethod"],
+      measurementMethod: row.measurement_method as GovernedGrowthMeasurement["measurementMethod"],
     });
   }
-  const input: DevOnlyGrowthChild = {
+  if (child.country_of_care !== scope.countryOfCare) return null;
+  const input: GovernedGrowthChild = {
+    gestationalAgeWeeks: typeof child.gestational_age_weeks === "number" ? child.gestational_age_weeks : null,
+    gestationalAgeDays: typeof child.gestational_age_days === "number" ? child.gestational_age_days : null,
     dateOfBirth: child.date_of_birth.slice(0, 10),
     sexForGrowth: child.sex_for_growth,
     countryOfCare: child.country_of_care,
     timeZone: child.time_zone,
   };
   try {
-    return buildDevOnlyGrowthSummary({ child: input, measurements, now: new Date() });
+    return buildGovernedGrowthSummary({ package: resolvedPackage, child: input, measurements, now: new Date() });
   } catch {
     return null;
   }
@@ -222,10 +225,8 @@ export function createSupabaseAnthropometryPersistence(input: Readonly<{
       return measurements;
     },
     async summary(scope, _auth, signal) {
-      if (devOnlyGrowthEnabled(input.config)) {
-        const local = await devOnlySummary(client, scope, signal);
-        if (local) return local;
-      }
+      const summary = await governedSummary(client, scope, signal);
+      if (summary && !signal.aborted) return summary;
       return { status: "unavailable" as const, code: "RULE_UNAVAILABLE" as const, points: [] as [] };
     },
   };

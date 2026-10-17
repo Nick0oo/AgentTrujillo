@@ -154,7 +154,7 @@ function candidateFor(
   const algorithmRow = algorithmsById.get(release.algorithm_id);
   const algorithm = algorithmRow ? algorithmFor(algorithmRow) : null;
   if (!algorithm || algorithm.status !== "active" || algorithm.identity.domain !== query.domain) return null;
-  const approvalRows = approvals.filter((item) => item.rule_pack_id === pack.id && item.decision === "approved")
+  const approvalRows = approvals.filter((item) => item.id === release.approval_id && item.rule_pack_id === pack.id && item.decision === "approved")
     .sort((left, right) => right.decided_at.localeCompare(left.decided_at));
   const approval = approvalRows.map((row) => approvalFor(row, pack, release.algorithm_id, algorithm.identity, sourceSetSha256)).find((value): value is ApprovalAttestation => Boolean(value));
   const location = locationFor(pack, artifactSha256, query);

@@ -15,7 +15,7 @@ export type ResolveResult<T> = { ok: true; value: ResolvedClinicalPackage<T> } |
 
 function failure(reason: RuleUnavailableReason): RuleUnavailable { return { ok: false, code: "RULE_UNAVAILABLE", reason }; }
 
-function sourceSetDigest(candidate: ClinicalPackageCandidate): Sha256Hex {
+export function sourceSetDigest(candidate: ClinicalPackageCandidate): Sha256Hex {
   const sourceSet = candidate.sources.map((source) => ({ id: source.id ?? source.sourceId ?? "", artifactSha256: source.artifactSha256, status: source.status })).sort((left, right) => left.artifactSha256.localeCompare(right.artifactSha256));
   return createHash("sha256").update(new TextEncoder().encode(canonicalize(sourceSet))).digest("hex") as Sha256Hex;
 }
@@ -27,14 +27,14 @@ function deepFreeze<T>(value: T, seen = new WeakSet<object>()): T {
   return Object.freeze(value);
 }
 
-function exactCandidate(candidate: ClinicalPackageCandidate, query: ClinicalPackageQuery): boolean {
+export function exactCandidate(candidate: ClinicalPackageCandidate, query: ClinicalPackageQuery): boolean {
   const { pack } = candidate;
   return pack.status === "active" && pack.domain === query.domain && pack.countryCode === query.countryCode && pack.locale === query.locale
     && pack.effectiveFrom <= query.referenceDate && (pack.effectiveUntil === null || pack.effectiveUntil >= query.referenceDate)
     && candidate.release?.status === "active" && candidate.release.artifactSha256 === pack.artifactSha256;
 }
 
-function approvalMatches(approval: ApprovalAttestation, candidate: ClinicalPackageCandidate): boolean {
+export function approvalMatches(approval: ApprovalAttestation, candidate: ClinicalPackageCandidate): boolean {
   return approval.decision === "approved" && approval.withdrawalOf === null && approval.rulePackId === candidate.pack.id
     && approval.artifactSha256 === candidate.pack.artifactSha256
     && approval.algorithmId === candidate.algorithm.identity.key
