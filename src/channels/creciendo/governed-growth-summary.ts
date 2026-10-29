@@ -61,7 +61,7 @@ function pointFor(input: GovernedGrowthSummaryInput, measurement: GovernedGrowth
   const payload = input.package.identity.artifact.payload;
   const digests: Readonly<Record<string, string>> = payload.datasetDigests;
   if (!payload.allowedIndicators.includes(assessment.indicator) || digests[assessment.standard.datasetKey] !== assessment.provenance.datasetDigest) return null;
-  const referenceCode = payload.packageKey + ":" + assessment.standard.datasetKey;
+  const referenceCode = payload.packageKey + "." + assessment.standard.datasetKey;
   const provenance = {
     standardKey: assessment.standard.key,
     standardVersion: assessment.standard.version,

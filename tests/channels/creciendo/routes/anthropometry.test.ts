@@ -84,6 +84,20 @@ const validBody = {
 };
 
 describe("creciendo anthropometry routes", () => {
+  it("exposes a bounded persistence diagnostic without changing the public error body", async () => {
+    const dependencies = deps();
+    const response = await handleAnthropometryCreate(
+      request("POST", "/creciendo/v1/anthropometry", validBody, { "idempotency-key": "growth-diagnostic-1" }),
+      AUTH,
+      deps({ persistence: { ...dependencies.persistence, create: async () => ({ code: "PERSISTENCE_UNAVAILABLE", diagnosticCode: "42702" }) } }),
+    );
+    expect(response.status).toBe(503);
+    expect(response.headers.get("x-creciendo-persistence-code")).toBe("42702");
+    const body = await response.json();
+    expect(body.code).toBe("PERSISTENCE_UNAVAILABLE");
+    expect(body).not.toHaveProperty("diagnosticCode");
+  });
+
   it("persists a confirmed measurement and returns backend-owned data", async () => {
     const response = await handleAnthropometryCreate(
       request("POST", "/creciendo/v1/anthropometry", validBody, { "idempotency-key": "growth-1" }),
@@ -97,6 +111,18 @@ describe("creciendo anthropometry routes", () => {
       measurement: { id: MEASUREMENT.id, value: MEASUREMENT.value, unit: "kg", sourceNote: MEASUREMENT.sourceNote },
       assessment: { status: "rule_unavailable" },
     });
+  });
+
+  it("omits arbitrary persistence diagnostic text", async () => {
+    const dependencies = deps();
+    const response = await handleAnthropometryCreate(
+      request("POST", "/creciendo/v1/anthropometry", validBody, { "idempotency-key": "growth-diagnostic-2" }),
+      AUTH,
+      deps({ persistence: { ...dependencies.persistence, create: async () => ({ code: "PERSISTENCE_UNAVAILABLE", diagnosticCode: "private row detail" }) } }),
+    );
+    expect(response.status).toBe(503);
+    expect(response.headers.has("x-creciendo-persistence-code")).toBe(false);
+    expect(await response.text()).not.toContain("private row detail");
   });
 
   it("requires explicit confirmation and idempotency", async () => {
@@ -146,7 +172,7 @@ describe("creciendo anthropometry routes", () => {
     });
   });
 
-  it("accepts a backend-owned ready summary with bounded provenance", async () => {
+  it.each(["0.12", "-0.12"])("accepts a backend-owned ready summary with bounded provenance and Z-score %s", async (zScore) => {
     const response = await handleGrowthSummary(
       request("GET", "/creciendo/v1/anthropometry/growth"),
       AUTH,
@@ -166,7 +192,7 @@ describe("creciendo anthropometry routes", () => {
                 ageBasis: "chronological" as const,
                 ageDays: 180,
                 status: "calculated" as const,
-                zScore: "0.12",
+                zScore,
                 percentile: "54.78",
                 interpretation: "within_expected" as const,
                 warnings: [],
@@ -187,7 +213,7 @@ describe("creciendo anthropometry routes", () => {
       version: GROWTH_SUMMARY_VERSION,
       status: "ready",
       code: null,
-      points: [{ value: "5.400", zScore: "0.12", percentile: "54.78" }],
+      points: [{ value: "5.400", zScore, percentile: "54.78" }],
     });
   });
 

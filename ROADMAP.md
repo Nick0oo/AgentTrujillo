@@ -25,6 +25,8 @@ These facts do not close pending behavioral gates. Local schema parity, generate
 
 ## Current roadmap state
 
+- Production growth deployment authorization (2026-10-29): after reviewing the same-account discrepancy (production: one history record / zero evaluated points; corrected local backend: seven / five), the user explicitly authorized publishing the verified growth compatibility correction via a PR to main and deploying `https://agent.creciendo.com.co`. Root owns a focused branch/PR containing only the three growth implementation files, their three tests and the growth verification evidence, followed by the existing CI/GHCR/Dokploy pipeline and authenticated production replay/read verification. Preserve unrelated registration migrations/type changes and user work. No new database mutations, permission repair, package activation, proxy changes or store rollout are authorized by this deployment decision. Fresh affected backend evidence: 63 suites / 437 passing tests, one existing skip; TypeScript/build pass. Deployment completion remains pending observable CI and production evidence.
+
 - Root-directed deployment preparation (2026-10-14): the user selected Dokploy,
   deployment from `main` after their pull request, and
   `https://agent.creciendo.com.co`. Root owns `.github/workflows/dokploy.yml`,
