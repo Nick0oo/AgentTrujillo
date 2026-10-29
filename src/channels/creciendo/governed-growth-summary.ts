@@ -1,12 +1,14 @@
 import { createCitationHandle } from "../../../agent/lib/runtime/safe-to-model.ts";
 import { AgeEngine } from "../../clinical/anthropometry/chronological-age.ts";
 import { assessGrowth } from "../../clinical/anthropometry/growth-assessment.ts";
+import { GROWTH_AGE_MONTH_DAYS } from "../../clinical/anthropometry/standard-selector.ts";
 import type { GrowthSummaryResponse } from "./routes/anthropometry.ts";
 
 import { isResolvedGrowthPackage, type ResolvedGrowthPackage } from "./growth-package-provider.ts";
 
 type ReadySummary = Extract<GrowthSummaryResponse, { status: "ready" }>;
 type ReadySummaryBody = Omit<ReadySummary, "version" | "requestId">;
+type SummaryBody = ReadySummaryBody | Omit<Extract<GrowthSummaryResponse, { status: "unavailable" }>, "version" | "requestId">;
 
 export type GovernedGrowthChild = Readonly<{
   gestationalAgeWeeks: number | null;
@@ -101,7 +103,7 @@ function pointFor(input: GovernedGrowthSummaryInput, measurement: GovernedGrowth
   };
 }
 
-export function buildGovernedGrowthSummary(input: GovernedGrowthSummaryInput): Omit<GrowthSummaryResponse, "version" | "requestId"> {
+export function buildGovernedGrowthSummary(input: GovernedGrowthSummaryInput): SummaryBody {
   const unavailable = { status: "unavailable" as const, code: "RULE_UNAVAILABLE" as const, points: [] as [] };
   if (!isResolvedGrowthPackage(input.package) || input.package.identity.artifact.payload.countryCode !== input.child.countryOfCare) return unavailable;
   const weeks = input.child.gestationalAgeWeeks;
@@ -120,5 +122,15 @@ export function buildGovernedGrowthSummary(input: GovernedGrowthSummaryInput): O
         return [];
       }
     });
-  return { status: "ready", code: null, points };
+  const observations = input.measurements.filter((measurement) => Date.parse(measurement.occurredAt) <= input.now.getTime()).flatMap((measurement) => {
+    try {
+      const age = AgeEngine.calculateChronologicalAge({ birthDate: input.child.dateOfBirth, birthDatePrecision: "date", referenceInstant: measurement.occurredAt, timeZone: input.child.timeZone });
+      return [{ measurementId: measurement.id, ageMonths: age.ageDays / GROWTH_AGE_MONTH_DAYS, ageBasis: "chronological" as const }];
+    } catch { return []; }
+  }).slice(0, 48);
+  let currentAgeCompletedMonths: number | null = null;
+  try {
+    currentAgeCompletedMonths = AgeEngine.calculateChronologicalAge({ birthDate: input.child.dateOfBirth, birthDatePrecision: "date", referenceInstant: input.now.toISOString(), timeZone: input.child.timeZone }).completedMonths;
+  } catch { /* An unavailable age is never replaced by a guessed value. */ }
+  return { status: "ready", code: null, points, chart: { currentAgeCompletedMonths, observations, copy: { ...input.package.identity.artifact.payload.copy } } };
 }

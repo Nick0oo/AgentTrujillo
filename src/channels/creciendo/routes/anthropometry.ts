@@ -102,6 +102,18 @@ const GROWTH_SUMMARY_READY_RESPONSE_SCHEMA = z.object({
   status: z.literal("ready"),
   code: z.null(),
   points: z.array(GROWTH_POINT_RESPONSE).max(48),
+  chart: z.object({
+    currentAgeCompletedMonths: z.number().int().nonnegative().max(2000).nullable(),
+    observations: z.array(z.object({
+      measurementId: UUID,
+      ageMonths: z.number().finite().nonnegative().max(2000),
+      ageBasis: z.literal("chronological"),
+    }).strict()).max(48),
+    copy: z.object({
+      summaryTitle: z.string().max(80), withinExpected: z.string().max(240),
+      reviewRequired: z.string().max(240), unavailable: z.string().max(240), disclaimer: z.string().max(240),
+    }).strict(),
+  }).strict().optional(),
 }).strict();
 
 export const ANTHROPOMETRY_CREATE_RESPONSE_SCHEMA = z.object({

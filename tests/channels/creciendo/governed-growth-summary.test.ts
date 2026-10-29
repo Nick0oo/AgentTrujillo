@@ -37,6 +37,17 @@ describe("governed growth summary citation integration", () => {
     expect(buildGovernedGrowthSummary(fixture("12.500"))).toEqual({ status: "unavailable", code: "RULE_UNAVAILABLE", points: [] });
   });
 
+  it("provides age coordinates and approved display copy without exposing authority or inventing reference bands", () => {
+    const input = fixture("12.500");
+    const result = buildGovernedGrowthSummary(input);
+    if (result.status !== "ready") throw new Error("Fixture package unavailable");
+    expect(result.chart?.currentAgeCompletedMonths).toBe(19);
+    expect(result.chart?.observations).toEqual([{ measurementId: input.measurements[0].id, ageMonths: 594 / 30.4375, ageBasis: "chronological" }]);
+    expect(result.chart?.copy).toEqual(input.package.identity.artifact.payload.copy);
+    expect(result.chart).not.toHaveProperty("referenceSeries");
+    expect(result.chart).not.toHaveProperty("childId");
+  });
+
   it("does not use the CO package for a US child", () => {
     const input = fixture("12.500");
     expect(buildGovernedGrowthSummary({ ...input, child: { ...input.child, countryOfCare: "US" } })).toEqual({ status: "unavailable", code: "RULE_UNAVAILABLE", points: [] });
