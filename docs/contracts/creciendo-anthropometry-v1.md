@@ -26,6 +26,8 @@ The response is either a created record or an idempotent replay. It includes the
 
 ## Failure and privacy behavior
 
+The ready growth response may additionally include `chart` display metadata: current completed chronological months (nullable), at most 48 `{ measurementId, ageMonths, ageBasis: "chronological" }` coordinates and the already-approved package `copy`. Coordinates reuse the unchanged AgeEngine and the same age-month conversion used by the approved standard selector. This is backward-compatible optional presentation metadata. It adds no new clinical calculation, comparison bands, median deltas or percentile classifications. Unknown/unavailable age coordinates are omitted; the client can retain a date-based observation graph and original record table. No child, guardian or care-space authority is present.
+
 Malformed input, missing confirmation, missing idempotency, expired/revoked context, permission failure, persistence failure, and unavailable rules return the existing safe error shapes or explicit unavailable state. Internal database errors, tokens, child identifiers, and clinical payloads are not logged or returned as error details.
 
 The mobile client must preserve a draft after a non-success response, retry uncertain mutations with the same idempotency key, cancel stale requests on child change, and never write directly to Supabase clinical tables.
