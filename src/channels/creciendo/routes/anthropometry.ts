@@ -14,6 +14,7 @@ const UUID = z.string().uuid();
 const INSTANT = z.string().datetime({ offset: true });
 const OPAQUE = z.string().min(1).max(200).regex(/^[A-Za-z0-9][A-Za-z0-9._:-]*$/u);
 const DECIMAL = z.string().regex(/^(?:0|[1-9][0-9]*)(?:\.[0-9]+)?$/u).max(64);
+const SIGNED_DECIMAL = z.string().regex(/^-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?$/u).max(64);
 const MEASUREMENT_TYPE = z.enum(["weight", "recumbent_length", "standing_height", "head_circumference"]);
 const UNIT = z.enum(["kg", "g", "lb", "oz", "lb_oz", "cm", "mm", "in"]);
 const MEASUREMENT_METHOD = z.enum(["digital_scale", "mechanical_scale", "length_board", "stadiometer", "tape_measure", "unknown"]);
@@ -47,7 +48,7 @@ export const ANTHROPOMETRY_CREATE_REQUEST_SCHEMA = z.object({
 
 export type AnthropometryCreateRequest = Readonly<z.infer<typeof ANTHROPOMETRY_CREATE_REQUEST_SCHEMA>>;
 
-const MEASUREMENT_RESPONSE = z.object({
+export const ANTHROPOMETRY_MEASUREMENT_RESPONSE_SCHEMA = z.object({
   id: UUID,
   measurementType: MEASUREMENT_TYPE,
   value: DECIMAL,
@@ -79,7 +80,7 @@ const GROWTH_POINT_RESPONSE = z.object({
   ageBasis: z.enum(["chronological", "corrected"]),
   ageDays: z.number().int().nonnegative().max(10_000),
   status: z.enum(["calculated", "rule_unavailable", "insufficient_data", "excluded"]),
-  zScore: DECIMAL.nullable(),
+  zScore: SIGNED_DECIMAL.nullable(),
   percentile: DECIMAL.nullable(),
   interpretation: z.enum(["within_expected", "review_required", "urgent_review", "unavailable"]),
   warnings: z.array(z.enum(["age_unavailable", "corrected_age_unavailable", "standard_unavailable", "dataset_unavailable", "numerical_instability", "insufficient_companion", "measurement_excluded", "transition_boundary", "precision_limited", "review_required"])).max(12),
@@ -107,14 +108,14 @@ export const ANTHROPOMETRY_CREATE_RESPONSE_SCHEMA = z.object({
   version: z.literal(ANTHROPOMETRY_VERSION),
   requestId: OPAQUE,
   outcome: z.enum(["created", "idempotent_replay"]),
-  measurement: MEASUREMENT_RESPONSE,
+  measurement: ANTHROPOMETRY_MEASUREMENT_RESPONSE_SCHEMA,
   assessment: ASSESSMENT_RESPONSE,
 }).strict();
 
 export const ANTHROPOMETRY_LIST_RESPONSE_SCHEMA = z.object({
   version: z.literal(ANTHROPOMETRY_VERSION),
   requestId: OPAQUE,
-  measurements: z.array(MEASUREMENT_RESPONSE).max(100),
+  measurements: z.array(ANTHROPOMETRY_MEASUREMENT_RESPONSE_SCHEMA).max(100),
   nextCursor: z.string().min(1).max(512).nullable(),
 }).strict();
 
@@ -133,7 +134,7 @@ export const GROWTH_SUMMARY_RESPONSE_SCHEMA = z.union([
 
 export type GrowthSummaryResponse = Readonly<z.infer<typeof GROWTH_SUMMARY_RESPONSE_SCHEMA>>;
 
-export type AnthropometryRouteMeasurement = Readonly<z.infer<typeof MEASUREMENT_RESPONSE>>;
+export type AnthropometryRouteMeasurement = Readonly<z.infer<typeof ANTHROPOMETRY_MEASUREMENT_RESPONSE_SCHEMA>>;
 export type AnthropometryRouteDependencies = Readonly<{
   scope: GrowthScopeResolver;
   persistence: GrowthPersistence;
@@ -145,12 +146,16 @@ export type GrowthScopeResolver = Readonly<{
 }>;
 
 export type GrowthPersistence = Readonly<{
-  create(scope: AuthorizedChildScope, auth: AuthenticatedChannelRequest, input: AnthropometryCreateRequest, idempotencyKey: string, now: Date, signal: AbortSignal): Promise<Readonly<{ outcome: "created" | "idempotent_replay"; measurement: AnthropometryRouteMeasurement }> | Readonly<{ code: string }> >;
+  create(scope: AuthorizedChildScope, auth: AuthenticatedChannelRequest, input: AnthropometryCreateRequest, idempotencyKey: string, now: Date, signal: AbortSignal): Promise<Readonly<{ outcome: "created" | "idempotent_replay"; measurement: AnthropometryRouteMeasurement }> | Readonly<{ code: string; diagnosticCode?: string }> >;
   list(scope: AuthorizedChildScope, auth: AuthenticatedChannelRequest, input: Readonly<{ cursor: string | null }>, signal: AbortSignal): Promise<readonly AnthropometryRouteMeasurement[] | null>;
   summary(scope: AuthorizedChildScope, auth: AuthenticatedChannelRequest, signal: AbortSignal): Promise<Readonly<Omit<GrowthSummaryResponse, "version" | "requestId">> | null>;
 }>;
 
-function errorResponse(status: 400 | 403 | 409 | 422 | 503, code: string): Response {
+function errorResponse(status: 400 | 403 | 409 | 422 | 503, code: string, diagnosticCode?: string): Response {
+  const headers: Record<string, string> = { "cache-control": "no-store", "x-content-type-options": "nosniff" };
+  if (diagnosticCode && /^(?:[0-9A-Z]{5}|PGRST[0-9]{3})$/u.test(diagnosticCode)) {
+    headers["x-creciendo-persistence-code"] = diagnosticCode;
+  }
   return Response.json({
     version: "creciendo.error.v1",
     code,
@@ -158,7 +163,7 @@ function errorResponse(status: 400 | 403 | 409 | 422 | 503, code: string): Respo
     retryAfterSeconds: null,
     effectState: "none",
     resumable: false,
-  }, { status, headers: { "cache-control": "no-store", "x-content-type-options": "nosniff" } });
+  }, { status, headers });
 }
 
 async function readJson(request: Request): Promise<unknown | null> {
@@ -194,7 +199,7 @@ export async function handleAnthropometryCreate(request: Request, auth: Authenti
     if ("code" in result) {
       if (result.code === "IDEMPOTENCY_CONFLICT") return errorResponse(409, result.code);
       if (result.code === "INVALID_INPUT" || result.code === "CONFIRMATION_INVALID") return errorResponse(422, result.code);
-      return errorResponse(503, "PERSISTENCE_UNAVAILABLE");
+      return errorResponse(503, "PERSISTENCE_UNAVAILABLE", result.diagnosticCode);
     }
     const response = ANTHROPOMETRY_CREATE_RESPONSE_SCHEMA.parse({
       version: ANTHROPOMETRY_VERSION,

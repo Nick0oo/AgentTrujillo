@@ -4,6 +4,7 @@ import type { RuntimeConfig } from "../../../agent/lib/config/env.ts";
 import { createRequestSupabaseClient } from "../../../agent/lib/supabase/request-client.ts";
 import type { AuthenticatedChannelRequest } from "./auth-middleware.ts";
 import type { AuthorizedChildScope } from "../../../agent/lib/access/authorized-child-scope.ts";
+import { hasPermission } from "../../../agent/lib/access/authorized-child-scope.ts";
 import { createAnthropometryRepository } from "../../persistence/supabase/anthropometry-repository.ts";
 import { normalizeAnthropometricUnit } from "../../clinical/anthropometry/units.ts";
 import { createExactClinicalDecimal } from "../../clinical/anthropometry/value-objects.ts";
@@ -11,6 +12,7 @@ import type { RecordConfirmedInput } from "../../clinical/anthropometry/reposito
 import type { ConfirmedMeasurement } from "../../clinical/anthropometry/types.ts";
 import type { RepositoryAccessResult } from "../../clinical/anthropometry/repository.ts";
 import type { AnthropometryRouteMeasurement, AnthropometryCreateRequest, GrowthPersistence } from "./routes/anthropometry.ts";
+import { ANTHROPOMETRY_MEASUREMENT_RESPONSE_SCHEMA } from "./routes/anthropometry.ts";
 import {
   buildGovernedGrowthSummary,
   type GovernedGrowthChild,
@@ -19,7 +21,30 @@ import {
 
 import { createGrowthPackageProvider } from "./growth-package-provider.ts";
 
-type PersistenceResult = Readonly<{ code: string }>;
+type PersistenceResult = Readonly<{ code: string; diagnosticCode?: string }>;
+
+// Cast in Postgres so historical numeric values never pass through a JS number.
+// The star also tolerates the optional source_note column being absent remotely.
+const MEASUREMENT_COLUMNS = "*,legacy_normalized_value:normalized_value::text";
+
+function historicalMeasurement(scope: AuthorizedChildScope, value: unknown): AnthropometryRouteMeasurement | null {
+  if (!value || typeof value !== "object") return null;
+  const row = value as Record<string, unknown>;
+  if (row.care_space_id !== scope.careSpaceId || row.child_id !== scope.childId || row.validation_status !== "confirmed") return null;
+  const result = ANTHROPOMETRY_MEASUREMENT_RESPONSE_SCHEMA.safeParse({
+    id: row.id,
+    measurementType: row.measurement_type,
+    value: row.normalized_value_lexeme ?? row.legacy_normalized_value,
+    unit: row.normalized_unit,
+    occurredAt: row.occurred_at,
+    localDate: row.local_date,
+    timeZone: row.time_zone,
+    measurementMethod: row.measurement_method ?? "unknown",
+    provenanceType: row.provenance_type,
+    sourceNote: row.source_note ?? null,
+  });
+  return result.success ? Object.freeze(result.data) : null;
+}
 
 function isDenied(value: unknown): boolean {
   return Boolean(value && typeof value === "object" && "ok" in value && (value as { ok?: unknown }).ok === false);
@@ -86,37 +111,34 @@ async function governedSummary(
   scope: AuthorizedChildScope,
   signal: AbortSignal,
 ): Promise<Readonly<Omit<import("./routes/anthropometry.ts").GrowthSummaryResponse, "version" | "requestId">> | null> {
-  if (signal.aborted) return null;
+  if (signal.aborted || !hasPermission(scope, "read")) return null;
   const resolvedPackage = await createGrowthPackageProvider(client).resolve({ scope, referenceDate: localDate(new Date().toISOString(), scope.timezone), signal });
-  if (!resolvedPackage) return null;
+  if (signal.aborted || !resolvedPackage) return null;
   const [childResult, measurementsResult] = await Promise.all([
     client.from("children").select("date_of_birth, sex_for_growth, country_of_care, time_zone, gestational_age_weeks, gestational_age_days")
       .eq("id", scope.childId).eq("care_space_id", scope.careSpaceId).eq("status", "active").maybeSingle(),
     client.from("anthropometric_measurements")
-      .select("id, measurement_type, normalized_value_lexeme, normalized_unit, occurred_at, measurement_method")
+      .select(MEASUREMENT_COLUMNS)
       .eq("child_id", scope.childId).eq("care_space_id", scope.careSpaceId).eq("validation_status", "confirmed")
       .order("occurred_at", { ascending: false }).order("id", { ascending: false }).limit(48),
   ]);
-  if (signal.aborted || childResult.error || measurementsResult.error || !childResult.data || !Array.isArray(measurementsResult.data)) return null;
+  if (signal.aborted || !hasPermission(scope, "read") || childResult.error || measurementsResult.error || !childResult.data || !Array.isArray(measurementsResult.data)) return null;
   const child = childResult.data as unknown as Record<string, unknown>;
   if (typeof child.date_of_birth !== "string"
     || (child.sex_for_growth !== "female" && child.sex_for_growth !== "male")
     || (child.country_of_care !== "CO" && child.country_of_care !== "US")
     || typeof child.time_zone !== "string") return null;
   const measurements: GovernedGrowthMeasurement[] = [];
-  for (const row of measurementsResult.data as unknown as Array<Record<string, unknown>>) {
-    if (typeof row.id !== "string" || typeof row.measurement_type !== "string"
-      || typeof row.normalized_value_lexeme !== "string" || (row.normalized_unit !== "kg" && row.normalized_unit !== "cm")
-      || typeof row.occurred_at !== "string" || typeof row.measurement_method !== "string") continue;
-    if (!["weight", "recumbent_length", "standing_height", "head_circumference"].includes(row.measurement_type)) continue;
-    if (!["digital_scale", "mechanical_scale", "length_board", "stadiometer", "tape_measure", "unknown"].includes(row.measurement_method)) continue;
+  for (const row of measurementsResult.data) {
+    const measurement = historicalMeasurement(scope, row);
+    if (!measurement) return null;
     measurements.push({
-      id: row.id,
-      measurementType: row.measurement_type as GovernedGrowthMeasurement["measurementType"],
-      value: row.normalized_value_lexeme,
-      unit: row.normalized_unit,
-      occurredAt: row.occurred_at,
-      measurementMethod: row.measurement_method as GovernedGrowthMeasurement["measurementMethod"],
+      id: measurement.id,
+      measurementType: measurement.measurementType,
+      value: measurement.value,
+      unit: measurement.unit,
+      occurredAt: measurement.occurredAt,
+      measurementMethod: measurement.measurementMethod,
     });
   }
   if (child.country_of_care !== scope.countryOfCare) return null;
@@ -162,7 +184,8 @@ export function createSupabaseAnthropometryPersistence(input: Readonly<{
           provenanceType: request.measurement.provenanceType ?? "guardian",
         });
         const confirmed = confirmation(now, request, scope);
-        const result = await client.rpc("record_confirmed_anthropometry_with_note" as never, {
+        const hasSourceNote = request.measurement.sourceNote !== undefined;
+        const result = await client.rpc((hasSourceNote ? "record_confirmed_anthropometry_with_note" : "record_confirmed_anthropometry") as never, {
           p_care_space_id: scope.careSpaceId,
           p_child_id: scope.childId,
           p_idempotency_key: idempotencyKey,
@@ -188,12 +211,14 @@ export function createSupabaseAnthropometryPersistence(input: Readonly<{
           p_assessments: [],
           p_supersedes_measurement_id: null,
           p_supersession_reason: null,
-          p_source_note: request.measurement.sourceNote ?? null,
+          ...(hasSourceNote ? { p_source_note: request.measurement.sourceNote } : {}),
         } as never);
         if (result.error) {
           if (result.error.message.includes("idempotency_conflict")) return { code: "IDEMPOTENCY_CONFLICT" } satisfies PersistenceResult;
           if (result.error.message.includes("confirmation_invalid")) return { code: "CONFIRMATION_INVALID" } satisfies PersistenceResult;
-          return { code: "PERSISTENCE_UNAVAILABLE" } satisfies PersistenceResult;
+          const diagnosticCode = /^(?:[0-9A-Z]{5}|PGRST[0-9]{3})$/u.test(result.error.code)
+            ? result.error.code : undefined;
+          return { code: "PERSISTENCE_UNAVAILABLE", ...(diagnosticCode ? { diagnosticCode } : {}) } satisfies PersistenceResult;
         }
         const row = Array.isArray(result.data) ? result.data[0] as { measurement_id?: unknown; outcome?: unknown } | undefined : undefined;
         if (!row || typeof row.measurement_id !== "string" || (row.outcome !== "created" && row.outcome !== "idempotent_replay")) return { code: "PERSISTENCE_UNAVAILABLE" } satisfies PersistenceResult;
@@ -206,21 +231,20 @@ export function createSupabaseAnthropometryPersistence(input: Readonly<{
       }
     },
     async list(scope, auth, query, signal) {
-      if (signal.aborted) return null;
+      if (signal.aborted || !hasPermission(scope, "read")) return null;
       const result = await client.from("anthropometric_measurements")
-        .select("id")
+        .select(MEASUREMENT_COLUMNS)
         .eq("care_space_id", scope.careSpaceId)
         .eq("child_id", scope.childId)
         .eq("validation_status", "confirmed")
         .order("occurred_at", { ascending: false })
         .limit(100);
-      if (result.error || !Array.isArray(result.data)) return null;
+      if (signal.aborted || !hasPermission(scope, "read") || result.error || !Array.isArray(result.data)) return null;
       const measurements: AnthropometryRouteMeasurement[] = [];
-      for (const row of result.data as Array<{ id?: unknown }>) {
-        if (typeof row.id !== "string") continue;
-        const stored = await repository.getConfirmed(scope, row.id, auth.requestId, signal);
-        const measurement = toRouteMeasurement(stored);
-        if (measurement) measurements.push(measurement);
+      for (const row of result.data) {
+        const measurement = historicalMeasurement(scope, row);
+        if (!measurement) return null;
+        measurements.push(measurement);
       }
       return measurements;
     },
