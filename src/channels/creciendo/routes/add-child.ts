@@ -31,7 +31,7 @@ export function mapAddChildPersistenceError(message: string): AddChildErrorCode 
   if (message.includes("add_child_forbidden")) return "FORBIDDEN";
   if (message.includes("add_child_consent_required")) return "CONSENT_REQUIRED";
   if (message.includes("not_authenticated")) return "UNAUTHORIZED";
-  if (message.includes("add_child_request_invalid") || message.includes("children_birth_weight_grams_check")) return "INVALID_REQUEST";
+  if (message.includes("add_child_request_invalid") || message.includes("onboarding_request_invalid") || message.includes("children_birth_weight_grams_check")) return "INVALID_REQUEST";
   return "SERVICE_UNAVAILABLE";
 }
 
@@ -40,13 +40,15 @@ export function createRpcAddChildPersistence(config: Pick<RuntimeConfig, "supaba
     if (input.signal.aborted) return { error: "SERVICE_UNAVAILABLE" };
     try {
       const request = input.request; const child = request.child; const client = createRequestSupabaseClient({ config, accessToken: input.accessToken });
-      const result = await client.rpc("create_child_in_care_space" as never, {
+      const hasDimensions = child.birthLengthCm !== undefined || child.birthHeadCircumferenceCm !== undefined;
+      const result = await client.rpc((hasDimensions ? "create_child_in_care_space_with_birth_measurements" : "create_child_in_care_space") as never, {
         p_request_sha256: fingerprint(request), p_idempotency_key: request.idempotencyKey, p_care_space_id: request.careSpaceId,
         p_given_names: child.givenNames, p_family_names: child.familyNames, p_preferred_name: child.preferredName,
         p_birth_date: child.birthDate, p_time_of_birth: child.timeOfBirth, p_birth_time_zone: child.birthTimeZone,
         p_reference_sex: child.referenceSex, p_country_of_care: child.countryOfCare, p_timezone: child.timezone,
         p_is_premature: child.isPremature, p_gestational_age_weeks: child.gestationalAgeWeeks,
         p_gestational_age_days: child.gestationalAgeDays, p_birth_weight_grams: child.birthWeightGrams, p_allergies: child.allergies,
+        ...(hasDimensions ? { p_birth_length_cm: child.birthLengthCm ?? null, p_birth_head_circumference_cm: child.birthHeadCircumferenceCm ?? null } : {}),
       } as never);
       if (result.error) return { error: mapAddChildPersistenceError(result.error.message) };
       const row = (Array.isArray(result.data) ? result.data[0] : result.data) as Record<string, unknown> | undefined;

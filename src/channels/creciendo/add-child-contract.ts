@@ -29,6 +29,8 @@ export const ADD_CHILD_REQUEST_SCHEMA = z.object({
     gestationalAgeWeeks: z.number().int().min(20).max(44).nullable(),
     gestationalAgeDays: z.number().int().min(0).max(6).nullable().default(null),
     birthWeightGrams: z.number().min(200).max(8_000).nullable().default(null),
+    birthLengthCm: z.number().positive().max(999.99).refine((value) => Number(value.toFixed(2)) === value).optional(),
+    birthHeadCircumferenceCm: z.number().positive().max(999.99).refine((value) => Number(value.toFixed(2)) === value).optional(),
     allergies: z.array(boundedText(120)).max(20),
   }).strict().superRefine((value, context) => {
     if (value.isPremature && value.gestationalAgeWeeks === null) context.addIssue({ code: z.ZodIssueCode.custom, path: ["gestationalAgeWeeks"], message: "required_for_prematurity" });

@@ -21,6 +21,12 @@ const VALID = {
 } as const;
 
 describe("Creciendo onboarding contract", () => {
+  test("accepts optional birth dimensions without supplying missing facts or dates", () => {
+    const result = ONBOARDING_REQUEST_SCHEMA.parse({ ...VALID, child: { ...VALID.child, birthLengthCm: 49.5, birthHeadCircumferenceCm: 34.2 } });
+    expect(result.child).toMatchObject({ birthLengthCm: 49.5, birthHeadCircumferenceCm: 34.2, timeOfBirth: null });
+    expect(ONBOARDING_REQUEST_SCHEMA.parse(VALID).child).not.toHaveProperty("birthLengthCm");
+    expect(ONBOARDING_REQUEST_SCHEMA.safeParse({ ...VALID, child: { ...VALID.child, birthLengthCm: 0 } }).success).toBe(false);
+  });
   test("accepts the closed request and rejects authority fields", () => {
     expect(ONBOARDING_REQUEST_SCHEMA.safeParse(VALID).success).toBe(true);
     expect(ONBOARDING_REQUEST_SCHEMA.safeParse({ ...VALID, guardianId: "forged" }).success).toBe(false);

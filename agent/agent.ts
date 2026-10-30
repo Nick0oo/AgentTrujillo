@@ -13,5 +13,6 @@ export default defineAgent({
   model: createPrimaryGoogleModel(runtimeConfig),
   modelContextWindowTokens: 200_000,
   ...AGENT_RUNTIME_POLICY,
+  experimental: { workflow: { world: '@creciendo/workflow-world-local' } },
 });
 

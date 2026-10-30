@@ -46,6 +46,8 @@ describe("direct Gemini provider", () => {
     expect(source).not.toMatch(/openrouter/i);
     expect(source).not.toMatch(/google\//i);
     expect(source).not.toMatch(/gemini-[^\s"']+-latest/i);
-    expect(source).not.toMatch(/preview|experimental/i);
+    // Eve's storage configuration lives under `experimental`; provider IDs must
+    // still be stable. Check model literals rather than unrelated option keys.
+    expect(source).not.toMatch(/gemini-[^\s"']*(?:preview|experimental)/i);
   });
 });

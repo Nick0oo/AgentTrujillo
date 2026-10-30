@@ -85,7 +85,8 @@ describe("Eve discovery gate", () => {
     expect(discovery.fixtureFileForBaseline("module-01")).toBe("eve-info-module-01.json");
     expect(discovery.fixtureFileForBaseline("module-10")).toBe("eve-info-module-10.json");
     expect(discovery.fixtureFileForBaseline("module-11")).toBe("eve-info-module-11.json");
-    expect(discovery.DEFAULT_DISCOVERY_BASELINE).toBe("module-11");
+    expect(discovery.fixtureFileForBaseline("account-lifecycle")).toBe("eve-info-account-lifecycle.json");
+    expect(discovery.DEFAULT_DISCOVERY_BASELINE).toBe("account-lifecycle");
     expect(() => discovery.fixtureFileForBaseline("module-12")).toThrow();
   });
 

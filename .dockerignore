@@ -1,6 +1,9 @@
 *
 !package.json
 !package-lock.json
+!packages/
+!packages/workflow-world-local/
+!packages/workflow-world-local/**
 !tsconfig.json
 !agent/
 !agent/**

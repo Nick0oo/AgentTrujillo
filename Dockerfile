@@ -2,6 +2,7 @@ FROM node:24.19.0-bookworm-slim@sha256:a9f5f7c91a432850b2a8a7797adf5eadb6c733cee
 WORKDIR /app
 
 COPY package.json package-lock.json ./
+COPY packages/workflow-world-local ./packages/workflow-world-local
 RUN --mount=type=cache,target=/root/.npm \
     npm ci --no-audit --no-fund --maxsockets=4 --fetch-retries=4
 COPY . .
@@ -30,6 +31,12 @@ ENV NODE_ENV=production \
 
 COPY --from=build --chown=node:node /app/.output ./.output
 COPY --from=build --chown=node:node /app/.eve ./.eve
+# The private World adapter uses the exact Eve-vendored protocol, which differs
+# from the top-level workflow dependency. Ship that factory and its licensed
+# bundled dependencies; never resolve it to an unrelated installed World.
+COPY --from=build --chown=node:node /app/packages/workflow-world-local ./.output/server/node_modules/@creciendo/workflow-world-local
+COPY --from=build --chown=node:node /app/node_modules/eve/package.json ./.output/server/node_modules/eve/package.json
+COPY --from=build --chown=node:node /app/node_modules/eve/dist/src/compiled ./.output/server/node_modules/eve/dist/src/compiled
 # Ship the exact, reviewed clinical files used by the compiled server. Dataset
 # loaders and the governed provider verify their checksums before evaluation.
 COPY --from=build --chown=node:node /app/src/clinical/anthropometry ./src/clinical/anthropometry
