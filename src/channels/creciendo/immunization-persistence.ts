@@ -25,7 +25,9 @@ const DRAFT_TTL_MS = 5 * 60 * 1000;
 const HASH = /^[a-f0-9]{64}$/u;
 
 type Client = ReturnType<typeof createRequestSupabaseClient>;
-type AdministrationRow = import("../../persistence/supabase/database.types.ts").Database["public"]["Tables"]["vaccine_administrations"]["Row"];
+// The optional draft migration is not active in Cloud. Keep its existing
+// fail-closed boundary separate from the authoritative generated live schema.
+type AdministrationRow = import("../../persistence/supabase/database.types.ts").Database["public"]["Tables"]["vaccine_administrations"]["Row"] & { draft_expires_at?: string | null };
 
 function hash(value: unknown): Sha256Hex {
   return createHash("sha256").update(canonicalize(value), "utf8").digest("hex") as Sha256Hex;
@@ -118,7 +120,7 @@ export function createSupabaseImmunizationAdministrationDraftCommand(input: Read
       const extracted = { administeredOn: parseCalendarDate(commandInput.declaration.administeredOn), product: { productCode: resolved.product.productCode }, ...(commandInput.declaration.doseLabel ? { doseLabel: commandInput.declaration.doseLabel } : {}), ...(commandInput.declaration.lotNumber ? { lotNumber: commandInput.declaration.lotNumber } : {}), ...(commandInput.declaration.location ? { administrationSite: commandInput.declaration.location } : {}), provenanceType: "guardian" as const };
       const draftId = randomUUID();
       const draft = { draftId, scope: administrationScope, evidence, extracted, confirmationDigest: hash({ scope: administrationScope, evidence, extracted, expiresAt }), expiresAt } as AdministrationDraft;
-      const { data, error } = await client.rpc("create_vaccine_administration_draft", {
+      const { data, error } = await client.rpc("create_vaccine_administration_draft" as never, {
         p_care_space_id: commandInput.scope.careSpaceId, p_child_id: commandInput.scope.childId, p_vaccine_product_id: resolved.product.id,
         p_administered_on: commandInput.declaration.administeredOn, p_dose_label: commandInput.declaration.doseLabel ?? null, p_lot_number: commandInput.declaration.lotNumber ?? null, p_administration_site: commandInput.declaration.location ?? null,
         p_country_code: commandInput.scope.countryOfCare, p_provenance_type: "guardian", p_source_digest: evidence.sourceDigest,

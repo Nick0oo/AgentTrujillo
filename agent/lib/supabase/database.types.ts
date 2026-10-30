@@ -7,6 +7,11 @@ export type Json =
   | Json[]
 
 export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "14.5"
+  }
   public: {
     Tables: {
       agent_commands: {
@@ -221,6 +226,7 @@ export type Database = {
           normalized_unit: string
           normalized_value: number
           normalized_value_lexeme: string | null
+          notes: string | null
           occurred_at: string
           original_unit: string
           original_value: number
@@ -257,6 +263,7 @@ export type Database = {
           normalized_unit: string
           normalized_value: number
           normalized_value_lexeme?: string | null
+          notes?: string | null
           occurred_at: string
           original_unit: string
           original_value: number
@@ -293,6 +300,7 @@ export type Database = {
           normalized_unit?: string
           normalized_value?: number
           normalized_value_lexeme?: string | null
+          notes?: string | null
           occurred_at?: string
           original_unit?: string
           original_value?: number
@@ -714,6 +722,8 @@ export type Database = {
       }
       children: {
         Row: {
+          birth_head_circumference_cm: number | null
+          birth_length_cm: number | null
           birth_time_zone: string | null
           birth_weight_grams: number | null
           care_space_id: string
@@ -734,6 +744,8 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          birth_head_circumference_cm?: number | null
+          birth_length_cm?: number | null
           birth_time_zone?: string | null
           birth_weight_grams?: number | null
           care_space_id: string
@@ -754,6 +766,8 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          birth_head_circumference_cm?: number | null
+          birth_length_cm?: number | null
           birth_time_zone?: string | null
           birth_weight_grams?: number | null
           care_space_id?: string
@@ -2999,31 +3013,52 @@ export type Database = {
       }
       guardian_profiles: {
         Row: {
+          ai_consent_accepted: boolean
+          ai_consent_accepted_at: string | null
+          ai_consent_version: string | null
           created_at: string
           display_name: string
           locale: string
           onboarding_completed_at: string | null
           phone_e164: string | null
+          privacy_accepted: boolean | null
+          privacy_accepted_at: string | null
+          terms_accepted: boolean | null
+          terms_accepted_at: string | null
           time_zone: string
           updated_at: string
           user_id: string
         }
         Insert: {
+          ai_consent_accepted?: boolean
+          ai_consent_accepted_at?: string | null
+          ai_consent_version?: string | null
           created_at?: string
           display_name: string
           locale?: string
           onboarding_completed_at?: string | null
           phone_e164?: string | null
+          privacy_accepted?: boolean | null
+          privacy_accepted_at?: string | null
+          terms_accepted?: boolean | null
+          terms_accepted_at?: string | null
           time_zone?: string
           updated_at?: string
           user_id: string
         }
         Update: {
+          ai_consent_accepted?: boolean
+          ai_consent_accepted_at?: string | null
+          ai_consent_version?: string | null
           created_at?: string
           display_name?: string
           locale?: string
           onboarding_completed_at?: string | null
           phone_e164?: string | null
+          privacy_accepted?: boolean | null
+          privacy_accepted_at?: string | null
+          terms_accepted?: boolean | null
+          terms_accepted_at?: string | null
           time_zone?: string
           updated_at?: string
           user_id?: string
@@ -4062,183 +4097,6 @@ export type Database = {
           },
         ]
       }
-      projection_checkpoints: {
-        Row: {
-          care_space_id: string
-          child_id: string
-          last_sequence: number
-          owner_user_id: string
-          product_session_id: string
-          projector_name: string
-          projector_version: string
-          updated_at: string
-        }
-        Insert: {
-          care_space_id: string
-          child_id: string
-          last_sequence?: number
-          owner_user_id: string
-          product_session_id: string
-          projector_name: string
-          projector_version: string
-          updated_at?: string
-        }
-        Update: {
-          care_space_id?: string
-          child_id?: string
-          last_sequence?: number
-          owner_user_id?: string
-          product_session_id?: string
-          projector_name?: string
-          projector_version?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "projection_checkpoint_child_fk"
-            columns: ["care_space_id", "child_id"]
-            isOneToOne: false
-            referencedRelation: "children"
-            referencedColumns: ["care_space_id", "id"]
-          },
-        ]
-      }
-      projection_inbox: {
-        Row: {
-          attempt_count: number
-          care_space_id: string
-          child_id: string
-          claimed_at: string
-          completed_at: string | null
-          created_at: string
-          id: number
-          input_sha256: string
-          last_error_code: string | null
-          owner_user_id: string
-          product_session_id: string
-          projector_name: string
-          projector_version: string
-          result_sha256: string | null
-          source_event_id: string
-          source_event_version: string
-          source_sequence: number
-          status: string
-          updated_at: string
-        }
-        Insert: {
-          attempt_count?: number
-          care_space_id: string
-          child_id: string
-          claimed_at?: string
-          completed_at?: string | null
-          created_at?: string
-          id?: never
-          input_sha256: string
-          last_error_code?: string | null
-          owner_user_id: string
-          product_session_id: string
-          projector_name: string
-          projector_version: string
-          result_sha256?: string | null
-          source_event_id: string
-          source_event_version: string
-          source_sequence: number
-          status?: string
-          updated_at?: string
-        }
-        Update: {
-          attempt_count?: number
-          care_space_id?: string
-          child_id?: string
-          claimed_at?: string
-          completed_at?: string | null
-          created_at?: string
-          id?: never
-          input_sha256?: string
-          last_error_code?: string | null
-          owner_user_id?: string
-          product_session_id?: string
-          projector_name?: string
-          projector_version?: string
-          result_sha256?: string | null
-          source_event_id?: string
-          source_event_version?: string
-          source_sequence?: number
-          status?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "projection_inbox_child_fk"
-            columns: ["care_space_id", "child_id"]
-            isOneToOne: false
-            referencedRelation: "children"
-            referencedColumns: ["care_space_id", "id"]
-          },
-        ]
-      }
-      projection_quarantine: {
-        Row: {
-          care_space_id: string
-          child_id: string
-          created_at: string
-          error_code: string | null
-          id: number
-          input_sha256: string
-          metadata_redacted: Json
-          owner_user_id: string
-          product_session_id: string
-          projector_name: string
-          projector_version: string
-          reason: string
-          source_event_id: string
-          source_event_version: string
-          source_sequence: number
-        }
-        Insert: {
-          care_space_id: string
-          child_id: string
-          created_at?: string
-          error_code?: string | null
-          id?: never
-          input_sha256: string
-          metadata_redacted?: Json
-          owner_user_id: string
-          product_session_id: string
-          projector_name: string
-          projector_version: string
-          reason: string
-          source_event_id: string
-          source_event_version: string
-          source_sequence: number
-        }
-        Update: {
-          care_space_id?: string
-          child_id?: string
-          created_at?: string
-          error_code?: string | null
-          id?: never
-          input_sha256?: string
-          metadata_redacted?: Json
-          owner_user_id?: string
-          product_session_id?: string
-          projector_name?: string
-          projector_version?: string
-          reason?: string
-          source_event_id?: string
-          source_event_version?: string
-          source_sequence?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "projection_quarantine_child_fk"
-            columns: ["care_space_id", "child_id"]
-            isOneToOne: false
-            referencedRelation: "children"
-            referencedColumns: ["care_space_id", "id"]
-          },
-        ]
-      }
       purchases: {
         Row: {
           billing_product_id: string
@@ -4303,63 +4161,6 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "billing_events"
             referencedColumns: ["id"]
-          },
-        ]
-      }
-      realtime_invalidations: {
-        Row: {
-          care_space_id: string
-          child_id: string
-          created_at: string
-          expires_at: string
-          id: number
-          resource_id: string
-          resource_kind: string
-          resource_version: number
-          sequence: number
-          session_id: string | null
-          source_event_id: string
-        }
-        Insert: {
-          care_space_id: string
-          child_id: string
-          created_at?: string
-          expires_at?: string
-          id?: never
-          resource_id: string
-          resource_kind: string
-          resource_version: number
-          sequence: number
-          session_id?: string | null
-          source_event_id: string
-        }
-        Update: {
-          care_space_id?: string
-          child_id?: string
-          created_at?: string
-          expires_at?: string
-          id?: never
-          resource_id?: string
-          resource_kind?: string
-          resource_version?: number
-          sequence?: number
-          session_id?: string | null
-          source_event_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "realtime_invalidations_child_fk"
-            columns: ["care_space_id", "child_id"]
-            isOneToOne: false
-            referencedRelation: "children"
-            referencedColumns: ["care_space_id", "id"]
-          },
-          {
-            foreignKeyName: "realtime_invalidations_session_fk"
-            columns: ["session_id", "care_space_id", "child_id"]
-            isOneToOne: false
-            referencedRelation: "agent_sessions"
-            referencedColumns: ["id", "care_space_id", "child_id"]
           },
         ]
       }
@@ -4524,6 +4325,27 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      system_configurations: {
+        Row: {
+          description: string | null
+          key: string
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          description?: string | null
+          key: string
+          updated_at?: string
+          value: string
+        }
+        Update: {
+          description?: string | null
+          key?: string
+          updated_at?: string
+          value?: string
+        }
+        Relationships: []
       }
       tool_executions: {
         Row: {
@@ -4892,7 +4714,6 @@ export type Database = {
           country_code: string
           created_at: string
           dose_label: string | null
-          draft_expires_at: string | null
           id: string
           idempotency_key: string
           input_fingerprint: string | null
@@ -4921,7 +4742,6 @@ export type Database = {
           country_code: string
           created_at?: string
           dose_label?: string | null
-          draft_expires_at?: string | null
           id?: string
           idempotency_key: string
           input_fingerprint?: string | null
@@ -4950,7 +4770,6 @@ export type Database = {
           country_code?: string
           created_at?: string
           dose_label?: string | null
-          draft_expires_at?: string | null
           id?: string
           idempotency_key?: string
           input_fingerprint?: string | null
@@ -5225,6 +5044,22 @@ export type Database = {
           turn_id: string
         }[]
       }
+      account_deletion_archive_scope: {
+        Args: { p_job: string; p_lease: string }
+        Returns: Json
+      }
+      account_deletion_batch: {
+        Args: { p_job: string; p_lease: string; p_limit?: number }
+        Returns: Json
+      }
+      ack_account_deletion_archive: {
+        Args: { p_job: string; p_lease: string; p_phase: string }
+        Returns: undefined
+      }
+      ack_account_deletion_objects: {
+        Args: { p_ids: string[]; p_job: string; p_lease: string }
+        Returns: undefined
+      }
       append_creciendo_channel_event: {
         Args: {
           p_authorization_version: string
@@ -5247,22 +5082,6 @@ export type Database = {
           occurred_at: string
           outcome: string
           sequence: number
-        }[]
-      }
-      append_realtime_invalidation: {
-        Args: {
-          p_care_space_id: string
-          p_child_id: string
-          p_resource_id: string
-          p_resource_kind: string
-          p_resource_version: number
-          p_session_id: string
-          p_source_event_id: string
-        }
-        Returns: {
-          invalidation_id: number
-          invalidation_sequence: number
-          outcome: string
         }[]
       }
       bind_owned_eve_session: {
@@ -5328,28 +5147,7 @@ export type Database = {
           source_span_start: number
         }[]
       }
-      claim_projection_source: {
-        Args: {
-          p_care_space_id: string
-          p_child_id: string
-          p_input_sha256: string
-          p_owner_user_id: string
-          p_product_session_id: string
-          p_projector_name: string
-          p_projector_version: string
-          p_source_event_id: string
-          p_source_event_version: string
-          p_source_sequence: number
-        }
-        Returns: {
-          claim_status: string
-          inbox_id: number
-        }[]
-      }
-      complete_projection_source: {
-        Args: { p_inbox_id: number; p_result_sha256?: string }
-        Returns: boolean
-      }
+      claim_account_deletion_job: { Args: never; Returns: Json }
       correct_medication_intake: {
         Args: {
           p_actual_quantity_lexeme: string
@@ -5369,6 +5167,62 @@ export type Database = {
         Returns: {
           intake_id: string
           outcome: string
+        }[]
+      }
+      create_child_in_care_space: {
+        Args: {
+          p_allergies: string[]
+          p_birth_date: string
+          p_birth_time_zone: string
+          p_birth_weight_grams: number
+          p_care_space_id: string
+          p_country_of_care: string
+          p_family_names: string
+          p_gestational_age_days: number
+          p_gestational_age_weeks: number
+          p_given_names: string
+          p_idempotency_key: string
+          p_is_premature: boolean
+          p_preferred_name: string
+          p_reference_sex: string
+          p_request_sha256: string
+          p_time_of_birth: string
+          p_timezone: string
+        }
+        Returns: {
+          care_space_id: string
+          child_id: string
+          outcome: string
+          resource_version: number
+        }[]
+      }
+      create_child_in_care_space_with_birth_measurements: {
+        Args: {
+          p_allergies: string[]
+          p_birth_date: string
+          p_birth_head_circumference_cm: number
+          p_birth_length_cm: number
+          p_birth_time_zone: string
+          p_birth_weight_grams: number
+          p_care_space_id: string
+          p_country_of_care: string
+          p_family_names: string
+          p_gestational_age_days: number
+          p_gestational_age_weeks: number
+          p_given_names: string
+          p_idempotency_key: string
+          p_is_premature: boolean
+          p_preferred_name: string
+          p_reference_sex: string
+          p_request_sha256: string
+          p_time_of_birth: string
+          p_timezone: string
+        }
+        Returns: {
+          care_space_id: string
+          child_id: string
+          outcome: string
+          resource_version: number
         }[]
       }
       create_onboarding:
@@ -5428,6 +5282,39 @@ export type Database = {
               resource_version: number
             }[]
           }
+      create_onboarding_with_birth_measurements: {
+        Args: {
+          p_allergies: string[]
+          p_birth_date: string
+          p_birth_head_circumference_cm: number
+          p_birth_length_cm: number
+          p_birth_time_zone: string
+          p_birth_weight_grams: number
+          p_care_space_name: string
+          p_consent_jurisdiction: string
+          p_consent_locale: string
+          p_consent_type: string
+          p_country_of_care: string
+          p_family_names: string
+          p_gestational_age_days: number
+          p_gestational_age_weeks: number
+          p_given_names: string
+          p_guardian_relationship: string
+          p_idempotency_key: string
+          p_is_premature: boolean
+          p_preferred_name: string
+          p_reference_sex: string
+          p_request_sha256: string
+          p_time_of_birth: string
+          p_timezone: string
+        }
+        Returns: {
+          care_space_id: string
+          child_id: string
+          outcome: string
+          resource_version: number
+        }[]
+      }
       create_owned_agent_session: {
         Args: {
           p_authorization_expires_at: string
@@ -5517,6 +5404,7 @@ export type Database = {
           valid_until: string
         }[]
       }
+      delete_user_account: { Args: never; Returns: undefined }
       enqueue_expired_memory_deletions: {
         Args: { p_cutoff_at: string; p_limit?: number }
         Returns: {
@@ -5541,22 +5429,6 @@ export type Database = {
           outcome: string
           request_id: string
           status: string
-        }[]
-      }
-      fail_projection_source: {
-        Args: { p_error_code: string; p_inbox_id: number }
-        Returns: boolean
-      }
-      finalize_creciendo_document_upload: {
-        Args: {
-          p_actual_sha256: string
-          p_actual_size_bytes: number
-          p_detected_mime_type: string
-          p_token_sha256: string
-        }
-        Returns: {
-          document_id: string
-          outcome: string
         }[]
       }
       finalize_creciendo_session_cancel: {
@@ -5616,22 +5488,9 @@ export type Database = {
           valid_until: string
         }[]
       }
-      get_creciendo_upload_ticket: {
-        Args: { p_token_sha256: string }
-        Returns: {
-          bucket_id: string
-          care_space_id: string
-          child_id: string
-          document_id: string
-          expected_mime_type: string
-          expected_sha256: string
-          expected_size_bytes: number
-          expires_at: string
-          object_path: string
-          storage_status: string
-          ticket_id: string
-          used_at: string
-        }[]
+      get_system_configuration: {
+        Args: { config_key: string }
+        Returns: string
       }
       list_confirmed_memory: {
         Args: {
@@ -5768,15 +5627,6 @@ export type Database = {
           outcome: string
         }[]
       }
-      quarantine_projection_source: {
-        Args: {
-          p_error_code?: string
-          p_inbox_id: number
-          p_metadata_redacted?: Json
-          p_reason: string
-        }
-        Returns: boolean
-      }
       read_owned_creciendo_events: {
         Args: {
           p_after_sequence: number
@@ -5829,31 +5679,6 @@ export type Database = {
         Returns: {
           assessment_ids: string[]
           measurement_id: string
-          outcome: string
-        }[]
-      }
-      create_vaccine_administration_draft: {
-        Args: {
-          p_administration_site: string
-          p_administered_on: string
-          p_care_space_id: string
-          p_catalog_digest: string
-          p_catalog_version: string
-          p_child_id: string
-          p_confirmation_sha256: string
-          p_country_code: string
-          p_dose_label: string
-          p_draft_expires_at: string
-          p_idempotency_key: string
-          p_input_fingerprint: string
-          p_lot_number: string
-          p_provenance_type: string
-          p_source_digest: string
-          p_vaccine_product_id: string
-        }
-        Returns: {
-          draft_expires_at: string
-          draft_id: string
           outcome: string
         }[]
       }
@@ -6025,25 +5850,13 @@ export type Database = {
           status: string
         }[]
       }
-      register_creciendo_document_transfer_ticket: {
-        Args: {
-          p_care_space_id: string
-          p_child_id: string
-          p_document_id: string
-          p_expected_mime_type: string
-          p_expected_sha256: string
-          p_expected_size_bytes: number
-          p_expires_at: string
-          p_idempotency_key: string
-          p_kind: string
-          p_nonce_sha256: string
-          p_token_sha256: string
-        }
-        Returns: {
-          nonce_sha256: string
-          outcome: string
-          ticket_id: string
-        }[]
+      release_account_deletion_job: {
+        Args: { p_failed: boolean; p_job: string; p_lease: string }
+        Returns: undefined
+      }
+      request_account_deletion: {
+        Args: { p_idempotency_key: string }
+        Returns: Json
       }
       request_memory_deletion: {
         Args: {
@@ -6064,32 +5877,6 @@ export type Database = {
           outcome: string
           request_id: string
           status: string
-        }[]
-      }
-      reserve_creciendo_document_object: {
-        Args: {
-          p_authorization_version: string
-          p_care_space_id: string
-          p_child_id: string
-          p_declared_mime_type: string
-          p_display_name: string
-          p_expected_sha256: string
-          p_expected_size_bytes: number
-          p_idempotency_key: string
-          p_purpose: string
-          p_request_sha256: string
-          p_retention_class: string
-        }
-        Returns: {
-          bucket_id: string
-          declared_mime_type: string
-          document_id: string
-          expected_sha256: string
-          expected_size_bytes: number
-          object_path: string
-          outcome: string
-          reservation_expires_at: string
-          storage_status: string
         }[]
       }
       reserve_document_object: {
@@ -6186,6 +5973,15 @@ export type Database = {
           plan_id: string
         }[]
       }
+      update_registered_birth_measurements: {
+        Args: {
+          p_birth_head_circumference_cm?: number
+          p_birth_length_cm?: number
+          p_birth_weight_grams?: number
+          p_child_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never
@@ -6204,12 +6000,12 @@ export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
         DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -6233,11 +6029,11 @@ export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -6258,11 +6054,11 @@ export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -6283,11 +6079,11 @@ export type Enums<
   DefaultSchemaEnumNameOrOptions extends
     | keyof DefaultSchema["Enums"]
     | { schema: keyof DatabaseWithoutInternals },
-  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+  EnumName extends (DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaEnumNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -6300,11 +6096,11 @@ export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof DatabaseWithoutInternals },
-  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+  CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-    : never = never,
+    : never) = never,
 > = PublicCompositeTypeNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }

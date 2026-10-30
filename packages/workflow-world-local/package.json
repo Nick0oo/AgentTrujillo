@@ -1,0 +1,1 @@
+{"name":"@creciendo/workflow-world-local","version":"1.0.0","private":true,"type":"module","main":"index.mjs","types":"index.d.ts","exports":{".":{"types":"./index.d.ts","default":"./index.mjs"}},"peerDependencies":{"eve":"0.27.13"}}

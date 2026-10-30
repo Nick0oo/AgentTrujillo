@@ -7,6 +7,7 @@ import {
 } from "eve/channels";
 
 import { loadRuntimeConfig } from "../lib/config/env";
+import { handleAccountDeletion, createAccountDeletionPersistence } from "../../src/channels/creciendo/routes/account-deletion";
 import { ensureProductionToolContextFactoryInstalled } from "../lib/runtime/production-tool-context";
 
 ensureProductionToolContextFactoryInstalled();
@@ -128,11 +129,13 @@ export const CRECIENDO_ROUTE_SPECS = Object.freeze([
   Object.freeze({ method: "GET" as const, path: "/creciendo/v1/immunization/status" }),
   Object.freeze({ method: "POST" as const, path: "/creciendo/v1/immunization/administrations" }),
   Object.freeze({ method: "POST" as const, path: "/creciendo/v1/immunization/administration-drafts" }),
+  Object.freeze({ method: "POST" as const, path: "/creciendo/v1/account/deletion" }),
 ]);
 
 export type CreciendoRouteHandler = HttpRouteDefinition["handler"];
 
 export type CreciendoRouteHandlers = Readonly<{
+  accountDeletion: CreciendoRouteHandler;
   onboarding: CreciendoRouteHandler;
   childDirectory: CreciendoRouteHandler;
   addChild: CreciendoRouteHandler;
@@ -207,7 +210,7 @@ function validateOrigin(origin: string): boolean {
 function validateDependencies(input: CreciendoChannelDependencies): void {
   const handlers = input.handlers;
   if (!handlers
-    || Object.values(handlers).length !== 20
+    || Object.values(handlers).length !== 21
     || Object.values(handlers).some((handler) => typeof handler !== "function")
     || input.allowedOrigins.length > 16
     || new Set(input.allowedOrigins).size !== input.allowedOrigins.length
@@ -392,6 +395,7 @@ export function createCreciendoChannel(dependencies: CreciendoChannelDependencie
       GET(CRECIENDO_ROUTE_SPECS[17].path, boundary(dependencies.handlers.immunizationStatus, { allowedOrigins, timeoutMs, json: false, readBody: false })),
       POST(CRECIENDO_ROUTE_SPECS[18].path, boundary(dependencies.handlers.immunizationAdministration, { allowedOrigins, timeoutMs, json: true })),
       POST(CRECIENDO_ROUTE_SPECS[19].path, boundary(dependencies.handlers.immunizationAdministrationDraft, { allowedOrigins, timeoutMs, json: true })),
+        POST(CRECIENDO_ROUTE_SPECS[20].path, boundary(dependencies.handlers.accountDeletion, { allowedOrigins, timeoutMs, json: true })),
     ],
   });
 }
@@ -641,8 +645,20 @@ const productionOcrDraft: AuthenticatedChannelHandler = (request, auth, args) =>
   handleOcrDraft(request, auth, getProductionDocumentDependencies(request, auth), args);
 const guardedOcrDraft = withProductionChannelAuth(productionOcrDraft);
 
+// A verified, unexpired bearer may replay its own deletion receipt after the
+// profile RLS guard is installed. This route consumes no child/profile authority.
+const guardedAccountDeletion: CreciendoRouteHandler = async (request,args) => {
+  const config=loadRuntimeConfig(process.env);
+  const base=getProductionAuthDependencies();
+  return withChannelAuth(async(req,auth)=>handleAccountDeletion(req,createAccountDeletionPersistence(config,auth)),{
+    ...base,
+    profiles:{async resolveCurrent(){return {locale:'es-CO',timeZone:'UTC',updatedAt:'2026-10-29T00:00:00Z'};}},
+  })(request,args);
+};
+
 export default createCreciendoChannel({
   handlers: {
+    accountDeletion: guardedAccountDeletion,
     onboarding: guardedOnboarding,
     childDirectory: guardedChildDirectory,
     addChild: guardedAddChild,

@@ -33,6 +33,7 @@
     "eval:medication": "node --experimental-strip-types tests/evals/medication.eval.ts"
   },
   "dependencies": {
+    "@creciendo/workflow-world-local": "file:packages/workflow-world-local",
     "@ai-sdk/google": "4.0.44",
     "@supabase/supabase-js": "2.112.3",
     "@vercel/connect": "0.4.2",

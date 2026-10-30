@@ -28,9 +28,10 @@ export const FORBIDDEN_RUNTIME_NAMES = Object.freeze([
   "write_file",
 ]);
 
-export const DEFAULT_DISCOVERY_BASELINE = "module-11";
+export const DEFAULT_DISCOVERY_BASELINE = "account-lifecycle";
 
 export function fixtureFileForBaseline(baseline) {
+  if (baseline === "account-lifecycle") return "eve-info-account-lifecycle.json";
   if (baseline === "module-01") return "eve-info-module-01.json";
   if (baseline === "module-10") return "eve-info-module-10.json";
   if (baseline === "module-11") return "eve-info-module-11.json";

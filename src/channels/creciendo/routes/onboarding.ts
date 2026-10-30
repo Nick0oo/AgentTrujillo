@@ -90,10 +90,11 @@ export async function handleOnboarding(
 }
 
 export function mapPersistenceError(message: string): OnboardingErrorCode {
-  if (message.includes("onboarding_idempotency_conflict")) return "IDEMPOTENCY_CONFLICT";
+  if (message.includes("onboarding_idempotency_conflict") || message.includes("add_child_idempotency_conflict")) return "IDEMPOTENCY_CONFLICT";
   if (message.includes("onboarding_already_exists")) return "ONBOARDING_ALREADY_EXISTS";
   if (message.includes("onboarding_consent_definition_unavailable")) return "SERVICE_UNAVAILABLE";
   if (message.includes("not_authenticated")) return "UNAUTHORIZED";
+  if (message.includes("add_child_forbidden")) return "FORBIDDEN";
   if (
     message.includes("onboarding_request_invalid") ||
     message.includes("children_birth_weight_grams_check")
@@ -109,7 +110,9 @@ export function createRpcOnboardingPersistence(
       if (input.signal.aborted) return { error: "SERVICE_UNAVAILABLE" };
       try {
         const client = createRequestSupabaseClient({ config, accessToken: input.accessToken });
-        const result = await client.rpc("create_onboarding" as never, {
+        const child = input.request.child;
+        const hasDimensions = child.birthLengthCm !== undefined || child.birthHeadCircumferenceCm !== undefined;
+        const result = await client.rpc((hasDimensions ? "create_onboarding_with_birth_measurements" : "create_onboarding") as never, {
           p_request_sha256: requestFingerprint(input.request),
           p_idempotency_key: input.request.idempotencyKey,
           p_care_space_name: input.request.careSpace.name,
@@ -131,6 +134,7 @@ export function createRpcOnboardingPersistence(
           p_birth_time_zone: input.request.child.birthTimeZone,
           p_gestational_age_days: input.request.child.gestationalAgeDays,
           p_birth_weight_grams: input.request.child.birthWeightGrams,
+          ...(hasDimensions ? { p_birth_length_cm: child.birthLengthCm ?? null, p_birth_head_circumference_cm: child.birthHeadCircumferenceCm ?? null } : {}),
         } as never);
         if (result.error) return { error: mapPersistenceError(result.error.message) };
         const row = Array.isArray(result.data) ? result.data[0] : result.data;

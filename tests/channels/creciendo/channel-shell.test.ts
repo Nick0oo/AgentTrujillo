@@ -35,6 +35,7 @@ function handlers(overrides: Partial<CreciendoRouteHandlers> = {}): CreciendoRou
     ocrDraft: ok,
     immunizationAdministration: ok,
     immunizationAdministrationDraft: ok,
+    accountDeletion: ok,
     ...overrides,
   };
 }
@@ -58,7 +59,7 @@ describe("Creciendo Eve channel shell", () => {
   it("mounts the canonical public surface", () => {
     const channel = createCreciendoChannel({ handlers: handlers(), allowedOrigins: [ALLOWED_ORIGIN] });
     expect(channel.routes.map(({ method, path }) => ({ method, path }))).toEqual(CRECIENDO_ROUTE_SPECS);
-    expect(channel.routes).toHaveLength(20);
+    expect(channel.routes).toHaveLength(21);
     expect(channel.routes.some(({ path }) => path.startsWith("/eve/"))).toBe(false);
     expect(channel.receive).toBeUndefined();
     expect(channel.cors).toEqual({
