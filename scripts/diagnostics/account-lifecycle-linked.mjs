@@ -6,7 +6,7 @@ import {normalizeGeneratedTypes,validateGeneratedTypes} from '../generate-databa
 // This helper never reads guardian, child, chat or Storage content.
 const ref='yapjiinrjsrothzgzxsv';
 const mode=process.argv[2]??'preflight';
-if(!['preflight','dry-run','apply','postflight','types','lint'].includes(mode))throw new Error('MODE_INVALID');
+if(!['preflight','dry-run','apply','postflight','types','lint','suspend'].includes(mode))throw new Error('MODE_INVALID');
 const migrations=['20261029210000_onboarding_birth_dimensions','20261029220000_account_deletion_jobs'].map(name=>({name,version:name.slice(0,14),sql:readFileSync(`supabase/migrations/${name}.sql`,'utf8')}));
 const functionNames=migrations.flatMap(m=>[...m.sql.matchAll(/create (?:or replace )?function (?:public|app_private)\.([a-z_]+)/g)].map(match=>match[1]));
 const env=Object.fromEntries([...readFileSync('C:/Users/ACER/Desktop/PROYECTOS/TRUJILL0/AgentTrujillo/.env','utf8').matchAll(/^\s*([A-Z_][A-Z0-9_]*)\s*=\s*(.*)\s*$/gm)].map(m=>[m[1],m[2].replace(/^(['"])(.*)\1$/,'$2').trim()]));
@@ -40,6 +40,15 @@ try{
     emit({migration:version,bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')});
   }
   const row=catalog[0];
+  if(mode==='suspend'){
+    if(!row.deletion_applied||!row.deletion_rpc_exists)throw new Error('ACTIVATION_REQUIRED');
+    const [state]=await api('/database/query/read-only',`select exists(select from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname='public' and c.relkind='r' and not c.relrowsecurity) as prerequisite_missing`);
+    if(!state.prerequisite_missing)throw new Error('SUSPENSION_NOT_REQUIRED');
+    await api('/database/query',`begin; set local lock_timeout='5s'; revoke execute on function public.request_account_deletion(text) from authenticated; commit;`);
+    const [after]=await api('/database/query/read-only',`select not has_function_privilege('authenticated','public.request_account_deletion(text)','execute') as admission_suspended`);
+    if(!after.admission_suspended)throw new Error('SUSPENSION_FAILED');
+    emit(after);process.exit(0);
+  }
   const lintSql=`create extension if not exists plpgsql_check with schema extensions;
     create temporary table account_erasure_filters(rel oid primary key,predicate text) on commit drop;
     select p.proname as function_name,coalesce(c.relname,'') as trigger_table,x.level,x.sqlstate,x.lineno
@@ -93,8 +102,9 @@ try{
         not has_function_privilege('authenticated','public.claim_account_deletion_job()','execute') as worker_denied,
         not has_function_privilege('authenticated','public.ack_account_deletion_archive(uuid,uuid,text)','execute') as archive_ack_denied,
         not has_table_privilege('authenticated','app_private.account_deletion_jobs','select,insert,update,delete') as private_jobs_denied,
-        not exists(select from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname='public' and c.relkind='r' and c.relrowsecurity
-          and not exists(select from pg_policy p where p.polrelid=c.oid and p.polname='account_deletion_denial' and not p.polpermissive)) as pending_rls_covers_all`);
+        exists(select from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname='public' and c.relkind='r')
+        and not exists(select from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname='public' and c.relkind='r'
+          and (not c.relrowsecurity or not exists(select from pg_policy p where p.polrelid=c.oid and p.polname='account_deletion_denial' and not p.polpermissive))) as pending_rls_covers_all`);
       emit({grants});if(!Object.values(grants).every(value=>value===true))throw new Error('POSTFLIGHT_GRANTS_FAILED');
     }
     process.exit(0);
