@@ -145,8 +145,8 @@ The already-approved/applied `20261029200000` published privacy definition is
 likewise reconciled byte-for-byte; it inserts no account consent.
 Do not enable a mobile release that submits the new fields or deletion endpoint
 before its backend is available. No real or supplied QA account is deleted.
-Preview Auth/Storage verification, generated schema types/parity/lint, linked migration review and
-explicit deployment authority remain release gates. Rollback means stopping the
+Hosted Auth/Storage verification, generated schema types/parity/lint and
+the authorized linked migration review now pass. Rollback means stopping the
 schedule/reverting application exposure; completed erasures are not reversible.
 
 Current local evidence: backend build and exact Eve discovery pass with zero
@@ -169,9 +169,52 @@ or clinical data has been deleted. The Linux Docker image builds and its
 networkless production health/auth smoke passes. Read-only Dokploy inspection
 confirms one replica and the expected persistent volume and mount path.
 
-Release candidates 1.0.0 (14) are building on EAS: Android
+Release candidates 1.0.0 (14) finished building on EAS: Android
 89a532ee-657a-408a-9959-080247f06d38 and iOS
 22d14ee3-58b9-41aa-890c-e801d99b5740. Do not install/distribute until the backend
 activation and native artifact checks pass. The supplied QA account is never
-an erasure fixture; hosted end-to-end deletion verification requires a new,
-explicitly disposable synthetic account and separate authority.
+an erasure fixture. The user authorized one newly created exclusively synthetic
+account. Its initial/sibling registration, names, dimensions, replay after profile
+editing and private Storage upload/read passed against the deployed backend.
+
+### Hosted RLS prerequisite repaired
+
+The synthetic account received its deletion receipt but still read its own two
+children. Catalog inspection found 71 of 72 public base tables with RLS disabled;
+the earlier postflight coverage assertion was vacuous. It is corrected to require
+actual RLS on every public base table. No existing accounts were used as fixtures.
+Only this fixture's next attempt was deferred while the prerequisite was repaired.
+New admission was temporarily suspended by reverting the newly granted
+authenticated EXECUTE privilege. The user then explicitly authorized 2300.
+The linked dry-run proved pending denial, active-fixture access, foreign denial
+and active clinical-catalog access, with verified rollback. Activation succeeded:
+all 72 public tables have RLS, pending denial and write guards; no unsafe view is
+present. The self-service grant reopened atomically after those prerequisites.
+
+Forward migration 20261029230000 restores the required RLS and pending-account
+guards while preserving existing scoped policies; active clinical-release catalog
+reads remain available to the governed growth resolver. It also guards definer
+DELETE paths. A networkless fixture first reproduces the disabled-RLS state, then
+applies the repair. SQL tests prove active/foreign/pending isolation and another
+guardian's preserved access. Live metadata confirms the growth view already uses
+security_invoker. Applied 2100/2200 are never rewritten. Post-repair function lint
+has no findings and official type parity is preserved.
+
+The same authorized hosted fixture then completed ten bounded sweeps. Its old
+session cannot read the two children; login/current-user and refresh checks fail;
+all five SQL messages, their session and both child profiles are erased. The
+private avatar could be downloaded before erasure and no bytes remain afterward.
+The job is completed. No existing accounts were touched and the production global
+hourly clock was unchanged. Internal Eve archive erasure is separately verified
+with actual bundled LocalWorld synthetic fixtures; this hosted fixture did not
+materialize an Eve/LLM conversation.
+
+Both store archives and the signed universal Android QA APK pass package/version,
+production endpoint, canonical-logo, feature-marker and archive checks; Android
+64-bit native segments meet 16 KB alignment. Android AAB SHA-256:
+685a700795d8659adf7a9a6f9ee0ee9e9b14c5a40d578856f217227ecd599715;
+iOS IPA: 907cbc72fad3a414151646d063a649daf82ce087f1fc92c47d62319b1c15bf1d.
+Android 14 is installed via update with the existing QA signing key and preserved
+session. The observed chart and evaluation render without error after RLS
+activation. iOS 14 submission 7ccb7b3e-ea14-40d1-b06e-2d94508eccda is queued;
+processing and assignment to the existing QA group remain to be verified.

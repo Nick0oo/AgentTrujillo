@@ -51,6 +51,15 @@ create domain extensions.vector as real[];
 do $$ begin if not exists(select from pg_publication where pubname='supabase_realtime') then create publication supabase_realtime; end if; end $$;
 `, 'fixture');
 for (const name of readdirSync('supabase/migrations').filter(n => n.endsWith('.sql')).sort()) {
+  if(name==='20261029230000_account_deletion_rls_prerequisite.sql'){
+    // Reproduce the linked failure before testing its forward repair. This
+    // executes only inside the verified, networkless synthetic container.
+    sql(`do $$ declare t record; begin for t in select c.relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname='public' and c.relkind='r' loop
+      execute format('alter table public.%I disable row level security',t.relname);
+      execute format('drop policy if exists account_deletion_denial on public.%I',t.relname);
+      execute format('drop trigger if exists account_deletion_write_guard on public.%I',t.relname);
+    end loop; end $$;`,'reproduce-linked-rls-drift');
+  }
   let source = readFileSync(resolve('supabase/migrations', name), 'utf8');
   // Fixture-only replacement: lifecycle tests never exercise vector math/indexes.
   source = source.replace(/create extension if not exists vector with schema extensions;/gi, '')
