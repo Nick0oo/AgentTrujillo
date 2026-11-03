@@ -13,6 +13,11 @@ function ports(): AccountDeletionPorts {
   };
 }
 describe('bounded account deletion', () => {
+  test('child-only removal fences and erases its scope without disabling the guardian login',async()=>{
+    const p=ports();vi.mocked(p.claim).mockResolvedValue({id:'00000000-0000-4000-8000-000000000001',actor:'00000000-0000-4000-8000-000000000002',lease:'00000000-0000-4000-8000-000000000003',stage:'access',kind:'child'});
+    await runAccountDeletionSweep(p);
+    expect(p.disableLogin).not.toHaveBeenCalled();expect(p.archive).toHaveBeenCalledWith(expect.objectContaining({kind:'child'}),true);expect(p.batch).toHaveBeenCalledTimes(1);expect(p.release).toHaveBeenCalledWith(expect.anything(),false);
+  });
   test('does not advance while runtime cancellation/fencing is pending',async()=>{
     const p=ports();vi.mocked(p.archive).mockResolvedValue({pending:true,processed:0});
     await runAccountDeletionSweep(p);expect(p.batch).not.toHaveBeenCalled();expect(p.release).toHaveBeenCalledWith(expect.anything(),false);
