@@ -7,10 +7,10 @@ import {resolve} from 'node:path';
 import {eraseLocalChatArchive,type ArchiveResult} from './local-chat-archive';
 
 const stage = z.enum(['access','chats','archive','children','profile','completed']);
-const jobSchema=z.object({id:z.uuid(),actor:z.uuid(),lease:z.uuid(),stage}).strict();
+const jobSchema=z.object({id:z.uuid(),actor:z.uuid(),lease:z.uuid(),stage,kind:z.enum(['account','child']).default('account')}).strict();
 const objectSchema=z.object({id:z.uuid(),bucket:z.string().min(1).max(100),path:z.string().min(1).max(2048)}).strict();
 const batchSchema=z.object({stage,processed:z.number().int().min(0).max(100),objects:z.array(objectSchema).max(100)}).strict();
-type Job=z.infer<typeof jobSchema>;
+type Job=z.input<typeof jobSchema>;
 type ObjectRef=z.infer<typeof objectSchema>;
 export interface AccountDeletionPorts {
   claim():Promise<Job|null>;
@@ -30,7 +30,7 @@ export async function runAccountDeletionSweep(ports:AccountDeletionPorts):Promis
   let failed=false;
   try {
     if(job.stage==='access'){
-      await ports.disableLogin(job);
+      if(job.kind==='account')await ports.disableLogin(job);
       if((await ports.archive(job,true)).pending)return;
     }
     if(job.stage==='archive'){

@@ -217,4 +217,12 @@ iOS IPA: 907cbc72fad3a414151646d063a649daf82ce087f1fc92c47d62319b1c15bf1d.
 Android 14 is installed via update with the existing QA signing key and preserved
 session. The observed chart and evaluation render without error after RLS
 activation. iOS 14 submission 7ccb7b3e-ea14-40d1-b06e-2d94508eccda is queued;
-processing and assignment to the existing QA group remain to be verified.
+submission finished. Apple build 8cf72bdf-cbba-491b-abd2-b321e4a237e9 is
+VALID/IN_BETA_TESTING in the existing QA group, with prior builds preserved. The
+user confirms iPhone session, graph and editable family/preferred-name fields.
+Android passes three warm Home/Crecer visits without loading or errors. A fresh
+post-RLS authenticated-role registration/sibling/profile-edit/denial transaction
+also passes and its rollback leaves no extra account, child or deletion job.
+PR 20 is merged at 385d96a159b0a1c3617e80ba0da0ea03e7a51ede; main deployment
+41007942886 and final public health/auth smoke pass. The verified AAB is delivered
+at release-artifacts/Creciendo-1.0.0-14.aab; no public store rollout is performed.
