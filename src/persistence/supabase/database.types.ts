@@ -235,6 +235,7 @@ export type Database = {
           recorded_by: string
           rounding_mode: string | null
           scope_fingerprint: string | null
+          source_note: string | null
           supersedes_measurement_id: string | null
           supersession_reason: string | null
           time_zone: string
@@ -272,6 +273,7 @@ export type Database = {
           recorded_by: string
           rounding_mode?: string | null
           scope_fingerprint?: string | null
+          source_note?: string | null
           supersedes_measurement_id?: string | null
           supersession_reason?: string | null
           time_zone: string
@@ -309,6 +311,7 @@ export type Database = {
           recorded_by?: string
           rounding_mode?: string | null
           scope_fingerprint?: string | null
+          source_note?: string | null
           supersedes_measurement_id?: string | null
           supersession_reason?: string | null
           time_zone?: string
@@ -4713,7 +4716,10 @@ export type Database = {
           confirmed_by: string | null
           country_code: string
           created_at: string
+          declared_vaccine_code: string | null
+          declared_vaccine_name: string | null
           dose_label: string | null
+          guardian_notes: string | null
           id: string
           idempotency_key: string
           input_fingerprint: string | null
@@ -4741,7 +4747,10 @@ export type Database = {
           confirmed_by?: string | null
           country_code: string
           created_at?: string
+          declared_vaccine_code?: string | null
+          declared_vaccine_name?: string | null
           dose_label?: string | null
+          guardian_notes?: string | null
           id?: string
           idempotency_key: string
           input_fingerprint?: string | null
@@ -4769,7 +4778,10 @@ export type Database = {
           confirmed_by?: string | null
           country_code?: string
           created_at?: string
+          declared_vaccine_code?: string | null
+          declared_vaccine_name?: string | null
           dose_label?: string | null
+          guardian_notes?: string | null
           id?: string
           idempotency_key?: string
           input_fingerprint?: string | null
@@ -5682,6 +5694,41 @@ export type Database = {
           outcome: string
         }[]
       }
+      record_confirmed_anthropometry_with_note: {
+        Args: {
+          p_assessments: Json
+          p_capture_policy_id: string
+          p_capture_policy_version: string
+          p_care_space_id: string
+          p_child_id: string
+          p_confirmation_expires_at: string
+          p_confirmation_sha256: string
+          p_conversion_version: string
+          p_device: string
+          p_hmac_key_id: string
+          p_idempotency_key: string
+          p_input_fingerprint: string
+          p_local_date: string
+          p_measurement_method: string
+          p_measurement_type: string
+          p_normalized_unit: string
+          p_normalized_value_lexeme: string
+          p_occurred_at: string
+          p_original_unit: string
+          p_original_value_lexeme: string
+          p_provenance_type: string
+          p_rounding_mode: string
+          p_source_note?: string
+          p_supersedes_measurement_id?: string
+          p_supersession_reason?: string
+          p_time_zone: string
+        }
+        Returns: {
+          assessment_ids: string[]
+          measurement_id: string
+          outcome: string
+        }[]
+      }
       record_confirmed_vaccine_administration: {
         Args: {
           p_administered_on: string
@@ -5750,6 +5797,20 @@ export type Database = {
           outcome: string
           validation_id: string
         }[]
+      }
+      record_guardian_vaccine_declaration: {
+        Args: {
+          p_administered_on: string
+          p_child_id: string
+          p_clinic: string
+          p_confirmed: boolean
+          p_idempotency_key: string
+          p_lot_number: string
+          p_notes: string
+          p_vaccine_code: string
+          p_vaccine_name: string
+        }
+        Returns: Json
       }
       record_medication_intake: {
         Args: {
@@ -5856,6 +5917,10 @@ export type Database = {
       }
       request_account_deletion: {
         Args: { p_idempotency_key: string }
+        Returns: Json
+      }
+      request_child_deletion: {
+        Args: { p_child_id: string; p_idempotency_key: string }
         Returns: Json
       }
       request_memory_deletion: {
@@ -5972,6 +6037,10 @@ export type Database = {
           outcome: string
           plan_id: string
         }[]
+      }
+      update_guardian_child_profile: {
+        Args: { p_child_id: string; p_idempotency_key: string; p_patch: Json }
+        Returns: Json
       }
       update_registered_birth_measurements: {
         Args: {
